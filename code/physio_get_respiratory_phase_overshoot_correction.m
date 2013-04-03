@@ -1,10 +1,10 @@
-function rphase = get_respiratory_phase_overshoot_correction(pulset,rsampint, verbose, thresh)
+function rphase = physio_get_respiratory_phase_overshoot_correction(pulset,rsampint, verbose, thresh)
 
 % get_respiratory_phase is a function for creating respiratory phase regressor.
 % from physiological monitoring files acquired using spike, that
 % can be included in SPM5 design matrices.
 %
-% FORMAT [rphase]=get_respiratory_phase(pulset,rsampint)
+% FORMAT [rphase] = physio_get_respiratory_phase(pulset,rsampint)
 %
 % Inputs: 
 %        pulset - respiratory belt data read from spike file
@@ -31,7 +31,7 @@ function rphase = get_respiratory_phase_overshoot_correction(pulset,rsampint, ve
 %
 % Copyright (C) 2013, Institute for Biomedical Engineering, ETH/Uni Zurich.
 %
-% This file is part of the TNU CheckPhysRETROICOR toolbox, which is released under the terms of the GNU General Public
+% This file is part of the PhysIO toolbox, which is released under the terms of the GNU General Public
 % Licence (GPL), version 3. You can redistribute it and/or modify it under the terms of the GPL
 % (either version 3 or, at your option, any later version). For further details, see the file
 % COPYING or <http://www.gnu.org/licenses/>.
@@ -82,7 +82,7 @@ rphase=pi*(cumsumh(binnum)/sumh).*dnormpulse+pi;
 
 if nargin < 3, verbose = 0; end
 if verbose
-    fh = get_default_fig_params();
+    fh = physio_get_default_fig_params();
     set(fh, 'Name', 'get_respiratory_phase: histogram for respiratory phase estimation');
     Nsamples = length(pulset);
     t = (0:Nsamples-1)*rsampint;

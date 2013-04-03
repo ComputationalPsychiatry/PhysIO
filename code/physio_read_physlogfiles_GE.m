@@ -1,9 +1,9 @@
-function [c, r, t, cpulse] = read_physlogfiles_GE(files)
+function [c, r, t, cpulse] = physio_read_physlogfiles_GE(files)
 % reads out physiological time series and timing vector depending on the
 % MR scanner vendor and the modality of peripheral cardiac monitoring (ECG
 % or pulse oximetry)
 %
-%   [cpulse, rpulse, t, c] = read_physlogfiles(logfile, vendor, cardiac_modality)
+%   [cpulse, rpulse, t, c] = physio_read_physlogfiles_GE(logfile, vendor, cardiac_modality)
 %
 % IN    files
 %       .log_cardiac        contains ECG or pulse oximeter time course
@@ -22,15 +22,15 @@ function [c, r, t, cpulse] = read_physlogfiles_GE(files)
 %
 % EXAMPLE
 %   [ons_secs.cpulse, ons_secs.rpulse, ons_secs.t, ons_secs.c] =
-%   read_physlogfiles(logfile, vendor, cardiac_modality);
+%       physio_read_physlogfiles_GE(logfile, vendor, cardiac_modality);
 %
-%   See also main_create_retroicor_regressors
+%   See also physio_main_create_regressors
 %
 % Author: Lars Kasper
 % Created: 2013-02-16
 % Copyright (C) 2013 Institute for Biomedical Engineering, ETH/Uni Zurich.
 %
-% This file is part of the TNU CheckPhysRETROICOR toolbox, which is released under the terms of the GNU General Public
+% This file is part of the PhysIO toolbox, which is released under the terms of the GNU General Public
 % Licence (GPL), version 3. You can redistribute it and/or modify it under the terms of the GPL
 % (either version 3 or, at your option, any later version). For further details, see the file
 % COPYING or <http://www.gnu.org/licenses/>.

@@ -1,8 +1,8 @@
-function cardiac_phase = get_cardiac_phase(pulset,scannert, verbose, svolpulse)
-% get_cardiac_phase is a function for creating cardiac phase estimations
+function cardiac_phase = physio_get_cardiac_phase(pulset,scannert, verbose, svolpulse)
+% estimates cardiac phases from cardiac pulse data
 %
 % USAGE
-%   cardiac_phase = get_cardiac_phase(pulset,scannert, verbose, svolpulse)
+%   cardiac_phase = physio_get_cardiac_phase(pulset,scannert, verbose, svolpulse)
 %
 % INPUT
 %        pulset     - heart-beat/pulseoxymeter data read from spike file
@@ -24,7 +24,7 @@ function cardiac_phase = get_cardiac_phase(pulset,scannert, verbose, svolpulse)
 %
 % Copyright (C) 2009, Institute for Biomedical Engineering, ETH/Uni Zurich.
 %
-% This file is part of the TNU CheckPhysRETROICOR toolbox, which is released under the terms of the GNU General Public
+% This file is part of the PhysIO toolbox, which is released under the terms of the GNU General Public
 % Licence (GPL), version 3. You can redistribute it and/or modify it under the terms of the GPL
 % (either version 3 or, at your option, any later version). For further details, see the file
 % COPYING or <http://www.gnu.org/licenses/>.
@@ -63,8 +63,8 @@ if verbose
     % and line of phases)
     % 3. plot all detected cardiac r-wave peaks
     % 4. plot volume start event
-    titstr = 'get_cardiac_phase: scanner and R-wave pulses - output phase';
-    fh = get_default_fig_params();
+    titstr = 'physio_get_cardiac_phase: scanner and R-wave pulses - output phase';
+    fh = physio_get_default_fig_params();
     set(fh, 'Name', titstr);
     stem(scannert, cardiac_phase, 'k'); hold on; 
     plot(scannert, cardiac_phase, 'k');

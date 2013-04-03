@@ -1,8 +1,8 @@
-function [VOLLOCS, LOCS] = create_scan_timing_from_gradients_philips(files, thresh, sqpar, verbose)
+function [VOLLOCS, LOCS] = physio_create_scan_timing_from_gradients_philips(files, thresh, sqpar, verbose)
 %extracts slice and volume scan events from gradients timecourse of Philips
 % SCANPHYSLOG file
 %
-%   [VOLLOCS, LOCS] = create_scan_timing_from_gradients_philips(logfile,
+%   [VOLLOCS, LOCS] = physio_create_scan_timing_from_gradients_philips(logfile,
 %   thresh);
 %
 % IN
@@ -61,7 +61,7 @@ function [VOLLOCS, LOCS] = create_scan_timing_from_gradients_philips(files, thre
 % OUT
 %
 % EXAMPLE
-%   [VOLLOCS, LOCS] = create_scan_timing_from_gradients_philips(logfile,
+%   [VOLLOCS, LOCS] = physio_create_scan_timing_from_gradients_philips(logfile,
 %   thresh.scan_timing);
 %
 %   See also
@@ -70,7 +70,7 @@ function [VOLLOCS, LOCS] = create_scan_timing_from_gradients_philips(files, thre
 % Created: 2013-02-16
 % Copyright (C) 2013 Institute for Biomedical Engineering, ETH/Uni Zurich.
 %
-% This file is part of the TNU CheckPhysRETROICOR toolbox, which is released under the terms of the GNU General Public
+% This file is part of the PhysIO toolbox, which is released under the terms of the GNU General Public
 % Licence (GPL), version 3. You can redistribute it and/or modify it under the terms of the GPL
 % (either version 3 or, at your option, any later version). For further details, see the file
 % COPYING or <http://www.gnu.org/licenses/>.
@@ -133,7 +133,7 @@ t=((0:(Nsamples-1))*dt)';
     z2 = gradient_choice; z2(z2<thresh.zero)=0;
     z2 = z2 + rand(size(z2)); % to find double-peaks/plateaus, make them a bit different
     
-    [tmp,LOCS]    = findpeaks(z2,'minpeakheight',thresh.slice,'minpeakdistance',2);
+    [tmp,LOCS]    = physio_findpeaks(z2,'minpeakheight',thresh.slice,'minpeakdistance',2);
         
     try
     if do_detect_vol_events_by_count
@@ -145,7 +145,7 @@ t=((0:(Nsamples-1))*dt)';
         
     else
         if do_detect_vol_events_by_grad_height
-            [tmp,VOLLOCS] = findpeaks(z2,'minpeakheight',thresh.vol,'minpeakdistance',2*(Nslices-1));
+            [tmp,VOLLOCS] = physio_findpeaks(z2,'minpeakheight',thresh.vol,'minpeakdistance',2*(Nslices-1));
         else %detection via bigger spacing from last to first slice of next volume
             VOLLOCS = LOCS(find((diff(LOCS) > thresh.vol_spacing/dt)) + 1);
         end
@@ -157,7 +157,7 @@ t=((0:(Nsamples-1))*dt)';
     end
     
     if verbose>=2
-        fh2 = get_default_fig_params();
+        fh2 = physio_get_default_fig_params();
         set(fh2,'Name', 'Thresholding Gradient for slice acq start detection');
         fs(1) = subplot(2,1,1);
         hp = plot(t,[gradient_choice z2 [abs(z2(1));abs(diff(z2))] ]); hold all;
@@ -198,8 +198,8 @@ t=((0:(Nsamples-1))*dt)';
         hp(end+1) = stem(t(LOCS),max(gradient_choice)*ones(size(LOCS))); hold all
         lg = {lg{:}, 'found volume events', 'found slice events'};
         legend(hp, lg);
-        ymin = my_prctile(diff(LOCS), 25);
-        ymax = my_prctile(diff(LOCS), 99);
+        ymin = physio_prctile(diff(LOCS), 25);
+        ymax = physio_prctile(diff(LOCS), 99);
         
         fs(2) = subplot(2,1,2);
         plot(t(LOCS(1:end-1)), diff(LOCS)); title('duration betwenn scan events - search for bad peaks here!');

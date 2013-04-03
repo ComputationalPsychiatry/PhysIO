@@ -1,9 +1,9 @@
-function sample_points = get_sample_points(ons_secs, sqpar, slicenum)
+function sample_points = physio_get_sample_points(ons_secs, sqpar, slicenum)
 % gets times of slice scan events of a particular slice number in every
 % volume acquired
 %
 % USAGE
-%   sample_points = get_sample_points(ons_secs, sqpar, slicenum)
+%   sample_points = physio_get_sample_points(ons_secs, sqpar, slicenum)
 %
 % INPUTS:
 %   ons_secs
@@ -19,7 +19,7 @@ function sample_points = get_sample_points(ons_secs, sqpar, slicenum)
 %
 % Copyright (C) 2013, Institute for Biomedical Engineering, ETH/Uni Zurich.
 %
-% This file is part of the TNU CheckPhysRETROICOR toolbox, which is released under the terms of the GNU General Public
+% This file is part of the PhysIO toolbox, which is released under the terms of the GNU General Public
 % Licence (GPL), version 3. You can redistribute it and/or modify it under the terms of the GPL
 % (either version 3 or, at your option, any later version). For further details, see the file
 % COPYING or <http://www.gnu.org/licenses/>.

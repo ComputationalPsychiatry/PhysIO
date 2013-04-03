@@ -1,10 +1,10 @@
-function R = scaleorthmean_regressors(cardiac_sess)
+function R = physio_scaleorthmean_regressors(cardiac_sess)
 % create orthogonalized cardiac regressors (Fourier expansion) to ensure
 % numerical stability of SVD in spm_spm, if regressors are highly
 % correlated (e.g. after triggered acquisition)
 %
 % USAGE:
-%   R = scaleorthmean_regressors(cardiac_sess)
+%   R = physio_scaleorthmean_regressors(cardiac_sess)
 %
 % -------------------------------------------------------------------------
 % INPUT:
@@ -19,7 +19,7 @@ function R = scaleorthmean_regressors(cardiac_sess)
 % Lars Kasper, August 2011
 % Copyright (C) 2013, Institute for Biomedical Engineering, ETH/Uni Zurich.
 %
-% This file is part of the TNU CheckPhysRETROICOR toolbox, which is released under the terms of the GNU General Public
+% This file is part of the PhysIO toolbox, which is released under the terms of the GNU General Public
 % Licence (GPL), version 3. You can redistribute it and/or modify it under the terms of the GPL
 % (either version 3 or, at your option, any later version). For further details, see the file
 % COPYING or <http://www.gnu.org/licenses/>.

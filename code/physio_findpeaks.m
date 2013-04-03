@@ -1,18 +1,18 @@
-function [pks,locs] = findpeaks(X,varargin)
-%FINDPEAKS Find local peaks in data
-%   PKS = FINDPEAKS(X) finds local peaks in the data vector X. A local peak
+function [pks,locs] = physio_findpeaks(X,varargin)
+%physio_findpeaks Find local peaks in data
+%   PKS = physio_findpeaks(X) finds local peaks in the data vector X. A local peak
 %   is defined as a data sample which is either larger than the two
 %   neighboring samples or is equal to Inf.
 %
-%   [PKS,LOCS]= FINDPEAKS(X) also returns the indices LOCS at which the
+%   [PKS,LOCS]= physio_findpeaks(X) also returns the indices LOCS at which the
 %   peaks occur.
 %
-%   [...] = FINDPEAKS(X,'MINPEAKHEIGHT',MPH) finds only those peaks that
+%   [...] = physio_findpeaks(X,'MINPEAKHEIGHT',MPH) finds only those peaks that
 %   are greater than MINPEAKHEIGHT MPH. Specifying a minimum peak height
 %   may help in reducing the processing time. MPH is a real valued scalar.
 %   The default value of MPH is -Inf.
 %
-%   [...] = FINDPEAKS(X,'MINPEAKDISTANCE',MPD) finds peaks that are at
+%   [...] = physio_findpeaks(X,'MINPEAKDISTANCE',MPD) finds peaks that are at
 %   least separated by MINPEAKDISTANCE MPD. MPD is a positive integer
 %   valued scalar. This parameter may be specified to ignore smaller peaks
 %   that may occur in close proximity to a large local peak. For example,
@@ -20,15 +20,15 @@ function [pks,locs] = findpeaks(X,varargin)
 %   range (N-MPD, N+MPD) are ignored. If not specified, MPD is assigned a
 %   value of one. 
 %
-%   [...] = FINDPEAKS(X,'THRESHOLD',TH)finds peaks that are at least
+%   [...] = physio_findpeaks(X,'THRESHOLD',TH)finds peaks that are at least
 %   greater than their neighbors by the THRESHOLD TH. TH is real valued
 %   scalar greater than or equal to zero. The default value of TH is zero.
 %
-%   [...] = FINDPEAKS(X,'NPEAKS',NP) specifies the maximum number of peaks
+%   [...] = physio_findpeaks(X,'NPEAKS',NP) specifies the maximum number of peaks
 %   to be found. NP is an integer greater than zero. If not specified, all
 %   peaks are returned.
 %
-%   [...] = FINDPEAKS(X,'SORTSTR',STR) specifies the direction of sorting
+%   [...] = physio_findpeaks(X,'SORTSTR',STR) specifies the direction of sorting
 %   of peaks. STR can take values of 'ascend','descend' or 'none'. If not
 %   specified, STR takes the value of 'none' and the peaks are returned in
 %   the order of their occurrence.

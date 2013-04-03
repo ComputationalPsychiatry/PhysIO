@@ -1,12 +1,12 @@
-function fh = plot_cropped_phys_to_acqwindow(ons_secs, sqpar)
+function fh = physio_plot_cropped_phys_to_acqwindow(ons_secs, sqpar)
 % plot parts of the time series to be processed into regressors
 %
 % USAGE
-%   fh = plot_cropped_phys_to_acqwindow(ons_secs, sqpar, y)
+%   fh = physio_plot_cropped_phys_to_acqwindow(ons_secs, sqpar, y)
 %
 % INPUT
-%   ons_secs    - output of crop_scanphysevents_to_acq_window
-%   sqpar       - output of crop_scanphysevents_to_acq_window
+%   ons_secs    - output of physio_crop_scanphysevents_to_acq_window
+%   sqpar       - output of physio_crop_scanphysevents_to_acq_window
 %
 % OUTPUT
 %   fh          figure handle of output figure
@@ -15,13 +15,13 @@ function fh = plot_cropped_phys_to_acqwindow(ons_secs, sqpar)
 %
 % Copyright (C) 2013, Institute for Biomedical Engineering, ETH/Uni Zurich.
 %
-% This file is part of the TNU CheckPhysRETROICOR toolbox, which is released under the terms of the GNU General Public
+% This file is part of the PhysIO toolbox, which is released under the terms of the GNU General Public
 % Licence (GPL), version 3. You can redistribute it and/or modify it under the terms of the GPL
 % (either version 3 or, at your option, any later version). For further details, see the file
 % COPYING or <http://www.gnu.org/licenses/>.
 %
 % $Id$
-[fh, MyColors] = get_default_fig_params();
+[fh, MyColors] = physio_get_default_fig_params();
 set(fh,'Name','Cutout actual scans - all events and gradients');
 
 Ndummies    = sqpar.Ndummies;

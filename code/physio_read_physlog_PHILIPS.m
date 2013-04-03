@@ -1,9 +1,9 @@
-function [ons_secs, ons] = read_physlog_PHILIPS(logfile, sqpar, verbose)
+function [ons_secs, ons] = physio_read_physlog_PHILIPS(logfile, sqpar, verbose)
 % reads a Philips SCANPHYSLOG-file, extracts ECG and breathing belt time
 % series plus slice and volume scan events in seconds for later usage with RETROICOR-scripts; 
 % 
 % USAGE
-%   [ons_secs, ons] = read_physlog_PHILIPS(logfile, sqpar, verbose)
+%   [ons_secs, ons] = physio_read_physlog_PHILIPS(logfile, sqpar, verbose)
 %------------------------------------------------------------------------
 % INPUT:
 %   logfile   - SCANPHYSLOG<DATE&TIME>.log from Philips G:/log/scanphyslog-
@@ -58,7 +58,7 @@ function [ons_secs, ons] = read_physlog_PHILIPS(logfile, sqpar, verbose)
 % Lars Kasper, August 2011
 % Copyright (C) 2013, Institute for Biomedical Engineering, ETH/Uni Zurich.
 %
-% This file is part of the TNU CheckPhysRETROICOR toolbox, which is released under the terms of the GNU General Public
+% This file is part of the PhysIO toolbox, which is released under the terms of the GNU General Public
 % Licence (GPL), version 3. You can redistribute it and/or modify it under the terms of the GPL
 % (either version 3 or, at your option, any later version). For further details, see the file
 % COPYING or <http://www.gnu.org/licenses/>.
@@ -108,7 +108,7 @@ if isempty(thresh.ECG_min) %ECG, R-peak, read as indicated by the scanner logfil
 else % calculate R-peak next to local minimum
     ECG_min = thresh.ECG_min;
     while ECG_min
-        ecgevents = find_ecg_r_peaks(t,y, ECG_min);
+        ecgevents = physio_find_ecg_r_peaks(t,y, ECG_min);
         ECG_min = input('Press 0, then return, if right ECG peaks were found, otherwise type next numerical choice for ECG_min and continue the selection: ');
     end
 end
@@ -148,7 +148,7 @@ end % read_physlog
 %%=========================================================================
 %% Plots scan events after gaps of missing indicators were filled
 function fh = plot_corrected_scan_events(t, y, acq_sliceevents, spulse, svolpulse, gapfillpulse, inclscanevents, subj)
-fh = get_default_fig_params(1, 0.5);
+fh = physio_get_default_fig_params(1, 0.5);
 
 set(fh,'Name','Overview scan+phys events');
 
@@ -175,7 +175,7 @@ function fh = plot_physiological_data(t, y, ecgevents, ppuevents, spulse, svolpu
 
 yshow = [3 5 6];
 
-[fh, MyColors] = get_default_fig_params(1, 0.5);
+[fh, MyColors] = physio_get_default_fig_params(1, 0.5);
 
 set(fh,'Name','Cardiac and respiratory time series');
 

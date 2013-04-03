@@ -1,8 +1,8 @@
-function [events, ECG_min, kRpeak] = find_ecg_r_peaks(t,y, ECG_min, kRpeak, inp_events)
+function [events, ECG_min, kRpeak] = physio_find_ecg_r_peaks(t,y, ECG_min, kRpeak, inp_events)
 % finds ECG-R peaks in a timecourse, if MR-scanner detection failed (esp. at high field >= 7 T)
 %
 % USAGE
-%   [events, ECG_min, kRpeak] = find_ecg_r_peaks(t,y, ECG_min, kRpeak,
+%   [events, ECG_min, kRpeak] = physio_find_ecg_r_peaks(t,y, ECG_min, kRpeak,
 %       inp_events)
 % 
 % Given a timing vector and the corresponding ECG-timecourse, the user
@@ -23,7 +23,7 @@ function [events, ECG_min, kRpeak] = find_ecg_r_peaks(t,y, ECG_min, kRpeak, inp_
 %   kRpeak  - used characteristic R-peak-wave of a heartbeat(convolution kernel)
 %
 % USAGE:
-%    [events, ECG_min, kRpeak] = find_ecg_r_peaks(t,y, ECG_min, [kRpeak], [inp_events])
+%    [events, ECG_min, kRpeak] = physio_find_ecg_r_peaks(t,y, ECG_min, [kRpeak], [inp_events])
 %
 % NOTE: The approach uses a matched-filter smoothing of the time series
 % with the selected snippet of the typical R-wave shape as the convolution
@@ -35,7 +35,7 @@ function [events, ECG_min, kRpeak] = find_ecg_r_peaks(t,y, ECG_min, kRpeak, inp_
 %
 % Copyright (C) 2013 Institute for Biomedical Engineering, ETH/Uni Zurich.
 %
-% This file is part of the TNU CheckPhysRETROICOR toolbox, which is released under the terms of the GNU General Public
+% This file is part of the PhysIO toolbox, which is released under the terms of the GNU General Public
 % Licence (GPL), version 3. You can redistribute it and/or modify it under the terms of the GPL
 % (either version 3 or, at your option, any later version). For further details, see the file
 % COPYING or <http://www.gnu.org/licenses/>.
@@ -46,7 +46,7 @@ manual_mode = ~exist('kRpeak', 'var') || isempty(kRpeak);
 
 if manual_mode
     %% Plot ECG curve, central part and already detected input events
-    fh = get_default_fig_params;
+    fh = physio_get_default_fig_params();
     set(fh, 'Name', 'Detection of R-wave from measured ECG-timecourse');
     subplot(3,1,1); hold off;
     plot(t(end/2-3000:end/2+3000), y(end/2-3000:end/2+3000)); hold all;
@@ -82,9 +82,9 @@ thresh_changed  = false;
 % lower threshold until peaks are found in autocorrelation function
 while ~peaks_found
     if ECG_min < 0
-        [tmp, events] = findpeaks(-sy,'minpeakheight', -ECG_min, 'minpeakdistance',200);
+        [tmp, events] = physio_findpeaks(-sy,'minpeakheight', -ECG_min, 'minpeakdistance',200);
     else
-        [tmp, events] = findpeaks(sy,'minpeakheight', ECG_min, 'minpeakdistance',200);
+        [tmp, events] = physio_findpeaks(sy,'minpeakheight', ECG_min, 'minpeakdistance',200);
     end
     peaks_found = ~isempty(events);
     if ~peaks_found

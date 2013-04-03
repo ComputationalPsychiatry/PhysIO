@@ -1,4 +1,4 @@
-function [fh, MyColors] = get_default_fig_params(xscale, yscale)
+function [fh, MyColors] = physio_get_default_fig_params(xscale, yscale)
 % set and return General settings for plots
 %
 % -------------------------------------------------------------------------
@@ -6,7 +6,7 @@ function [fh, MyColors] = get_default_fig_params(xscale, yscale)
 %
 % Copyright (C) 2013, Institute for Biomedical Engineering, ETH/Uni Zurich.
 %
-% This file is part of the TNU CheckPhysRETROICOR toolbox, which is released under the terms of the GNU General Public
+% This file is part of the PhysIO toolbox, which is released under the terms of the GNU General Public
 % Licence (GPL), version 3. You can redistribute it and/or modify it under the terms of the GPL
 % (either version 3 or, at your option, any later version). For further details, see the file
 % COPYING or <http://www.gnu.org/licenses/>.

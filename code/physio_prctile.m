@@ -1,7 +1,7 @@
-function p = my_prctile(x, percentile)
+function p = physio_prctile(x, percentile)
 %returns the approximate value corresponding to a percentile for a given data vector
 %
-%   p = my_prctile(x, percentile)
+%   p = physio_prctile(x, percentile)
 %
 %   uses a sorting/interpolation approach as the original perctile in the
 %   Matlab Statistics Toolbox
@@ -13,16 +13,16 @@ function p = my_prctile(x, percentile)
 %   p           value of percentile for data vector
 % EXAMPLE
 %   x = randn(1000,1);
-%   p = my_prctile (x, 95) % returns median
+%   p = physio_prctile (x, 95) % returns median
 %   figure;hist(x,100);yl = ylim;hold all;stem(p, yl(2));
 %
-%   See also prctile plot_raw_physdata_diagnostics create_scan_timing_from_gradients_philips
+%   See also prctile physio_plot_raw_physdata_diagnostics physio_create_scan_timing_from_gradients_philips
 %
 % Author: Lars Kasper
 % Created: 2013-03-13
 % Copyright (C) 2013 TNU, Institute for Biomedical Engineering, University of Zurich and ETH Zurich.
 %
-% This file is part of the TNU CheckPhysRETROICOR toolbox, which is released under the terms of the GNU General Public
+% This file is part of the PhysIO toolbox, which is released under the terms of the GNU General Public
 % Licence (GPL), version 3. You can redistribute it and/or modify it under the terms of the GPL
 % (either version 3 or, at your option, any later version). For further details, see the file
 % COPYING or <http://www.gnu.org/licenses/>.

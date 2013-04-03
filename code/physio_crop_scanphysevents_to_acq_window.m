@@ -1,10 +1,10 @@
-function [ons_secs, sqpar] = crop_scanphysevents_to_acq_window(ons_secs, sqpar)
+function [ons_secs, sqpar] = physio_crop_scanphysevents_to_acq_window(ons_secs, sqpar)
 % cropping of ons_secs into acquired scan/presentation session, augmenting
 % sqpar by scan-timing parameters from SCANPHYSLOG-file
 %
 % USAGE
 %   function [ons_secs, sqpar] = ...
-%       crop_scanphysevents_to_acq_window(ons_secs, sqpar)
+%       physio_crop_scanphysevents_to_acq_window(ons_secs, sqpar)
 %-------------------------------------------------------------------------
 % INPUT:
 %   ons_secs    - onsets of all physlog events in seconds
@@ -39,7 +39,7 @@ function [ons_secs, sqpar] = crop_scanphysevents_to_acq_window(ons_secs, sqpar)
 % Lars Kasper, August 2011
 % Copyright (C) 2013 Institute for Biomedical Engineering, ETH/Uni Zurich.
 %
-% This file is part of the TNU CheckPhysRETROICOR toolbox, which is released under the terms of the GNU General Public
+% This file is part of the PhysIO toolbox, which is released under the terms of the GNU General Public
 % Licence (GPL), version 3. You can redistribute it and/or modify it under the terms of the GPL
 % (either version 3 or, at your option, any later version). For further details, see the file
 % COPYING or <http://www.gnu.org/licenses/>.

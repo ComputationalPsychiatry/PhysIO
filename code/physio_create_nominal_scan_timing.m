@@ -1,7 +1,7 @@
-function [VOLLOCS, LOCS] = create_nominal_scan_timing(t, sqpar)
+function [VOLLOCS, LOCS] = physio_create_nominal_scan_timing(t, sqpar)
 % creates locations of scan volume and slice events in time vector of SCANPHYSLOG-files
 %
-%   [VOLLOCS, LOCS] = create_nominal_scan_timing(t, sqpar);
+%   [VOLLOCS, LOCS] = physio_create_nominal_scan_timing(t, sqpar);
 %
 % In cases where the SCANPHYSLOG-file has no gradient entries (column
 % 7-9), the actual time-course of the sequence has to be inferred from the
@@ -36,7 +36,7 @@ function [VOLLOCS, LOCS] = create_nominal_scan_timing(t, sqpar)
 %           LOCS            - locations in time vector, when slice or volume scan
 %                             events started
 % EXAMPLE
-%   [VOLLOCS, LOCS] = create_nominal_scan_timing(t, sqpar);
+%   [VOLLOCS, LOCS] = physio_create_nominal_scan_timing(t, sqpar);
 %
 %   See also
 %
@@ -44,7 +44,7 @@ function [VOLLOCS, LOCS] = create_nominal_scan_timing(t, sqpar)
 % Created: 2013-02-07
 % Copyright (C) 2013 Institute for Biomedical Engineering, ETH/Uni Zurich.
 %
-% This file is part of the TNU CheckPhysRETROICOR toolbox, which is released under the terms of the GNU General Public
+% This file is part of the PhysIO toolbox, which is released under the terms of the GNU General Public
 % Licence (GPL), version 3. You can redistribute it and/or modify it under the terms of the GPL
 % (either version 3 or, at your option, any later version). For further details, see the file
 % COPYING or <http://www.gnu.org/licenses/>.

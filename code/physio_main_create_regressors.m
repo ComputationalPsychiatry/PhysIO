@@ -1,9 +1,9 @@
-function [R, ons_secs] = main_create_RETROICOR_regressors(files, ...
+function [R, ons_secs] = physio_main_create_regressors(files, ...
     thresh, sqpar, order, verbose)
 % RETROICOR - regressor creation based on Glover, G. MRM 44, 2000
 %
 % USAGE
-%   [R, ons_secs] = main_create_RETROICOR_regressors(logfile, ...
+%   [R, ons_secs] = physio_main_create_regressors(logfile, ...
 %    thresh, sqpar, order, verbose, regressordir, logfile_w_scanevents, orthogonalize_cardiac, rpdir)
 %
 %------------------------------------------------------------------------
@@ -140,7 +140,7 @@ function [R, ons_secs] = main_create_RETROICOR_regressors(files, ...
 %
 % Copyright (C) 2013, Institute for Biomedical Engineering, ETH/Uni Zurich.
 %
-% This file is part of the TNU CheckPhysRETROICOR toolbox, which is released under the terms of the GNU General Public
+% This file is part of the PhysIO toolbox, which is released under the terms of the GNU General Public
 % Licence (GPL), version 3. You can redistribute it and/or modify it under the terms of the GPL
 % (either version 3 or, at your option, any later version). For further details, see the file
 % COPYING or <http://www.gnu.org/licenses/>.
@@ -163,10 +163,10 @@ if nargin < 5, verbose = true; end;
 
 %% 1. Read in vendor-specific physiological log-files
 [ons_secs.c, ons_secs.r, ons_secs.t, ons_secs.cpulse] = ...
-    read_physlogfiles(files, thresh.cardiac.modality);
+    physio_read_physlogfiles(files, thresh.cardiac.modality);
 
 if verbose >= 1
-    plot_raw_physdata(ons_secs);
+    physio_plot_raw_physdata(ons_secs);
 end
 
 
@@ -174,14 +174,14 @@ end
 % the latter is only necessary, if no patch is used and therefore no scan event
 % triggers are written into the last column of the scanphyslog-file
 if isempty(thresh.scan_timing)
-    [VOLLOCS, LOCS] = create_nominal_scan_timing(ons_secs.t, sqpar);
+    [VOLLOCS, LOCS] = physio_create_nominal_scan_timing(ons_secs.t, sqpar);
 else
-    [VOLLOCS, LOCS] = create_scan_timing_from_gradients_philips( ...
+    [VOLLOCS, LOCS] = physio_create_scan_timing_from_gradients_philips( ...
         files, thresh.scan_timing, sqpar, verbose);
 end
 
 [ons_secs.svolpulse, ons_secs.spulse, ons_secs.spulse_per_vol] = ...
-    get_onsets_from_locs(ons_secs.t, VOLLOCS, LOCS, sqpar, verbose);
+    physio_get_onsets_from_locs(ons_secs.t, VOLLOCS, LOCS, sqpar, verbose);
 
 
 %% 3. Extract and check physiological parameters (onsets)
@@ -189,29 +189,29 @@ end
 % heart rate? breathing amplitude overshoot?)
 
 if isfield(thresh.cardiac, 'min') && ~isempty(thresh.cardiac.min)
-    ons_secs.cpulse = get_cardiac_pulses(ons_secs.t, ons_secs.c, ...
+    ons_secs.cpulse = physio_get_cardiac_pulses(ons_secs.t, ons_secs.c, ...
         thresh.cardiac, verbose);
 end
 
 if verbose>=2
-    plot_raw_physdata_diagnostics(ons_secs.t, ons_secs.cpulse, ons_secs.r);
+    physio_plot_raw_physdata_diagnostics(ons_secs.t, ons_secs.cpulse, ons_secs.r);
 end
 
-[ons_secs, sqpar] = crop_scanphysevents_to_acq_window(ons_secs, sqpar);
+[ons_secs, sqpar] = physio_crop_scanphysevents_to_acq_window(ons_secs, sqpar);
 if verbose >= 1
-    plot_cropped_phys_to_acqwindow(ons_secs, sqpar);
+    physio_plot_cropped_phys_to_acqwindow(ons_secs, sqpar);
 end
 
 
 %% 4. Create RETROICOR regressors for SPM
 [cardiac_sess, respire_sess, mult_sess] = ...
-    create_retroicor_regressors(ons_secs, sqpar, thresh, ...
+    physio_create_retroicor_regressors(ons_secs, sqpar, thresh, ...
     order, verbose);
 
 
 % 4.1.  Load other confound regressors, e.g. realigment parameters
 if isfield(files, 'input_other_multiple_regressors') && ~isempty(files.input_other_multiple_regressors)
-    input_R = load_other_multiple_regressors(files.input_other_multiple_regressors);
+    input_R = physio_load_other_multiple_regressors(files.input_other_multiple_regressors);
 else
     input_R = [];
 end
@@ -219,7 +219,7 @@ end
 
 % 4.2   Orthogonalisation of regressors ensures numerical stability for 
 %       otherwise correlated cardiac regressors
-R = orthogonalise_physiological_regressors(cardiac_sess, respire_sess, ...
+R = physio_orthogonalise_physiological_regressors(cardiac_sess, respire_sess, ...
     mult_sess, input_R, order.orthogonalise, verbose);
 
 % 4.3   Save Multiple Regressors file for SPM

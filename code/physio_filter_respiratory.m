@@ -1,7 +1,7 @@
-function [rpulset, pulset] = filter_respiratory(rpulset,rsampint)
-% filter_respiratory is a function for high-pass filtering respiratory data.
+function [rpulset, pulset] = physio_filter_respiratory(rpulset,rsampint)
+% high-pass filters respiratory data.
 %
-%   rpulset = filter_respiratory(pulset,rsampint)
+%   rpulset = physio_filter_respiratory(pulset,rsampint)
 %
 %
 % Author: Lars Kasper, 2011; heavily based on an earlier implementation of
@@ -9,7 +9,7 @@ function [rpulset, pulset] = filter_respiratory(rpulset,rsampint)
 %
 % Copyright (C) 2013 Institute for Biomedical Engineering, ETH/Uni Zurich.
 %
-% This file is part of the TNU CheckPhysRETROICOR toolbox, which is released under the terms of the GNU General Public
+% This file is part of the PhysIO toolbox, which is released under the terms of the GNU General Public
 % Licence (GPL), version 3. You can redistribute it and/or modify it under the terms of the GPL
 % (either version 3 or, at your option, any later version). For further details, see the file
 % COPYING or <http://www.gnu.org/licenses/>.

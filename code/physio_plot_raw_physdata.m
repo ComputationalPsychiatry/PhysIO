@@ -1,7 +1,7 @@
-function fh = plot_raw_physdata(ons_secs)
+function fh = physio_plot_raw_physdata(ons_secs)
 % plots raw data from physiological logfile(s) to check whether read-in worked
 %
-%   fh = plot_raw_physdata(ons_secs)
+%   fh = physio_plot_raw_physdata(ons_secs)
 %
 % IN
 %   ons_secs    structure with the following fields
@@ -14,7 +14,7 @@ function fh = plot_raw_physdata(ons_secs)
 %   fh          figure handles where plot is drawn to
 %
 % EXAMPLE
-%   plot_raw_physdata
+%   physio_plot_raw_physdata
 %
 %   See also
 %
@@ -22,13 +22,13 @@ function fh = plot_raw_physdata(ons_secs)
 % Created: 2013-02-21
 % Copyright (C) 2013, Institute for Biomedical Engineering, ETH/Uni Zurich.
 %
-% This file is part of the TNU CheckPhysRETROICOR toolbox, which is released under the terms of the GNU General Public
+% This file is part of the PhysIO toolbox, which is released under the terms of the GNU General Public
 % Licence (GPL), version 3. You can redistribute it and/or modify it under the terms of the GPL
 % (either version 3 or, at your option, any later version). For further details, see the file
 % COPYING or <http://www.gnu.org/licenses/>.
 %
 % $Id$
-fh = get_default_fig_params();
+fh = physio_get_default_fig_params();
 set(fh, 'Name', 'Raw Physiological Logfile Data');
 
 has_cardiac = isfield(ons_secs, 'c') && ~isempty(ons_secs.c);

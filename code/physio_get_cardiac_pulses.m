@@ -1,7 +1,7 @@
-function cpulse= get_cardiac_pulses(t, c, thresh_cardiac, verbose)
+function cpulse= physio_get_cardiac_pulses(t, c, thresh_cardiac, verbose)
 % extract heartbeat events from ECG or pulse oximetry time course
 %
-%   cpulse = get_cardiac_pulses(c, thresh_cardiac, cardiac_modality, cardiac_peak_file);
+%   cpulse = physio_get_cardiac_pulses(c, thresh_cardiac, cardiac_modality, cardiac_peak_file);
 %
 % IN
 %   t                  vector of time series of log file (in seconds, corresponds to c)
@@ -32,17 +32,17 @@ function cpulse= get_cardiac_pulses(t, c, thresh_cardiac, verbose)
 % OUT
 %
 % EXAMPLE
-%   ons_samples.cpulse = get_cardiac_pulses(ons_secs.c,
+%   ons_samples.cpulse = physio_get_cardiac_pulses(ons_secs.c,
 %   thresh.cardiac, cardiac_modality, cardiac_peak_file);
 %
-%   See also main_create_retroicor_regressors
+%   See also physio_main_create_regressors
 %
 % Author: Lars Kasper
 % Created: 2013-02-16
 %
 % Copyright (C) 2013, Institute for Biomedical Engineering, ETH/Uni Zurich.
 %
-% This file is part of the TNU CheckPhysRETROICOR toolbox, which is released under the terms of the GNU General Public
+% This file is part of the PhysIO toolbox, which is released under the terms of the GNU General Public
 % Licence (GPL), version 3. You can redistribute it and/or modify it under the terms of the GPL
 % (either version 3 or, at your option, any later version). For further details, see the file
 % COPYING or <http://www.gnu.org/licenses/>.
@@ -70,12 +70,12 @@ switch lower(thresh_cardiac.modality)
         sc =filter(b,a, sc);
         sc = sc./max(sc);
         
-        [tmp, cpulse] = findpeaks(sc,'minpeakheight',thresh_cardiac.min,'minpeakdistance', dt120); 
+        [tmp, cpulse] = physio_findpeaks(sc,'minpeakheight',thresh_cardiac.min,'minpeakdistance', dt120); 
         
         if verbose >=2 % visualise influence of smoothing on peak detection
-            fh = get_default_fig_params;
+            fh = physio_get_default_fig_params;
             set(fh, 'Name', 'PPU-OXY: Tresholding Maxima for Heart Beat Detection');
-            [tmp, cpulse2] = findpeaks(c,'minpeakheight',thresh_cardiac.min,'minpeakdistance', dt120);
+            [tmp, cpulse2] = physio_findpeaks(c,'minpeakheight',thresh_cardiac.min,'minpeakdistance', dt120);
             plot(t, c, 'k');
             hold all;
             plot(t, sc, 'r', 'LineWidth', 2);
@@ -105,11 +105,11 @@ switch lower(thresh_cardiac.modality)
         kRpeak = thresh_cardiac.kRpeak;
         if do_manual_peakfind
             while ECG_min
-                [cpulse, ECG_min_new, kRpeak] = find_ecg_r_peaks(t,c, ECG_min, [], inp_events);
+                [cpulse, ECG_min_new, kRpeak] = physio_find_ecg_r_peaks(t,c, ECG_min, [], inp_events);
                 ECG_min = input('Press 0, then return, if right ECG peaks were found, otherwise type next numerical choice for ECG_min and continue the selection: ');
             end
         else
-            [cpulse, ECG_min_new, kRpeak] = find_ecg_r_peaks(t,c, ECG_min, kRpeak, inp_events);
+            [cpulse, ECG_min_new, kRpeak] = physio_find_ecg_r_peaks(t,c, ECG_min, kRpeak, inp_events);
         end
         ECG_min = ECG_min_new;
         cpulse = t(cpulse);

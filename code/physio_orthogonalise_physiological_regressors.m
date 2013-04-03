@@ -1,7 +1,7 @@
-function R = orthogonalise_physiological_regressors(cardiac_sess, respire_sess, mult_sess, input_R, orthogonalise, verbose)
+function R = physio_orthogonalise_physiological_regressors(cardiac_sess, respire_sess, mult_sess, input_R, orthogonalise, verbose)
 % orthogonalises (parts of) created physiological regressors
 %
-%   output = orthogonalise_physiological_regressors(input)
+%   output = physio_orthogonalise_physiological_regressors(input)
 % 
 % Note: This is only necessary to ensure numerical stability for
 % acuqisitions with cardiac triggering, where the cardiac phase
@@ -33,7 +33,7 @@ function R = orthogonalise_physiological_regressors(cardiac_sess, respire_sess, 
 % OUT
 %
 % EXAMPLE
-%   orthogonalise_physiological_regressors
+%   physio_orthogonalise_physiological_regressors
 %
 %   See also
 %
@@ -41,7 +41,7 @@ function R = orthogonalise_physiological_regressors(cardiac_sess, respire_sess, 
 % Created: 2013-02-21
 % Copyright (C) 2013, Institute for Biomedical Engineering, ETH/Uni Zurich.
 %
-% This file is part of the TNU CheckPhysRETROICOR toolbox, which is released under the terms of the GNU General Public
+% This file is part of the PhysIO toolbox, which is released under the terms of the GNU General Public
 % Licence (GPL), version 3. You can redistribute it and/or modify it under the terms of the GPL
 % (either version 3 or, at your option, any later version). For further details, see the file
 % COPYING or <http://www.gnu.org/licenses/>.
@@ -50,13 +50,13 @@ function R = orthogonalise_physiological_regressors(cardiac_sess, respire_sess, 
 R_non_orth = [cardiac_sess, respire_sess, mult_sess input_R];
 switch lower(orthogonalise)
     case {'c', 'cardiac'}
-        R = [scaleorthmean_regressors(cardiac_sess), respire_sess, scaleorthmean_regressors(mult_sess) input_R];
+        R = [physio_scaleorthmean_regressors(cardiac_sess), respire_sess, physio_scaleorthmean_regressors(mult_sess) input_R];
     case {'r', 'resp'}
-        R = [cardiac_sess, scaleorthmean_regressors(respire_sess) mult_sess input_R];
+        R = [cardiac_sess, physio_scaleorthmean_regressors(respire_sess) mult_sess input_R];
     case {'mult'}
-        R = [cardiac_sess, respire_sess, scaleorthmean_regressors(mult_sess) input_R];
+        R = [cardiac_sess, respire_sess, physio_scaleorthmean_regressors(mult_sess) input_R];
     case 'all'
-        R = [scaleorthmean_regressors([cardiac_sess, respire_sess, mult_sess]), input_R];
+        R = [physio_scaleorthmean_regressors([cardiac_sess, respire_sess, mult_sess]), input_R];
     case {'n', 'none'}
         R = [cardiac_sess, respire_sess, mult_sess input_R];
 end
@@ -64,7 +64,7 @@ end
 
 %% Plot orthogonalisation
 if verbose
-    fh = get_default_fig_params();
+    fh = physio_get_default_fig_params();
     set(fh, 'Name', 'RETROICOR GLM regressors');
     subplot(1,3,1); imagesc(R); title({'physiological regressors matrix for GLM'...
         ' - specified regressors orthogonalized - '}); colormap gray; xlabel('regressor');ylabel('scan volume');

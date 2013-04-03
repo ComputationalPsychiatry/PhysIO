@@ -1,8 +1,8 @@
-function phase_expansion = get_fourier_expansion(phase, order)
+function phase_expansion = physio_get_fourier_expansion(phase, order)
 % does a cosine/sine expansion of a given phase up to the specified order.
 %
 % USAGE:
-%   phase_expansion = get_fourier_expansion(phase, order)
+%   phase_expansion = physio_get_fourier_expansion(phase, order)
 %
 % INPUT
 %   phase
@@ -19,7 +19,7 @@ function phase_expansion = get_fourier_expansion(phase, order)
 %
 % Copyright (C) 2013, Institute for Biomedical Engineering, ETH/Uni Zurich.
 %
-% This file is part of the TNU CheckPhysRETROICOR toolbox, which is released under the terms of the GNU General Public
+% This file is part of the PhysIO toolbox, which is released under the terms of the GNU General Public
 % Licence (GPL), version 3. You can redistribute it and/or modify it under the terms of the GPL
 % (either version 3 or, at your option, any later version). For further details, see the file
 % COPYING or <http://www.gnu.org/licenses/>.

@@ -1,7 +1,7 @@
-function R = load_other_multiple_regressors(filename_other_regressors)
+function R = physio_load_other_multiple_regressors(filename_other_regressors)
 % reads other multiple regressors from .txt-file or as variable R from .mat
 %
-%   R = load_other_multiple_regressors(filename_other_regressors)
+%   R = physio_load_other_multiple_regressors(filename_other_regressors)
 %
 % IN
 %   filename_other_regressors   filename (.mat or .txt) of other confound
@@ -10,16 +10,16 @@ function R = load_other_multiple_regressors(filename_other_regressors)
 % OUT
 %   R                           [Nscans NconfoundRegressors] matrix of multiple regressors
 % EXAMPLE
-%   load_other_multiple_regressors
+%   physio_load_other_multiple_regressors
 %
-%   See also orthogonalise_physiological_regressors main_create_retroicor_regressors
+%   See also physio_orthogonalise_physiological_regressors physio_main_create_regressors
 %
 % Author: Lars Kasper
 % Created: 2013-02-21
 %
 % Copyright (C) 2013, Institute for Biomedical Engineering, ETH/Uni Zurich.
 %
-% This file is part of the TNU CheckPhysRETROICOR toolbox, which is released under the terms of the GNU General Public
+% This file is part of the PhysIO toolbox, which is released under the terms of the GNU General Public
 % Licence (GPL), version 3. You can redistribute it and/or modify it under the terms of the GPL
 % (either version 3 or, at your option, any later version). For further details, see the file
 % COPYING or <http://www.gnu.org/licenses/>.

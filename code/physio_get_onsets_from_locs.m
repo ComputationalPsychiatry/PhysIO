@@ -1,7 +1,7 @@
-function [svolpulse, spulse, spulse_per_vol] = get_onsets_from_locs(t, VOLLOCS, LOCS, sqpar, verbose)
+function [svolpulse, spulse, spulse_per_vol] = physio_get_onsets_from_locs(t, VOLLOCS, LOCS, sqpar, verbose)
 % creates timing vectors of found 
 %
-%   [svolpulse, spulse, spulse_per_vol] = get_onsets_from_locs(t, VOLLOCS,
+%   [svolpulse, spulse, spulse_per_vol] = physio_get_onsets_from_locs(t, VOLLOCS,
 %                                           LOCS, sqpar, verbose);
 %
 % IN
@@ -33,16 +33,16 @@ function [svolpulse, spulse, spulse_per_vol] = get_onsets_from_locs(t, VOLLOCS, 
 %   spulse      vector of scan pulse events (in seconds from logfile start)
 %   spulse_per_vol  cell of slice scan events; one cell element per volume
 % EXAMPLE
-%   [ons_secs.svolpulse, ons_secs.spulse] = get_onsets_from_locs(ons_secs.t, VOLLOCS, LOCS);
+%   [ons_secs.svolpulse, ons_secs.spulse] = physio_get_onsets_from_locs(ons_secs.t, VOLLOCS, LOCS);
 %    
-%   See also main_create_retroicor_regressors read_physlogfiles_philips
+%   See also physio_main_create_regressors physio_read_physlogfiles_philips
 %
 % Author: Lars Kasper
 % Created: 2013-02-16
 %
 % Copyright (C) 2013, Institute for Biomedical Engineering, ETH/Uni Zurich.
 %
-% This file is part of the TNU CheckPhysRETROICOR toolbox, which is released under the terms of the GNU General Public
+% This file is part of the PhysIO toolbox, which is released under the terms of the GNU General Public
 % Licence (GPL), version 3. You can redistribute it and/or modify it under the terms of the GPL
 % (either version 3 or, at your option, any later version). For further details, see the file
 % COPYING or <http://www.gnu.org/licenses/>.
@@ -79,7 +79,7 @@ end
 
 if verbose>=3
     titstr =  'Slice bundles belonging to 1 volume';
-    fh1 = get_default_fig_params;
+    fh1 = physio_get_default_fig_params();
     set(fh1, 'Name', titstr);
     for v=1:Nallvols-1, stem(t(SLICELOCS{v}),ones(size(SLICELOCS{v})));hold all;end
     title(titstr);

@@ -1,16 +1,16 @@
 function [any_scanevent_repaired, ons, dur, index] ...
-    = repair_scan_events_PHILIPS(ons, sqpar, verbose)
+    = physio_repair_scan_events_PHILIPS(ons, sqpar, verbose)
 % repairs the temporal structure of the sequence of scan events
 % (time-stamps when slice was acquired) by filling up holes of missing
 % slice acquisition or volume acquisition starts
 % 
 % USAGE
 %   [any_scanevent_repaired, ons, dur, index] ...
-%       = repair_scan_events_PHILIPS(ons, sqpar, verbose)
+%       = physio_repair_scan_events_PHILIPS(ons, sqpar, verbose)
 %
 % -------------------------------------------------------------------------
 % INPUT:
-%   ons         - ons_samples, as given by read_physlog_PHILIPS_guess_scanevents.m
+%   ons         - ons_samples, as given by physio_read_physlog_PHILIPS_guess_scanevents.m
 %   sqpar       - sequence timing parameters
 %           .Nslices        - number of slices per volume in fMRI scan
 %           .NslicesPerBeat - usually equals Nslices, unless you trigger
@@ -36,7 +36,7 @@ function [any_scanevent_repaired, ons, dur, index] ...
 % Lars Kasper, August 2011
 % Copyright (C) 2013, Institute for Biomedical Engineering, ETH/Uni Zurich.
 %
-% This file is part of the TNU CheckPhysRETROICOR toolbox, which is released under the terms of the GNU General Public
+% This file is part of the PhysIO toolbox, which is released under the terms of the GNU General Public
 % Licence (GPL), version 3. You can redistribute it and/or modify it under the terms of the GPL
 % (either version 3 or, at your option, any later version). For further details, see the file
 % COPYING or <http://www.gnu.org/licenses/>.
@@ -131,7 +131,7 @@ end %repair_scan_events
 %% plot fixing procedure in scantrigger-time-difference view
 function fh = plot_fix_missing_scan_events(ons, dur, index)
 
-fh = get_default_fig_params(0.5, 0.5);
+fh = physio_get_default_fig_params(0.5, 0.5);
 set(fh,'Name','Time-difference view between events: Fix missing scan events');
 ax(1) = subplot(3,1,1);
 hold off;
