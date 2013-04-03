@@ -92,7 +92,13 @@ Release Notes:
 - ECG-Trigger example
 - Updated Manual
 
+
+
 Leading Programmer: Lars Kasper
+
+Contributors: 
+Jakob Heinzle, TNU Zurich
+Steffen Bollmann, Kinderspital Zurich & ETH Zurich
 
 Send bug reports and suggestions to: kasper@biomed.ee.ethz.ch
 
