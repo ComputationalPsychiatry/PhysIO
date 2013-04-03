@@ -1,4 +1,4 @@
-TNU CheckPhysRETROICOR Toolbox Version 2013
+TNU PhysIO Toolbox Version 2013
 
 ************************************************************************
 Copyright (C) 2013 Lars Kasper <kasper@biomed.ee.ethz.ch>
@@ -7,7 +7,7 @@ Institute for Biomedical Engineering
 University of Zurich and ETH Zurich
 ------------------------------------------------------------------------
 
-The TNU CheckPhysRETROICOR Toolbox is free software: you can redistribute it and/or
+The PhysIO Toolbox is free software: you can redistribute it and/or
 modify it under the terms of the GNU General Public License as
 published by the Free Software Foundation, either version 3 of the
 License, or (at your option) any later version.
@@ -24,7 +24,7 @@ along with this program (see the file COPYING).  If not, see
 
 GENERAL
 
-The TNU CheckPhysRETROICOR Toolbox provides physiological noise correction for fMRI-data from peripheral measures (ECG/pulse oximetry, breathing belt). It is model-based, i.e. creates nuisance regressors from the physiological monitoring that can enter a General Linear Model (GLM) analysis, e.g. SPM8.
+The PhysIO Toolbox provides physiological noise correction for fMRI-data from peripheral measures (ECG/pulse oximetry, breathing belt). It is model-based, i.e. creates nuisance regressors from the physiological monitoring that can enter a General Linear Model (GLM) analysis, e.g. SPM8.
 Furthermore, for PHILIPS SCANPHYSLOG logfiles, it provides means to statistically assess peripheral data (e.g. heart rate variability) and recover imperfect measures (e.g. distorted R-peaks of the ECG).
 
 Facts about physiological noise in fMRI:
@@ -72,7 +72,7 @@ DOWNLOADS & RELEASE INFORMATION
 
 - Current Release (Recent Developments): 
 
-CheckPhysRETROICOR_13 (Code | Examples)
+PhysIO_Toolbox_13 (Code | Examples)
 March 6th, 2013
 
 revision: $Rev$
@@ -84,7 +84,7 @@ Release Notes
 - Support for General Electric (GE) read-in of physiological logfiles
 - GPL 3.0 licencse
 
-- Latest Stable Release: CheckPhysRETROICOR_13
+- Latest Stable Release: PhysIO_Toolbox_13
 February 11th, 2013
 revision: 159
 
