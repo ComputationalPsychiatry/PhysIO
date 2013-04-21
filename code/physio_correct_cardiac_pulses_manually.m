@@ -1,10 +1,8 @@
-function ons_secs = physio_correct_cardiac_pulses_manually(ons_secs,percentile,upperThresh,lowerThresh)
+function [ons_secs, outliersHigh, outliersLow] = physio_correct_cardiac_pulses_manually(ons_secs,percentile,upperThresh,lowerThresh)
 
-% this fucntion takes the onsets from ECG measure and controls for
+% this function takes the onsets from ECG measure and controls for
 % outliers (more or less than a threshold given by a percentile increased
 % or decreased by upperTresh or lowerThresh percent respectively.
-
-
 
 [outliersHigh,outliersLow,fh] = selectOutliers(ons_secs.t, ons_secs.cpulse, percentile, upperThresh, lowerThresh);
 if any(outliersHigh)

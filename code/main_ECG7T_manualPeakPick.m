@@ -1,9 +1,9 @@
-function [R, ons_secs] = physio_main_create_regressors(files, ...
+function [R, ons_secs] = main_ECG7T_manualPeakPick(files, ...
     thresh, sqpar, order, verbose)
 % RETROICOR - regressor creation based on Glover, G. MRM 44, 2000
 %
 % USAGE
-%   [R, ons_secs] = physio_main_create_regressors(logfile, ...
+%   [R, ons_secs] = main_create_RETROICOR_regressors(logfile, ...
 %    thresh, sqpar, order, verbose, regressordir, logfile_w_scanevents, orthogonalize_cardiac, rpdir)
 %
 %------------------------------------------------------------------------
@@ -50,7 +50,7 @@ function [R, ons_secs] = physio_main_create_regressors(files, ...
 %                      identify scan volume/slice start events ('x', 'y', 'z')
 %           .vol_spacing
 %                   -  duration (in seconds) from last slice acq to
-%                      first slice of next volume; 
+%                      first slice of next volume;
 %                      leave [], if .vol-threshold shall be used
 %
 %           thresh.cardiac.
@@ -72,7 +72,7 @@ function [R, ons_secs] = physio_main_create_regressors(files, ...
 %                      This file is saved after picking the QRS-wave
 %                      manually (i.e. if .ECG_min is set), so that
 %                      results are reproducible
-%           .manual_peak_select 
+%           .manual_peak_select
 %                      [false] or true; if true, a user input is
 %                      required to specify a characteristic R-peak interval in the ECG
 %                      or pulse oximetry time series
@@ -85,7 +85,7 @@ function [R, ons_secs] = physio_main_create_regressors(files, ...
 %
 % NOTE: estimate gradient thresholds from visual inspection of the gradient timecourses
 %       They only have to be set once per sequence, i.e. can be used for
-%       nearly all subjects and sessions
+%       all subjects and sessions
 %
 %   sqpar                   - sequence timing parameters
 %           .Nslices        - number of slices per volume in fMRI scan
@@ -101,11 +101,9 @@ function [R, ons_secs] = physio_main_create_regressors(files, ...
 %                             slices; typically TR/Nslices or
 %                             minTR/Nslices, if minimal temporal slice
 %                             spacing was chosen
-%                             NOTE: only necessary, if
-%                             thresh.grad_direction is empty and nominal
-%                             scan timing is used
 %            onset_slice    - slice whose scan onset determines the adjustment of the
 %                             regressor timing to a particular slice for the whole volume
+%                             NOTE: only necessary, if thresh.grad_direction is empty
 %
 % order     - order of RETROICOR expansion, taken from Harvey2008, JRMI28(6), p1337ff.
 %       .c  - cardiac [default = 3]
@@ -123,7 +121,6 @@ function [R, ons_secs] = physio_main_create_regressors(files, ...
 %             'mult'            - only multiplicative regressors are orthogonalised
 %             'all'             - all physiological regressors are
 %                                 orthogonalised to each other
-%
 % verbose   - create informative plots (1= yes, 0 = no)
 %
 %------------------------------------------------------------------------
@@ -137,15 +134,7 @@ function [R, ons_secs] = physio_main_create_regressors(files, ...
 %
 % -------------------------------------------------------------------------
 % Lars Kasper, August 2011
-%
-% Copyright (C) 2013, Institute for Biomedical Engineering, ETH/Uni Zurich.
-%
-% This file is part of the PhysIO toolbox, which is released under the terms of the GNU General Public
-% Licence (GPL), version 3. You can redistribute it and/or modify it under the terms of the GPL
-% (either version 3 or, at your option, any later version). For further details, see the file
-% COPYING or <http://www.gnu.org/licenses/>.
-%
-% $Id$
+% $Id: main_create_RETROICOR_regressors.m 164 2013-02-28 11:47:07Z kasperla $
 %
 
 
@@ -160,13 +149,15 @@ end
 
 if nargin < 5, verbose = true; end;
 
+manualCorrect = 1; % !!! include this somewhere in the input of the function later.
+
 
 %% 1. Read in vendor-specific physiological log-files
 [ons_secs.c, ons_secs.r, ons_secs.t, ons_secs.cpulse] = ...
-    physio_read_physlogfiles(files, thresh.cardiac.modality);
+    read_physlogfiles(files, thresh.cardiac.modality);
 
 if verbose >= 1
-    physio_plot_raw_physdata(ons_secs);
+    plot_raw_physdata(ons_secs);
 end
 
 
@@ -174,14 +165,14 @@ end
 % the latter is only necessary, if no patch is used and therefore no scan event
 % triggers are written into the last column of the scanphyslog-file
 if isempty(thresh.scan_timing)
-    [VOLLOCS, LOCS] = physio_create_nominal_scan_timing(ons_secs.t, sqpar);
+    [VOLLOCS, LOCS] = create_nominal_scan_timing(ons_secs.t, sqpar);
 else
-    [VOLLOCS, LOCS] = physio_create_scan_timing_from_gradients_philips( ...
+    [VOLLOCS, LOCS] = create_scan_timing_from_gradients_philips( ...
         files, thresh.scan_timing, sqpar, verbose);
 end
 
 [ons_secs.svolpulse, ons_secs.spulse, ons_secs.spulse_per_vol] = ...
-    physio_get_onsets_from_locs(ons_secs.t, VOLLOCS, LOCS, sqpar, verbose);
+    get_onsets_from_locs(ons_secs.t, VOLLOCS, LOCS, sqpar, verbose);
 
 
 %% 3. Extract and check physiological parameters (onsets)
@@ -189,50 +180,44 @@ end
 % heart rate? breathing amplitude overshoot?)
 
 if isfield(thresh.cardiac, 'min') && ~isempty(thresh.cardiac.min)
-    ons_secs.cpulse = physio_get_cardiac_pulses(ons_secs.t, ons_secs.c, ...
-        thresh.cardiac, verbose); 
-    
-    % additional manual fill-in of more missed pulses
-    [ons_secs, outliersHigh, outliersLow] = physio_correct_cardiac_pulses_manually(ons_secs,80,60,50);
+    ons_secs.cpulse = get_cardiac_pulses(ons_secs.t, ons_secs.c, ...
+        thresh.cardiac, verbose);
+end
+
+if manualCorrect
+    ons_secs = physio_correct_cardiac_pulses_manually(ons_secs,80,60,50);
 end
 
 if verbose>=2
-    physio_plot_raw_physdata_diagnostics(ons_secs.t, ons_secs.cpulse, ons_secs.r);
-    % [outliersHigh,outliersLow] = physio_plot_raw_physdata_diagnostics_and_select(ons_secs.t, ons_secs.cpulse, ons_secs.r);
+    %plot_raw_physdata_diagnostics(ons_secs.t, ons_secs.cpulse, ons_secs.r);
+    [outliersHigh,outliersLow] = plot_raw_physdata_diagnostics_and_select(ons_secs.t, ons_secs.cpulse, ons_secs.r);
 end
 
-[ons_secs, sqpar] = physio_crop_scanphysevents_to_acq_window(ons_secs, sqpar);
+[ons_secs, sqpar] = crop_scanphysevents_to_acq_window(ons_secs, sqpar);
 if verbose >= 1
-    physio_plot_cropped_phys_to_acqwindow(ons_secs, sqpar);
+    plot_cropped_phys_to_acqwindow(ons_secs, sqpar);
 end
 
 
 %% 4. Create RETROICOR regressors for SPM
 [cardiac_sess, respire_sess, mult_sess] = ...
-    physio_create_retroicor_regressors(ons_secs, sqpar, thresh, ...
+    create_retroicor_regressors(ons_secs, sqpar, thresh, ...
     order, verbose);
 
 
 % 4.1.  Load other confound regressors, e.g. realigment parameters
 if isfield(files, 'input_other_multiple_regressors') && ~isempty(files.input_other_multiple_regressors)
-    input_R = physio_load_other_multiple_regressors(files.input_other_multiple_regressors);
+    input_R = load_other_multiple_regressors(files.input_other_multiple_regressors);
 else
     input_R = [];
 end
 
 
-% 4.2   Orthogonalisation of regressors ensures numerical stability for 
+% 4.2   Orthogonalisation of regressors ensures numerical stability for
 %       otherwise correlated cardiac regressors
-R = physio_orthogonalise_physiological_regressors(cardiac_sess, respire_sess, ...
+R = orthogonalise_physiological_regressors(cardiac_sess, respire_sess, ...
     mult_sess, input_R, order.orthogonalise, verbose);
 
 % 4.3   Save Multiple Regressors file for SPM
-
-[fpfx, fn, fsfx] = fileparts(files.output_multiple_regressors);
-
-switch fsfx
-    case '.mat'
-        save(files.output_multiple_regressors, 'R');
-    otherwise
-        save(files.output_multiple_regressors, 'R', '-ascii', '-double', '-tabs');
-end
+% TODO: save as TXT-file for non-Matlab use
+save(files.output_multiple_regressors, 'R');
