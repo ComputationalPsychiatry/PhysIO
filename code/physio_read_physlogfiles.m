@@ -1,12 +1,12 @@
-function [c, r, t, cpulse] = physio_read_physlogfiles(files, cardiac_modality)
+function [c, r, t, cpulse] = physio_read_physlogfiles(log_files, cardiac_modality)
 % reads out physiological time series and timing vector depending on the
 % MR scanner vendor and the modality of peripheral cardiac monitoring (ECG
 % or pulse oximetry)
 %
-%   [cpulse, rpulse, t, c] = physio_read_physlogfiles(logfile, vendor, cardiac_modality)
+%   [cpulse, rpulse, t, c] = physio_read_physlogfiles(log_files, vendor, cardiac_modality)
 %
 % IN
-%   files   is a structure containing the following filenames (with full
+%   log_files   is a structure containing the following filenames (with full
 %           path)
 %       .vendor             'Philips', 'GE' or 'Siemens', depending on your
 %                           MR Scanner system
@@ -18,7 +18,7 @@ function [c, r, t, cpulse] = physio_read_physlogfiles(files, cardiac_modality)
 %                           files
 %       .log_respiration    contains breathing belt amplitude time course
 %                           for Philips: same as .log_cardiac
-%   cardiac_modality    'ECG' for ECG, 'OXY' for pulse oximetry
+%   cardiac_modality    'ECG' for ECG, 'OXY' for pulse oximetry, default: 'ECG'
 %
 % OUT
 %   cpulse              time events of R-wave peak in cardiac time series (seconds)
@@ -43,17 +43,21 @@ function [c, r, t, cpulse] = physio_read_physlogfiles(files, cardiac_modality)
 %
 % $Id$
 
-switch lower(files.vendor)
+if nargin < 2
+    cardiac_modality = 'ECG';
+end
+
+switch lower(log_files.vendor)
     case 'philips'
         % everything stored in 1 logfile
-        if ~isfield(files, 'log_cardiac') || isempty(files.log_cardiac)
-            logfile = files.log_respiration;
+        if ~isfield(log_files, 'cardiac') || isempty(log_files.cardiac)
+            logfile = log_files.respiration;
         else
-            logfile = files.log_cardiac;
+            logfile = log_files.cardiac;
         end
         [c, r, t, cpulse] = physio_read_physlogfiles_philips(logfile, cardiac_modality);
     case 'ge'
-        [c, r, t, cpulse] = physio_read_physlogfiles_GE(files);
+        [c, r, t, cpulse] = physio_read_physlogfiles_GE(log_files);
     case 'siemens'
         disp('Ask the FIL about it...');
 end

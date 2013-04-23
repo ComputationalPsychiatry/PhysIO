@@ -1,139 +1,25 @@
-function [R, ons_secs] = physio_main_create_regressors(files, ...
-    thresh, sqpar, order, verbose)
+function [physio_out, R, ons_secs] = physio_main_create_regressors(log_files, ...
+    thresh, sqpar, model, verbose)
 % RETROICOR - regressor creation based on Glover, G. MRM 44, 2000
 %
 % USAGE
-%   [R, ons_secs] = physio_main_create_regressors(logfile, ...
-%    thresh, sqpar, order, verbose, regressordir, logfile_w_scanevents, orthogonalize_cardiac, rpdir)
+% [physio_out, R, ons_secs] = physio_main_create_regressors(physio)
+%
+%   OR
+%
+% [physio_out, R, ons_secs] = physio_main_create_regressors(log_files, ...
+%    thresh, sqpar, model, verbose)
 %
 %------------------------------------------------------------------------
 % IN
-%   files   is a structure containing the following filenames (with full
-%           path)
-%       .vendor             'Philips', 'GE' or 'Siemens', depending on your
-%                           MR Scanner system
-%       .log_cardiac        contains ECG or pulse oximeter time course
-%                           for Philips: 'SCANPHYSLOG<DATE&TIME>.log';
-%                           can be found on scanner in G:/log/scanphyslog-
-%                           directory, one file is created per scan, make sure to take
-%                           the one with the time stamp corresponding to your PAR/REC
-%                           files
-%       .log_respiration    contains breathing belt amplitude time course
-%                           for Philips: same as .log_cardiac
-%       .input_other_multiple_regressors = '';
-%                           other regressors which should end up in "multiple regressors"
-%                           slot of SPM-GLM; either txt-file or mat-file with variable R
-%                           e.g. realignment parameters rp_*.txt
-%       .output_multiple_regressors
-%                           output .mat-file containing a variable R with
-%                           all RETROICOR-regressors; can be inserted
-%                           directly as "multiple regressors" for SPM
-%                           1st level design specification
-%                           e.g. 'multiple_regressors.mat' in SPM-analysis
-%                           folder
+%   physio
 %
-%   thresh  - thresh is a structure with the following elements
-%
-%           thresh.scan_timing.
-%           .zero    - gradient values below this value are set to zero;
-%                      should be those which are unrelated to slice acquisition start
-%           .slice   - minimum gradient amplitude to be exceeded when a slice
-%                      scan starts
-%           .vol     - minimum gradient amplitude to be exceeded when a new
-%                      volume scan starts;
-%                      leave [], if volume events shall be determined as
-%                      every Nslices-th scan event
-%           .grad_direction
-%                    - leave empty to use nominal timing;
-%                      if set, sequence timing is calculated from logged gradient timecourse;
-%                    - value determines which gradient direction timecourse is used to
-%                      identify scan volume/slice start events ('x', 'y', 'z')
-%           .vol_spacing
-%                   -  duration (in seconds) from last slice acq to
-%                      first slice of next volume; 
-%                      leave [], if .vol-threshold shall be used
-%
-%           thresh.cardiac.
-%
-%           .modality - 'ecg' or 'oxy'; ECG or Pulse oximeter used?
-%           .min -     - for modality 'ECG': [percent peak height of sample QRS wave]
-%                      if set, ECG heartbeat event is calculated from ECG
-%                      timeseries by detecting local maxima of
-%                      cross-correlation to a sample QRS-wave;
-%                      leave empty, to use Philips' log of heartbeat event
-%                      - for modality 'OXY': [peak height of pulse oxymeter] if set, pulse
-%                      oxymeter data is used and minimal peak height
-%                      set is used to determined maxima
-%           .kRpeakfile
-%                    - [default: not set] string of file containing a
-%                      reference ECG-peak
-%                      if set, ECG peak detection via cross-correlation (via
-%                      setting .ECG_min) performed with a saved reference ECG peak
-%                      This file is saved after picking the QRS-wave
-%                      manually (i.e. if .ECG_min is set), so that
-%                      results are reproducible
-%           .manual_peak_select 
-%                      [false] or true; if true, a user input is
-%                      required to specify a characteristic R-peak interval in the ECG
-%                      or pulse oximetry time series
-%
-%       thresh.respiratory.
-%
-%           .resp_max
-%                   -  if set, all peaks above that breathing belt amplitude
-%                      are ignored for respiratory phase evaluation
-%
-% NOTE: estimate gradient thresholds from visual inspection of the gradient timecourses
-%       They only have to be set once per sequence, i.e. can be used for
-%       nearly all subjects and sessions
-%
-%   sqpar                   - sequence timing parameters
-%           .Nslices        - number of slices per volume in fMRI scan
-%           .NslicesPerBeat - usually equals Nslices, unless you trigger with the heart beat
-%           .TR             - repetition time in seconds
-%           .Ndummies       - number of dummy volumes
-%           .Nscans         - number of full volumes saved (volumes in nifti file,
-%                             usually rows in your design matrix)
-%           .Nprep          - number of non-dummy, volume like preparation pulses
-%                             before 1st dummy scan. If set, logfile is read from beginning,
-%                             otherwise volumes are counted from last detected volume in the logfile
-%           .TimeSliceToSlice - time between the acquisition of 2 subsequent
-%                             slices; typically TR/Nslices or
-%                             minTR/Nslices, if minimal temporal slice
-%                             spacing was chosen
-%                             NOTE: only necessary, if
-%                             thresh.grad_direction is empty and nominal
-%                             scan timing is used
-%            onset_slice    - slice whose scan onset determines the adjustment of the
-%                             regressor timing to a particular slice for the whole volume
-%
-% order     - order of RETROICOR expansion, taken from Harvey2008, JRMI28(6), p1337ff.
-%       .c  - cardiac [default = 3]
-%       .r  - respiratory [default = 4]
-%       .cr - multiplicative terms: cardiac X respiratory [default 1]
-%       .orthogonalise
-%           - string indicating which regressors shall be
-%             orthogonalised; mainly needed, if
-%           acquisition was triggered to heartbeat (set to 'cardiac') OR
-%           if session mean shall be evaluated (e.g. SFNR-studies, set to
-%           'all')
-%             'n' or 'none'     - no orthogonalisation is performed
-%             'c' or 'cardiac'  - only cardiac regressors are orthogonalised
-%             'r' or 'resp'     - only respiration regressors are orthogonalised
-%             'mult'            - only multiplicative regressors are orthogonalised
-%             'all'             - all physiological regressors are
-%                                 orthogonalised to each other
-%
-% verbose   - create informative plots (1= yes, 0 = no)
-%
-%------------------------------------------------------------------------
 % OUT
-%   R         - matrix of physiological regressors to be plugged in as
-%           "multiple regressors" into SPM design matrix
-%           If realignment parameters were found in <regressordir>, they are
-%           appended as columns to <R>
-%   ons_secs  - onset time stamps of scan events, heartbeats, breathing (in
-%           seconds)
+%   physio_out
+%   R
+%   ons_secs
+%   
+% See also physio_new
 %
 % -------------------------------------------------------------------------
 % Lars Kasper, August 2011
@@ -150,20 +36,38 @@ function [R, ons_secs] = physio_main_create_regressors(files, ...
 
 
 %% 0. set default parameters
+if ~nargin
+    error('Please specify a PhysIO-object as input to this function. See physio_new');
+end
+
+
+if nargin == 1 % assuming sole PhysIO-object as input
+    physio      = log_files; % first argument of function
+    log_files = physio.log_files;
+    thresh  = physio.thresh;
+    sqpar   = physio.sqpar;
+    model   = physio.model;
+    verbose = physio.verbose;
+else % all input parameters given separately 
+
 % order of RETROICOR expansion, taken from Harvey2008, JRMI28(6), p1337ff.
-if nargin < 4 || isempty(order)
-    order.c = 3; %cardiac
-    order.r = 4; % respiratory
-    order.cr = 1; % cardiac X respiratory
-    order.orthogonalise = 'none';
+if nargin < 4 || isempty(model)
+    model.type = 'RETROICOR';
+    model.order.c = 3; %cardiac
+    model.order.r = 4; % respiratory
+    model.order.cr = 1; % cardiac X respiratory
+    model.order.orthogonalise = 'none';
 end
 
 if nargin < 5, verbose = true; end;
+  
+end
+    
 
 
 %% 1. Read in vendor-specific physiological log-files
 [ons_secs.c, ons_secs.r, ons_secs.t, ons_secs.cpulse] = ...
-    physio_read_physlogfiles(files, thresh.cardiac.modality);
+    physio_read_physlogfiles(log_files, thresh.cardiac.modality);
 
 if verbose >= 1
     physio_plot_raw_physdata(ons_secs);
@@ -177,7 +81,7 @@ if isempty(thresh.scan_timing)
     [VOLLOCS, LOCS] = physio_create_nominal_scan_timing(ons_secs.t, sqpar);
 else
     [VOLLOCS, LOCS] = physio_create_scan_timing_from_gradients_philips( ...
-        files, thresh.scan_timing, sqpar, verbose);
+        log_files, thresh.scan_timing, sqpar, verbose);
 end
 
 [ons_secs.svolpulse, ons_secs.spulse, ons_secs.spulse_per_vol] = ...
@@ -191,7 +95,7 @@ end
 if isfield(thresh.cardiac, 'min') && ~isempty(thresh.cardiac.min)
     ons_secs.cpulse = physio_get_cardiac_pulses(ons_secs.t, ons_secs.c, ...
         thresh.cardiac, verbose); 
-    
+        
     % additional manual fill-in of more missed pulses
     [ons_secs, outliersHigh, outliersLow] = physio_correct_cardiac_pulses_manually(ons_secs,80,60,50);
 end
@@ -208,14 +112,18 @@ end
 
 
 %% 4. Create RETROICOR regressors for SPM
-[cardiac_sess, respire_sess, mult_sess] = ...
-    physio_create_retroicor_regressors(ons_secs, sqpar, thresh, ...
-    order, verbose);
-
+switch upper(model.type)
+    case 'RETROICOR'
+        [cardiac_sess, respire_sess, mult_sess] = ...
+            physio_create_retroicor_regressors(ons_secs, sqpar, thresh, ...
+            model.order, verbose);
+    otherwise
+        error('Please valid specify model.type');
+end
 
 % 4.1.  Load other confound regressors, e.g. realigment parameters
-if isfield(files, 'input_other_multiple_regressors') && ~isempty(files.input_other_multiple_regressors)
-    input_R = physio_load_other_multiple_regressors(files.input_other_multiple_regressors);
+if isfield(model, 'input_other_multiple_regressors') && ~isempty(model.input_other_multiple_regressors)
+    input_R = physio_load_other_multiple_regressors(model.input_other_multiple_regressors);
 else
     input_R = [];
 end
@@ -224,15 +132,24 @@ end
 % 4.2   Orthogonalisation of regressors ensures numerical stability for 
 %       otherwise correlated cardiac regressors
 R = physio_orthogonalise_physiological_regressors(cardiac_sess, respire_sess, ...
-    mult_sess, input_R, order.orthogonalise, verbose);
+    mult_sess, input_R, model.order.orthogonalise, verbose);
 
 % 4.3   Save Multiple Regressors file for SPM
 
-[fpfx, fn, fsfx] = fileparts(files.output_multiple_regressors);
+[fpfx, fn, fsfx] = fileparts(model.output_multiple_regressors);
 
 switch fsfx
     case '.mat'
-        save(files.output_multiple_regressors, 'R');
+        save(model.output_multiple_regressors, 'R');
     otherwise
-        save(files.output_multiple_regressors, 'R', '-ascii', '-double', '-tabs');
+        save(model.output_multiple_regressors, 'R', '-ascii', '-double', '-tabs');
 end
+model.R = R;
+
+physio_out.log_files    = log_files;
+physio_out.thresh       = thresh;
+physio_out.sqpar        = sqpar;
+physio_out.model        = model;
+physio_out.verbose      = verbose;
+physio_out.ons_secs     = ons_secs;
+

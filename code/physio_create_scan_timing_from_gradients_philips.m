@@ -1,4 +1,4 @@
-function [VOLLOCS, LOCS] = physio_create_scan_timing_from_gradients_philips(files, thresh, sqpar, verbose)
+function [VOLLOCS, LOCS] = physio_create_scan_timing_from_gradients_philips(log_files, thresh, sqpar, verbose)
 %extracts slice and volume scan events from gradients timecourse of Philips
 % SCANPHYSLOG file
 %
@@ -6,7 +6,7 @@ function [VOLLOCS, LOCS] = physio_create_scan_timing_from_gradients_philips(file
 %   thresh);
 %
 % IN
-%   files   is a structure containing the following filenames (with full
+%   log_files   is a structure containing the following filenames (with full
 %           path)
 %       .log_cardiac        contains ECG or pulse oximeter time course
 %                           for Philips: 'SCANPHYSLOG<DATE&TIME>.log';
@@ -78,10 +78,10 @@ function [VOLLOCS, LOCS] = physio_create_scan_timing_from_gradients_philips(file
 % $Id$
     
 % everything stored in 1 logfile
-if ~isfield(files, 'log_cardiac') || isempty(files.log_cardiac)
-    logfile = files.log_respiration;
+if ~isfield(log_files, 'cardiac') || isempty(log_files.cardiac)
+    logfile = log_files.respiration;
 else
-    logfile = files.log_cardiac;
+    logfile = log_files.cardiac;
 end
 
 do_detect_vol_events_by_count = ~isfield(thresh, 'vol') || isempty(thresh.vol);
