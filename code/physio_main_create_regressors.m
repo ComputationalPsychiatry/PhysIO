@@ -48,19 +48,6 @@ if nargin == 1 % assuming sole PhysIO-object as input
     sqpar   = physio.sqpar;
     model   = physio.model;
     verbose = physio.verbose;
-else % all input parameters given separately 
-
-% order of RETROICOR expansion, taken from Harvey2008, JRMI28(6), p1337ff.
-if nargin < 4 || isempty(model)
-    model.type = 'RETROICOR';
-    model.order.c = 3; %cardiac
-    model.order.r = 4; % respiratory
-    model.order.cr = 1; % cardiac X respiratory
-    model.order.orthogonalise = 'none';
-end
-
-if nargin < 5, verbose = true; end;
-  
 end
     
 
@@ -69,8 +56,8 @@ end
 [ons_secs.c, ons_secs.r, ons_secs.t, ons_secs.cpulse] = ...
     physio_read_physlogfiles(log_files, thresh.cardiac.modality);
 
-if verbose >= 1
-    physio_plot_raw_physdata(ons_secs);
+if verbose.level >= 1
+    verbose.fig_handles(end+1) = physio_plot_raw_physdata(ons_secs);
 end
 
 
@@ -80,11 +67,11 @@ end
 if isempty(thresh.scan_timing)
     [VOLLOCS, LOCS] = physio_create_nominal_scan_timing(ons_secs.t, sqpar);
 else
-    [VOLLOCS, LOCS] = physio_create_scan_timing_from_gradients_philips( ...
+    [VOLLOCS, LOCS, verbose] = physio_create_scan_timing_from_gradients_philips( ...
         log_files, thresh.scan_timing, sqpar, verbose);
 end
 
-[ons_secs.svolpulse, ons_secs.spulse, ons_secs.spulse_per_vol] = ...
+[ons_secs.svolpulse, ons_secs.spulse, ons_secs.spulse_per_vol, verbose] = ...
     physio_get_onsets_from_locs(ons_secs.t, VOLLOCS, LOCS, sqpar, verbose);
 
 
@@ -93,28 +80,30 @@ end
 % heart rate? breathing amplitude overshoot?)
 
 if isfield(thresh.cardiac, 'min') && ~isempty(thresh.cardiac.min)
-    ons_secs.cpulse = physio_get_cardiac_pulses(ons_secs.t, ons_secs.c, ...
+    [ons_secs.cpulse, verbose] = physio_get_cardiac_pulses(ons_secs.t, ons_secs.c, ...
         thresh.cardiac, verbose); 
         
     % additional manual fill-in of more missed pulses
     [ons_secs, outliersHigh, outliersLow] = physio_correct_cardiac_pulses_manually(ons_secs,80,60,50);
 end
 
-if verbose>=2
-    physio_plot_raw_physdata_diagnostics(ons_secs.t, ons_secs.cpulse, ons_secs.r);
+if verbose.level >= 2
+    verbose.fig_handles(end+1) = ...
+        physio_plot_raw_physdata_diagnostics(ons_secs.t, ons_secs.cpulse, ons_secs.r);
     % [outliersHigh,outliersLow] = physio_plot_raw_physdata_diagnostics_and_select(ons_secs.t, ons_secs.cpulse, ons_secs.r);
 end
 
 [ons_secs, sqpar] = physio_crop_scanphysevents_to_acq_window(ons_secs, sqpar);
-if verbose >= 1
-    physio_plot_cropped_phys_to_acqwindow(ons_secs, sqpar);
+if verbose.level >= 1
+    verbose.fig_handles(end+1) = ...
+        physio_plot_cropped_phys_to_acqwindow(ons_secs, sqpar);
 end
 
 
 %% 4. Create RETROICOR regressors for SPM
 switch upper(model.type)
     case 'RETROICOR'
-        [cardiac_sess, respire_sess, mult_sess] = ...
+        [cardiac_sess, respire_sess, mult_sess, verbose] = ...
             physio_create_retroicor_regressors(ons_secs, sqpar, thresh, ...
             model.order, verbose);
     otherwise
@@ -131,7 +120,7 @@ end
 
 % 4.2   Orthogonalisation of regressors ensures numerical stability for 
 %       otherwise correlated cardiac regressors
-R = physio_orthogonalise_physiological_regressors(cardiac_sess, respire_sess, ...
+[R, verbose] = physio_orthogonalise_physiological_regressors(cardiac_sess, respire_sess, ...
     mult_sess, input_R, model.order.orthogonalise, verbose);
 
 % 4.3   Save Multiple Regressors file for SPM
@@ -145,6 +134,10 @@ switch fsfx
         save(model.output_multiple_regressors, 'R', '-ascii', '-double', '-tabs');
 end
 model.R = R;
+
+if isfield(verbose, 'fig_output_file') && ~isempty(verbose.fig_output_file)
+    physio_print_figs_to_ps(verbose);
+end
 
 physio_out.log_files    = log_files;
 physio_out.thresh       = thresh;

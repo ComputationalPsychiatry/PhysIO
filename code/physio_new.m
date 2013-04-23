@@ -10,6 +10,7 @@ function physio = physio_new(default_scheme, physio_in)
 %                       'empty' (default) - all strings are set to '', all
 %                                     numbers to []
 %                       'RETROICOR'
+%                   `       % order of RETROICOR expansion taken from Harvey2008, JRMI28(6), p1337ff.
 %                       'scan_timing_from_start'
 %                       'manual_peak_select'
 %   physio_in       - used as input, only the fields related to the default_scheme
@@ -32,7 +33,7 @@ function physio = physio_new(default_scheme, physio_in)
 % (either version 3 or, at your option, any later version). For further details, see the file
 % COPYING or <http://www.gnu.org/licenses/>.
 %
-% $Id: tedit2.m 142 2012-10-20 17:14:50Z kasperla $
+% $Id$
 
 %   log_files   is a structure containing the following filenames (with full
 %           path)
@@ -207,8 +208,9 @@ switch default_scheme
 end
 
 %% verbose
-verbose = [];
-
+verbose.level = [];
+verbose.fig_handles = [];
+verbose.fig_output_file = '';
 
 %% assemble output
 physio.log_files   = log_files;

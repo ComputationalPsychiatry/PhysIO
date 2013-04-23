@@ -1,4 +1,4 @@
-function cpulse= physio_get_cardiac_pulses(t, c, thresh_cardiac, verbose)
+function [cpulse, verbose] = physio_get_cardiac_pulses(t, c, thresh_cardiac, verbose)
 % extract heartbeat events from ECG or pulse oximetry time course
 %
 %   cpulse = physio_get_cardiac_pulses(c, thresh_cardiac, cardiac_modality, cardiac_peak_file);
@@ -27,7 +27,7 @@ function cpulse= physio_get_cardiac_pulses(t, c, thresh_cardiac, verbose)
 %           .manual_peak_select [false] or true; if true, a user input is
 %           required to specify a characteristic R-peak interval in the ECG
 %           or pulse oximetry time series
-%   verbose            debugging plot for thresholding, only provided, if verbose >=2
+%   verbose            debugging plot for thresholding, only provided, if verbose.level >=2
 %
 % OUT
 %
@@ -73,9 +73,9 @@ case 'oxy'
 
                 [tmp, cpulse] = physio_findpeaks(sc,'minpeakheight',thresh_cardiac.min,'minpeakdistance', dt120); 
         
-        if verbose >=2 % visualise influence of smoothing on peak detection
-            fh = physio_get_default_fig_params;
-            set(fh, 'Name', 'PPU-OXY: Tresholding Maxima for Heart Beat Detection');
+        if verbose.level >=2 % visualise influence of smoothing on peak detection
+            verbose.fig_handles(end+1) = physio_get_default_fig_params();
+            set(gcf, 'Name', 'PPU-OXY: Tresholding Maxima for Heart Beat Detection');
             [tmp, cpulse2] = physio_findpeaks(c,'minpeakheight',thresh_cardiac.min,'minpeakdistance', dt120);
             plot(t, c, 'k');
             hold all;
@@ -371,9 +371,9 @@ case 'oxy'
         end
         
         
-        if verbose >=2
-            fh = physio_get_default_fig_params();
-            set(fh, 'Name', 'PPU-OXY: Heart Beat Detection');
+        if verbose.level >=2
+            verbose.fig_handles(end+1) = physio_get_default_fig_params();
+            set(gcf, 'Name', 'PPU-OXY: Heart Beat Detection');
             plot(t, c, 'k');
             hold all;
             stem(t(cpulse),4*ones(size(cpulse)), 'r');

@@ -1,4 +1,4 @@
-function physio_plot_raw_physdata_diagnostics(t, tCardiac, yResp)
+function fh = physio_plot_raw_physdata_diagnostics(t, tCardiac, yResp)
 % plots diagnostics for raw physiological time series as monitoried by the
 % MR scanner breathing belt/ECG
 %

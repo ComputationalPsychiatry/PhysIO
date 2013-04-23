@@ -1,4 +1,4 @@
-function cardiac_phase = physio_get_cardiac_phase(pulset,scannert, verbose, svolpulse)
+function [cardiac_phase, fh] = physio_get_cardiac_phase(pulset,scannert, verbose, svolpulse)
 % estimates cardiac phases from cardiac pulse data
 %
 % USAGE
@@ -13,6 +13,7 @@ function cardiac_phase = physio_get_cardiac_phase(pulset,scannert, verbose, svol
 % OUTPUT
 %        cardiac_phase - phase in heart-cycle when each slice of each
 %        volume was acquired
+%        fh         - figure handle
 % 
 % The regressors are calculated as described in
 % Glover et al, 2000, MRM, (44) 162-167

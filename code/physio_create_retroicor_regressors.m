@@ -1,9 +1,9 @@
-function [cardiac_sess, respire_sess, mult_sess, figh, c_sample_phase, r_sample_phase] ...
+function [cardiac_sess, respire_sess, mult_sess, verbose, c_sample_phase, r_sample_phase] ...
     = physio_create_retroicor_regressors(ons_secs, sqpar, thresh, order, verbose) 
 % calculation of regressors for physiological motion correction using RETROICOR (Glover, MRM, 2000)
 %
 % USAGE:
-%   [cardiac_sess, respire_sess, mult_sess, figh, c_sample_phase, r_sample_phase] ...
+%   [cardiac_sess, respire_sess, mult_sess, verbose, c_sample_phase, r_sample_phase] ...
 %        = physio_create_retroicor_regressors(ons_secs, sqpar, thresh, slicenum, order, verbose) 
 %
 % INPUT:
@@ -42,9 +42,8 @@ function [cardiac_sess, respire_sess, mult_sess, figh, c_sample_phase, r_sample_
 
 %% variable renaming
 if ~exist('verbose', 'var')
-    verbose = 1;
+    verbose.level = 1;
 end
-figh = {};
 svolpulse       = ons_secs.svolpulse;
 cpulse          = ons_secs.cpulse;
 r               = ons_secs.r;
@@ -60,7 +59,13 @@ rsampint    = 1./500;
 sample_points   = physio_get_sample_points(ons_secs, sqpar, slicenum);
 
 if order.c
-    c_phase         = physio_get_cardiac_phase(cpulse, spulse, verbose>=3, svolpulse);
+    if verbose.level >= 3
+    [c_phase, verbose.fig_handles(end+1)]    = ...
+        physio_get_cardiac_phase(cpulse, spulse, verbose.level, svolpulse);
+    else
+    [c_phase, verbose.fig_handles(end+1)]    = ...
+        physio_get_cardiac_phase(cpulse, spulse, 0, svolpulse);
+    end
     c_sample_phase  = physio_downsample_phase(spulse, c_phase, sample_points, rsampint);
     cardiac_sess    = physio_get_fourier_expansion(c_sample_phase,order.c);
 else
@@ -70,9 +75,16 @@ end
 
 if order.r
     fr = physio_filter_respiratory(r,rsampint);
-    r_phase = physio_get_respiratory_phase_overshoot_correction( ...
-        fr,rsampint, verbose>=3, thresh);
-
+    
+    if verbose.level >=3
+        [r_phase, verbose.fig_handles(end+1)] = ...
+            physio_get_respiratory_phase_overshoot_correction( ...
+                fr,rsampint, verbose.level, thresh);
+    else
+        r_phase = ...
+            physio_get_respiratory_phase_overshoot_correction( ...
+                fr,rsampint, 0, thresh);
+    end
     r_sample_phase  = physio_downsample_phase(t, r_phase, sample_points, rsampint);
     respire_sess    = physio_get_fourier_expansion(r_sample_phase,order.r);
 else
@@ -91,10 +103,10 @@ end
 
 subj='';
 %% plot cardiac & resp. regressors
-if verbose >=2
-    figh{1}=physio_get_default_fig_params();
+if verbose.level >=2
+    verbose.fig_handles(end+1) = physio_get_default_fig_params();
     
-    set(figh{1},'Name','RETROICOR timecourse physiological regressors');
+    set(gcf,'Name','RETROICOR timecourse physiological regressors');
     if order.cr
         Nsubs=3;
         ax(3) = subplot(Nsubs,1,3);

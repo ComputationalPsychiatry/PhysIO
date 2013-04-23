@@ -1,4 +1,4 @@
-function R = physio_orthogonalise_physiological_regressors(cardiac_sess, respire_sess, mult_sess, input_R, orthogonalise, verbose)
+function [R, verbose] = physio_orthogonalise_physiological_regressors(cardiac_sess, respire_sess, mult_sess, input_R, orthogonalise, verbose)
 % orthogonalises (parts of) created physiological regressors
 %
 %   output = physio_orthogonalise_physiological_regressors(input)
@@ -27,7 +27,7 @@ function R = physio_orthogonalise_physiological_regressors(cardiac_sess, respire
 %             'mult'            - only multiplicative regressors are orthogonalised
 %             'all'             - all physiological regressors are
 %                                 orthogonalised to each other
-%   verbose         0 = no output; 
+%   verbose.level         0 = no output; 
 %                   1 or other = plot design matrix before and after 
 %                   orthogonalisation of physiological regressors and difference
 % OUT
@@ -63,9 +63,9 @@ end
 
 
 %% Plot orthogonalisation
-if verbose
-    fh = physio_get_default_fig_params();
-    set(fh, 'Name', 'RETROICOR GLM regressors');
+if verbose.level
+    verbose.fig_handles(end+1) = physio_get_default_fig_params();
+    set(gcf, 'Name', 'RETROICOR GLM regressors');
     subplot(1,3,1); imagesc(R); title({'physiological regressors matrix for GLM'...
         ' - specified regressors orthogonalized - '}); colormap gray; xlabel('regressor');ylabel('scan volume');
     subplot(1,3,2);

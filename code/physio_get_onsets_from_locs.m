@@ -1,4 +1,4 @@
-function [svolpulse, spulse, spulse_per_vol] = physio_get_onsets_from_locs(t, VOLLOCS, LOCS, sqpar, verbose)
+function [svolpulse, spulse, spulse_per_vol, verbose] = physio_get_onsets_from_locs(t, VOLLOCS, LOCS, sqpar, verbose)
 % creates timing vectors of found 
 %
 %   [svolpulse, spulse, spulse_per_vol] = physio_get_onsets_from_locs(t, VOLLOCS,
@@ -25,9 +25,7 @@ function [svolpulse, spulse, spulse_per_vol] = physio_get_onsets_from_locs(t, VO
 %            onset_slice    - slice whose scan onset determines the adjustment of the 
 %                             regressor timing to a particular slice for the whole volume
 %
-%   verbose     0 = no plots
-%               1 = plot sorting of of slice events and how they belong to scan
-%
+%   verbose             physio.verbose, See also physio_new
 % OUT
 %   svolpulse   vector of volume scan pulse events (in seconds from logfile start)
 %   spulse      vector of scan pulse events (in seconds from logfile start)
@@ -77,10 +75,10 @@ if length(SLICELOCS{Nallvols})~=Nslices
     warning(sprintf('Volume event %d: %d instead of %d slice events found\n', Nallvols, length(SLICELOCS{Nallvols}), Nslices));
 end
 
-if verbose>=3
+if verbose.level >= 3
     titstr =  'Slice bundles belonging to 1 volume';
-    fh1 = physio_get_default_fig_params();
-    set(fh1, 'Name', titstr);
+    verbose.fig_handles(end+1) = physio_get_default_fig_params();
+    set(gcf, 'Name', titstr);
     for v=1:Nallvols-1, stem(t(SLICELOCS{v}),ones(size(SLICELOCS{v})));hold all;end
     title(titstr);
     xlabel('t (seconds since SCANPHYSLOG-start)');
@@ -97,7 +95,7 @@ end
 DUMMYLOCS = reshape(DUMMYLOCS,length(DUMMYLOCS),1);
 REALLOCS = reshape(REALLOCS,length(REALLOCS),1);
 % 
-% if verbose>=2
+% if verbose.level>=2
 %     figure('Name', 'Found scan events through gradient thresholding');
 %     %subplot(3,1,3);
 %     hp3 = stem(t(LOCS),repmat(max(gradient_choice),1,length(t(LOCS)))); hold all

@@ -1,4 +1,4 @@
-function [VOLLOCS, LOCS] = physio_create_scan_timing_from_gradients_philips(log_files, thresh, sqpar, verbose)
+function [VOLLOCS, LOCS, verbose] = physio_create_scan_timing_from_gradients_philips(log_files, thresh, sqpar, verbose)
 %extracts slice and volume scan events from gradients timecourse of Philips
 % SCANPHYSLOG file
 %
@@ -56,7 +56,7 @@ function [VOLLOCS, LOCS] = physio_create_scan_timing_from_gradients_philips(log_
 %                             regressor timing to a particular slice for the whole volume
 %
 %                             NOTE: only necessary, if thresh.grad_direction is empty
-%   verbose                 integer, 2 = plot thresholds and gradients
+%   verbose                
 %
 % OUT
 %
@@ -156,9 +156,9 @@ t=((0:(Nsamples-1))*dt)';
         VOLLOCS = [];
     end
     
-    if verbose>=2
-        fh2 = physio_get_default_fig_params();
-        set(fh2,'Name', 'Thresholding Gradient for slice acq start detection');
+    if verbose.level>=2
+        verbose.fig_handles(end+1) = physio_get_default_fig_params();
+        set(gcf,'Name', 'Thresholding Gradient for slice acq start detection');
         fs(1) = subplot(2,1,1);
         hp = plot(t,[gradient_choice z2 [abs(z2(1));abs(diff(z2))] ]); hold all;
         hp(end+1) = plot(t, repmat(thresh.zero, length(t),1));
@@ -193,7 +193,7 @@ t=((0:(Nsamples-1))*dt)';
     end
     
     %% Plot gradient thresholding for slice timing determination
-    if verbose >= 2 % continue figure, if sth was found!
+    if verbose.level >= 2 % continue figure, if sth was found!
         hp(end+1) = stem(t(VOLLOCS),1.25*max(gradient_choice)*ones(size(VOLLOCS))); hold all
         hp(end+1) = stem(t(LOCS),max(gradient_choice)*ones(size(LOCS))); hold all
         lg = {lg{:}, 'found volume events', 'found slice events'};
