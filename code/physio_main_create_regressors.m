@@ -79,12 +79,26 @@ end
 % plot whether physdata is alright or events are missing (too low/high
 % heart rate? breathing amplitude overshoot?)
 
-if isfield(thresh.cardiac, 'min') && ~isempty(thresh.cardiac.min)
+
+%% initial pulse select via load from logfile or autocorrelation with 1
+%% cardiac pulse
+switch thresh.cardiac.initial_cpulse_select.method
+    case {'manual', 'load'}
     [ons_secs.cpulse, verbose] = physio_get_cardiac_pulses(ons_secs.t, ons_secs.c, ...
-        thresh.cardiac, verbose); 
-        
+        thresh.cardiac.initial_cpulse_select, thresh.cardiac.modality, verbose); 
+    case {'load_from_logfile', ''}
+end
+
+%% post-hoc: hand pick additional cardiac pulses or load from previous
+%% time
+switch thresh.cardiac.initial_cpulse_select.method
+    case {'manual'}
     % additional manual fill-in of more missed pulses
-    [ons_secs, outliersHigh, outliersLow] = physio_correct_cardiac_pulses_manually(ons_secs,80,60,50);
+    [ons_secs, outliersHigh, outliersLow] = physio_correct_cardiac_pulses_manually(ons_secs,thresh.cardiac.posthoc_cpulse_select);
+    case {'load'}
+        osload = load(thresh.cardiac.initial_cpulse_select.file, 'ons_secs');
+        ons_secs = osload.ons_secs;
+    case 'off'
 end
 
 if verbose.level >= 2

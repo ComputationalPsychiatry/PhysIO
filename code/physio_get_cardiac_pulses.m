@@ -1,7 +1,7 @@
-function [cpulse, verbose] = physio_get_cardiac_pulses(t, c, thresh_cardiac, verbose)
+function [cpulse, verbose] = physio_get_cardiac_pulses(t, c, thresh_cardiac, cardiac_modality, verbose)
 % extract heartbeat events from ECG or pulse oximetry time course
 %
-%   cpulse = physio_get_cardiac_pulses(c, thresh_cardiac, cardiac_modality, cardiac_peak_file);
+%   cpulse = physio_get_cardiac_pulses(t, c, thresh_cardiac, cardiac_modality, verbose);
 %
 % IN
 %   t                  vector of time series of log file (in seconds, corresponds to c)
@@ -53,7 +53,7 @@ function [cpulse, verbose] = physio_get_cardiac_pulses(t, c, thresh_cardiac, ver
 
 % debug=true;
 debug=false;
-switch lower(thresh_cardiac.modality)
+switch lower(cardiac_modality)
 case 'oxy'
      c = c-mean(c); c = c./max(c); % normalize time series
         dt = t(2)-t(1);
@@ -67,7 +67,7 @@ case 'oxy'
         % Highpass filter to remove drifts
         cutoff=1/dt; %1 seconds/per sampling units
         forder=2;
-        [b,a]=butter(forder,2/cutoff,'high');
+        [b,a]=butter(forder,2/cutoff, 'high');
         sc =filter(b,a, sc);
         sc = sc./max(sc);
 
@@ -93,7 +93,7 @@ case 'oxy'
         cpulse = t(cpulse);
 
         
-        case 'oxyGE'
+        case 'oxyge'
         c = c-mean(c); c = c./std(c); % normalize time series
         dt = t(2)-t(1);
         dt120 = round(0.5/dt); % heart rate < 120 bpm
@@ -148,16 +148,16 @@ case 'oxy'
             halfTemplateWidthInSeconds = 0.2;
             halfTempalteWithInSamples = halfTemplateWidthInSeconds / dt;
             for n=2:numel(cpulseSecondGuess)-2
-                startTemplate=cpulseSecondGuess(n)-halfTempalteWithInSamples;
-                endTemplate=cpulseSecondGuess(n)+halfTempalteWithInSamples;
+                startTemplate = cpulseSecondGuess(n)-halfTempalteWithInSamples;
+                endTemplate = cpulseSecondGuess(n)+halfTempalteWithInSamples;
                 
-                template(n,:)= c(startTemplate:endTemplate);
+                template(n,:) = c(startTemplate:endTemplate);
             end
             
             %delete first zero-elements of the template
-            template(1,:)=[];
+            template(1,:) = [];
             
-            pulseTemplate=mean(template);
+            pulseTemplate = mean(template);
             
             % delete the peaks deviating from the mean too
             % much before building the final template
@@ -385,7 +385,7 @@ case 'oxy'
         
         
     case 'ecg'
-        do_manual_peakfind = thresh_cardiac.manual_peak_select;
+        do_manual_peakfind = strcmp(thresh_cardiac.method, 'manual');
         if do_manual_peakfind
             thresh_cardiac.kRpeak = [];
         else
@@ -409,7 +409,7 @@ case 'oxy'
         cpulse = t(cpulse);
         % save manually found peak parameters to file
         if do_manual_peakfind
-            save(thresh_cardiac.kRpeakfile, 'ECG_min', 'kRpeak');
+            save(thresh_cardiac.file, 'ECG_min', 'kRpeak');
         end
     otherwise
         disp('How did you measure your cardiac cycle, dude? (ECG, OXY)');

@@ -183,12 +183,19 @@ else
     thresh = struct('scan_timing', [], 'cardiac', []);
     thresh.scan_timing = struct('grad_direction', '', 'zero', [], ...
         'slice', [], 'vol', [], 'vol_spacing', []);
+    
     thresh.cardiac.modality = ''; % 'ECG' or 'OXY' (for pulse oximetry)
-    thresh.cardiac.min = [];
-    thresh.cardiac.kRpeakfile = ''; % used to save reference peak or load it from there, if manual_peak_select == true
-    thresh.cardiac.manual_peak_select = []; % true or false. If true, a input window occurs where a typical maximum (R-peak or oximetry peak) shall be selected by mouse-clicks
     
+    thresh.cardiac.initial_cpulse_select.method = 'load_from_logfile'; % 'load_from_logfile', 'manual', 'load'
+    thresh.cardiac.initial_cpulse_select.file = '';
+    thresh.cardiac.initial_cpulse_select.min = [];    
+    thresh.cardiac.initial_cpulse_select.kRpeak = [];
     
+    thresh.cardiac.posthoc_cpulse_select.method = 'off'; % 'off', 'manual', 'load'
+    thresh.cardiac.posthoc_cpulse_select.file = '';        
+    thresh.cardiac.posthoc_cpulse_select.percentile = 80;
+    thresh.cardiac.posthoc_cpulse_select.upperThresh = 60;
+    thresh.cardiac.posthoc_cpulse_select.lowerThresh = 60; 
     
     %% order
     model.type = '';
