@@ -1,4 +1,4 @@
-function [rphase, fh] = physio_get_respiratory_phase_overshoot_correction(pulset,rsampint, verbose, thresh)
+function [rphase, fh] = physio_get_respiratory_phase(pulset,rsampint, verbose, thresh)
 
 % get_respiratory_phase is a function for creating respiratory phase regressor.
 % from physiological monitoring files acquired using spike, that

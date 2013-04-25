@@ -70,28 +70,22 @@ COMPATIBILITY & SUPPORT
  
 DOWNLOADS & RELEASE INFORMATION
 
-- Current Release (Recent Developments): 
+- Current Release: 
 
 PhysIO_Toolbox_13 (Code | Examples)
-March 6th, 2013
+April 25th, 2013
 
-revision: $Rev$
+revision: $Rev: 183$
 
-NOTE: Your main_ECG/PPU.m etc. scripts from previous versions will not work with this one any more. Please adapt one of the example scripts for your needs (~5 min of work). The main benefit of this version is a complete new variable structure that is more sustainable and makes the code more readible.
-
-Release Notes
-- Complete re-write of function interfaces to clear up logfile-specific
-- Support for General Electric (GE) read-in of physiological logfiles
-- GPL 3.0 licencse
-
-- Latest Stable Release: PhysIO_Toolbox_13
-February 11th, 2013
-revision: 159
+NOTE: Your main_ECG/PPU.m etc. scripts from previous versions (<=r159) will not work with this one any more. Please adapt one of the example scripts for your needs (~5 min of work). The main benefit of this version is a complete new variable structure that is more sustainable and makes the code more readible.
 
 Release Notes:
-- ECG-Trigger example
-- Updated Manual
-
+- complete modularization of readin/preprocessing/regressor creation for peripheral physiological data
+- manual selection of missed heartbeats in ECG/pulse oximetry (courtesy of Jakob Heinzle)
+- support for logfiles from GE scanners (courtesy of Steffen Bollmann, KiSpi Zuerich)
+- improved detection of pulse oximetry peaks (courtesy of Steffen Bollmann)
+- improved documentation
+- consistent function names (prefixed by "physio_")
 
 
 Leading Programmer: Lars Kasper
@@ -105,7 +99,7 @@ Send bug reports and suggestions to: kasper@biomed.ee.ethz.ch
 
 TUTORIAL
 
-Run main_ECG3T.m in subdirectory "examples" of the toolbox
+Run main_ECG7T.m in subdirectory "examples" of the toolbox
 See subdirectory "manual"
 
 

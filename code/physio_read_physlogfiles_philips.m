@@ -55,9 +55,11 @@ end;
 r = y(:,6);
 
 switch lower(cardiac_modality)
-    case 'ecg'
+    case {'ecg', 'ecg_filtered'}
         c = y(:,3);
-    case 'oxy'
+    case {'ecg_raw'}
+        c = y(:,1);
+    case {'oxy','oxyge'}
         c = y(:,5);
 end
 

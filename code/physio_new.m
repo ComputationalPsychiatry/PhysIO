@@ -169,7 +169,7 @@ if nargin >= 2
     verbose = physio_in.verbose;
 else
     %% files
-    log_files.vendor                = '';
+    log_files.vendor                = ''; % 'Philips', 'GE'
     log_files.cardiac           = '';
     log_files.respiration       = '';
     
@@ -184,7 +184,7 @@ else
     thresh.scan_timing = struct('grad_direction', '', 'zero', [], ...
         'slice', [], 'vol', [], 'vol_spacing', []);
     
-    thresh.cardiac.modality = ''; % 'ECG' or 'OXY' (for pulse oximetry)
+    thresh.cardiac.modality = ''; % 'ECG','ECG_raw', or 'OXY' (for pulse oximetry), 'OXY_OLD', [deprecated]
     
     thresh.cardiac.initial_cpulse_select.method = 'load_from_logfile'; % 'load_from_logfile', 'manual', 'load'
     thresh.cardiac.initial_cpulse_select.file = '';
@@ -202,22 +202,29 @@ else
     model.input_other_multiple_regressors = ''; % either txt-file or mat-file with variable R
     model.output_multiple_regressors = '';
     model.order = struct('c',[],'r',[],'cr',[], 'orthogonalise', '');
+
+    %% verbose
+    verbose.level = [];
+    verbose.fig_handles = [];
+    verbose.fig_output_file = '';
 end
 
 switch default_scheme
     case 'RETROICOR'
         model.type = 'RETROICOR';
         model.order = struct('c',3,'r',4,'cr',1, 'orthogonalise', 'none');
+    case 'redetect_peaks_from_logfile'
+        thresh.cardiac.initial_cpulse_select.method = 'manual'; % 'load_from_logfile', 'manual', 'load'
+        thresh.cardiac.initial_cpulse_select.file = 'kRpeak.mat';
+        thresh.cardiac.initial_cpulse_select.min = 1;
+        thresh.cardiac.initial_cpulse_select.kRpeak = [];
     case 'manual_peak_select'
-        thresh.cardiac.min = 1;
-        thresh.cardiac.manual_peak_select = true;
-        thresh.cardiac.kRpeakfile = 'kRpeaks.mat';
+        thresh.cardiac.posthoc_cpulse_select.method = 'manual'; % 'off', 'manual' or 'load',
+        thresh.cardiac.posthoc_cpulse_select.file = 'posthoc_cpulse.mat';
+        thresh.cardiac.posthoc_cpulse_select.percentile = 80;
+        thresh.cardiac.posthoc_cpulse_select.upperThresh = 60;
+        thresh.cardiac.posthoc_cpulse_select.lowerThresh = 30;        
 end
-
-%% verbose
-verbose.level = [];
-verbose.fig_handles = [];
-verbose.fig_output_file = '';
 
 %% assemble output
 physio.log_files   = log_files;

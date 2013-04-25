@@ -54,7 +54,7 @@ function [cpulse, verbose] = physio_get_cardiac_pulses(t, c, thresh_cardiac, car
 % debug=true;
 debug=false;
 switch lower(cardiac_modality)
-case 'oxy'
+case 'oxy_old'
      c = c-mean(c); c = c./max(c); % normalize time series
         dt = t(2)-t(1);
         dt120 = round(0.5/dt); % heart rate < 120 bpm
@@ -93,7 +93,8 @@ case 'oxy'
         cpulse = t(cpulse);
 
         
-        case 'oxyge'
+        %courtesy of Steffen Bollmann, KiSpi Zurich
+        case 'oxy'
         c = c-mean(c); c = c./std(c); % normalize time series
         dt = t(2)-t(1);
         dt120 = round(0.5/dt); % heart rate < 120 bpm
@@ -110,12 +111,12 @@ case 'oxy'
         
         %guess peaks in two steps with updated avereage heartrate
         %first step
-        [tmp, cpulseFirstGuess] = findpeaks( ...
+        [tmp, cpulseFirstGuess] = physio_findpeaks( ...
             c,'minpeakheight',thresh_cardiac.min,'minpeakdistance', dt120);
         
         %second step
         averageHeartRateInSamples = round(mean(diff(cpulseFirstGuess)));
-        [tmp, cpulseSecondGuess] = findpeaks(c,...
+        [tmp, cpulseSecondGuess] = physio_findpeaks(c,...
             'minpeakheight',thresh_cardiac.min,...
             'minpeakdistance', round(0.5*averageHeartRateInSamples));
         
@@ -373,10 +374,13 @@ case 'oxy'
         
         if verbose.level >=2
             verbose.fig_handles(end+1) = physio_get_default_fig_params();
-            set(gcf, 'Name', 'PPU-OXY: Heart Beat Detection');
+            titstr = 'PPU-OXY: Heart Beat Detection';
+            set(gcf, 'Name', titstr);           
             plot(t, c, 'k');
             hold all;
             stem(t(cpulse),4*ones(size(cpulse)), 'r');
+            legend('PPU time course', 'Detected cardiac pulses');           
+            title(titstr);
         end
         
         
@@ -389,7 +393,7 @@ case 'oxy'
         if do_manual_peakfind
             thresh_cardiac.kRpeak = [];
         else
-            ECGfile = load(thresh_cardiac.kRpeakfile);
+            ECGfile = load(thresh_cardiac.file);
             thresh_cardiac.min = ECGfile.ECG_min;
             thresh_cardiac.kRpeak = ECGfile.kRpeak;
         end

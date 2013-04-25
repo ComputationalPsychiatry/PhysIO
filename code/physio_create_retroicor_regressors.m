@@ -52,8 +52,7 @@ t               = ons_secs.t;
 slicenum        = sqpar.onset_slice;
 
 %parameters for resampling
-rsampint    = 1./500;
-% slicenum=Nslices/2;
+rsampint    = t(2)-t(1);
 
 %% Get phase, downsample and Fourier-expand
 sample_points   = physio_get_sample_points(ons_secs, sqpar, slicenum);
@@ -78,11 +77,11 @@ if order.r
     
     if verbose.level >=3
         [r_phase, verbose.fig_handles(end+1)] = ...
-            physio_get_respiratory_phase_overshoot_correction( ...
+            physio_get_respiratory_phase( ...
                 fr,rsampint, verbose.level, thresh);
     else
         r_phase = ...
-            physio_get_respiratory_phase_overshoot_correction( ...
+            physio_get_respiratory_phase( ...
                 fr,rsampint, 0, thresh);
     end
     r_sample_phase  = physio_downsample_phase(t, r_phase, sample_points, rsampint);

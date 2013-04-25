@@ -1,22 +1,36 @@
 function [ons_secs, outliersHigh, outliersLow] = physio_correct_cardiac_pulses_manually(ons_secs,thresh_cardiac)
-
-
-percentile = thresh_cardiac.percentile;
-upperThresh = thresh.upperThresh;
-lowerThresh = thresh.lowerThresh;
 % this function takes the onsets from ECG measure and controls for
 % outliers (more or less than a threshold given by a percentile increased
 % or decreased by upperTresh or lowerThresh percent respectively.
+%
+% Author: Jakob Heinzle, TNU, 
+%           adaptation: Lars Kasper
+%
+% Copyright (C) 2013, Institute for Biomedical Engineering, ETH/Uni Zurich.
+%
+% This file is part of the PhysIO toolbox, which is released under the terms of the GNU General Public
+% Licence (GPL), version 3. You can redistribute it and/or modify it under the terms of the GPL
+% (either version 3 or, at your option, any later version). For further details, see the file
+% COPYING or <http://www.gnu.org/licenses/>.
+%
+% $Id: physio_plot_raw_physdata_diagnostics.m 181 2013-04-23 13:41:48Z kasperla $
 
-[outliersHigh,outliersLow,fh] = selectOutliers(ons_secs.t, ons_secs.cpulse, percentile, upperThresh, lowerThresh);
+
+percentile = thresh_cardiac.percentile;
+upperThresh = thresh_cardiac.upperThresh;
+lowerThresh = thresh_cardiac.lowerThresh;
+
+[outliersHigh,outliersLow,fh] = physio_cardiac_detect_outliers(ons_secs.cpulse, percentile, upperThresh, lowerThresh);
 if any(outliersHigh)
+    disp('Press Enter to proceed to manual peak selection!');
+    pause;
     additionalPulse=[];
     fh2=figure;
     for outk=1:length(outliersHigh)
         s=0;
         while ~(s==1)
             indStart = outliersHigh(outk)-1; indEnd = outliersHigh(outk)+2;
-            ind=find(ons_secs.t==ons_secs.cpulse(indStart))-100:find(ons_secs.t==ons_secs.cpulse(indEnd))+100;
+            ind=find(ons_secs.t>=ons_secs.cpulse(indStart), 1, 'first')-100:find(ons_secs.t<=ons_secs.cpulse(indEnd), 1, 'last')+100;
             figure(fh2); clf;
             plot(ons_secs.t(ind),ons_secs.c(ind),'r')
             hold on;
@@ -42,28 +56,30 @@ end
 close(fh);
 
 
-[outliersHigh,outliersLow,fh] = selectOutliers(ons_secs.t, ons_secs.cpulse, percentile, upperThresh, lowerThresh);
+[outliersHigh,outliersLow,fh] = physio_cardiac_detect_outliers(ons_secs.cpulse, percentile, upperThresh, lowerThresh);
 finalIndex=1:length(ons_secs.cpulse);
 if any(outliersLow)
+    disp('Press Enter to proceed to manual peak deletion!');
+    pause;
     fh3=figure;
     for outk=1:length(outliersLow)
         s=0;
         while ~(s==1)
             indStart = outliersLow(outk)-2; indEnd = outliersLow(outk)+2;
-            ind=find(ons_secs.t==ons_secs.cpulse(indStart))-100:find(ons_secs.t==ons_secs.cpulse(indEnd))+100;
+            ind=find(ons_secs.t>=ons_secs.cpulse(indStart), 1, 'first')-100:find(ons_secs.t<=ons_secs.cpulse(indEnd), 1, 'last')+100;
             figure(fh3); clf;
             plot(ons_secs.t(ind),ons_secs.c(ind),'r')
             hold on;
-            plot(ons_secs.cpulse(indStart:indEnd),ones(5,1)*max(ons_secs.c(ind)),'ok','MarkerFaceColor','r');
+            plot(ons_secs.cpulse(indStart:indEnd),ones(5,1)*max(ons_secs.c(ind)),'ko','MarkerFaceColor','r');
             alreadyDeleted=intersect(indStart:indEnd,setdiff(1:length(ons_secs.cpulse),finalIndex));
-            plot(ons_secs.cpulse(alreadyDeleted),ones(size(alreadyDeleted))*max(ons_secs.c(ind)),'or','filled');
+            plot(ons_secs.cpulse(alreadyDeleted),ones(size(alreadyDeleted))*max(ons_secs.c(ind)),'ro');
             for kk=indStart:indEnd
                 text(ons_secs.cpulse(kk),max(ons_secs.c(ind))*1.05,int2str(kk));
             end
             
             delInd= [];
             
-            delInd=input('Enter the number of a pulse you want to delete (0 if none): ');
+            delInd=input('Enter the index of a pulse you want to delete (0 if none): ');
             plot(ons_secs.cpulse(delInd),max(ons_secs.c(ind)), 'rx', 'MarkerSize',20);
             
             s=input('If you agree with the deleted triggers, press 1 (then enter) : ');
@@ -78,36 +94,13 @@ if any(outliersLow)
     ons_secs.cpulse = sort(ons_secs.cpulse(finalIndex));
 end
 close(fh);
+[outliersHigh,outliersLow,fh] = physio_cardiac_detect_outliers(ons_secs.cpulse, percentile, upperThresh, lowerThresh);
+close(fh);
+% recursively determine outliers
+if ~isempty(outliersHigh) || ~isempty(outliersLow)
+    [ons_secs, outliersHigh, outliersLow] = physio_correct_cardiac_pulses_manually(ons_secs,thresh_cardiac);
+end
+
 cpulse = ons_secs.cpulse;
 save(thresh_cardiac.file, 'ons_secs', 'thresh_cardiac', 'cpulse');
-end
-
-
-function [outliersHigh,outliersLow,fh] = selectOutliers(t,tCardiac,percentile,deviationPercentUp,deviationPercentDown)
-
-fh = get_default_fig_params();
-set(fh, 'Name','Diagnostics raw phys time series');
-dt = diff(tCardiac);
-
-plot(tCardiac(2:end), dt);
-xlabel('t (seconds)');
-ylabel('lag between heartbeats (seconds)');
-title('temporal lag between heartbeats');
-
-nBins = length(dt)/10;
-[dtSort,dtInd]=sort(dt);
-percentile=percentile/100;
-upperThresh=(1+deviationPercentUp/100)*dtSort(ceil(percentile*length(dtSort)));
-lowerThresh=(1-deviationPercentDown/100)*dtSort(ceil((1-percentile)*length(dtSort)));
-outliersHigh=dtInd(find(dtSort>upperThresh));
-outliersLow=dtInd(find(dtSort<lowerThresh));
-
-if nnz(dt > upperThresh)
-    text(t( find(dt==max(dt))+1 ),max(dt),...
-        {'Warning: There seem to be skipped heartbeats R-waves in the scanner-log', ...
-        sprintf('first at timepoint %01.1f s',tCardiac(min(outliersHigh+1))), ...
-        'rerun read\_physlog with ECG\_min set to 1'}, ...
-        'Color', [1 0 0])
-end
-
 end

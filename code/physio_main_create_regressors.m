@@ -91,21 +91,17 @@ end
 
 %% post-hoc: hand pick additional cardiac pulses or load from previous
 %% time
-switch thresh.cardiac.initial_cpulse_select.method
+switch thresh.cardiac.posthoc_cpulse_select.method
     case {'manual'}
     % additional manual fill-in of more missed pulses
     [ons_secs, outliersHigh, outliersLow] = physio_correct_cardiac_pulses_manually(ons_secs,thresh.cardiac.posthoc_cpulse_select);
     case {'load'}
-        osload = load(thresh.cardiac.initial_cpulse_select.file, 'ons_secs');
+        osload = load(thresh.cardiac.posthoc_cpulse_select.file, 'ons_secs');
         ons_secs = osload.ons_secs;
-    case 'off'
+    case {'off', ''}
 end
 
-if verbose.level >= 2
-    verbose.fig_handles(end+1) = ...
-        physio_plot_raw_physdata_diagnostics(ons_secs.t, ons_secs.cpulse, ons_secs.r);
-    % [outliersHigh,outliersLow] = physio_plot_raw_physdata_diagnostics_and_select(ons_secs.t, ons_secs.cpulse, ons_secs.r);
-end
+
 
 [ons_secs, sqpar] = physio_crop_scanphysevents_to_acq_window(ons_secs, sqpar);
 if verbose.level >= 1
@@ -113,6 +109,10 @@ if verbose.level >= 1
         physio_plot_cropped_phys_to_acqwindow(ons_secs, sqpar);
 end
 
+if verbose.level >= 2
+    verbose.fig_handles(end+1) = ...
+        physio_plot_raw_physdata_diagnostics(ons_secs.cpulse, ons_secs.r, thresh.cardiac.posthoc_cpulse_select);
+end
 
 %% 4. Create RETROICOR regressors for SPM
 switch upper(model.type)

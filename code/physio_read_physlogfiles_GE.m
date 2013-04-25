@@ -41,8 +41,8 @@ function [c, r, t, cpulse] = physio_read_physlogfiles_GE(files)
 
 dt = 25/1000;
 
-c = load(files.log_cardiac);
-r = load(files.log_respiration);
+c = load(files.cardiac);
+r = load(files.respiration);
 Nsamples = size(c,1);
 t =((0:(Nsamples-1))*dt)'; 
 cpulse = [];

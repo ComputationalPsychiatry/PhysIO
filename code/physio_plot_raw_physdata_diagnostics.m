@@ -1,4 +1,4 @@
-function fh = physio_plot_raw_physdata_diagnostics(t, tCardiac, yResp)
+function fh = physio_plot_raw_physdata_diagnostics(cpulse, yResp, thresh_cardiac)
 % plots diagnostics for raw physiological time series as monitoried by the
 % MR scanner breathing belt/ECG
 %
@@ -13,29 +13,18 @@ function fh = physio_plot_raw_physdata_diagnostics(t, tCardiac, yResp)
 %
 % $Id$
 
+% cardiac analysis of heartbeat rates
 fh = physio_get_default_fig_params();
 set(fh, 'Name','Diagnostics raw phys time series');
-subplot(2,1,1);
-dt = diff(tCardiac);
+ah = subplot(2,1,1);
 
-plot(tCardiac(2:end), dt);
-xlabel('t (seconds)');
-ylabel('lag between heartbeats (seconds)');
-title('temporal lag between heartbeats');
+percentile = thresh_cardiac.percentile;
+upperThresh = thresh_cardiac.upperThresh;
+lowerThresh = thresh_cardiac.lowerThresh;
+[outliersHigh,outliersLow,fh] = physio_cardiac_detect_outliers(cpulse, percentile, upperThresh, lowerThresh, ah);
 
 
-percentile = 0.8;
-deviationPercent = 60;
-
-prctileValue = physio_prctile(dt, percentile);
-
-if max(dt) > (1+deviationPercent/100)*prctileValue
-    text(t( find(dt==max(dt), 1, 'first')+1 ),max(dt),...
-        {'Warning: There seem to be skipped heartbeats R-waves in the scanner-log', ...
-        'rerun read\_physlog with ECG\_min set to 1'}, ...
-        'Color', [1 0 0])
-end
-
+% histogram of breathing amplitudes
 subplot(2,1,2);
 nBins = min(length(unique(yResp)), floor(length(yResp)/100));
 hist(yResp, nBins);

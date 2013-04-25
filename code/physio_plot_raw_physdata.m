@@ -70,3 +70,4 @@ end
 if ~isempty(lg), legend(lg); end;
 
 title('Raw Physiological Logfile Data');
+xlabel('t (s)');
