@@ -45,6 +45,7 @@ hp(1) = plot(tCardiac(2:end), dt);
 xlabel('t (seconds)');
 ylabel('lag between heartbeats (seconds)');
 title('temporal lag between heartbeats');
+legend('Temporal lag between subsequent heartbeats');
 
 if ~isempty(percentile) && ~isempty(deviationPercentUp) && ~isempty(deviationPercentDown)
     
@@ -60,6 +61,9 @@ if ~isempty(percentile) && ~isempty(deviationPercentUp) && ~isempty(deviationPer
     hold all;
     hp(2) = plot( [tCardiac(2); tCardiac(end)], [upperThresh,upperThresh], 'g--', 'LineWidth',2);
     hp(3) = plot( [tCardiac(2); tCardiac(end)], [lowerThresh,lowerThresh], 'b--', 'LineWidth',2);
+    legend('Temporal lag between subsequent heartbeats', 'Upper threshold for selecting outliers', ...
+        'Lower threshold for selecting outliers');
+
     
     if ~isempty(outliersHigh)
         stem(tCardiac(outliersHigh+1),upperThresh*ones(size(outliersHigh)),'g');

@@ -103,7 +103,7 @@ Nscans          = sqpar.Nscans;
 Ndummies        = sqpar.Ndummies;
 NslicesPerBeat  = sqpar.NslicesPerBeat;
 Nslices         = sqpar.Nslices;
-do_count_from_start = isfield(sqpar, 'Nprep');
+do_count_from_start = isfield(sqpar, 'Nprep') && ~isempty(sqpar.Nprep);
 if do_count_from_start
     Nprep = sqpar.Nprep;
 end
@@ -160,11 +160,11 @@ t=((0:(Nsamples-1))*dt)';
         verbose.fig_handles(end+1) = physio_get_default_fig_params();
         set(gcf,'Name', 'Thresholding Gradient for slice acq start detection');
         fs(1) = subplot(2,1,1);
-        hp = plot(t,[gradient_choice z2 [abs(z2(1));abs(diff(z2))] ]); hold all;
+        hp = plot(t,[gradient_choice z2]); hold all;
         hp(end+1) = plot(t, repmat(thresh.zero, length(t),1));
         hp(end+1) = plot(t, repmat(thresh.slice, length(t),1));
         lg = {'chosen gradient for thresholding', ...
-            'gradient with values<thresh.zero set to 0', 'abs(diff(thresholded grad)', ...
+            'gradient with values<thresh.zero set to 0', ...
             'thresh.zero', 'thresh.slice'};
         if do_detect_vol_events_by_grad_height
             hp(end+1) = plot(t, repmat(thresh.vol, length(t),1));

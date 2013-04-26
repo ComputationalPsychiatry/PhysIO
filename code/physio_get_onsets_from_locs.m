@@ -51,7 +51,7 @@ Nscans          = sqpar.Nscans;
 Ndummies        = sqpar.Ndummies;
 NslicesPerBeat  = sqpar.NslicesPerBeat;
 Nslices         = sqpar.Nslices;
-do_count_from_start = isfield(sqpar, 'Nprep');
+do_count_from_start = isfield(sqpar, 'Nprep') && ~isempty(sqpar.Nprep);
 if do_count_from_start
     Nprep = sqpar.Nprep;
 end

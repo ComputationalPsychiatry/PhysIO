@@ -62,8 +62,7 @@ if order.c
     [c_phase, verbose.fig_handles(end+1)]    = ...
         physio_get_cardiac_phase(cpulse, spulse, verbose.level, svolpulse);
     else
-    [c_phase, verbose.fig_handles(end+1)]    = ...
-        physio_get_cardiac_phase(cpulse, spulse, 0, svolpulse);
+        c_phase    = physio_get_cardiac_phase(cpulse, spulse, 0, svolpulse);
     end
     c_sample_phase  = physio_downsample_phase(spulse, c_phase, sample_points, rsampint);
     cardiac_sess    = physio_get_fourier_expansion(c_sample_phase,order.c);
@@ -80,9 +79,7 @@ if order.r
             physio_get_respiratory_phase( ...
                 fr,rsampint, verbose.level, thresh);
     else
-        r_phase = ...
-            physio_get_respiratory_phase( ...
-                fr,rsampint, 0, thresh);
+        r_phase = physio_get_respiratory_phase(fr,rsampint, 0, thresh);
     end
     r_sample_phase  = physio_downsample_phase(t, r_phase, sample_points, rsampint);
     respire_sess    = physio_get_fourier_expansion(r_sample_phase,order.r);

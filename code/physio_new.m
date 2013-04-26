@@ -1,6 +1,5 @@
 function physio = physio_new(default_scheme, physio_in)
-% creates complete PhysIO structure to be
-%
+% creates complete PhysIO structure to be fed into physio_main_create_regressors
 %   output = physio_new(input)
 %
 % IN
@@ -175,9 +174,17 @@ else
     
     
     %% sqpar
-    sqpar = struct('Nslices', [], 'NslicesPerBeat', [], 'TR', [], ...
-        'Ndummies', [], 'Nscans', [], 'onset_slice', []);
-    
+    sqpar.Nslices           = 37;
+sqpar.NslicesPerBeat    = 37;
+sqpar.TR                = 2.50;
+sqpar.Ndummies          = 3;
+sqpar.Nscans            = 495;
+sqpar.onset_slice       = 19;
+sqpar.Nprep             = []; % set to >=0 to count scans and dummy 
+                              % volumes from beginning of run, i.e. logfile,
+                              % includes counting of preparation gradients
+                              
+sqpar.TimeSliceToSlice  = [];
     
     %% thresh
     thresh = struct('scan_timing', [], 'cardiac', []);
