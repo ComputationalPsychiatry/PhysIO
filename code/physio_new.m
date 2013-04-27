@@ -15,6 +15,8 @@ function physio = physio_new(default_scheme, physio_in)
 %   physio_in       - used as input, only the fields related to the default_scheme
 %                     are overwritten, the others are kept as in physio_in
 % OUT
+%   phzsio         - the complete physio structure, which can be unsed in
+%                     physio_main_create_regressors
 %
 % EXAMPLE
 %   physio = physio_new('empty')
@@ -34,43 +36,6 @@ function physio = physio_new(default_scheme, physio_in)
 %
 % $Id$
 
-%   log_files   is a structure containing the following filenames (with full
-%           path)
-%       .vendor             'Philips', 'GE' or 'Siemens', depending on your
-%                           MR Scanner system
-%       .cardiac        contains ECG or pulse oximeter time course
-%                           for Philips: 'SCANPHYSLOG<DATE&TIME>.log';
-%                           can be found on scanner in G:/log/scanphyslog-
-%                           directory, one file is created per scan, make sure to take
-%                           the one with the time stamp corresponding to your PAR/REC
-%                           files
-%       .respiration    contains breathing belt amplitude time course
-%                           for Philips: same as .log_cardiac
-%
-%   thresh  - thresh is a structure with the following elements
-%
-%           thresh.scan_timing.
-%           .zero    - gradient values below this value are set to zero;
-%                      should be those which are unrelated to slice acquisition start
-%           .slice   - minimum gradient amplitude to be exceeded when a slice
-%                      scan starts
-%           .vol     - minimum gradient amplitude to be exceeded when a new
-%                      volume scan starts;
-%                      leave [], if volume events shall be determined as
-%                      every Nslices-th scan event
-%           .grad_direction
-%                    - leave empty to use nominal timing;
-%                      if set, sequence timing is calculated from logged gradient timecourse;
-%                    - value determines which gradient direction timecourse is used to
-%                      identify scan volume/slice start events ('x', 'y', 'z')
-%           .vol_spacing
-%                   -  duration (in seconds) from last slice acq to
-%                      first slice of next volume;
-%                      leave [], if .vol-threshold shall be used
-%
-%           thresh.cardiac.
-%
-%           .modality - 'ecg' or 'oxy'; ECG or Pulse oximeter used?
 %           .min -     - for modality 'ECG': [percent peak height of sample QRS wave]
 %                      if set, ECG heartbeat event is calculated from ECG
 %                      timeseries by detecting local maxima of
@@ -87,40 +52,8 @@ function physio = physio_new(default_scheme, physio_in)
 %                      This file is saved after picking the QRS-wave
 %                      manually (i.e. if .ECG_min is set), so that
 %                      results are reproducible
-%           .manual_peak_select
-%                      [false] or true; if true, a user input is
-%                      required to specify a characteristic R-peak interval in the ECG
-%                      or pulse oximetry time series
 %
-%       thresh.respiratory.
 %
-%           .resp_max
-%                   -  if set, all peaks above that breathing belt amplitude
-%                      are ignored for respiratory phase evaluation
-%
-% NOTE: estimate gradient thresholds from visual inspection of the gradient timecourses
-%       They only have to be set once per sequence, i.e. can be used for
-%       nearly all subjects and sessions
-%
-%   sqpar                   - sequence timing parameters
-%           .Nslices        - number of slices per volume in fMRI scan
-%           .NslicesPerBeat - usually equals Nslices, unless you trigger with the heart beat
-%           .TR             - repetition time in seconds
-%           .Ndummies       - number of dummy volumes
-%           .Nscans         - number of full volumes saved (volumes in nifti file,
-%                             usually rows in your design matrix)
-%           .Nprep          - number of non-dummy, volume like preparation pulses
-%                             before 1st dummy scan. If set, logfile is read from beginning,
-%                             otherwise volumes are counted from last detected volume in the logfile
-%           .TimeSliceToSlice - time between the acquisition of 2 subsequent
-%                             slices; typically TR/Nslices or
-%                             minTR/Nslices, if minimal temporal slice
-%                             spacing was chosen
-%                             NOTE: only necessary, if
-%                             thresh.grad_direction is empty and nominal
-%                             scan timing is used
-%            .onset_slice    - slice whose scan onset determines the adjustment of the
-%                             regressor timing to a particular slice for the whole volume
 %
 % model
 % .type  'RETROICOR'
@@ -152,9 +85,6 @@ function physio = physio_new(default_scheme, physio_in)
 %             'all'             - all physiological regressors are
 %                                 orthogonalised to each other
 %
-% verbose   - create informative plots (1= yes, 0 = no)
-%
-
 % if not specified differently, create everything empty
 if ~nargin
     default_scheme = 'empty';
@@ -167,30 +97,68 @@ if nargin >= 2
     model   = physio_in.model;
     verbose = physio_in.verbose;
 else
-    %% files
-    log_files.vendor                = ''; % 'Philips', 'GE'
-    log_files.cardiac           = '';
-    log_files.respiration       = '';
     
-    
+    %% log_files
+    % structure containing general physiological log-file information
+    log_files.vendor       = ''; % 'Philips', 'GE', or 'Siemens', depending on your
+                                 %  MR Scanner system
+    log_files.cardiac      = ''; % 'SCANPHYSLOG.log'; logfile with cardiac data
+    log_files.respiration  = ''; % 'SCANPHYSLOG.log'; logfile with respiratory data
+                                 %                    (same as .cardiac for Philips)
+  % log_files.sampling_interval = [];   % in seconds, 2e-3 for Philips, variable for GE,
+                                        % e.g. 40e-3
+ 
+                                        
+                                        
     %% sqpar
-    sqpar.Nslices           = 37;
-sqpar.NslicesPerBeat    = 37;
-sqpar.TR                = 2.50;
-sqpar.Ndummies          = 3;
-sqpar.Nscans            = 495;
-sqpar.onset_slice       = 19;
-sqpar.Nprep             = []; % set to >=0 to count scans and dummy 
+    sqpar.Nslices           = [];   % number of slices per volume in fMRI scan
+    sqpar.NslicesPerBeat    = [];   % usually equals Nslices, unless you trigger with the heart beat
+    sqpar.TR                = [];   % volume repetition time in seconds
+    sqpar.Ndummies          = [];   % number of dummy volumes
+    sqpar.Nscans            = [];   % number of full volumes saved (volumes in nifti file,
+                                    % usually rows in your design matrix)
+    sqpar.Nprep             = [];   % set to >=0 to count scans and dummy
+%           .Nprep          - number of non-dummy, volume like preparation pulses
+%                             before 1st dummy scan. If set, logfile is read from beginning,
+%                             otherwise volumes are counted from last detected volume in the logfile
+sqpar.TimeSliceToSlice  = [];
+%           .TimeSliceToSlice - time between the acquisition of 2 subsequent
+%                             slices; typically TR/Nslices or
+%                             minTR/Nslices, if minimal temporal slice
+%                             spacing was chosen
+%                             NOTE: only necessary, if
+%                             thresh.grad_direction is empty and nominal
+%                             scan timing is used
+    sqpar.onset_slice       = 19;
+%            .onset_slice    - slice whose scan onset determines the adjustment of the
+%                             regressor timing to a particular slice for the whole volume
                               % volumes from beginning of run, i.e. logfile,
                               % includes counting of preparation gradients
                               
-sqpar.TimeSliceToSlice  = [];
     
     %% thresh
-    thresh = struct('scan_timing', [], 'cardiac', []);
-    thresh.scan_timing = struct('grad_direction', '', 'zero', [], ...
-        'slice', [], 'vol', [], 'vol_spacing', []);
+    % determines thresholds used in preprocessing physiological logfiles,
+    % either their timing (thresh.scan_timing) or the peripheral measures
+    % itself (thresh.cardiac, thresh.respiration)
+    thresh.scan_timing = [];    % leave empty, if nominal scan timing, 
+                                % derived from sqpar, shall be used
+
+    thresh.scan_timing.grad_direction = ''; % 'x', 'y', or 'z'; 
+                                            % if set, sequence timing is calculated 
+                                            % from logged gradient timecourse along 
+                                            % this coordinate axis;
+    thresh.scan_timing.zero     = [];   % gradient values below this value are set to zero;
+                                        % should be those which are unrelated to slice acquisition start
+    thresh.scan_timing.slice    = [];   % minimum gradient amplitude to be exceeded when a slice scan starts
+    thresh.scan_timing.vol      = [];   % minimum gradient amplitude to be exceeded when a new
+                                        % volume scan starts; 
+                                        % leave [], if volume events shall be determined as
+                                        % every Nslices-th scan event or via vol_spacing
+    thresh.vol_spacing          = [];   % duration (in seconds) from last slice acq to
+                                        % first slice of next volume;
+                                        % leave [], if .vol-threshold shall be used
     
+    thresh.cardiac = [];
     thresh.cardiac.modality = ''; % 'ECG','ECG_raw', or 'OXY' (for pulse oximetry), 'OXY_OLD', [deprecated]
     
     thresh.cardiac.initial_cpulse_select.method = 'load_from_logfile'; % 'load_from_logfile', 'manual', 'load'
