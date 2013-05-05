@@ -15,9 +15,12 @@ function physio = physio_new(default_scheme, physio_in)
 %   physio_in       - used as input, only the fields related to the default_scheme
 %                     are overwritten, the others are kept as in physio_in
 % OUT
-%   phzsio         - the complete physio structure, which can be unsed in
+%   physio         - the complete physio structure, which can be unsed in
 %                     physio_main_create_regressors
-%
+% NOTE
+%   All parameters used in the physIO toolbox are defined AND DOCUMENTED in
+%   this file. Just scroll down and read through the comments!
+% 
 % EXAMPLE
 %   physio = physio_new('empty')
 %   physio = physio_new('RETROICOR');
@@ -35,55 +38,7 @@ function physio = physio_new(default_scheme, physio_in)
 % COPYING or <http://www.gnu.org/licenses/>.
 %
 % $Id$
-
-%           .min -     - for modality 'ECG': [percent peak height of sample QRS wave]
-%                      if set, ECG heartbeat event is calculated from ECG
-%                      timeseries by detecting local maxima of
-%                      cross-correlation to a sample QRS-wave;
-%                      leave empty, to use Philips' log of heartbeat event
-%                      - for modality 'OXY': [peak height of pulse oxymeter] if set, pulse
-%                      oxymeter data is used and minimal peak height
-%                      set is used to determined maxima
-%           .kRpeakfile
-%                    - [default: not set] string of file containing a
-%                      reference ECG-peak
-%                      if set, ECG peak detection via cross-correlation (via
-%                      setting .ECG_min) performed with a saved reference ECG peak
-%                      This file is saved after picking the QRS-wave
-%                      manually (i.e. if .ECG_min is set), so that
-%                      results are reproducible
 %
-%
-%
-% model
-% .type  'RETROICOR'
-% .input_other_multiple_regressors = '';
-%                           other regressors which should end up in "multiple regressors"
-%                           slot of SPM-GLM; either txt-file or mat-file with variable R
-%                           e.g. realignment parameters rp_*.txt
-% .output_multiple_regressors
-%                           output .mat-file containing a variable R with
-%                           all RETROICOR-regressors; can be inserted
-%                           directly as "multiple regressors" for SPM
-%                           1st level design specification
-%                           e.g. 'multiple_regressors.mat' in SPM-analysis
-%                           folder
-% .order     - order of RETROICOR expansion, taken from Harvey2008, JRMI28(6), p1337ff.
-%       .c  - cardiac [default = 3]
-%       .r  - respiratory [default = 4]
-%       .cr - multiplicative terms: cardiac X respiratory [default 1]
-%       .orthogonalise
-%           - string indicating which regressors shall be
-%             orthogonalised; mainly needed, if
-%           acquisition was triggered to heartbeat (set to 'cardiac') OR
-%           if session mean shall be evaluated (e.g. SFNR-studies, set to
-%           'all')
-%             'n' or 'none'     - no orthogonalisation is performed
-%             'c' or 'cardiac'  - only cardiac regressors are orthogonalised
-%             'r' or 'resp'     - only respiration regressors are orthogonalised
-%             'mult'            - only multiplicative regressors are orthogonalised
-%             'all'             - all physiological regressors are
-%                                 orthogonalised to each other
 %
 % if not specified differently, create everything empty
 if ~nargin
@@ -98,6 +53,7 @@ if nargin >= 2
     verbose = physio_in.verbose;
 else
     
+    
     %% log_files
     % structure containing general physiological log-file information
     log_files.vendor       = ''; % 'Philips', 'GE', or 'Siemens', depending on your
@@ -109,7 +65,6 @@ else
                                         % e.g. 40e-3
  
                                         
-                                        
     %% sqpar
     sqpar.Nslices           = [];   % number of slices per volume in fMRI scan
     sqpar.NslicesPerBeat    = [];   % usually equals Nslices, unless you trigger with the heart beat
@@ -118,22 +73,18 @@ else
     sqpar.Nscans            = [];   % number of full volumes saved (volumes in nifti file,
                                     % usually rows in your design matrix)
     sqpar.Nprep             = [];   % set to >=0 to count scans and dummy
-%           .Nprep          - number of non-dummy, volume like preparation pulses
-%                             before 1st dummy scan. If set, logfile is read from beginning,
-%                             otherwise volumes are counted from last detected volume in the logfile
-sqpar.TimeSliceToSlice  = [];
-%           .TimeSliceToSlice - time between the acquisition of 2 subsequent
-%                             slices; typically TR/Nslices or
-%                             minTR/Nslices, if minimal temporal slice
-%                             spacing was chosen
-%                             NOTE: only necessary, if
-%                             thresh.grad_direction is empty and nominal
-%                             scan timing is used
-    sqpar.onset_slice       = 19;
-%            .onset_slice    - slice whose scan onset determines the adjustment of the
-%                             regressor timing to a particular slice for the whole volume
-                              % volumes from beginning of run, i.e. logfile,
-                              % includes counting of preparation gradients
+                                    % number of non-dummy, volume like preparation pulses
+                                    % before 1st dummy scan. If set, logfile is read from beginning,
+                                    % otherwise volumes are counted from last detected volume in the logfile
+    sqpar.TimeSliceToSlice  = [];   % time between the acquisition of 2 subsequent
+                                    % slices; typically TR/Nslices or minTR/Nslices, 
+                                    % if minimal temporal slice spacing was chosen
+                                    % NOTE: only necessary, if thresh.grad_direction 
+                                    % is empty and nominal scan timing is used
+    sqpar.onset_slice       = 19;   % slice whose scan onset determines the adjustment of the
+                                    % regressor timing to a particular slice for the whole volume
+                                    % volumes from beginning of run, i.e. logfile,
+                                    % includes counting of preparation gradients
                               
     
     %% thresh
@@ -157,31 +108,77 @@ sqpar.TimeSliceToSlice  = [];
     thresh.vol_spacing          = [];   % duration (in seconds) from last slice acq to
                                         % first slice of next volume;
                                         % leave [], if .vol-threshold shall be used
-    
+                                        
     thresh.cardiac = [];
     thresh.cardiac.modality = ''; % 'ECG','ECG_raw', or 'OXY' (for pulse oximetry), 'OXY_OLD', [deprecated]
     
-    thresh.cardiac.initial_cpulse_select.method = 'load_from_logfile'; % 'load_from_logfile', 'manual', 'load'
-    thresh.cardiac.initial_cpulse_select.file = '';
-    thresh.cardiac.initial_cpulse_select.min = [];    
-    thresh.cardiac.initial_cpulse_select.kRpeak = [];
+    % The initial cardiac pulse selection structure: Determines how the
+    % majority of cardiac pulses is detected
+    thresh.cardiac.initial_cpulse_select.method = 'load_from_logfile'; % 'load_from_logfile', 'manual' (rather: threshold...autocorrelate?), 'load'
+    thresh.cardiac.initial_cpulse_select.file = ''; % file containing reference ECG-peak (variable kRpeak)
+                                                    % used for method 'manual' or 'load' [default: not set] string of file containing a
+                                                    % if method == 'manual', this file is saved after picking the QRS-wave
+                                                    % such that results are reproducible                                    
+    thresh.cardiac.initial_cpulse_select.min = [];  % threshold for correlation with QRS-wave to find cardiac pulses 
+    thresh.cardiac.initial_cpulse_select.kRpeak = []; % variable saving an example cardiac QRS-wave to correlate with ECG time series
     
+    % The posthoc cardiac pulse selection structure: If only few (<20)
+    % cardiac pulses are missing in a session due to bad signal quality, a
+    % manual selection after visual inspection is possible using the
+    % following parameters. The results are saved for reproducibility
     thresh.cardiac.posthoc_cpulse_select.method = 'off'; % 'off', 'manual', 'load'
-    thresh.cardiac.posthoc_cpulse_select.file = '';        
-    thresh.cardiac.posthoc_cpulse_select.percentile = 80;
-    thresh.cardiac.posthoc_cpulse_select.upperThresh = 60;
-    thresh.cardiac.posthoc_cpulse_select.lowerThresh = 60; 
+                                                         % 'off' - no manual selection of peaks
+                                                         % 'manual' - pick and save additional peaks manually
+                                                         % 'load' - load previously selected cardiac pulses                                                          
+    thresh.cardiac.posthoc_cpulse_select.file = '';  % filename where cardiac pulses are saved after manual picking      
     
-    %% order
-    model.type = '';
-    model.input_other_multiple_regressors = ''; % either txt-file or mat-file with variable R
-    model.output_multiple_regressors = '';
-    model.order = struct('c',[],'r',[],'cr',[], 'orthogonalise', '');
+    % Suspicious positions of missing or too many cardiac pulses are
+    % pre-selected by detecting outliers in histogram of
+    % heart-beat-2-beat-intervals
+    thresh.cardiac.posthoc_cpulse_select.percentile = 80; % percentile of beat-2-beat interval histogram that constitutes the "average heart beat duration" in the session
+    thresh.cardiac.posthoc_cpulse_select.upperThresh = 60; % minimum exceedance (in %) from average heartbeat duration to be classified as missing heartbeat
+    thresh.cardiac.posthoc_cpulse_select.lowerThresh = 60; % minimum reduction (in %) from average heartbeat duration to be classified an abundant heartbeat
+    
+    
+    %% model
+    % Determines the physiological noise model derived from preprocessed physiological data
+    model.type = '';                            % 'RETROICOR' - as in Glover el al, MRM 44, 2000
+    model.input_other_multiple_regressors = ''; % other nuisance regressors to be included in design matrix
+                                                % either txt-file or mat-file with variable R
+    model.output_multiple_regressors = '';      % output file for usage in SPM multiple_regressors GLM-specification
+                                                % either txt-file or mat-file with variable R
+    model.order.c = [];                         % natural number, order of cardiac phase Fourier expansion
+    model.order.r = [];                         % natural number, order of respiratory phase Fourier expansion
+    model.order.cr = [];                        % natural number, order of cardiac-respiratory-phase-interaction Fourier expansion
+                                                % See Harvey et al, JMRI 28, 2008
+    model.order.orthogonalise = 'none';         % string indicating which regressors shall be orthogonalised; 
+                                                % mainly needed, if acquisition was triggered to heartbeat (set to 'cardiac') OR
+                                                % if session mean shall be evaluated (e.g. SFNR-studies, set to 'all')
+                                                % 'n' or 'none'     - no orthogonalisation is performed
+                                                % Possible Values (default: 'none'
+                                                %   'c' or 'cardiac'  - only cardiac regressors are orthogonalised
+                                                %   'r' or 'resp'     - only respiration regressors are orthogonalised
+                                                %   'mult'            - only multiplicative regressors are orthogonalised
+                                                %   'all'             - all physiological regressors are orthogonalised to each other
 
+                                                
     %% verbose
-    verbose.level = [];
-    verbose.fig_handles = [];
-    verbose.fig_output_file = '';
+    % determines how many figures shall be generated to follow the workflow
+    % of the toolbox and whether the graphical output shall be saved (to a
+    % PostScript-file)
+    verbose.level = 1;            % 0 = no graphical output; 1 = main plots (default);  
+                                  % 2 = debugging plots, for setting up new study; 3 = all plots
+    verbose.fig_handles = [];     % collector of all generated figure handles during a run of physio_main_create_regressors
+    verbose.fig_output_file = ''; % file name (including extension) where to print all physIO output figures to,
+                                  % e.g. 'PhysIO_output.ps' or 'PhysIO_output.jpg'
+                                  % The specified extension determines how the
+                                  % figures will be saved
+                                  %     .ps - all figures are saved to the
+                                  %     same, multiple-page postscript-file
+                                  %     .fig, .tiff,  .jpg 
+                                  %         - one file is created for each
+                                  %         figure, appended by its figure
+                                  %         index, e.g. 'PhysIO_output_fig01.jpg'
 end
 
 switch default_scheme

@@ -36,10 +36,10 @@ c           = ons_secs.raw.c;
 spulse      = ons_secs.raw.spulse;
 svolpulse   = ons_secs.raw.svolpulse;
 
-maxr = max(abs(r));
-ampsv = maxr/2.25;
-amps = maxr / 3;
-ampc = maxr / 2;
+maxVal = max(max(abs(r)), max(abs(c))); 
+ampsv = maxVal/2.25;
+amps = maxVal / 3;
+ampc = maxVal / 2;
 
 y = [c, r];
 x = y (1:sampling:end, :);
@@ -62,7 +62,7 @@ svolpulse   = ons_secs.svolpulse;
 
 
 
-%plot physiological regressors and scan events
+%plot physiological time courses and scan events
 
 y = [c, r];
 x = y (1:sampling:end, :);
@@ -80,7 +80,7 @@ title('Cutout region for physiological regressors');
 legend( hs, {['dummy scan event marker (N = ' int2str(Ndummies*Nslices) ')'], ...
     ['volume event marker (N = ' int2str(length(svolpulse)-Ndummies) '), without dummies'], ...
     ['scan event marker (N = ' int2str(length(spulse)-Ndummies*Nslices) ')'], ...
-    ['ECG event marker (N = ' int2str(length(cpulse)) ')'], ...
-    'filtered ECG', 'resp signal', 'used resp signal'});
-ylim(1.2*maxr*[-1 1]);
+    ['cardiac pulse (heartbeat) marker (N = ' int2str(length(cpulse)) ')'], ...
+    'cardiac signal', 'respiratory signal', 'used respiratory signal'});
+ylim(1.2*maxVal*[-1 1]);
 end

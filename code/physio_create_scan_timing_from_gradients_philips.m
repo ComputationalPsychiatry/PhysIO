@@ -130,6 +130,14 @@ t=((0:(Nsamples-1))*dt)';
     end
     gradient_choice = reshape(gradient_choice, length(gradient_choice),1);
     
+    % if no gradient timecourse was recorded in the logfile (due to insufficient
+    % Philips software keys), return nominal timing instead
+    if ~any(gradient_choice) % all values zero
+            [VOLLOCS, LOCS] = physio_create_nominal_scan_timing(t, sqpar);
+            warning('No gradient timecourse was logged in the logfile. Using nominal timing from sqpar instead');
+        return
+    end
+    
     z2 = gradient_choice; z2(z2<thresh.zero)=0;
     z2 = z2 + rand(size(z2)); % to find double-peaks/plateaus, make them a bit different
     

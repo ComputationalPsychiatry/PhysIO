@@ -150,7 +150,7 @@ end
 model.R = R;
 
 if isfield(verbose, 'fig_output_file') && ~isempty(verbose.fig_output_file)
-    physio_print_figs_to_ps(verbose);
+    physio_print_figs_to_file(verbose);
 end
 
 physio_out.log_files    = log_files;
