@@ -1,22 +1,25 @@
 function physio = physio_new(default_scheme, physio_in)
-% creates complete PhysIO structure to be fed into physio_main_create_regressors
-%   output = physio_new(input)
+% creates complete PhysIO structure fed into physio_main_create_regressors
+%
+%    physio = physio_new(default_scheme, physio_in)
 %
 % IN
-%   default_scheme - if set, default values for structure entries are set
+%   default_scheme  - if set, default values for structure entries are set
 %                       according to the application
 %                       different templates are predefined, e.g.
 %                       'empty' (default) - all strings are set to '', all
 %                                     numbers to []
-%                       'RETROICOR'
-%                   `       % order of RETROICOR expansion taken from Harvey2008, JRMI28(6), p1337ff.
+%                       'RETROICOR' order of RETROICOR expansion taken from 
+%                       Harvey2008, JRMI28(6), p1337ff.
 %                       'scan_timing_from_start'
 %                       'manual_peak_select'
-%   physio_in       - used as input, only the fields related to the default_scheme
+%   physio_in       - used as input, only fields related to default_scheme
 %                     are overwritten, the others are kept as in physio_in
+%
 % OUT
-%   physio         - the complete physio structure, which can be unsed in
+%   physio          - the complete physio structure, which can be unsed in
 %                     physio_main_create_regressors
+%
 % NOTE
 %   All parameters used in the physIO toolbox are defined AND DOCUMENTED in
 %   this file. Just scroll down and read through the comments!
@@ -38,8 +41,7 @@ function physio = physio_new(default_scheme, physio_in)
 % COPYING or <http://www.gnu.org/licenses/>.
 %
 % $Id$
-%
-%
+
 % if not specified differently, create everything empty
 if ~nargin
     default_scheme = 'empty';
