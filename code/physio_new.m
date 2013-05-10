@@ -181,6 +181,21 @@ else
                                   %         - one file is created for each
                                   %         figure, appended by its figure
                                   %         index, e.g. 'PhysIO_output_fig01.jpg'
+                                 
+                                  
+    %% ons_secs
+    % output structure holding all time-dependent variables, i.e. onsets, specified in seconds
+    % all elements but .raw are cropped to the acquisition window of
+    % interest
+    ons_secs                     = [];
+    ons_secs.c              	 = [];  % raw cardiac waveform (ECG or PPU)
+    ons_secs.r              	 = [];  % raw respiration volume time course
+    ons_secs.t              	 = [];  % time vector corresponding to c and r
+    ons_secs.cpulse         	 = [];  % onset times of cardiac pulse events (e.g. R-peaks)
+    ons_secs.svolpulse      	 = [];  % [Nscans x 1] onset times of volume scan events
+    ons_secs.spulse         	 = [];  % [Nscans*Nslices x 1] onset times of slice (incl. volume) scan events
+    ons_secs.spulse_per_vol 	 = [];  % cell(Nscans,1), as spulse, holding slice scan events sorted by volume
+    ons_secs.raw            	 = [];  % raw read-in version of the whole structure, before any cropping
 end
 
 switch default_scheme
@@ -206,3 +221,4 @@ physio.thresh  = thresh;
 physio.sqpar   = sqpar;
 physio.model   = model;
 physio.verbose = verbose;
+physio.ons_secs = ons_secs;
