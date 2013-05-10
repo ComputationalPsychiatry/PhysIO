@@ -36,6 +36,6 @@ physio_cleanup_example_output_files();
 currD = fileparts(mfilename('fullpath'));
 
 zipFex = fullfile(currD, sprintf('PhysIOToolbox_r%s_examples.zip', srev));
-zipFco = fullfile(currD, sprintf('PhysIOToolbox_r%s_examples.zip', srev));
+zipFco = fullfile(currD, sprintf('PhysIOToolbox_r%s_code.zip', srev));
 zip( zipFex, {fullfile(currD, 'examples'), fullfile(currD, 'README.txt')});
 zip( zipFco, {fullfile(currD, 'code'), fullfile(currD, 'manual'),fullfile(currD, 'README.txt')});
