@@ -25,7 +25,7 @@ function physio_cleanup_example_output_files()
 % $Id$
 
 currD = fileparts(mfilename('fullpath'));
-pfxD = {'examples/GE';'examples/Philips', 'code', 'manual'};
+pfxD = {'examples/GE';'examples/Philips'; 'code'; 'manual'};
 
 for iPfx = 1:length(pfxD)
     ds = dir(fullfile(currD, pfxD{iPfx}));
