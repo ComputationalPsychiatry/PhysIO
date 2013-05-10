@@ -25,23 +25,25 @@ function physio_cleanup_example_output_files()
 % $Id$
 
 currD = fileparts(mfilename('fullpath'));
-pfxD = {'examples/GE';'examples/Philips'; 'code'; 'manual'};
+pfxD = {'code'; 'manual';'examples/GE';'examples/Philips'; };
 
 for iPfx = 1:length(pfxD)
     ds = dir(fullfile(currD, pfxD{iPfx}));
-    ds = ds(3:end);
+    ds(2) = [];
     
     for n = 1:length(ds);
-        d = fullfile(currD,pfxD{iPfx},ds(n).name);
-        disp(['Deleting output files in ' d]);
-        delete(fullfile(d, 'multiple_regressors.*'));
-        delete(fullfile(d, 'PhysIO_output*'));
-        delete(fullfile(d, '*.asv'));
-        %     delete(fullfile(d, '*.ps'));
-        %     delete(fullfile(d, '*.tif*'));
-        %     delete(fullfile(d, '*.jpg'));
-        %     delete(fullfile(d, '*.jpeg'));
-        %     delete(fullfile(d, '*.fig'));
-        %     delete(fullfile(d, '*.jpg'));
+        if ds(n).isdir
+            d = fullfile(currD,pfxD{iPfx},ds(n).name);
+            disp(['Deleting output files in ' d]);
+            delete(fullfile(d, 'multiple_regressors.*'));
+            delete(fullfile(d, 'PhysIO_output*'));
+            delete(fullfile(d, '*.asv'));
+            %     delete(fullfile(d, '*.ps'));
+            %     delete(fullfile(d, '*.tif*'));
+            %     delete(fullfile(d, '*.jpg'));
+            %     delete(fullfile(d, '*.jpeg'));
+            %     delete(fullfile(d, '*.fig'));
+            %     delete(fullfile(d, '*.jpg'));
+        end
     end
 end
