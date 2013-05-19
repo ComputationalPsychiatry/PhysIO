@@ -13,7 +13,7 @@ function [ons_secs, outliersHigh, outliersLow] = physio_correct_cardiac_pulses_m
 % (either version 3 or, at your option, any later version). For further details, see the file
 % COPYING or <http://www.gnu.org/licenses/>.
 %
-% $Id: physio_plot_raw_physdata_diagnostics.m 181 2013-04-23 13:41:48Z kasperla $
+% $Id$
 
 
 percentile = thresh_cardiac.percentile;
