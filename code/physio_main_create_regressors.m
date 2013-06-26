@@ -117,9 +117,12 @@ end
 %% 4. Create RETROICOR regressors for SPM
 switch upper(model.type)
     case 'RETROICOR'
-        [cardiac_sess, respire_sess, mult_sess, verbose] = ...
+        [cardiac_sess, respire_sess, mult_sess, verbose, ...
+            c_sample_phase, r_sample_phase] = ...
             physio_create_retroicor_regressors(ons_secs, sqpar, thresh, ...
             model.order, verbose);
+            ons_secs.c_sample_phase = c_sample_phase;
+            ons_secs.r_sample_phase = r_sample_phase;
     otherwise
         error('Please valid specify model.type');
 end

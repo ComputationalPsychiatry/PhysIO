@@ -25,22 +25,23 @@ function sample_points = physio_get_sample_points(ons_secs, sqpar, slicenum)
 % COPYING or <http://www.gnu.org/licenses/>.
 %
 % $Id$
-    if nargin<3 || isempty(slicenum)
-        sample_points = [];
-        for n = 1:sqpar.Nscans
-            sample_points = [sample_points; ons_secs.spulse_per_vol{n + sqpar.Ndummies}];       
-        end
-    else
-        sample_points = zeros(sqpar.Nscans,1);
+if nargin<3 || isempty(slicenum)
+    sample_points = [];
+    for n = 1:sqpar.Nscans
+        sample_points = [sample_points; ons_secs.spulse_per_vol{n + sqpar.Ndummies}];
+    end
+else
+    nSampleSlices = length(slicenum);
+    sample_points = zeros(sqpar.Nscans*nSampleSlices,1);
     for n = 1:sqpar.Nscans
         spulse = ons_secs.spulse_per_vol{n + sqpar.Ndummies};
-        if length(spulse) < slicenum
+        if length(spulse) < max(slicenum)
             error('scan %d: only %d slice scan events. Cannot resample to slice %d', ...
-                n, length(spulse), slicenum);
+                n, length(spulse), max(slicenum));
         else
-            sample_points(n) = spulse(slicenum);
+            sample_points((n-1)*nSampleSlices + (1:nSampleSlices)) = spulse(slicenum);
         end
     end
-    end
+end
 
 end
