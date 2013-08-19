@@ -1,9 +1,8 @@
 function add_tapas_prefix()
 
 % directory where the renaming of functions is to be done
-% pathToolbox = 'C:\Users\kasperla\Documents\Promotion\experiments\monitoring\smoothing\trunk\tSNR_fMRI_SPM\CheckPhysRETROICOR\PhysIOToolbox';
-pathToolbox = 'C:\Users\kasperla\Documents\Promotion\experiments\monitoring\smoothing\trunk\tSNR_fMRI_SPM\CheckPhysRETROICOR\test3';
-
+% pathToolbox = 'C:\Users\kasperla\Documents\Promotion\experiments\monitoring\smoothing\trunk\tSNR_fMRI_SPM\CheckPhysRETROICOR\test3';
+pathToolbox = '/home/kasperla/monitoring/my_code/smoothing/trunk/tSNR_fMRI_SPM/CheckPhysRETROICOR/PhysIOToolbox';
 
 % folder with all the function names to be replaced in all
 % functions/scripts
@@ -62,8 +61,9 @@ end
 % % rename all code files
 isVersionControlled = false;
 for j=1:length(filelistCode)
-    movefile(fullfile(dirCode,filelistCode(j).name),fullfile(dirCode,[prefix,filelistCode(j).name]))
     if isVersionControlled
-        unix(['svn mv ' fullfile(dirCode,filelistCode(j).name), fullfile(dirCode,[prefix,filelistCode(j).name])]);
+        unix(['svn mv ' fullfile(dirCode,filelistCode(j).name), ' ', fullfile(dirCode,[prefix,filelistCode(j).name])]);
+    else
+        movefile(fullfile(dirCode,filelistCode(j).name),fullfile(dirCode,[prefix,filelistCode(j).name]))    
     end
 end
