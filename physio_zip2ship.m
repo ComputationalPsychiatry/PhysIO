@@ -35,7 +35,19 @@ end
 physio_cleanup_example_output_files();
 currD = fileparts(mfilename('fullpath'));
 
-zipFex = fullfile(currD, sprintf('PhysIOToolbox_r%s_examples.zip', srev));
-zipFco = fullfile(currD, sprintf('PhysIOToolbox_r%s_code.zip', srev));
-zip( zipFex, {fullfile(currD, 'examples'), fullfile(currD, 'README.txt')});
-zip( zipFco, {fullfile(currD, 'code'), fullfile(currD, 'manual'),fullfile(currD, 'README.txt')});
+exportD = fullfile(currD, sprintf('PhysIO_r%s', srev));
+mkdir(exportD);
+copyfile(fullfile(currD, 'examples'), fullfile(exportD, 'examples'));
+copyfile(fullfile(currD, 'code'), fullfile(exportD, 'code'));
+copyfile(fullfile(currD, 'manual'), fullfile(exportD, 'manual'));
+delete(fullfile(exportD, 'manual', '*.mpeg'));
+delete(fullfile(exportD, 'manual', '*.docx'));
+delete(fullfile(exportD, 'manual', '*Manual*.pptx'));
+delete(fullfile(exportD, 'manual', '*Workflow*.pptx'));
+delete(fullfile(exportD, 'manual', '*~*.pptx'));
+copyfile(fullfile(currD, 'README.txt'), exportD);
+
+zipFex = fullfile(exportD, sprintf('PhysIOToolbox_r%s_examples.zip', srev));
+zipFco = fullfile(exportD, sprintf('PhysIOToolbox_r%s_code.zip', srev));
+zip( zipFex, {fullfile(exportD, 'examples'), fullfile(exportD, 'README.txt')});
+zip( zipFco, {fullfile(exportD, 'code'), fullfile(exportD, 'manual'),fullfile(exportD, 'README.txt')});
