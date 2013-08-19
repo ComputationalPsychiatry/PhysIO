@@ -37,13 +37,18 @@ currD = fileparts(mfilename('fullpath'));
 
 exportD = fullfile(currD, sprintf('PhysIO_r%s', srev));
 mkdir(exportD);
-mkdir(exportD, 'manual');
-copyfile(fullfile(currD, 'examples'), fullfile(exportD, 'examples'));
-copyfile(fullfile(currD, 'code'), fullfile(exportD, 'code'));
-copyfile(fullfile(currD, 'manual/*.pdf'), fullfile(exportD, 'manual'));
-copyfile(fullfile(currD, 'README.txt'), exportD);
 
-zipFex = fullfile(exportD, sprintf('PhysIOToolbox_r%s_examples.zip', srev));
-zipFco = fullfile(exportD, sprintf('PhysIOToolbox_r%s_code.zip', srev));
-zip( zipFex, {fullfile(exportD, 'examples'), fullfile(exportD, 'README.txt')});
-zip( zipFco, {fullfile(exportD, 'code'), fullfile(exportD, 'manual'),fullfile(exportD, 'README.txt')});
+% copy and zip examples
+copyfile(fullfile(currD, 'README.txt'), exportD);
+copyfile(fullfile(currD, 'examples'), fullfile(exportD, 'examples'));
+zipF = fullfile(currD, sprintf('PhysIOToolbox_r%s_examples.zip', srev));
+zip(zipF, exportD);
+
+% copy and zip code and examples
+rmdir(fullfile(exportD, 'examples'),'s');
+copyfile(fullfile(currD, 'code'), fullfile(exportD, 'code'));
+mkdir(exportD, 'manual');
+copyfile(fullfile(currD, 'manual/*.pdf'), fullfile(exportD, 'manual'));
+zipF = fullfile(currD, sprintf('PhysIOToolbox_r%s_code.zip', srev));
+zip(zipF, exportD);
+
