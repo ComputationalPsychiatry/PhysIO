@@ -37,14 +37,10 @@ currD = fileparts(mfilename('fullpath'));
 
 exportD = fullfile(currD, sprintf('PhysIO_r%s', srev));
 mkdir(exportD);
+mkdir(exportD, 'manual');
 copyfile(fullfile(currD, 'examples'), fullfile(exportD, 'examples'));
 copyfile(fullfile(currD, 'code'), fullfile(exportD, 'code'));
-copyfile(fullfile(currD, 'manual'), fullfile(exportD, 'manual'));
-delete(fullfile(exportD, 'manual', '*.mpeg'));
-delete(fullfile(exportD, 'manual', '*.docx'));
-delete(fullfile(exportD, 'manual', '*Manual*.pptx'));
-delete(fullfile(exportD, 'manual', '*Workflow*.pptx'));
-delete(fullfile(exportD, 'manual', '*~*.pptx'));
+copyfile(fullfile(currD, 'manual/*.pdf'), fullfile(exportD, 'manual'));
 copyfile(fullfile(currD, 'README.txt'), exportD);
 
 zipFex = fullfile(exportD, sprintf('PhysIOToolbox_r%s_examples.zip', srev));
