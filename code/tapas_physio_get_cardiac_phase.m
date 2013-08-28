@@ -90,7 +90,7 @@ if ~isempty(n)
     Nvol = length(svolpulse);
     Nsli = length(scannert)/Nvol;
     warningmsg=sprintf('%s\nFirst occurence: Volume %d, slice %d',warningmsg, ceil(n(1)/Nsli), Nsli - mod(Nsli - n(1),Nsli));
-    warningmsg=sprintf('%s\nNOTE: This is only detrimental, if the microtime onset slice is greater or equal %d',warningmsg, Nsli - mod(Nsli - n(1),Nsli));
-    warningmsg=sprintf('%s\n      and if this occurs in a volume before your last volume of interest.\n', warningmsg);
+    warningmsg=sprintf('%s\nNOTE: This is only detrimental, if sqpar.onset_slice is greater or equal %d',warningmsg, Nsli - mod(Nsli - n(1),Nsli));
+    warningmsg=sprintf('%s\n      and if this occurs in a volume before your last volume of interest %d.\n', warningmsg, Nvol);
     warning(warningmsg);
 end

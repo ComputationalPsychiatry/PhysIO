@@ -56,7 +56,7 @@ end
 [ons_secs.c, ons_secs.r, ons_secs.t, ons_secs.cpulse] = ...
     tapas_physio_read_physlogfiles(log_files, thresh.cardiac.modality);
 
-if verbose.level >= 1
+if verbose.level >= 2
     verbose.fig_handles(end+1) = tapas_physio_plot_raw_physdata(ons_secs);
 end
 
@@ -104,12 +104,12 @@ end
 
 
 [ons_secs, sqpar] = tapas_physio_crop_scanphysevents_to_acq_window(ons_secs, sqpar);
-if verbose.level >= 1
+if verbose.level >= 2
     verbose.fig_handles(end+1) = ...
         tapas_physio_plot_cropped_phys_to_acqwindow(ons_secs, sqpar);
 end
 
-if verbose.level >= 2
+if verbose.level >= 1
     verbose.fig_handles(end+1) = ...
         tapas_physio_plot_raw_physdata_diagnostics(ons_secs.cpulse, ons_secs.r, thresh.cardiac.posthoc_cpulse_select);
 end

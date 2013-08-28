@@ -168,8 +168,37 @@ else
     % determines how many figures shall be generated to follow the workflow
     % of the toolbox and whether the graphical output shall be saved (to a
     % PostScript-file)
-    verbose.level = 1;            % 0 = no graphical output; 1 = main plots (default);  
-                                  % 2 = debugging plots, for setting up new study; 3 = all plots
+    % 0 = no graphical output; 
+    % 1 = (default) main plots : Fig 1: gradient scan timing (if selected) ; 
+    %                            Fig 2: heart beat/breathing statistics & outlier;
+    %                            Fig 3: final multiple_regressors matrix 
+    % 2 = debugging plots        for setting up new study or if Fig 2 had
+    %                            outliers
+    %                            Fig 1: raw phys logfile data
+    %                            Fig 2: gradient scan timing (if selected)
+    %                            Fig 3: cutout interval of logfile for
+    %                            regressor creation (including scan timing
+    %                            and raw phys data)
+    %                            Fig 4: heart beat/breathing statistics & outlier;
+    %                            Fig 5: time course of all sampled RETROICOR
+    %                                   regressors
+    %                            Fig 6: final multiple_regressors matrix 
+    %                            
+    % 3 = all plots
+    %                            Fig 1: raw phys logfile data
+    %                            Fig 2: gradient scan timing (if selected)
+    %                            Fig 3: Slice assignment to volumes
+    %                            Fig 4: cutout interval of logfile for
+    %                            regressor creation (including scan timing
+    %                            and raw phys data)
+    %                            Fig 5: heart beat/breathing statistics & outlier;
+    %                            Fig 6: cardiac phase data of all slices
+    %                            Fig 7: respiratory phase data and
+    %                                   histogram transfer function
+    %                            Fig 8: time course of all sampled RETROICOR
+    %                                   regressors
+    %                            Fig 9: final multiple_regressors matrix 
+    verbose.level = 1;            
     verbose.fig_handles = [];     % collector of all generated figure handles during a run of tapas_physio_main_create_regressors
     verbose.fig_output_file = ''; % file name (including extension) where to print all physIO output figures to,
                                   % e.g. 'PhysIO_output.ps' or 'PhysIO_output.jpg'
