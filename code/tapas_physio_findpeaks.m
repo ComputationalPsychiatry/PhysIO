@@ -36,7 +36,7 @@ function [pks,locs] = tapas_physio_findpeaks(X,varargin)
 %   See also DSPDATA/FINDPEAKS
 
 %   Copyright 2007-2010 The MathWorks, Inc.
-%   $Revision$  $Date$
+%   $Revision: 235 $  $Date: 2013-08-19 18:28:07 +0200 (Mon, 19 Aug 2013) $
 
 error(nargchk(1,11,nargin,'struct'));
 

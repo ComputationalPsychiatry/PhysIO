@@ -75,7 +75,7 @@ DOWNLOADS & RELEASE INFORMATION
 PhysIO_Toolbox_13 (Code | Examples)
 August 19th, 2013
 
-revision: $Revision$
+revision: $Revision: 238 $
 
 Minor Release Notes
 - computation of heart and breathing rate in Philips/PPU/main_PPU.m
