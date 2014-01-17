@@ -1,4 +1,4 @@
-function [fh, MyColors] = tapas_physio_get_default_fig_params(xscale, yscale)
+function [fh, prop, MyColors] = tapas_physio_get_default_fig_params(xscale, yscale)
 % set and return General settings for plots
 %
 % -------------------------------------------------------------------------
@@ -35,7 +35,31 @@ MyColors = [ ...
     0.7500,         0,    0.7500; ...
     0.7500,    0.7500,         0; ...
     0.2500,    0.2500,    0.2500 ];
-set(0,'DefaultAxesColorOrder',MyColors);
+set(fh,'DefaultAxesColorOrder',MyColors);
+
+
+%% for printing output
+convfac = 2; % conversion factor
+out_width = 21*xscale;
+out_height = 30*yscale;
+FontName = 'Helvetica';
+FontSizeText = 8;
+FontSizeAxes = 8;
+LineWidth = 3;
+set(gcf,'DefaultLineLineWidth', LineWidth*convfac/2);
+set(gcf,'DefaultAxesLineWidth', LineWidth*convfac/2);
+set(gcf,'DefaultAxesFontName', FontName);
+set(gcf,'DefaultAxesFontSize', FontSizeAxes*convfac);
+set(gcf, 'DefaultTextFontSize', FontSizeText*convfac);
+set(gcf, 'PaperUnits', 'centimeter');
+set(gcf, 'PaperPosition', [0 0 out_width out_height]*convfac);
+set(gcf, 'PaperSize', [out_width out_height]*convfac);
+
+prop.FontName = FontName;
+prop.FontSizeText = FontSizeText*convfac;
+prop.FontSizeAxes = FontSizeAxes*convfac;
+prop.LineWidth = LineWidth*convfac;
+prop.colors = MyColors;
 
 %         %set color order for plot: ECG should be red, because blood :-)
 %     MyColors = [ ...

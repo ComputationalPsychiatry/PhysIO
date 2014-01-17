@@ -62,7 +62,7 @@ end
 % over 1 sec of data as described in Glover et al.
 ksize=round(0.5*(1/rsampint));
 kernel=[ones(1,ksize)*-1 0 ones(1,ksize)];
-dnormpulse=conv(normpulse,kernel);
+dnormpulse=-conv(normpulse,kernel);
 dnormpulse=dnormpulse(ksize+1:end-ksize);
 n=find(abs(dnormpulse)==0);
 if ~isempty(n)
@@ -108,7 +108,7 @@ if verbose
     %figure('Name', 'Histogram: Respiration phase estimation');
     hs(4) = subplot(2,2,4);
     plot(t, [normpulse*10, dnormpulse, (rphase-pi)]);
-    legend('10*normalized breathing belt amplitude', '1 = exhale, -1 = inhale', 'estimated respiratory phase');    
+    legend('10*normalized breathing belt amplitude', '-1 = exhale, 1 = inhale', 'estimated respiratory phase');    
     ylim([-10.2 10.2]);
     title('Histogram-based respiration phase estimation');
     
