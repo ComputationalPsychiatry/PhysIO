@@ -85,7 +85,7 @@ end
 switch thresh.cardiac.initial_cpulse_select.method
     case {'manual', 'load'}
     [ons_secs.cpulse, verbose] = tapas_physio_get_cardiac_pulses(ons_secs.t, ons_secs.c, ...
-        thresh.cardiac.initial_cpulse_select, thresh.cardiac.modality, verbose); 
+        thresh.cardiac.initial_cpulse_select, thresh.cardiac.modality, [], verbose); 
     case {'load_from_logfile', ''}
 end
 
@@ -138,6 +138,14 @@ else
     convHRV = [];
 end
 
+% create a respiratory volume/time regressor using the cardiac response 
+% function
+if any(strfind(upper(model.type),'RVT'))
+    [convRVT, ons_secs.rvt] = tapas_physio_create_rvt_regressor(...
+        ons_secs, sqpar);
+else
+    convRVT = [];
+end
 
 % 4.1.  Load other confound regressors, e.g. realigment parameters
 if isfield(model, 'input_other_multiple_regressors') && ~isempty(model.input_other_multiple_regressors)

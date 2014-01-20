@@ -1,4 +1,5 @@
-function [cpulse, verbose] = tapas_physio_get_cardiac_pulses(t, c, thresh_cardiac, cardiac_modality, verbose)
+function [cpulse, verbose] = tapas_physio_get_cardiac_pulses(t, c, thresh_cardiac, cardiac_modality, ...
+    dt120, verbose)
 % extract heartbeat events from ECG or pulse oximetry time course
 %
 %   cpulse = tapas_physio_get_cardiac_pulses(t, c, thresh_cardiac, cardiac_modality, verbose);
@@ -27,9 +28,13 @@ function [cpulse, verbose] = tapas_physio_get_cardiac_pulses(t, c, thresh_cardia
 %           .manual_peak_select [false] or true; if true, a user input is
 %           required to specify a characteristic R-peak interval in the ECG
 %           or pulse oximetry time series
+%   dt120           - minimum distance between heart beats; default 120
+%                   bpm, i.e. 0.5 s
 %   verbose            debugging plot for thresholding, only provided, if verbose.level >=2
 %
 % OUT
+%   cpulse          vector of onset-times (in seconds) of occuring heart
+%                   beats
 %
 % EXAMPLE
 %   ons_samples.cpulse = tapas_physio_get_cardiac_pulses(ons_secs.c,
@@ -52,13 +57,16 @@ function [cpulse, verbose] = tapas_physio_get_cardiac_pulses(t, c, thresh_cardia
 %% detection of cardiac R-peaks
 
 % debug=true;
-debug=false;
+
+dt = t(2)-t(1);
+if nargin < 5 || isempty(dt120)
+    dt120 = round(0.5/dt); % heart rate < 120 bpm 
+end
+debug=true;
 switch lower(cardiac_modality)
 case 'oxy_old'
      c = c-mean(c); c = c./max(c); % normalize time series
-        dt = t(2)-t(1);
-        dt120 = round(0.5/dt); % heart rate < 120 bpm
-        
+         
         % smooth noisy pulse oximetry data to detect peaks
         w = gausswin(dt120,1);
         sc = conv(c, w, 'same');
@@ -96,8 +104,6 @@ case 'oxy_old'
         %courtesy of Steffen Bollmann, KiSpi Zurich
         case 'oxy'
         c = c-mean(c); c = c./std(c); % normalize time series
-        dt = t(2)-t(1);
-        dt120 = round(0.5/dt); % heart rate < 120 bpm
         
         
         % DEBUG
