@@ -114,18 +114,30 @@ if verbose.level >= 1
         tapas_physio_plot_raw_physdata_diagnostics(ons_secs.cpulse, ons_secs.r, thresh.cardiac.posthoc_cpulse_select);
 end
 
-%% 4. Create RETROICOR regressors for SPM
-switch upper(model.type)
-    case 'RETROICOR'
-        [cardiac_sess, respire_sess, mult_sess, verbose, ...
-            c_sample_phase, r_sample_phase] = ...
+% filter respiratory signal
+ons_secs.fr = tapas_physio_filter_respiratory(ons_secs.r, log_files.sampling_interval);
+ 
+
+%% 4. Create RETROICOR/response function regressors for SPM
+if any(strfind(upper(model.type),'RETROICOR'))
+       [cardiac_sess, respire_sess, mult_sess, ons_secs, verbose] = ...
             tapas_physio_create_retroicor_regressors(ons_secs, sqpar, thresh, ...
-            model.order, verbose);
-            ons_secs.c_sample_phase = c_sample_phase;
-            ons_secs.r_sample_phase = r_sample_phase;
-    otherwise
-        error('Please valid specify model.type');
+            model.order, verbose);   
+else
+    cardiac_sess = [];
+    respire_sess = [];
+    mult_sess = [];
 end
+
+% create a heart-rate variability regressor using the cardiac response 
+% function
+if any(strfind(upper(model.type),'HRV'))
+    [convHRV, ons_secs.hr] = tapas_physio_create_hrv_regressor(...
+        ons_secs, sqpar);
+else
+    convHRV = [];
+end
+
 
 % 4.1.  Load other confound regressors, e.g. realigment parameters
 if isfield(model, 'input_other_multiple_regressors') && ~isempty(model.input_other_multiple_regressors)
@@ -140,8 +152,13 @@ end
 [R, verbose] = tapas_physio_orthogonalise_physiological_regressors(cardiac_sess, respire_sess, ...
     mult_sess, input_R, model.order.orthogonalise, verbose);
 
-% 4.3   Save Multiple Regressors file for SPM
+R = [R, convHRV];
 
+if isempty(R)
+        error('Please valid specify model.type');
+end
+
+% 4.3   Save Multiple Regressors file for SPM
 [fpfx, fn, fsfx] = fileparts(model.output_multiple_regressors);
 
 switch fsfx

@@ -1,5 +1,5 @@
 function [rpulset, pulset] = tapas_physio_filter_respiratory(rpulset,rsampint)
-% high-pass filters respiratory data.
+% band-pass filters respiratory data (0.1...5 Hz)
 %
 %   rpulset = tapas_physio_filter_respiratory(pulset,rsampint)
 %
@@ -15,6 +15,10 @@ function [rpulset, pulset] = tapas_physio_filter_respiratory(rpulset,rsampint)
 % COPYING or <http://www.gnu.org/licenses/>.
 %
 % $Id$
+if isempty(rpulset)
+    rpulset = [];
+    return;
+end
 
 rpulset=rpulset-rpulset(1);
 

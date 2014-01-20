@@ -63,7 +63,7 @@ else
     log_files.cardiac      = ''; % 'SCANPHYSLOG.log'; logfile with cardiac data
     log_files.respiration  = ''; % 'SCANPHYSLOG.log'; logfile with respiratory data
                                  %                    (same as .cardiac for Philips)
-  % log_files.sampling_interval = [];   % in seconds, 2e-3 for Philips, variable for GE,
+    log_files.sampling_interval = 2e-3;   % in seconds, 2e-3 for Philips, variable for GE,
                                         % e.g. 40e-3
  
                                         
@@ -162,7 +162,7 @@ else
                                                 %   'r' or 'resp'     - only respiration regressors are orthogonalised
                                                 %   'mult'            - only multiplicative regressors are orthogonalised
                                                 %   'all'             - all physiological regressors are orthogonalised to each other
-
+    model.R = [];                               % output design matrix of confound regressors, saved in 'multiple_regressors.mat'
                                                 
     %% verbose
     % determines how many figures shall be generated to follow the workflow
@@ -217,13 +217,25 @@ else
     % all elements but .raw are cropped to the acquisition window of
     % interest
     ons_secs                     = [];
-    ons_secs.c              	 = [];  % raw cardiac waveform (ECG or PPU)
-    ons_secs.r              	 = [];  % raw respiration volume time course
+    
+    % read-in data
     ons_secs.t              	 = [];  % time vector corresponding to c and r
+    ons_secs.c              	 = [];  % raw cardiac waveform (ECG or PPU)
+    ons_secs.r              	 = [];  % raw respiration amplitude time course
+    
+    % processed elements cardiac pulse detecion and phase estimations
     ons_secs.cpulse         	 = [];  % onset times of cardiac pulse events (e.g. R-peaks)
+    ons_secs.c_sample_phase      = [];  % phase in heart-cycle when each slice of each volume was acquired 
+    ons_secs.fr                  = [];  % filtered respiration amplitude time series
+    ons_secs.hr                  = [];  % [nScans,1] estimated heart rate at each scan
+    ons_secs.c_sample_phase      = [];  % phase in respiratory cycle when each slice of each volume was acquired 
+    
+    % scan timing parameters
     ons_secs.svolpulse      	 = [];  % [Nscans x 1] onset times of volume scan events
     ons_secs.spulse         	 = [];  % [Nscans*Nslices x 1] onset times of slice (incl. volume) scan events
     ons_secs.spulse_per_vol 	 = [];  % cell(Nscans,1), as spulse, holding slice scan events sorted by volume
+    
+    % uncropped parameters
     ons_secs.raw            	 = [];  % raw read-in version of the whole structure, before any cropping
 end
 

@@ -1,4 +1,5 @@
-function [cardiac_sess, respire_sess, mult_sess, verbose, c_sample_phase, r_sample_phase] ...
+function [cardiac_sess, respire_sess, mult_sess, ons_secs, verbose, ...
+    c_sample_phase, r_sample_phase] ...
     = tapas_physio_create_retroicor_regressors(ons_secs, sqpar, thresh, order, verbose) 
 % calculation of regressors for physiological motion correction using RETROICOR (Glover, MRM, 2000)
 %
@@ -72,7 +73,7 @@ else
 end
 
 if order.r
-    fr = tapas_physio_filter_respiratory(r,rsampint);
+    fr = ons_secs.fr; 
     
     if verbose.level >=3
         [r_phase, verbose.fig_handles(end+1)] = ...
@@ -96,6 +97,9 @@ if order.cr
 else
     mult_sess = [];
 end
+
+ons_secs.c_sample_phase = c_sample_phase;
+ons_secs.r_sample_phase = r_sample_phase;
 
 subj='';
 %% plot cardiac & resp. regressors
