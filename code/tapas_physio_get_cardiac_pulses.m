@@ -153,10 +153,10 @@ case 'oxy_old'
         if signalQualityIsBad
             %build template based on the guessed peaks
             halfTemplateWidthInSeconds = 0.2;
-            halfTempalteWithInSamples = halfTemplateWidthInSeconds / dt;
+            halfTemplateWithInSamples = halfTemplateWidthInSeconds / dt;
             for n=2:numel(cpulseSecondGuess)-2
-                startTemplate = cpulseSecondGuess(n)-halfTempalteWithInSamples;
-                endTemplate = cpulseSecondGuess(n)+halfTempalteWithInSamples;
+                startTemplate = cpulseSecondGuess(n)-halfTemplateWithInSamples;
+                endTemplate = cpulseSecondGuess(n)+halfTemplateWithInSamples;
                 
                 template(n,:) = c(startTemplate:endTemplate);
             end
@@ -189,11 +189,11 @@ case 'oxy_old'
             end
             
             %determine starting peak for the search
-            forStart=2*halfTempalteWithInSamples+1;
+            forStart=2*halfTemplateWithInSamples+1;
             forEnd=cpulseSecondGuess(20);
             for n=forStart:forEnd
-                startSignalIndex=n-halfTempalteWithInSamples;
-                endSignalIndex=n+halfTempalteWithInSamples;
+                startSignalIndex=n-halfTemplateWithInSamples;
+                endSignalIndex=n+halfTemplateWithInSamples;
                 
                 signalPart = c(startSignalIndex:endSignalIndex);
                 correlation = corrcoef(signalPart,pulseCleanedTemplate);
@@ -217,10 +217,10 @@ case 'oxy_old'
             similarityToTemplate=zeros(size(t),1);
             
             searchStepsTotal=round(0.5*averageHeartRateInSamples);
-            while n > 1+searchStepsTotal+halfTempalteWithInSamples
+            while n > 1+searchStepsTotal+halfTemplateWithInSamples
                 for searchPosition=-searchStepsTotal:1:searchStepsTotal
-                    startSignalIndex=n-halfTempalteWithInSamples+searchPosition;
-                    endSignalIndex=n+halfTempalteWithInSamples+searchPosition;
+                    startSignalIndex=n-halfTemplateWithInSamples+searchPosition;
+                    endSignalIndex=n+halfTemplateWithInSamples+searchPosition;
                     
                     signalPart = c(startSignalIndex:endSignalIndex);
                     correlation = corrcoef(signalPart,pulseCleanedTemplate);
@@ -281,16 +281,16 @@ case 'oxy_old'
             %deviating from the initial starting point by a gaussian
             searchStepsTotal=round(0.5*averageHeartRateInSamples);
             
-            if n< searchStepsTotal+halfTempalteWithInSamples+1
-                n=searchStepsTotal+halfTempalteWithInSamples+1;
+            if n< searchStepsTotal+halfTemplateWithInSamples+1
+                n=searchStepsTotal+halfTemplateWithInSamples+1;
             end
             
-            while n < size(c,1)-searchStepsTotal-halfTempalteWithInSamples
+            while n < size(c,1)-searchStepsTotal-halfTemplateWithInSamples
                 %search around peak
                 
                 for searchPosition=-searchStepsTotal:1:searchStepsTotal
-                    startSignalIndex=n-halfTempalteWithInSamples+searchPosition;
-                    endSignalIndex=n+halfTempalteWithInSamples+searchPosition;
+                    startSignalIndex=n-halfTemplateWithInSamples+searchPosition;
+                    endSignalIndex=n+halfTemplateWithInSamples+searchPosition;
                     
                     signalPart = c(startSignalIndex:endSignalIndex);
                     correlation = corrcoef(signalPart,pulseCleanedTemplate);
