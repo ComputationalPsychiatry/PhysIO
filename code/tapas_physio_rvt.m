@@ -1,5 +1,5 @@
-function [rvt, rpulseMax, rpulseMin] = ...
-    tapas_physio_rvt(fr, t)
+function [rvt, rpulseMax, rpulseMin, verbose] = ...
+    tapas_physio_rvt(fr, t, sample_points, verbose)
 % computes respiratory volume per time from filtered time series
 %
 %    [rvt, rpulseMax, rpulseMin] = tapas_physio_rvt(fr, t)
@@ -18,7 +18,8 @@ function [rvt, rpulseMax, rpulseMin] = ...
 %
 % IN
 %   fr     filtered respiratory amplitude time series
-%   t       vector of time points (seconds) heart rate should be calculated
+%   t      time vector for fr
+%   sample_points       vector of time points (seconds) respiratory volume/time should be calculated
 % OUT
 %   rvt         respiratory volume per time vector
 %   rpulseMax   vector of maximum inhalation time points
@@ -40,7 +41,6 @@ function [rvt, rpulseMax, rpulseMin] = ...
 %
 % $Id: tapas_physio_hr.m 354 2013-12-02 22:21:41Z kasperla $
 
-n = length(t);
 
 dt = t(2)-t(1);
 dtBreath = round(2/dt); %in seconds, minimum distance between two breaths
@@ -50,22 +50,58 @@ dtBreath = round(2/dt); %in seconds, minimum distance between two breaths
 thresh_cardiac = [];
 thresh_cardiac.min = .1; 
 
-verbose.level = 2;
-verbose.fig_handles = [];
+if nargin < 4
+    verbose.level = 0;
+    verbose.fig_handles = [];
+end
 
 rpulseMax = tapas_physio_get_cardiac_pulses(t, fr, ...
 thresh_cardiac,'OXY', dtBreath, verbose);
 rpulseMin = tapas_physio_get_cardiac_pulses(t, -fr, ...
 thresh_cardiac,'OXY', dtBreath, verbose);
+nMax = numel(rpulseMax);
+nMin = numel(rpulseMin);
+maxFr = max(abs(fr));
 
-if verbose.level 
-    figure('Name', 'Respiratory Volume per Time');
+if verbose.level>=3 
+    verbose.fig_handles(end+1) = figure('Name', 'Respiratory Volume per Time');
     plot(t,fr, 'g'); hold all;
-    stem(rpulseMax, ones(size(rpulseMax)),'b');
-    stem(rpulseMin, -ones(size(rpulseMin)),'r');
+    stem(rpulseMax, maxFr*ones(nMax,1),'b');
+    stem(rpulseMin, -maxFr*ones(nMin,1),'r');
 end
 
-rvt = zeros(size(t));
-%for i = 1:n
-%
-%end
+nSamples = length(sample_points);
+rv = zeros(nSamples,1);
+rvt = rv;
+
+for iSample = 1:nSamples
+    ts = sample_points(iSample);
+    
+    [~,iPulseMax] = min(abs(rpulseMax-ts));
+    [~,iPulseMin] = min(abs(rpulseMin-ts)); % could be previous or next exhalation...
+    tInhale = rpulseMax(iPulseMax);
+    tExhale = rpulseMin(iPulseMin);
+    
+    [~, iInhale] = min(abs(t-tInhale));
+    [~, iExhale] = min(abs(t-tExhale));
+    rv(iSample) = abs(fr(iInhale)-fr(iExhale));
+    % find next inhalation max and compute time till then
+    % (or previous, if already at the end)
+    if iPulseMax < nMax
+        TBreath = abs(tInhale - rpulseMax(iPulseMax+1));
+    else
+        TBreath = tInhale - rpulseMax(iPulseMax-1);
+    end
+    
+    rvt(iSample) = rv(iSample)/TBreath;
+    
+   
+end
+
+if verbose.level >=3
+    plot(sample_points,rv,'k+');
+    plot(sample_points,rvt,'kd');
+    legend('filtered breathing signal', 'max inhale', 'max exhale', ...
+        'Respiratory volume (RV) at sample points', ...
+        'RV per time at sample points');
+end

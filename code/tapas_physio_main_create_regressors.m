@@ -132,8 +132,8 @@ end
 % create a heart-rate variability regressor using the cardiac response 
 % function
 if any(strfind(upper(model.type),'HRV'))
-    [convHRV, ons_secs.hr] = tapas_physio_create_hrv_regressor(...
-        ons_secs, sqpar);
+    [convHRV, ons_secs.hr, verbose] = tapas_physio_create_hrv_regressor(...
+        ons_secs, sqpar, verbose);
 else
     convHRV = [];
 end
@@ -141,8 +141,8 @@ end
 % create a respiratory volume/time regressor using the cardiac response 
 % function
 if any(strfind(upper(model.type),'RVT'))
-    [convRVT, ons_secs.rvt] = tapas_physio_create_rvt_regressor(...
-        ons_secs, sqpar);
+    [convRVT, ons_secs.rvt, verbose] = tapas_physio_create_rvt_regressor(...
+        ons_secs, sqpar, verbose);
 else
     convRVT = [];
 end
@@ -160,7 +160,7 @@ end
 [R, verbose] = tapas_physio_orthogonalise_physiological_regressors(cardiac_sess, respire_sess, ...
     mult_sess, input_R, model.order.orthogonalise, verbose);
 
-R = [R, convHRV];
+R = [R, convHRV, convRVT];
 
 if isempty(R)
         error('Please valid specify model.type');

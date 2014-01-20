@@ -1,4 +1,5 @@
-function [convRVT, rvt] = tapas_physio_create_rvt_regressor(ons_secs, sqpar )
+function [convRVT, rvt, verbose] = tapas_physio_create_rvt_regressor(...
+    ons_secs, sqpar, verbose)
 % computes respiratory response function regressor and respiratory volume per time 
 %
 %    [convHRV, hr] = tapas_physio_create_rvt_regressor(ons_secs, sqpar )
@@ -33,26 +34,30 @@ function [convRVT, rvt] = tapas_physio_create_rvt_regressor(ons_secs, sqpar )
 % COPYING or <http://www.gnu.org/licenses/>.
 %
 % $Id: tapas_physio_create_hrv_regressor.m 354 2013-12-02 22:21:41Z kasperla $
-DEBUG = true;
+if nargin < 3
+    verbose.level = 0;
+    verbose.fig_handles = [];
+end
 
 slicenum = 1:sqpar.Nslices;
 
 sample_points  = tapas_physio_get_sample_points(ons_secs, sqpar, slicenum);
-rvt = tapas_physio_rvt(ons_secs.fr, ons_secs.t);
+rvt = tapas_physio_rvt(ons_secs.fr, ons_secs.t, sample_points, verbose);
+rvt = rvt/max(rvt); % normalize for reasonable range of regressor
 
-if DEBUG
-    figure;
+if verbose.level >=2
+    verbose.fig_handles(end+1) = figure('Name', 'Convolution Respiration RVT X RRF');
     subplot(2,2,1)
     plot(sample_points,rvt);xlabel('time (seconds)');ylabel('respiratory volume per time (a. u.)');
 end
 
 % create convolution for whole time series first...
 dt = sqpar.TR/sqpar.Nslices;
-t = 0:dt:32; % 32 seconds regressor
+t = 0:dt:50; % 50 seconds regressor
 rrf = tapas_physio_rrf(t);
 rrf = rrf/max(abs(rrf));
 % crf = spm_hrf(dt);
-if DEBUG
+if verbose.level >= 2
     subplot(2,2,2)
     plot(t, rrf);xlabel('time (seconds)');ylabel('respiratory response function');
 end
@@ -61,7 +66,7 @@ end
 % at the 1st and last scans of the session due to convolution
 convRVT = conv(rvt-mean(rvt), rrf, 'same');
 
-if DEBUG
+if verbose.level >= 2
     subplot(2,2,3)
     plot(sample_points, convRVT);xlabel('time (seconds)');ylabel('resp vol time X resp response function');
 end
@@ -72,10 +77,10 @@ rvt = rvt(sqpar.onset_slice:sqpar.Nslices:end);
 convRVT = convRVT(sqpar.onset_slice:sqpar.Nslices:end);
 sample_points = sample_points(sqpar.onset_slice:sqpar.Nslices:end);
 
-if DEBUG
+if verbose.level >= 2
     subplot(2,2,4)
     plot(sample_points, convRVT); hold all;
     plot(sample_points, rvt);
     xlabel('time (seconds)');ylabel('regessor');
-    legend('respiratory response regressor', 'respiratory volume time (bpm)');
+    legend('respiratory response regressor', 'respiratory volume time (a. u.)');
 end

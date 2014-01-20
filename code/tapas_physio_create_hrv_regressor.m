@@ -1,4 +1,5 @@
-function [convHRV, hr] = tapas_physio_create_hrv_regressor(ons_secs, sqpar )
+function [convHRV, hr, verbose] = tapas_physio_create_hrv_regressor(...
+    ons_secs, sqpar, verbose)
 % computes cardiac response function regressor and heart rate
 %
 %    [convHRV, hr] = tapas_physio_create_hrv_regressor(ons_secs, sqpar )
@@ -30,15 +31,18 @@ function [convHRV, hr] = tapas_physio_create_hrv_regressor(ons_secs, sqpar )
 % COPYING or <http://www.gnu.org/licenses/>.
 %
 % $Id$
-DEBUG = true;
+if nargin < 3
+    verbose.level = [];
+    verbose.fig_handles = [];
+end
 
 slicenum = 1:sqpar.Nslices;
 
 sample_points  = tapas_physio_get_sample_points(ons_secs, sqpar, slicenum);
 hr = tapas_physio_hr(ons_secs.cpulse, sample_points);
 
-if DEBUG
-    figure;
+if verbose.level>=2
+    verbose.fig_handles(end+1) = figure('Name', 'Regressors Heart Rate: HRV X CRF');
     subplot(2,2,1)
     plot(sample_points,hr);xlabel('time (seconds)');ylabel('heart rate (bpm)');
 end
@@ -49,7 +53,7 @@ t = 0:dt:32; % 32 seconds regressor
 crf = tapas_physio_crf(t);
 crf = crf/max(abs(crf));
 % crf = spm_hrf(dt);
-if DEBUG
+if verbose.level>=2
     subplot(2,2,2)
     plot(t, crf);xlabel('time (seconds)');ylabel('cardiac response function');
 end
@@ -58,7 +62,7 @@ end
 % at the 1st and last scans of the session due to convolution
 convHRV = conv(hr-mean(hr), crf, 'same');
 
-if DEBUG
+if verbose.level>=2
     subplot(2,2,3)
     plot(sample_points, convHRV);xlabel('time (seconds)');ylabel('heart rate X cardiac response function');
 end
@@ -69,7 +73,7 @@ hr = hr(sqpar.onset_slice:sqpar.Nslices:end);
 convHRV = convHRV(sqpar.onset_slice:sqpar.Nslices:end);
 sample_points = sample_points(sqpar.onset_slice:sqpar.Nslices:end);
 
-if DEBUG
+if verbose.level>=2
     subplot(2,2,4)
     plot(sample_points, convHRV); hold all;
     plot(sample_points, hr);
