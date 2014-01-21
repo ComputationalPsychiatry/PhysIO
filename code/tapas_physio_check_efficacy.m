@@ -40,6 +40,7 @@ subjectIndices = 1:length(scans);
 delete(fileReport);
 addpath(pathPhysIO);
 addpath(pathSPM);
+spm('defaults', 'fMRI');
 spm_jobman('initcfg');
 
 for s = subjectIndices
