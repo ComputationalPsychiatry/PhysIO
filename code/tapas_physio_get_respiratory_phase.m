@@ -1,4 +1,5 @@
-function [rphase, fh] = tapas_physio_get_respiratory_phase(pulset,rsampint, verbose, thresh)
+function [rphase, fh] = tapas_physio_get_respiratory_phase(pulset,rsampint,...
+    verbose, thresh)
 
 % get_respiratory_phase is a function for creating respiratory phase regressor.
 % from physiological monitoring files acquired using spike, that
@@ -39,6 +40,10 @@ function [rphase, fh] = tapas_physio_get_respiratory_phase(pulset,rsampint, verb
 % $Id$
 
 %% get histogram of amplitudes of breathing belt signal
+if nargin < 3
+    verbose = false;
+end
+
 correct_resp_overshoot = (nargin > 3) && isfield(thresh, 'resp_max') && ~isempty(thresh.resp_max);
     
 if correct_resp_overshoot

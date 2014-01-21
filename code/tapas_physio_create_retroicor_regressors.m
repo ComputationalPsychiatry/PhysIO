@@ -1,6 +1,6 @@
 function [cardiac_sess, respire_sess, mult_sess, ons_secs, verbose, ...
     c_sample_phase, r_sample_phase] ...
-    = tapas_physio_create_retroicor_regressors(ons_secs, sqpar, thresh, order, verbose) 
+    = tapas_physio_create_retroicor_regressors(ons_secs, sqpar, order, verbose) 
 % calculation of regressors for physiological motion correction using RETROICOR (Glover, MRM, 2000)
 %
 % USAGE:
@@ -26,9 +26,6 @@ function [cardiac_sess, respire_sess, mult_sess, ons_secs, verbose, ...
 %            onset_slice    - slice whose scan onset determines the adjustment of the 
 %                             regressor timing to a particular slice for the whole volume
 %
-%   thresh
-%           .resp_max       -  if set, all peaks above that breathing belt amplitude 
-%                              are ignored for respiratory phase evaluation
 %
 % -------------------------------------------------------------------------
 % Lars Kasper, March 2012
@@ -50,13 +47,12 @@ cpulse          = ons_secs.cpulse;
 r               = ons_secs.r;
 spulse          = ons_secs.spulse;
 t               = ons_secs.t;
-slicenum        = sqpar.onset_slice;
 
 %parameters for resampling
 rsampint    = t(2)-t(1);
 
 %% Get phase, downsample and Fourier-expand
-sample_points   = tapas_physio_get_sample_points(ons_secs, sqpar, slicenum);
+sample_points   = tapas_physio_get_sample_points(ons_secs, sqpar);
 
 if order.c
     if verbose.level >= 3
@@ -78,9 +74,9 @@ if order.r
     if verbose.level >=3
         [r_phase, verbose.fig_handles(end+1)] = ...
             tapas_physio_get_respiratory_phase( ...
-                fr,rsampint, verbose.level, thresh);
+                fr,rsampint, verbose.level);
     else
-        r_phase = tapas_physio_get_respiratory_phase(fr,rsampint, 0, thresh);
+        r_phase = tapas_physio_get_respiratory_phase(fr,rsampint, 0);
     end
     r_sample_phase  = tapas_physio_downsample_phase(t, r_phase, sample_points, rsampint);
     respire_sess    = tapas_physio_get_fourier_expansion(r_sample_phase,order.r);
