@@ -33,7 +33,7 @@ function [convRVT, rvt, verbose] = tapas_physio_create_rvt_regressor(...
 % (either version 3 or, at your option, any later version). For further details, see the file
 % COPYING or <http://www.gnu.org/licenses/>.
 %
-% $Id: tapas_physio_create_hrv_regressor.m 354 2013-12-02 22:21:41Z kasperla $
+% $Id$
 if nargin < 3
     verbose.level = 0;
     verbose.fig_handles = [];

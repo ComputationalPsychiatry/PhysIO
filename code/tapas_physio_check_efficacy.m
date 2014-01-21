@@ -10,7 +10,10 @@
 % (either version 3 or, at your option, any later version). For further details, see the file
 % COPYING or <http://www.gnu.org/licenses/>.
 %
-% $Id: tapas_physio_cardiac_detect_outliers.m 354 2013-12-02 22:21:41Z kasperla $
+% $Id$
+
+%% ========================================================================
+% START #MOD
 
 % general paths study
 pathSPM         = '~/code/matlab/spm12b';
@@ -21,11 +24,15 @@ fileReport      = '~/PhysIOTest.ps'; % where contrast maps are saved
 nSess = 1;
 
 % subject directories to be included into analysis
-dirData  = '';
-dirScans = '/cluster/scratch_xl/shareholder/klaas/dandreea/IOIO/data';
-maskScans = 'F_*';
-maskGLM = '/signedPE';
-maskStructural = 'spm_pre/struct/1_2';
+dirData         = '';
+dirScans        = '/cluster/scratch_xl/shareholder/klaas/dandreea/IOIO/data';
+maskScans       = 'F_*';
+maskGLM         = '/signedPE';
+maskStructural  = 'spm_pre/struct/1_2';
+
+% END #MOD
+%% ========================================================================
+
 scans = dir(fullfile(dirScans,maskScans));
 scans = {scans.name};
 subjectIndices = 1:length(scans);
