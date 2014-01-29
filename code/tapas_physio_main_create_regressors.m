@@ -94,10 +94,20 @@ end
 switch thresh.cardiac.posthoc_cpulse_select.method
     case {'manual'}
     % additional manual fill-in of more missed pulses
-    [ons_secs, outliersHigh, outliersLow] = tapas_physio_correct_cardiac_pulses_manually(ons_secs,thresh.cardiac.posthoc_cpulse_select);
+    [ons_secs, outliersHigh, outliersLow] = ...
+        tapas_physio_correct_cardiac_pulses_manually(ons_secs, ...
+        thresh.cardiac.posthoc_cpulse_select);
     case {'load'}
-        osload = load(thresh.cardiac.posthoc_cpulse_select.file, 'ons_secs');
-        ons_secs = osload.ons_secs;
+        hasPostocLogFile = exist(thresh.cardiac.posthoc_cpulse_select.file, 'file');
+        
+        if hasPostocLogFile % load or set selection to manual, if no file exists
+            osload = load(thresh.cardiac.posthoc_cpulse_select.file, 'ons_secs');
+            ons_secs = osload.ons_secs;
+        else
+            [ons_secs, outliersHigh, outliersLow] = ...
+                tapas_physio_correct_cardiac_pulses_manually(ons_secs,...
+            thresh.cardiac.posthoc_cpulse_select);  
+        end
     case {'off', ''}
 end
 

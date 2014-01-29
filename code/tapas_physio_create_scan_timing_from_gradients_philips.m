@@ -167,7 +167,11 @@ t=((0:(Nsamples-1))*dt)';
     if verbose.level>=1
         verbose.fig_handles(end+1) = tapas_physio_get_default_fig_params();
         set(gcf,'Name', 'Thresholding Gradient for slice acq start detection');
-        fs(1) = subplot(2,1,1);
+        fs(1) = subplot(3,1,1);
+        plot(t, y(:,7:9));
+        legend('gradient x', 'gradient y', 'gradient z');
+        title('Raw Gradient Time-courses');
+        fs(2) = subplot(3,1,2);
         hp = plot(t,[gradient_choice z2]); hold all;
         hp(end+1) = plot(t, repmat(thresh.zero, length(t),1));
         hp(end+1) = plot(t, repmat(thresh.slice, length(t),1));
@@ -212,13 +216,15 @@ t=((0:(Nsamples-1))*dt)';
         hp(end+1) = stem(t(LOCS),max(gradient_choice)*ones(size(LOCS))); hold all
         lg = {lg{:}, 'found volume events', 'found slice events'};
         legend(hp, lg);
-        ymin = tapas_physio_prctile(diff(LOCS), 25);
-        ymax = tapas_physio_prctile(diff(LOCS), 99);
         
-        fs(2) = subplot(2,1,2);
-        plot(t(LOCS(1:end-1)), diff(LOCS)); title('duration betwenn scan events - search for bad peaks here!');
-        xlabel('t(s)');
-        ylabel('t(ms)');
+        dLocsSecs = diff(LOCS)*dt*1000;
+        ymin = tapas_physio_prctile(dLocsSecs, 25);
+        ymax = tapas_physio_prctile(dLocsSecs, 99);
+        
+        fs(3) = subplot(3,1,3);
+        plot(t(LOCS(1:end-1)), dLocsSecs); title('duration betwenn scan events - search for bad peaks here!');
+        xlabel('t (s)');
+        ylabel('t (ms)');
         ylim([0.9*ymin, 1.1*ymax]);
         linkaxes(fs,'x');
     end
