@@ -98,7 +98,8 @@ switch thresh.cardiac.posthoc_cpulse_select.method
         tapas_physio_correct_cardiac_pulses_manually(ons_secs, ...
         thresh.cardiac.posthoc_cpulse_select);
     case {'load'}
-        hasPostocLogFile = exist(thresh.cardiac.posthoc_cpulse_select.file, 'file');
+        hasPostocLogFile = exist(thresh.cardiac.posthoc_cpulse_select.file, 'file') || ...
+            exist([thresh.cardiac.posthoc_cpulse_select.file '.mat'], 'file');
         
         if hasPostocLogFile % load or set selection to manual, if no file exists
             osload = load(thresh.cardiac.posthoc_cpulse_select.file, 'ons_secs');

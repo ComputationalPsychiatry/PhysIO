@@ -399,7 +399,8 @@ switch lower(cardiac_modality)
         
         % manual peak selection, if no file selected and loading is
         % specified
-        hasKrpeakLogfile = exist(thresh_cardiac.file,'file');
+        hasKrpeakLogfile = exist(thresh_cardiac.file,'file') || ...
+            exist([thresh_cardiac.file '.mat'],'file');
         if ~hasKrpeakLogfile && strcmp(thresh_cardiac.method, 'load');
             do_manual_peakfind = true;
         end

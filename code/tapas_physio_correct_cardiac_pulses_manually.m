@@ -100,7 +100,10 @@ close(fh);
 close(fh);
 % recursively determine outliers
 if ~isempty(outliersHigh) || ~isempty(outliersLow)
-    [ons_secs, outliersHigh, outliersLow] = tapas_physio_correct_cardiac_pulses_manually(ons_secs,thresh_cardiac);
+     doManualCorrectionAgain = input('More outliers detected after correction. Do you want to remove them? (1=yes, 0=no; ENTER)');
+    if doManualCorrectionAgain
+        [ons_secs, outliersHigh, outliersLow] = tapas_physio_correct_cardiac_pulses_manually(ons_secs,thresh_cardiac);
+    end
 end
 
 cpulse = ons_secs.cpulse;
