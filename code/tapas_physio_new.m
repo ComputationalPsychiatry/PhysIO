@@ -47,6 +47,8 @@ if ~nargin
     default_scheme = 'empty';
 end
 
+ons_secs = [];
+
 if nargin >= 2
     log_files   = physio_in.log_files;
     thresh  = physio_in.thresh;
