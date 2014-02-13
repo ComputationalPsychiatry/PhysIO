@@ -64,7 +64,9 @@ end
 %% 2. Create scan timing nominally or from gradient time-course
 % the latter is only necessary, if no patch is used and therefore no scan event
 % triggers are written into the last column of the scanphyslog-file
-if isempty(thresh.scan_timing)
+useNominal = isempty(thresh.scan_timing) || ...
+    strcmpi(thresh.scan_timing, 'nominal');
+if useNominal
     [VOLLOCS, LOCS] = tapas_physio_create_nominal_scan_timing(ons_secs.t, sqpar);
 else
     [VOLLOCS, LOCS, verbose] = tapas_physio_create_scan_timing_from_gradients_philips( ...
@@ -174,7 +176,7 @@ end
 R = [R, convHRV, convRVT];
 
 if isempty(R)
-        error('Please valid specify model.type');
+        error('Please specify valid model.type');
 end
 
 % 4.3   Save Multiple Regressors file for SPM

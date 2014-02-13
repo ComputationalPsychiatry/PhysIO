@@ -1,19 +1,23 @@
-function [c, r, t, cpulse] = tapas_physio_read_physlogfiles_philips(logfile, cardiac_modality)
+function [c, r, t, cpulse] = tapas_physio_read_physlogfiles_philips(log_files, cardiac_modality)
 % reads out physiological time series and timing vector depending on the
 % MR scanner vendor and the modality of peripheral cardiac monitoring (ECG
 % or pulse oximetry)
 %
-%   [cpulse, rpulse, t, c] = tapas_physio_read_physlogfiles_philips(logfile, vendor, cardiac_modality)
+%   [c, r, t, cpulse] = tapas_physio_read_physlogfiles_philips(logfile, vendor, cardiac_modality)
 %
 % IN
-%   logfile             Philips scanphyslogfile (including path): 'SCANPHYSLOG_XXXXXXX.log';
-%   cardiac_modality    'ECG' for ECG, 'OXY' for pulse oximetry
+%   log_files                   tapas.log_files; see also tapas_physio_new
+%           .respiratory
+%           .cardiac
+%           .sampling_interval
+%           .startScanSeconds
+%   cardiac_modality    'ECG' for ECG, 'OXY'/'PPU' for pulse oximetry
 %
 % OUT
-%   cpulse              time events of R-wave peak in cardiac time series (seconds)
-%   rpulse              respiratory time series
-%   t                   vector of time points (in seconds)
 %   c                   cardiac time series (ECG or pulse oximetry)
+%   r                   respiratory time series
+%   t                   vector of time points (in seconds)
+%   cpulse              time events of R-wave peak in cardiac time series (seconds)
 %
 % EXAMPLE
 %   [ons_secs.cpulse, ons_secs.rpulse, ons_secs.t, ons_secs.c] =
@@ -33,12 +37,24 @@ function [c, r, t, cpulse] = tapas_physio_read_physlogfiles_philips(logfile, car
 % $Id$
 
 %% read out values
+if ~isempty(log_files.cardiac)
+    logfile = log_files.cardiac;
+else
+    logfile = log_files.respiratory;
+end
+
 [z{1:10}]=textread(logfile,'%d %d %d %d %d %d %d %d %d %d','commentstyle', 'shell');
 y = cell2mat(z);
 
 Nsamples=size(y,1);
 
-dt = 2e-3; %500 Hz sampling frequency
+dt = log_files.sampling_interval; 
+
+%default: 500 Hz sampling frequency
+if isempty(dt)
+    dt = 2e-3;
+end
+
 t=((0:(Nsamples-1))*dt)'; 
 
 
@@ -59,7 +75,7 @@ switch lower(cardiac_modality)
         c = y(:,3);
     case {'ecg_raw'}
         c = y(:,1);
-    case {'oxy','oxyge'}
+    case {'oxy','oxyge', 'ppu'}
         c = y(:,5);
 end
 

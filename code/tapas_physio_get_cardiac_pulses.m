@@ -8,7 +8,7 @@ function [cpulse, verbose] = tapas_physio_get_cardiac_pulses(t, c, thresh_cardia
 %   t                  vector of time series of log file (in seconds, corresponds to c)
 %   c                  raw time series of ECG or pulse oximeter
 %   thresh_cardiac      is a structure with the following elements
-%           .modality - 'ecg' or 'oxy'; ECG or Pulse oximeter used?
+%           .modality - 'ecg' or 'oxy'/'ppu'; ECG or Pulse oximeter used?
 %           .min -     - for modality 'ECG': [percent peak height of sample QRS wave]
 %                      if set, ECG heartbeat event is calculated from ECG
 %                      timeseries by detecting local maxima of
@@ -56,13 +56,12 @@ function [cpulse, verbose] = tapas_physio_get_cardiac_pulses(t, c, thresh_cardia
 
 %% detection of cardiac R-peaks
 
-% debug=true;
+debug=verbose.level > 3;
 
 dt = t(2)-t(1);
 if nargin < 5 || isempty(dt120)
     dt120 = round(0.5/dt); % heart rate < 120 bpm
 end
-debug=true;
 switch lower(cardiac_modality)
     case 'oxy_old'
         c = c-mean(c); c = c./max(c); % normalize time series
@@ -102,7 +101,7 @@ switch lower(cardiac_modality)
         
         
         %courtesy of Steffen Bollmann, KiSpi Zurich
-    case 'oxy'
+    case {'oxy','ppu'}
         c = c-mean(c); c = c./std(c); % normalize time series
         
         
@@ -214,7 +213,7 @@ switch lower(cardiac_modality)
             %now compute backwards to the beginning
             n=I_bestMatch;
             peakNumber = 1;
-            similarityToTemplate=zeros(size(t),1);
+            similarityToTemplate=zeros(size(t,1),1);
             
             searchStepsTotal=round(0.5*averageHeartRateInSamples);
             while n > 1+searchStepsTotal+halfTemplateWithInSamples

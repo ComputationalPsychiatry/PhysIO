@@ -64,7 +64,8 @@ nMin = numel(rpulseMin);
 maxFr = max(abs(fr));
 
 if verbose.level>=3 
-    verbose.fig_handles(end+1) = figure('Name', 'Respiratory Volume per Time');
+    verbose.fig_handles(end+1) = tapas_physio_get_default_fig_params();
+    set(gcf, 'Name', 'Respiratory Volume per Time');
     plot(t,fr, 'g'); hold all;
     stem(rpulseMax, maxFr*ones(nMax,1),'b');
     stem(rpulseMin, -maxFr*ones(nMin,1),'r');

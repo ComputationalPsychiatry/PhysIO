@@ -46,9 +46,10 @@ rvt = tapas_physio_rvt(ons_secs.fr, ons_secs.t, sample_points, verbose);
 rvt = rvt/max(rvt); % normalize for reasonable range of regressor
 
 if verbose.level >=2
-    verbose.fig_handles(end+1) = figure('Name', 'Convolution Respiration RVT X RRF');
+    verbose.fig_handles(end+1) = tapas_physio_get_default_fig_params();
+    set(gcf, 'Name', 'Convolution Respiration RVT X RRF');
     subplot(2,2,1)
-    plot(sample_points,rvt);xlabel('time (seconds)');ylabel('respiratory volume per time (a. u.)');
+    plot(sample_points,rvt, 'g');xlabel('time (seconds)');ylabel('respiratory volume per time (a. u.)');
 end
 
 % create convolution for whole time series first...
@@ -59,7 +60,7 @@ rrf = rrf/max(abs(rrf));
 % crf = spm_hrf(dt);
 if verbose.level >= 2
     subplot(2,2,2)
-    plot(t, rrf);xlabel('time (seconds)');ylabel('respiratory response function');
+    plot(t, rrf,'g');xlabel('time (seconds)');ylabel('respiratory response function');
 end
 
 % NOTE: the removal of the mean was implemented to avoid over/undershoots
@@ -68,7 +69,7 @@ convRVT = conv(rvt-mean(rvt), rrf, 'same');
 
 if verbose.level >= 2
     subplot(2,2,3)
-    plot(sample_points, convRVT);xlabel('time (seconds)');ylabel('resp vol time X resp response function');
+    plot(sample_points, convRVT,'g');xlabel('time (seconds)');ylabel('resp vol time X resp response function');
 end
 
 
@@ -79,8 +80,8 @@ sample_points = sample_points(sqpar.onset_slice:sqpar.Nslices:end);
 
 if verbose.level >= 2
     subplot(2,2,4)
-    plot(sample_points, convRVT); hold all;
-    plot(sample_points, rvt);
+    plot(sample_points, rvt,'k--');hold all;
+    plot(sample_points, convRVT,'g'); 
     xlabel('time (seconds)');ylabel('regessor');
     legend('respiratory response regressor', 'respiratory volume time (a. u.)');
 end

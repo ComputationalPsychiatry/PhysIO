@@ -42,9 +42,10 @@ sample_points  = tapas_physio_get_sample_points(ons_secs, sqpar, slicenum);
 hr = tapas_physio_hr(ons_secs.cpulse, sample_points);
 
 if verbose.level>=2
-    verbose.fig_handles(end+1) = figure('Name', 'Regressors Heart Rate: HRV X CRF');
+    verbose.fig_handles(end+1) = tapas_physio_get_default_fig_params();
+    set(gcf, 'Name', 'Regressors Heart Rate: HRV X CRF');
     subplot(2,2,1)
-    plot(sample_points,hr);xlabel('time (seconds)');ylabel('heart rate (bpm)');
+    plot(sample_points,hr,'r');xlabel('time (seconds)');ylabel('heart rate (bpm)');
 end
 
 % create convolution for whole time series first...
@@ -55,7 +56,7 @@ crf = crf/max(abs(crf));
 % crf = spm_hrf(dt);
 if verbose.level>=2
     subplot(2,2,2)
-    plot(t, crf);xlabel('time (seconds)');ylabel('cardiac response function');
+    plot(t, crf,'r');xlabel('time (seconds)');ylabel('cardiac response function');
 end
 
 % NOTE: the removal of the mean was implemented to avoid over/undershoots
@@ -64,7 +65,7 @@ convHRV = conv(hr-mean(hr), crf, 'same');
 
 if verbose.level>=2
     subplot(2,2,3)
-    plot(sample_points, convHRV);xlabel('time (seconds)');ylabel('heart rate X cardiac response function');
+    plot(sample_points, convHRV,'r');xlabel('time (seconds)');ylabel('heart rate X cardiac response function');
 end
 
 
@@ -75,8 +76,8 @@ sample_points = sample_points(sqpar.onset_slice:sqpar.Nslices:end);
 
 if verbose.level>=2
     subplot(2,2,4)
-    plot(sample_points, convHRV); hold all;
-    plot(sample_points, hr);
+    plot(sample_points, hr,'k--'); hold all;
+    plot(sample_points, convHRV,'r'); 
     xlabel('time (seconds)');ylabel('regessor');
     legend('cardiac response regressor', 'heart rate (bpm)');
 end

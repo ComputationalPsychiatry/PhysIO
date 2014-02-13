@@ -60,13 +60,45 @@ else
     
     %% log_files
     % structure containing general physiological log-file information
-    log_files.vendor       = ''; % 'Philips', 'GE', or 'Siemens', depending on your
-    %  MR Scanner system
+    log_files.vendor       = ''; % 'Philips', 'GE', ('Siemens') or 'Custom'
+    %                               'depending on your MR Scanner system
+                                 %
+                                 %  'Custom' expects the logfiles (separate files for cardiac and respiratory)
+                                 %  to be plain text, with one cardiac (or 
+                                 %  respiratory) sample per row; 
+                                 %  If heartbeat (R-wave peak) events are
+                                 %  recorded as well, they have to be put
+                                 %  as a 2nd column in the cardiac logfile
+                                 %  by specifying a 1; 0 in all other rows
+                                 %  e.g.:  
+                                 %      0.2  0
+                                 %      0.4  1 <- cardiac pulse event
+                                 %      0.2  0
+                                 %      -0.3 0
+                                 %
+                                 %
+                                 %  NOTE: the sampling interval has to be
+                                 %  specified for these files as well
+                                 %  (s.b.)
+                                
     log_files.cardiac      = ''; % 'SCANPHYSLOG.log'; logfile with cardiac data
     log_files.respiration  = ''; % 'SCANPHYSLOG.log'; logfile with respiratory data
     %                    (same as .cardiac for Philips)
     log_files.sampling_interval = 2e-3;   % in seconds, 2e-3 for Philips, variable for GE,
     % e.g. 40e-3
+    log_files.startScanSeconds = 0; % time (in seconds) when the 1st scan
+                                    % (or, if existing, dummy) started,
+                                    % relative to the start of the logfile
+                                    % recording;
+                                    % e.g.  0 if simultaneous start
+                                    %       10, if 1st scan starts 10
+                                    %       seconds AFTER physiological
+                                    %       recording
+                                    %       -20, if first scan started 20
+                                    %       seconds BEFORE phys recording
+                                    % NOTE: For Philips SCANPHYSLOG, this
+                                    % parameter is ignored, if
+                                    % thresh.scan_timing is set
     
     
     %% sqpar
@@ -95,8 +127,8 @@ else
     % determines thresholds used in preprocessing physiological logfiles,
     % either their timing (thresh.scan_timing) or the peripheral measures
     % itself (thresh.cardiac, thresh.respiration)
-    thresh.scan_timing = [];    % leave empty, if nominal scan timing,
-    % derived from sqpar, shall be used
+    thresh.scan_timing = [];    % leave empty or set to 'nominal', if nominal scan timing,
+                                % derived from sqpar, shall be used
     
     thresh.scan_timing.grad_direction = ''; % 'x', 'y', or 'z';
     % if set, sequence timing is calculated
@@ -114,7 +146,7 @@ else
     % leave [], if .vol-threshold shall be used
     
     thresh.cardiac = [];
-    thresh.cardiac.modality = ''; % 'ECG','ECG_raw', or 'OXY' (for pulse oximetry), 'OXY_OLD', [deprecated]
+    thresh.cardiac.modality = ''; % 'ECG','ECG_raw', or 'OXY'/'PPU' (for pulse oximetry), 'OXY_OLD', [deprecated]
     
     % The initial cardiac pulse selection structure: Determines how the
     % majority of cardiac pulses is detected
