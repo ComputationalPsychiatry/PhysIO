@@ -37,10 +37,13 @@ function [c, r, t, cpulse] = tapas_physio_read_physlogfiles_philips(log_files, c
 % $Id$
 
 %% read out values
-if ~isempty(log_files.cardiac)
+hasCardiac = ~isempty(log_files.cardiac);
+hasResp = ~isempty(log_files.respiration);
+
+if hasCardiac
     logfile = log_files.cardiac;
 else
-    logfile = log_files.respiratory;
+    logfile = log_files.respiration;
 end
 
 [z{1:10}]=textread(logfile,'%d %d %d %d %d %d %d %d %d %d','commentstyle', 'shell');
@@ -48,18 +51,18 @@ y = cell2mat(z);
 
 Nsamples=size(y,1);
 
-dt = log_files.sampling_interval; 
+dt = log_files.sampling_interval;
 
 %default: 500 Hz sampling frequency
 if isempty(dt)
     dt = 2e-3;
 end
 
-t=((0:(Nsamples-1))*dt)'; 
+t= -log_files.startScanSeconds + ((0:(Nsamples-1))*dt)';
 
 
 
-% column 3 = ECG, 5 = PPU, 6 = resp, 
+% column 3 = ECG, 5 = PPU, 6 = resp,
 % 10 = scanner signal: 10/20 = scan start/end; 1 = ECG pulse; 2 = OXY max; 8 = scan event TODO: what is 3 and 9???
 % columns 7,8,9: Grad-strengh x,y,z
 
@@ -68,15 +71,25 @@ if ~isempty(cpulse)
     cpulse = t(cpulse);
 end;
 
-r = y(:,6);
+if hasResp
+    r = y(:,6);
+else
+    r = [];
+end
 
-switch lower(cardiac_modality)
-    case {'ecg', 'ecg_filtered'}
-        c = y(:,3);
-    case {'ecg_raw'}
-        c = y(:,1);
-    case {'oxy','oxyge', 'ppu'}
-        c = y(:,5);
+
+if hasCardiac
+    
+    switch lower(cardiac_modality)
+        case {'ecg', 'ecg_filtered'}
+            c = y(:,3);
+        case {'ecg_raw'}
+            c = y(:,1);
+        case {'oxy','oxyge', 'ppu'}
+            c = y(:,5);
+    end
+else
+    c = [];
 end
 
 end

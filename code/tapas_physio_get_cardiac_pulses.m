@@ -126,8 +126,8 @@ switch lower(cardiac_modality)
             'minpeakdistance', round(0.5*averageHeartRateInSamples));
         
         if debug
-            %             hold on;
-            %             stem(t(cpulseSecondGuess),4*ones(length(cpulseSecondGuess),1),'r')
+           hold on;
+           stem(t(cpulseSecondGuess),4*ones(length(cpulseSecondGuess),1),'r')
         end
         
         %test signal/detection quality
@@ -152,10 +152,10 @@ switch lower(cardiac_modality)
         if signalQualityIsBad
             %build template based on the guessed peaks
             halfTemplateWidthInSeconds = 0.2;
-            halfTemplateWithInSamples = halfTemplateWidthInSeconds / dt;
+            halfTemplateWidthInSamples = round(halfTemplateWidthInSeconds / dt);
             for n=2:numel(cpulseSecondGuess)-2
-                startTemplate = cpulseSecondGuess(n)-halfTemplateWithInSamples;
-                endTemplate = cpulseSecondGuess(n)+halfTemplateWithInSamples;
+                startTemplate = cpulseSecondGuess(n)-halfTemplateWidthInSamples;
+                endTemplate = cpulseSecondGuess(n)+halfTemplateWidthInSamples;
                 
                 template(n,:) = c(startTemplate:endTemplate);
             end
@@ -188,11 +188,11 @@ switch lower(cardiac_modality)
             end
             
             %determine starting peak for the search
-            forStart=2*halfTemplateWithInSamples+1;
+            forStart=round(2*halfTemplateWidthInSamples+1);
             forEnd=cpulseSecondGuess(20);
             for n=forStart:forEnd
-                startSignalIndex=n-halfTemplateWithInSamples;
-                endSignalIndex=n+halfTemplateWithInSamples;
+                startSignalIndex=n-halfTemplateWidthInSamples;
+                endSignalIndex=n+halfTemplateWidthInSamples;
                 
                 signalPart = c(startSignalIndex:endSignalIndex);
                 correlation = corrcoef(signalPart,pulseCleanedTemplate);
@@ -216,10 +216,10 @@ switch lower(cardiac_modality)
             similarityToTemplate=zeros(size(t,1),1);
             
             searchStepsTotal=round(0.5*averageHeartRateInSamples);
-            while n > 1+searchStepsTotal+halfTemplateWithInSamples
+            while n > 1+searchStepsTotal+halfTemplateWidthInSamples
                 for searchPosition=-searchStepsTotal:1:searchStepsTotal
-                    startSignalIndex=n-halfTemplateWithInSamples+searchPosition;
-                    endSignalIndex=n+halfTemplateWithInSamples+searchPosition;
+                    startSignalIndex=n-halfTemplateWidthInSamples+searchPosition;
+                    endSignalIndex=n+halfTemplateWidthInSamples+searchPosition;
                     
                     signalPart = c(startSignalIndex:endSignalIndex);
                     correlation = corrcoef(signalPart,pulseCleanedTemplate);
@@ -280,16 +280,16 @@ switch lower(cardiac_modality)
             %deviating from the initial starting point by a gaussian
             searchStepsTotal=round(0.5*averageHeartRateInSamples);
             
-            if n< searchStepsTotal+halfTemplateWithInSamples+1
-                n=searchStepsTotal+halfTemplateWithInSamples+1;
+            if n< searchStepsTotal+halfTemplateWidthInSamples+1
+                n=searchStepsTotal+halfTemplateWidthInSamples+1;
             end
             
-            while n < size(c,1)-searchStepsTotal-halfTemplateWithInSamples
+            while n < size(c,1)-searchStepsTotal-halfTemplateWidthInSamples
                 %search around peak
                 
                 for searchPosition=-searchStepsTotal:1:searchStepsTotal
-                    startSignalIndex=n-halfTemplateWithInSamples+searchPosition;
-                    endSignalIndex=n+halfTemplateWithInSamples+searchPosition;
+                    startSignalIndex=n-halfTemplateWidthInSamples+searchPosition;
+                    endSignalIndex=n+halfTemplateWidthInSamples+searchPosition;
                     
                     signalPart = c(startSignalIndex:endSignalIndex);
                     correlation = corrcoef(signalPart,pulseCleanedTemplate);

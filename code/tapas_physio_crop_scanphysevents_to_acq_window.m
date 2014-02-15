@@ -73,13 +73,17 @@ spulse((maxscan*Nslices+1):end) = [];
 
 acqwindow   = sort([find(cpulse<=tend & cpulse>=tstart); ...
                 find(cpulse<tstart,1,'last'); find(cpulse>tend,1,'first')]);
-cpulse      = cpulse(acqwindow);
+
+if ~isempty(cpulse), cpulse      = cpulse(acqwindow); end;
 
 % same for respiratory signal
 acqwindow   = sort([find(t<=tend & t>=tstart); ...
                 find(t<tstart,1,'last'); find(t>tend,1,'first')]);
-r      = r(acqwindow);
-c           = c(acqwindow);
+
+            
+if ~isempty(r), r      = r(acqwindow); end;
+if ~isempty(c), c      = c(acqwindow); end;
+
 ons_secs.t  = t(acqwindow);
 
 % necessary vector for t1correction, all volume excitations needed

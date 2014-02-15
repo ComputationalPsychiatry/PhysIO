@@ -114,8 +114,14 @@ y = cell2mat(z);
 
 Nsamples=size(y,1);
 
-dt = 2e-3; %500 Hz sampling frequency
-t=((0:(Nsamples-1))*dt)';
+dt = log_files.sampling_interval; 
+
+%default: 500 Hz sampling frequency
+if isempty(dt)
+    dt = 2e-3;
+end
+
+t = -log_files.startScanSeconds + ((0:(Nsamples-1))*dt)';
 
 
 

@@ -68,9 +68,9 @@ end
 do_count_from_start = isfield(sqpar, 'Nprep') && ~isempty(sqpar.Nprep);
 if do_count_from_start % t = 0 is assumed to be the start of the scan
     for n = 1:NallVols
-        [tmp, VOLLOCS(n)] = min(abs(t - TR*n));
+        [tmp, VOLLOCS(n)] = min(abs(t - TR*(n-1)));
         for s = 1:Nslices
-            [tmp, LOCS((n-1)*Nslices + s)] = min(abs(t - (TR*n+sqpar.TimeSliceToSlice*(s-1))));
+            [tmp, LOCS((n-1)*Nslices + s)] = min(abs(t - (TR*(n-1)+sqpar.TimeSliceToSlice*(s-1))));
         end
     end   
 else

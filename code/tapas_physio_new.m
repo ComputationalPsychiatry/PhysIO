@@ -127,6 +127,8 @@ else
     % determines thresholds used in preprocessing physiological logfiles,
     % either their timing (thresh.scan_timing) or the peripheral measures
     % itself (thresh.cardiac, thresh.respiration)
+    
+    % thresh.scan_timing.source = 'nominal', 'grad_x', 'grad_y', 'grad_z'
     thresh.scan_timing = [];    % leave empty or set to 'nominal', if nominal scan timing,
                                 % derived from sqpar, shall be used
     
