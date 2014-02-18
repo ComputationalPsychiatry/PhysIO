@@ -48,13 +48,16 @@ r               = ons_secs.r;
 spulse          = ons_secs.spulse;
 t               = ons_secs.t;
 
+hasRespData = ~isempty(r);
+hasCardiacData = ~isempty(cpulse);
+
 %parameters for resampling
 rsampint    = t(2)-t(1);
 
 %% Get phase, downsample and Fourier-expand
 sample_points   = tapas_physio_get_sample_points(ons_secs, sqpar);
 
-if order.c && ~isempty(cpulse)
+if order.c && hasCardiacData
     if verbose.level >= 3
     [c_phase, verbose.fig_handles(end+1)]    = ...
         tapas_physio_get_cardiac_phase(cpulse, spulse, verbose.level, svolpulse);
@@ -68,7 +71,7 @@ else
     c_sample_phase = [];
 end
 
-if order.r && ~isempty(r)
+if order.r && hasRespData
     fr = ons_secs.fr; 
     
     if verbose.level >=3
@@ -86,7 +89,7 @@ else
 end
 
 % Multiplicative terms as specified in Harvey et al., 2008
-if order.cr && ~isempty(r) && ~isempty(c)
+if order.cr && hasRespData && hasCardiacData
     crplus_sess = tapas_physio_get_fourier_expansion(c_sample_phase+r_sample_phase,order.cr);
     crdiff_sess = tapas_physio_get_fourier_expansion(c_sample_phase-r_sample_phase,order.cr);
     mult_sess = [crplus_sess crdiff_sess];
