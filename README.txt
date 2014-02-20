@@ -1,7 +1,7 @@
-TNU PhysIO Toolbox Version 2013
+TNU PhysIO Toolbox Version 2014
 
 ************************************************************************
-Copyright (C) 2013 Lars Kasper <kasper@biomed.ee.ethz.ch>
+Copyright (C) 2013-2014 Lars Kasper <kasper@biomed.ee.ethz.ch>
 Translational Neuromodeling Unit (TNU)
 Institute for Biomedical Engineering
 University of Zurich and ETH Zurich
@@ -72,17 +72,24 @@ DOWNLOADS & RELEASE INFORMATION
 
 - Current Release: 
 
-PhysIO_Toolbox_13 (Code | Examples)
-August 19th, 2013
+PhysIO_Toolbox_14 (Code | Examples)
+February 20th, 2014
 
-revision: $Revision: 238 $
+revision: $Revision: 429 $
 
-Minor Release Notes
+Major Release Notes (r429):
+- Cardiac and Respiratory response function regressors integrated in workflow (heart rate and breathing volume computation)
+- Handling of Cardiac and Respiratory Logfiles only
+- expanded documentation (Quickstart.pdf and Handbook.pdf)
+- read-in of custom log files, e.g. for BrainVoyager peripheral data
+- more informative plots and commenting (especially in tapas_physio_new).
+
+Minor Release Notes (r354):
 - computation of heart and breathing rate in Philips/PPU/main_PPU.m
 - prefix of functions with tapas_*
 
-Last Major Release Notes:
-- complete modularization of readin/preprocessing/regressor creation for peripheral physiological data
+Last Major Release Notes (r241):
+- complete modularization of reading/preprocessing/regressor creation for peripheral physiological data
 - manual selection of missed heartbeats in ECG/pulse oximetry (courtesy of Jakob Heinzle)
 - support for logfiles from GE scanners (courtesy of Steffen Bollmann, KiSpi Zuerich)
 - improved detection of pulse oximetry peaks (courtesy of Steffen Bollmann)
@@ -103,7 +110,7 @@ Send bug reports and suggestions to: kasper@biomed.ee.ethz.ch
 
 TUTORIAL
 
-Run main_ECG7T.m in subdirectory "examples" of the toolbox
+Run main_ECG3T.m in subdirectory "examples" of the toolbox
 See subdirectory "manual"
 
 
