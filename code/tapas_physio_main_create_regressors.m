@@ -84,11 +84,12 @@ end
 % plot whether physdata is alright or events are missing (too low/high
 % heart rate? breathing amplitude overshoot?)
 if hasCardiacData
+    thresh.cardiac.modality = 'OXY'; % 'ECG' or 'OXY' (for pulse oximetry)
     
     %% initial pulse select via load from logfile or autocorrelation with 1
     %% cardiac pulse
     switch thresh.cardiac.initial_cpulse_select.method
-        case {'manual', 'load'}
+        case {'manual', 'load', 'auto'}
             [ons_secs.cpulse, verbose] = tapas_physio_get_cardiac_pulses(ons_secs.t, ons_secs.c, ...
                 thresh.cardiac.initial_cpulse_select, thresh.cardiac.modality, [], verbose);
         case {'load_from_logfile', ''}

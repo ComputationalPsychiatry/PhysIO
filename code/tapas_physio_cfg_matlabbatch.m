@@ -1,9 +1,9 @@
-function checkphysretroicor = tnu_cfg_checkphysretroicor
+function physio = tapas_physio_cfg_matlabbatch
 % Lars Kasper, March 2013
 %
 % Copyright (C) 2013, Institute for Biomedical Engineering, ETH/Uni Zurich.
 %
-% This file is part of the TNU CheckPhysRETROICOR toolbox, which is released under the terms of the GNU General Public
+% This file is part of the TNU physio toolbox, which is released under the terms of the GNU General Public
 % Licence (GPL), version 3. You can redistribute it and/or modify it under the terms of the GPL
 % (either version 3 or, at your option, any later version). For further details, see the file
 % COPYING or <http://www.gnu.org/licenses/>.
@@ -65,6 +65,66 @@ order.val  = {c r cr orthog};
 order.help = {'...'};
 
 %--------------------------------------------------------------------------
+% model_type
+%--------------------------------------------------------------------------
+model_type        = cfg_menu;
+model_type.tag    = 'type';
+model_type.name   = 'type';
+model_type.help   = {'...'};
+model_type.labels = {
+    'RETROICOR (RETRO)' 
+    'Heart Rate Variability (HRV)'
+    'Respiratory Volume per Time (RVT)'
+    'RETRO+HRV'
+    'RETRO+RVT'
+    'HRV+RVT'
+    'RETRO+HRV+RVT'
+    };
+model_type.values = {
+    'RETROICOR' 
+    'HRV'
+    'RVT'
+    'RETROICOR_HRV'
+    'RETROICOR_RVT'
+    'HRV_RVT'
+    'RETROICOR_HRV_RVT'
+    };
+model_type.val    = {'RETROICOR'};
+
+%--------------------------------------------------------------------------
+% output_multiple_regressors
+%--------------------------------------------------------------------------
+output_multiple_regressors         = cfg_entry;
+output_multiple_regressors.tag     = 'output_multiple_regressors';
+output_multiple_regressors.name    = 'output_multiple_regressors';
+output_multiple_regressors.help    = {'...'};
+output_multiple_regressors.strtype = 's';
+output_multiple_regressors.num     = [1 Inf];
+output_multiple_regressors.val     = {'multiple_regressors.mat'};
+
+%--------------------------------------------------------------------------
+% input_other_multiple_regressors
+%--------------------------------------------------------------------------
+input_other_multiple_regressors         = cfg_files;
+input_other_multiple_regressors.tag     = 'input_other_multiple_regressors';
+input_other_multiple_regressors.name    = 'input_other_multiple_regressors';
+input_other_multiple_regressors.val     = {{''}};
+input_other_multiple_regressors.help    = {'...'};
+input_other_multiple_regressors.filter  = 'mat';
+input_other_multiple_regressors.ufilter = '.*';
+input_other_multiple_regressors.num     = [0 1];
+
+%--------------------------------------------------------------------------
+% model
+%--------------------------------------------------------------------------
+model      = cfg_branch;
+model.tag  = 'model';
+model.name = 'model';
+model.val  = {model_type, order, input_other_multiple_regressors, output_multiple_regressors};
+model.help = {'...'};
+
+
+%--------------------------------------------------------------------------
 % Nprep
 %--------------------------------------------------------------------------
 Nprep         = cfg_entry;
@@ -73,6 +133,7 @@ Nprep.name    = 'Nprep';
 Nprep.help    = {'...'};
 Nprep.strtype = 'e';
 Nprep.num     = [Inf Inf];
+Nprep.val     = {[]};
 
 %--------------------------------------------------------------------------
 % TimeSliceToSlice
@@ -153,24 +214,6 @@ sqpar.name = 'Sequence timing parameters';
 sqpar.val  = {Nslices NslicesPerBeat TR Ndummies Nscans onset_slice TimeSliceToSlice Nprep};
 sqpar.help = {'...'};
 
-%--------------------------------------------------------------------------
-% resp_max
-%--------------------------------------------------------------------------
-resp_max         = cfg_entry;
-resp_max.tag     = 'resp_max';
-resp_max.name    = 'resp_max';
-resp_max.help    = {'...'};
-resp_max.strtype = 'e';
-resp_max.num     = [Inf Inf];
-
-%--------------------------------------------------------------------------
-% respiratory
-%--------------------------------------------------------------------------
-respiratory      = cfg_branch;
-respiratory.tag  = 'respiratory';
-respiratory.name = 'respiratory';
-respiratory.val  = {resp_max};
-respiratory.help = {'...'};
 
 %--------------------------------------------------------------------------
 % manual_peak_select
@@ -212,8 +255,8 @@ modality        = cfg_menu;
 modality.tag    = 'modality';
 modality.name   = 'modality';
 modality.help   = {'...'};
-modality.labels = {'ECG', 'OXY'};
-modality.values = {'ECG', 'OXY'};
+modality.labels = {'ECG', 'OXY/PPU'};
+modality.values = {'ECG', 'PPU'};
 
 %--------------------------------------------------------------------------
 % cardiac
@@ -294,55 +337,33 @@ scan_timing.help = {'...'};
 thresh      = cfg_branch;
 thresh.tag  = 'thresh';
 thresh.name = 'thresh';
-thresh.val  = {scan_timing cardiac respiratory};
+thresh.val  = {scan_timing cardiac};
 thresh.help = {'...'};
 
-%--------------------------------------------------------------------------
-% output_multiple_regressors
-%--------------------------------------------------------------------------
-output_multiple_regressors         = cfg_entry;
-output_multiple_regressors.tag     = 'output_multiple_regressors';
-output_multiple_regressors.name    = 'output_multiple_regressors';
-output_multiple_regressors.help    = {'...'};
-output_multiple_regressors.strtype = 's';
-output_multiple_regressors.num     = [1 Inf];
-output_multiple_regressors.val     = {'multiple_regressors.mat'};
 
 %--------------------------------------------------------------------------
-% input_other_multiple_regressors
+% respiration (filename)
 %--------------------------------------------------------------------------
-input_other_multiple_regressors         = cfg_files;
-input_other_multiple_regressors.tag     = 'input_other_multiple_regressors';
-input_other_multiple_regressors.name    = 'input_other_multiple_regressors';
-input_other_multiple_regressors.val     = {{''}};
-input_other_multiple_regressors.help    = {'...'};
-input_other_multiple_regressors.filter  = 'mat';
-input_other_multiple_regressors.ufilter = '.*';
-input_other_multiple_regressors.num     = [0 1];
+respiration         = cfg_files;
+respiration.tag     = 'log_respiration';
+respiration.name    = 'log_respiration';
+respiration.val     = {{''}};
+respiration.help    = {'...'};
+respiration.filter  = 'any';
+respiration.ufilter = '.*';
+respiration.num     = [0 1];
 
 %--------------------------------------------------------------------------
-% log_respiration
+% cardiac
 %--------------------------------------------------------------------------
-log_respiration         = cfg_files;
-log_respiration.tag     = 'log_respiration';
-log_respiration.name    = 'log_respiration';
-log_respiration.val     = {{''}};
-log_respiration.help    = {'...'};
-log_respiration.filter  = 'any';
-log_respiration.ufilter = '.*';
-log_respiration.num     = [0 1];
-
-%--------------------------------------------------------------------------
-% log_cardiac
-%--------------------------------------------------------------------------
-log_cardiac         = cfg_files;
-log_cardiac.tag     = 'log_cardiac';
-log_cardiac.name    = 'log_cardiac';
-log_cardiac.val     = {{''}};
-log_cardiac.help    = {'...'};
-log_cardiac.filter  = 'any';
-log_cardiac.ufilter = '.*';
-log_cardiac.num     = [1 1];
+cardiac         = cfg_files;
+cardiac.tag     = 'log_cardiac';
+cardiac.name    = 'log_cardiac';
+cardiac.val     = {{''}};
+cardiac.help    = {'...'};
+cardiac.filter  = 'any';
+cardiac.ufilter = '.*';
+cardiac.num     = [1 1];
 
 %--------------------------------------------------------------------------
 % vendor
@@ -351,9 +372,33 @@ vendor        = cfg_menu;
 vendor.tag    = 'vendor';
 vendor.name   = 'vendor';
 vendor.help   = {'...'};
-vendor.labels = {'Philips', 'GE', 'Siemens'};
-vendor.values = {'Philips', 'GE', 'Siemens'};
+vendor.labels = {'Philips', 'GE', 'Siemens', 'Custom'};
+vendor.values = {'Philips', 'GE', 'Siemens', 'Custom'};
 vendor.val    = {};
+
+%--------------------------------------------------------------------------
+% sampling_interval
+%--------------------------------------------------------------------------
+sampling_interval         = cfg_entry;
+sampling_interval.tag     = 'sampling_interval';
+sampling_interval.name    = 'sampling_interval';
+sampling_interval.help    = {'sampling interval of phys log files (in seconds)'};
+sampling_interval.strtype = 'e';
+sampling_interval.num     = [Inf Inf];
+sampling_interval.val     = {2e-3};
+
+%--------------------------------------------------------------------------
+% startScanSeconds
+%--------------------------------------------------------------------------
+startScanSeconds         = cfg_entry;
+startScanSeconds.tag     = 'startScanSeconds';
+startScanSeconds.name    = 'startScanSeconds';
+startScanSeconds.help    = {'start time of 1st scan (or dummy) relative to start of phys logfile'};
+startScanSeconds.strtype = 'e';
+startScanSeconds.num     = [Inf Inf];
+startScanSeconds.val     = {0};
+
+
 
 %--------------------------------------------------------------------------
 % files
@@ -361,7 +406,7 @@ vendor.val    = {};
 files      = cfg_branch;
 files.tag  = 'files';
 files.name = 'files';
-files.val  = {vendor log_cardiac log_respiration input_other_multiple_regressors output_multiple_regressors};
+files.val  = {vendor cardiac respiration sampling_interval, startScanSeconds};
 files.help = {'...'};
 
 %--------------------------------------------------------------------------
@@ -376,31 +421,32 @@ verbose.values = {1 0};
 verbose.val    = {0};
 
 %--------------------------------------------------------------------------
-% checkphysretroicor
+% physio
 %--------------------------------------------------------------------------
-checkphysretroicor      = cfg_exbranch;
-checkphysretroicor.tag  = 'checkphysretroicor';
-checkphysretroicor.name = 'TNU checkphysretroicor';
-checkphysretroicor.val  = {files thresh sqpar order verbose};
-checkphysretroicor.help = {'...'};
-checkphysretroicor.prog = @run_checkphysretroicor;
-checkphysretroicor.vout = @vout_checkphysretroicor;
+physio      = cfg_exbranch;
+physio.tag  = 'physio';
+physio.name = 'TAPAS PhysIO Toolbox';
+physio.val  = {files thresh sqpar model verbose};
+physio.help = {'...'};
+physio.prog = @run_physio;
+physio.vout = @vout_physio;
 
 
 %==========================================================================
-% function out = run_checkphysretroicor(job)
+% function out = run_physio(job)
 %==========================================================================
-function out = run_checkphysretroicor(job)
-R = main_create_RETROICOR_regressors(job.files, job.thresh, job.sqpar, job.order, job.verbose);
+function out = run_physio(job)
+[~, R] = tapas_physio_main_create_regressors(job.files, job.thresh, ...
+    job.sqpar, job.model, job.verbose);
 
 out.physnoisereg = job.files.output_multiple_regressors;
 out.R = R;
 
 
 %==========================================================================
-% function dep = vout_checkphysretroicor(job)
+% function dep = vout_physio(job)
 %==========================================================================
-function dep = vout_checkphysretroicor(job)
+function dep = vout_physio(job)
 dep(1)            = cfg_dep;
 dep(1).sname      = 'physiological noise regressors file';
 dep(1).src_output = substruct('.','physnoisereg');
