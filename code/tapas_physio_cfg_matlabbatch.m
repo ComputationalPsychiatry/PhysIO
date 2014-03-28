@@ -181,9 +181,10 @@ Ndummies.num     = [Inf Inf];
 TR         = cfg_entry;
 TR.tag     = 'TR';
 TR.name    = 'TR';
-TR.help    = {'...'};
+TR.help    = {'Repetition time in seconds'};
 TR.strtype = 'e';
 TR.num     = [Inf Inf];
+TR.val     = {2.5};
 
 %--------------------------------------------------------------------------
 % NslicesPerBeat
@@ -191,7 +192,8 @@ TR.num     = [Inf Inf];
 NslicesPerBeat         = cfg_entry;
 NslicesPerBeat.tag     = 'NslicesPerBeat';
 NslicesPerBeat.name    = 'NslicesPerBeat';
-NslicesPerBeat.help    = {'...'};
+NslicesPerBeat.help    = {'Only for triggered (gated) sequences: '
+    'Number of slices acquired per heartbeat'};
 NslicesPerBeat.strtype = 'e';
 NslicesPerBeat.num     = [Inf Inf];
 
@@ -201,7 +203,7 @@ NslicesPerBeat.num     = [Inf Inf];
 Nslices         = cfg_entry;
 Nslices.tag     = 'Nslices';
 Nslices.name    = 'Nslices';
-Nslices.help    = {'...'};
+Nslices.help    = {'Number of slices in one volume'};
 Nslices.strtype = 'e';
 Nslices.num     = [Inf Inf];
 
@@ -257,6 +259,7 @@ modality.name   = 'modality';
 modality.help   = {'...'};
 modality.labels = {'ECG', 'OXY/PPU'};
 modality.values = {'ECG', 'PPU'};
+modality.val    = {'ECG'};
 
 %--------------------------------------------------------------------------
 % cardiac
@@ -328,7 +331,7 @@ zero.val     = {[]};
 scan_timing      = cfg_branch;
 scan_timing.tag  = 'scan_timing';
 scan_timing.name = 'scan_timing';
-scan_timing.val  = {zero slice vol vol_spacing grad_direction};
+scan_timing.val  = {grad_direction zero slice vol vol_spacing};
 scan_timing.help = {'...'};
 
 %--------------------------------------------------------------------------
@@ -347,7 +350,7 @@ thresh.help = {'...'};
 respiration         = cfg_files;
 respiration.tag     = 'log_respiration';
 respiration.name    = 'log_respiration';
-respiration.val     = {{''}};
+respiration.val     = {{'/Users/kasperla/Documents/code/matlab/smoothing_trunk/tSNR_fMRI_SPM/CheckPhysRETROICOR/PhysIOToolbox/examples/Philips/ECG3T/SCANPHYSLOG.log'}};
 respiration.help    = {'...'};
 respiration.filter  = 'any';
 respiration.ufilter = '.*';
@@ -359,7 +362,7 @@ respiration.num     = [0 1];
 cardiac         = cfg_files;
 cardiac.tag     = 'log_cardiac';
 cardiac.name    = 'log_cardiac';
-cardiac.val     = {{''}};
+cardiac.val     = {{'/Users/kasperla/Documents/code/matlab/smoothing_trunk/tSNR_fMRI_SPM/CheckPhysRETROICOR/PhysIOToolbox/examples/Philips/ECG3T/SCANPHYSLOG.log'}};
 cardiac.help    = {'...'};
 cardiac.filter  = 'any';
 cardiac.ufilter = '.*';
@@ -371,10 +374,11 @@ cardiac.num     = [1 1];
 vendor        = cfg_menu;
 vendor.tag    = 'vendor';
 vendor.name   = 'vendor';
-vendor.help   = {'...'};
+vendor.help   = {'Choose Vendor of your scanner from list or Custom'
+    'Custom logfiles should be ASCII-files with one sample per row'};
 vendor.labels = {'Philips', 'GE', 'Siemens', 'Custom'};
 vendor.values = {'Philips', 'GE', 'Siemens', 'Custom'};
-vendor.val    = {};
+vendor.val    = {'Philips'};
 
 %--------------------------------------------------------------------------
 % sampling_interval
