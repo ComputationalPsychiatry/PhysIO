@@ -1,5 +1,5 @@
 function [cpulse, verbose] = tapas_physio_get_cardiac_pulses_auto(...
-    c, t, thresh_min, dt120, verbose);
+    c, t, thresh_min, dt120, verbose)
 %automated, iterative pulse detection from cardiac (ECG/OXY) data
 %
 %   [cpulse, verbose] = tapas_physio_get_cardiac_pulses_auto(...
@@ -23,7 +23,7 @@ function [cpulse, verbose] = tapas_physio_get_cardiac_pulses_auto(...
 % (either version 3 or, at your option, any later version). For further details, see the file
 % COPYING or <http://www.gnu.org/licenses/>.
 %
-% $Id: teditRETRO.m 366 2013-12-06 16:21:35Z kasperla $
+% $Id$
 if nargin < 5
     verbose.level = 0;
     verbose.fig_handles = [];
