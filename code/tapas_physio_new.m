@@ -152,7 +152,12 @@ else
     
     % The initial cardiac pulse selection structure: Determines how the
     % majority of cardiac pulses is detected
-    thresh.cardiac.initial_cpulse_select.method = 'load_from_logfile'; % 'load_from_logfile', 'manual' (rather: threshold...autocorrelate?), 'load'
+    % 'auto'    - auto generation of representative QRS-wave; detection via
+    %             maximising auto-correlation with it
+    % 'load_from_logfile' - from phys logfile, detected R-peaks of scanner 
+    % 'manual'  - via manually selected QRS-wave for autocoreelations
+    % 'load'    - from previous manual/auto run
+    thresh.cardiac.initial_cpulse_select.method = 'load_from_logfile'; 
     thresh.cardiac.initial_cpulse_select.file = ''; % file containing reference ECG-peak (variable kRpeak)
     % used for method 'manual' or 'load' [default: not set] string of file containing a
     % if method == 'manual', this file is saved after picking the QRS-wave
