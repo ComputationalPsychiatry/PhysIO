@@ -1,5 +1,5 @@
 function [physio_out, R, ons_secs] = tapas_physio_main_create_regressors(log_files, ...
-    thresh, sqpar, model, verbose)
+    sqpar, model, thresh, verbose)
 % RETROICOR - regressor creation based on Glover, G. MRM 44, 2000
 %
 % USAGE
@@ -8,7 +8,7 @@ function [physio_out, R, ons_secs] = tapas_physio_main_create_regressors(log_fil
 %   OR
 %
 % [physio_out, R, ons_secs] = tapas_physio_main_create_regressors(log_files, ...
-%    thresh, sqpar, model, verbose)
+%    sqpar, model, thresh, verbose)
 %
 %------------------------------------------------------------------------
 % IN
@@ -43,14 +43,26 @@ end
 
 if nargin == 1 % assuming sole PhysIO-object as input
     physio      = log_files; % first argument of function
-    log_files = physio.log_files;
-    thresh  = physio.thresh;
-    sqpar   = physio.sqpar;
-    model   = physio.model;
-    verbose = physio.verbose;
+else % assemble physio-structure
+    physio = tapas_physio_new();
+    physio.log_files = log_files;
+    physio.thresh  = thresh;
+    physio.sqpar   = sqpar;
+    physio.model   = model;
+    physio.verbose = verbose;
 end
 
+% fill up empty parameters
+physio = tapas_physio_fill_empty_parameters(physio);
 
+
+% set sub-structures for readability; NOTE: copy by value, physio-structure not
+% updated!
+log_files = physio.log_files;
+thresh  = physio.thresh;
+sqpar   = physio.sqpar;
+model   = physio.model;
+verbose = physio.verbose;
 
 %% 1. Read in vendor-specific physiological log-files
 [ons_secs.c, ons_secs.r, ons_secs.t, ons_secs.cpulse] = ...

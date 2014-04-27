@@ -35,7 +35,7 @@ function physio = tapas_physio_new(default_scheme, physio_in)
 % Created: 2013-04-23
 % Copyright (C) 2013 TNU, Institute for Biomedical Engineering, University of Zurich and ETH Zurich.
 %
-% This file is part of the TNU CheckPhysRETROICOR toolbox, which is released under the terms of the GNU General Public
+% This file is part of the TAPAS PhysIO Toolbox, which is released under the terms of the GNU General Public
 % Licence (GPL), version 3. You can redistribute it and/or modify it under the terms of the GPL
 % (either version 3 or, at your option, any later version). For further details, see the file
 % COPYING or <http://www.gnu.org/licenses/>.
@@ -247,6 +247,11 @@ else
     verbose.level = 1;
     verbose.fig_handles = [];     % collector of all generated figure handles during a run of tapas_physio_main_create_regressors
     verbose.fig_output_file = ''; % file name (including extension) where to print all physIO output figures to,
+    verbose.use_tabs = false;    % if true, plots are performed in tabs of SPM graphics window
+    %                                   TODO: implement via
+    %                               [handles] = spm_uitab(hparent,labels,callbacks,...
+    %                                           tag,active,height,tab_height)
+    %
     % e.g. 'PhysIO_output.ps' or 'PhysIO_output.jpg'
     % The specified extension determines how the
     % figures will be saved
@@ -304,8 +309,8 @@ end
 
 %% assemble output
 physio.log_files   = log_files;
-physio.thresh  = thresh;
 physio.sqpar   = sqpar;
 physio.model   = model;
+physio.thresh  = thresh;
 physio.verbose = verbose;
 physio.ons_secs = ons_secs;
