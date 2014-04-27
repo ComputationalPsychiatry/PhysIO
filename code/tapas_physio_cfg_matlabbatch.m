@@ -17,18 +17,17 @@ function physio = tapas_physio_cfg_matlabbatch
 %% Sub-structure log_files
 %==========================================================================
 
-
 %--------------------------------------------------------------------------
-% respiration (filename)
+% vendor
 %--------------------------------------------------------------------------
-respiration         = cfg_files;
-respiration.tag     = 'log_respiration';
-respiration.name    = 'log_respiration';
-respiration.val     = {{'/Users/kasperla/Documents/code/matlab/smoothing_trunk/tSNR_fMRI_SPM/CheckPhysRETROICOR/PhysIOToolbox/examples/Philips/ECG3T/SCANPHYSLOG.log'}};
-respiration.help    = {'...'};
-respiration.filter  = 'any';
-respiration.ufilter = '.*';
-respiration.num     = [0 1];
+vendor        = cfg_menu;
+vendor.tag    = 'vendor';
+vendor.name   = 'vendor';
+vendor.help   = {'Choose Vendor of your scanner from list or Custom'
+    'Custom logfiles should be ASCII-files with one sample per row'};
+vendor.labels = {'Philips', 'GE', 'Siemens', 'Custom'};
+vendor.values = {'Philips', 'GE', 'Siemens', 'Custom'};
+vendor.val    = {'Philips'};
 
 %--------------------------------------------------------------------------
 % cardiac
@@ -43,16 +42,17 @@ cardiac.ufilter = '.*';
 cardiac.num     = [1 1];
 
 %--------------------------------------------------------------------------
-% vendor
+% respiration (filename)
 %--------------------------------------------------------------------------
-vendor        = cfg_menu;
-vendor.tag    = 'vendor';
-vendor.name   = 'vendor';
-vendor.help   = {'Choose Vendor of your scanner from list or Custom'
-    'Custom logfiles should be ASCII-files with one sample per row'};
-vendor.labels = {'Philips', 'GE', 'Siemens', 'Custom'};
-vendor.values = {'Philips', 'GE', 'Siemens', 'Custom'};
-vendor.val    = {'Philips'};
+respiration         = cfg_files;
+respiration.tag     = 'log_respiration';
+respiration.name    = 'log_respiration';
+respiration.val     = {{'/Users/kasperla/Documents/code/matlab/smoothing_trunk/tSNR_fMRI_SPM/CheckPhysRETROICOR/PhysIOToolbox/examples/Philips/ECG3T/SCANPHYSLOG.log'}};
+respiration.help    = {'...'};
+respiration.filter  = 'any';
+respiration.ufilter = '.*';
+respiration.num     = [0 1];
+
 
 %--------------------------------------------------------------------------
 % sampling_interval
@@ -66,15 +66,15 @@ sampling_interval.num     = [Inf Inf];
 sampling_interval.val     = {2e-3};
 
 %--------------------------------------------------------------------------
-% startScanSeconds
+% relative_start_acquisition
 %--------------------------------------------------------------------------
-startScanSeconds         = cfg_entry;
-startScanSeconds.tag     = 'startScanSeconds';
-startScanSeconds.name    = 'startScanSeconds';
-startScanSeconds.help    = {'start time of 1st scan (or dummy) relative to start of phys logfile'};
-startScanSeconds.strtype = 'e';
-startScanSeconds.num     = [Inf Inf];
-startScanSeconds.val     = {0};
+relative_start_acquisition         = cfg_entry;
+relative_start_acquisition.tag     = 'relative_start_acquisition';
+relative_start_acquisition.name    = 'relative_start_acquisition';
+relative_start_acquisition.help    = {'start time of 1st scan (or dummy) relative to start of phys logfile'};
+relative_start_acquisition.strtype = 'e';
+relative_start_acquisition.num     = [Inf Inf];
+relative_start_acquisition.val     = {0};
 
 
 %--------------------------------------------------------------------------
@@ -83,7 +83,7 @@ startScanSeconds.val     = {0};
 files      = cfg_branch;
 files.tag  = 'log_files';
 files.name = 'log_files';
-files.val  = {vendor cardiac respiration sampling_interval, startScanSeconds};
+files.val  = {vendor cardiac respiration sampling_interval, relative_start_acquisition};
 files.help = {'...'};
 
 
@@ -107,15 +107,15 @@ Nprep.num     = [Inf Inf];
 Nprep.val     = {[]};
 
 %--------------------------------------------------------------------------
-% TimeSliceToSlice
+% time_slice_to_slice
 %--------------------------------------------------------------------------
-TimeSliceToSlice         = cfg_entry;
-TimeSliceToSlice.tag     = 'TimeSliceToSlice';
-TimeSliceToSlice.name    = 'TimeSliceToSlice';
-TimeSliceToSlice.help    = {'...'};
-TimeSliceToSlice.strtype = 'e';
-TimeSliceToSlice.num     = [Inf Inf];
-TimeSliceToSlice.val     = {[]};
+time_slice_to_slice         = cfg_entry;
+time_slice_to_slice.tag     = 'time_slice_to_slice';
+time_slice_to_slice.name    = 'time_slice_to_slice';
+time_slice_to_slice.help    = {'...'};
+time_slice_to_slice.strtype = 'e';
+time_slice_to_slice.num     = [Inf Inf];
+time_slice_to_slice.val     = {[]};
 
 %--------------------------------------------------------------------------
 % onset_slice
@@ -190,7 +190,7 @@ Nslices.num     = [Inf Inf];
 sqpar      = cfg_branch;
 sqpar.tag  = 'sqpar';
 sqpar.name = 'sqpar (Sequence timing parameters)';
-sqpar.val  = {Nslices NslicesPerBeat TR Ndummies Nscans onset_slice TimeSliceToSlice Nprep};
+sqpar.val  = {Nslices NslicesPerBeat TR Ndummies Nscans onset_slice time_slice_to_slice Nprep};
 sqpar.help = {'...'};
 
 

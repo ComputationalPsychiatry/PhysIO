@@ -10,7 +10,7 @@ function [c, r, t, cpulse] = tapas_physio_read_physlogfiles_philips(log_files, c
 %           .respiratory
 %           .cardiac
 %           .sampling_interval
-%           .startScanSeconds
+%           .relative_start_acquisition
 %   cardiac_modality    'ECG' for ECG, 'OXY'/'PPU' for pulse oximetry
 %
 % OUT
@@ -58,7 +58,7 @@ if isempty(dt)
     dt = 2e-3;
 end
 
-t= -log_files.startScanSeconds + ((0:(Nsamples-1))*dt)';
+t= -log_files.relative_start_acquisition + ((0:(Nsamples-1))*dt)';
 
 
 

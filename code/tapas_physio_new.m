@@ -86,7 +86,7 @@ else
     %                    (same as .cardiac for Philips)
     log_files.sampling_interval = 2e-3;   % in seconds, 2e-3 for Philips, variable for GE,
     % e.g. 40e-3
-    log_files.startScanSeconds = 0; % time (in seconds) when the 1st scan
+    log_files.relative_start_acquisition = 0; % time (in seconds) when the 1st scan
                                     % (or, if existing, dummy) started,
                                     % relative to the start of the logfile
                                     % recording;
@@ -112,7 +112,7 @@ else
     % number of non-dummy, volume like preparation pulses
     % before 1st dummy scan. If set, logfile is read from beginning,
     % otherwise volumes are counted from last detected volume in the logfile
-    sqpar.TimeSliceToSlice  = [];   % time between the acquisition of 2 subsequent
+    sqpar.time_slice_to_slice  = [];   % time between the acquisition of 2 subsequent
     % slices; typically TR/Nslices or minTR/Nslices,
     % if minimal temporal slice spacing was chosen
     % NOTE: only necessary, if thresh.grad_direction

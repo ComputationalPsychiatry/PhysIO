@@ -1,6 +1,9 @@
 function physio = tapas_physio_fill_empty_parameters(physio)
 %fills empty values with default parameters, typically derived from other
-%parameters, e.g. TimeSliceToSlice from TR and Nslices
+%parameters, e.g. time_slice_to_slice from TR and Nslices
+%
+% NOTE: for real default values that do not depend on other input
+% parameters, set them in tapas_physio_new directly!
 %
 %  physio = tapas_physio_fill_empty_parameters(physio)
 %
@@ -28,6 +31,15 @@ if isempty(physio.sqpar.NslicesPerBeat)
     physio.sqpar.NslicesPerBeat = physio.sqpar.Nslices;
 end
 
-if isempty(physio.sqpar.TimeSliceToSlice)
+if isempty(physio.sqpar.time_slice_to_slice)
     physio.sqpar.NslicesPerBeat = physio.sqpar.TR/physio.sqpar.Nslices;
+end
+
+if isempty(physio.log_files.sampling_interval)
+    switch lower(physio.log_files.vendor)
+        case 'philips'
+            physio.log_files.sampling_interval = 2e-3;
+        otherwise % e.g. GE
+            physio.log_files.sampling_interval = 25e-3;
+    end
 end

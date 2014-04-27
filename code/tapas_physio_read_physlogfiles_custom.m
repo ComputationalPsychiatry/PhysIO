@@ -10,7 +10,7 @@ function [c, r, t, cpulse] = tapas_physio_read_physlogfiles_custom(log_files)
 %           .respiratory
 %           .cardiac
 %           .sampling_interval
-%           .startScanSeconds
+%           .relative_start_acquisition
 % OUT
 %   c                   cardiac time series (ECG or pulse oximetry)
 %   r                   respiratory time series
@@ -51,7 +51,7 @@ nSamples = max(size(c,1), size(r,1));
 
 
 dt = log_files.sampling_interval; %500 Hz sampling frequency
-t= -log_files.startScanSeconds + ((0:(nSamples-1))*dt)'; 
+t= -log_files.relative_start_acquisition + ((0:(nSamples-1))*dt)'; 
 
 hasCpulses = size(c,2) > 1; %2nd column with pulse indicator set to one
 

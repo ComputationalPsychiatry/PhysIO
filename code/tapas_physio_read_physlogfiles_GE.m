@@ -53,7 +53,7 @@ end
 
 dt = log_files.sampling_interval;
 Nsamples = size(c,1);
-t = -log_files.startScanSeconds + ((0:(Nsamples-1))*dt)'; 
+t = -log_files.relative_start_acquisition + ((0:(Nsamples-1))*dt)'; 
 cpulse = [];
 
 end
