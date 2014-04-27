@@ -60,67 +60,79 @@ else
     
     %% log_files
     % structure containing general physiological log-file information
-    log_files.vendor       = ''; % 'Philips', 'GE', ('Siemens') or 'Custom'
-    %                               'depending on your MR Scanner system
-                                 %
-                                 %  'Custom' expects the logfiles (separate files for cardiac and respiratory)
-                                 %  to be plain text, with one cardiac (or 
-                                 %  respiratory) sample per row; 
-                                 %  If heartbeat (R-wave peak) events are
-                                 %  recorded as well, they have to be put
-                                 %  as a 2nd column in the cardiac logfile
-                                 %  by specifying a 1; 0 in all other rows
-                                 %  e.g.:  
-                                 %      0.2  0
-                                 %      0.4  1 <- cardiac pulse event
-                                 %      0.2  0
-                                 %      -0.3 0
-                                 %
-                                 %
-                                 %  NOTE: the sampling interval has to be
-                                 %  specified for these files as well
-                                 %  (s.b.)
+    
+    % vendor name           'Philips', 'GE', ('Siemens') or 'Custom'
+    %                       'depending on your MR Scanner system
+    %
+    %  'Custom' expects the logfiles (separate files for cardiac and respiratory)
+    %  to be plain text, with one cardiac (or
+    %  respiratory) sample per row;
+    %  If heartbeat (R-wave peak) events are
+    %  recorded as well, they have to be put
+    %  as a 2nd column in the cardiac logfile
+    %  by specifying a 1; 0 in all other rows
+    %  e.g.:
+    %      0.2  0
+    %      0.4  1 <- cardiac pulse event
+    %      0.2  0
+    %      -0.3 0
+    %
+    %
+    % NOTE: the sampling interval has to be specified for these files as 
+    % well (s.b.)
+    log_files.vendor       = '';
                                 
     log_files.cardiac      = ''; % 'SCANPHYSLOG.log'; logfile with cardiac data
-    log_files.respiration  = ''; % 'SCANPHYSLOG.log'; logfile with respiratory data
-    %                    (same as .cardiac for Philips)
-    log_files.sampling_interval = 2e-3;   % in seconds, 2e-3 for Philips, variable for GE,
-    % e.g. 40e-3
-    log_files.relative_start_acquisition = 0; % time (in seconds) when the 1st scan
-                                    % (or, if existing, dummy) started,
-                                    % relative to the start of the logfile
-                                    % recording;
-                                    % e.g.  0 if simultaneous start
-                                    %       10, if 1st scan starts 10
-                                    %       seconds AFTER physiological
-                                    %       recording
-                                    %       -20, if first scan started 20
-                                    %       seconds BEFORE phys recording
-                                    % NOTE: For Philips SCANPHYSLOG, this
-                                    % parameter is ignored, if
-                                    % thresh.scan_timing is set
     
+    % ogfile with respiratory data, e.g. 'SCANPHYSLOG.log'; 
+    % (same as .cardiac for Philips)
+    log_files.respiration  = ''; 
+    
+    % sampling interval in seconds (i.e. time between two rows in logfile
+    % if empty, default value will be set: 2e-3 for Philips, variable for GE, e.g. 40e-3
+    log_files.sampling_interval = []; 
+    
+    % time (in seconds) when the 1st scan (or, if existing, dummy) started,
+    % relative to the start of the logfile recording; 
+    % e.g.  0 if simultaneous start
+    %       10, if 1st scan starts 10
+    %       seconds AFTER physiological
+    %       recording
+    %       -20, if first scan started 20
+    %       seconds BEFORE phys recording
+    % NOTE: For Philips SCANPHYSLOG, this parameter is ignored, if
+    %       thresh.scan_timing is set
+    log_files.relative_start_acquisition = 0;
     
     %% sqpar
+    
     sqpar.Nslices           = [];   % number of slices per volume in fMRI scan
     sqpar.NslicesPerBeat    = [];   % usually equals Nslices, unless you trigger with the heart beat
     sqpar.TR                = [];   % volume repetition time in seconds
     sqpar.Ndummies          = [];   % number of dummy volumes
-    sqpar.Nscans            = [];   % number of full volumes saved (volumes in nifti file,
+    
+    % number of full volumes saved (volumes in nifti file,
     % usually rows in your design matrix)
-    sqpar.Nprep             = [];   % set to >=0 to count scans and dummy
+    sqpar.Nscans            = [];   
+    
+    % set to >=0 to count scans and dummy
     % number of non-dummy, volume like preparation pulses
     % before 1st dummy scan. If set, logfile is read from beginning,
     % otherwise volumes are counted from last detected volume in the logfile
-    sqpar.time_slice_to_slice  = [];   % time between the acquisition of 2 subsequent
+    sqpar.Nprep             = [];   
+    
+    % time between the acquisition of 2 subsequent
     % slices; typically TR/Nslices or minTR/Nslices,
     % if minimal temporal slice spacing was chosen
     % NOTE: only necessary, if thresh.grad_direction
     % is empty and nominal scan timing is used
-    sqpar.onset_slice       = 19;   % slice whose scan onset determines the adjustment of the
+    sqpar.time_slice_to_slice  = [];   
+    
+    % slice whose scan onset determines the adjustment of the
     % regressor timing to a particular slice for the whole volume
     % volumes from beginning of run, i.e. logfile,
-    % includes counting of preparation gradients
+    % includes counting of preparation gradients    
+    sqpar.onset_slice       = 19;  
     
     
     %% thresh
@@ -129,23 +141,33 @@ else
     % itself (thresh.cardiac, thresh.respiration)
     
     % thresh.scan_timing.source = 'nominal', 'grad_x', 'grad_y', 'grad_z'
-    thresh.scan_timing = [];    % leave empty or set to 'nominal', if nominal scan timing,
-                                % derived from sqpar, shall be used
     
+    % leave empty or set to 'nominal', if nominal scan timing,
+    % derived from sqpar, shall be used
+    thresh.scan_timing = [];
     thresh.scan_timing.grad_direction = ''; % 'x', 'y', or 'z';
+    
     % if set, sequence timing is calculated
     % from logged gradient timecourse along
     % this coordinate axis;
+    
     thresh.scan_timing.zero     = [];   % gradient values below this value are set to zero;
+    
     % should be those which are unrelated to slice acquisition start
-    thresh.scan_timing.slice    = [];   % minimum gradient amplitude to be exceeded when a slice scan starts
-    thresh.scan_timing.vol      = [];   % minimum gradient amplitude to be exceeded when a new
-    % volume scan starts;
+    
+     % minimum gradient amplitude to be exceeded when a slice scan starts
+    thresh.scan_timing.slice    = [];  
+    
+    % minimum gradient amplitude to be exceeded when a new volume starts;
     % leave [], if volume events shall be determined as
     % every Nslices-th scan event or via vol_spacing
-    thresh.vol_spacing          = [];   % duration (in seconds) from last slice acq to
+    thresh.scan_timing.vol      = [];  
+    
+    
+    % duration (in seconds) from last slice acq to
     % first slice of next volume;
     % leave [], if .vol-threshold shall be used
+    thresh.vol_spacing          = [];   
     
     thresh.cardiac = [];
     thresh.cardiac.modality = ''; % 'ECG','ECG_raw', or 'OXY'/'PPU' (for pulse oximetry), 'OXY_OLD', [deprecated]

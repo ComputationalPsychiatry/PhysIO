@@ -60,10 +60,13 @@ respiration.num     = [0 1];
 sampling_interval         = cfg_entry;
 sampling_interval.tag     = 'sampling_interval';
 sampling_interval.name    = 'sampling_interval';
-sampling_interval.help    = {'sampling interval of phys log files (in seconds)'};
+sampling_interval.help    = {
+    'sampling interval of phys log files (in seconds)'
+    ' If empty, default values are used: 2 ms for Philips, 25 ms for GE and others'
+};
 sampling_interval.strtype = 'e';
 sampling_interval.num     = [Inf Inf];
-sampling_interval.val     = {2e-3};
+sampling_interval.val     = {[]};
 
 %--------------------------------------------------------------------------
 % relative_start_acquisition
@@ -94,39 +97,6 @@ files.help = {'...'};
 %==========================================================================
 
 
-
-%--------------------------------------------------------------------------
-% Nprep
-%--------------------------------------------------------------------------
-Nprep         = cfg_entry;
-Nprep.tag     = 'Nprep';
-Nprep.name    = 'Nprep';
-Nprep.help    = {'...'};
-Nprep.strtype = 'e';
-Nprep.num     = [Inf Inf];
-Nprep.val     = {[]};
-
-%--------------------------------------------------------------------------
-% time_slice_to_slice
-%--------------------------------------------------------------------------
-time_slice_to_slice         = cfg_entry;
-time_slice_to_slice.tag     = 'time_slice_to_slice';
-time_slice_to_slice.name    = 'time_slice_to_slice';
-time_slice_to_slice.help    = {'...'};
-time_slice_to_slice.strtype = 'e';
-time_slice_to_slice.num     = [Inf Inf];
-time_slice_to_slice.val     = {[]};
-
-%--------------------------------------------------------------------------
-% onset_slice
-%--------------------------------------------------------------------------
-onset_slice         = cfg_entry;
-onset_slice.tag     = 'onset_slice';
-onset_slice.name    = 'onset_slice';
-onset_slice.help    = {'...'};
-onset_slice.strtype = 'e';
-onset_slice.num     = [Inf Inf];
-onset_slice.val     = {19};
 
 %--------------------------------------------------------------------------
 % Nscans
@@ -171,7 +141,7 @@ NslicesPerBeat.help    = {'Only for triggered (gated) sequences: '
     'Number of slices acquired per heartbeat'};
 NslicesPerBeat.strtype = 'e';
 NslicesPerBeat.num     = [Inf Inf];
-Nscans.val     = {[]};
+Nscans.val     = {0};
 
 
 %--------------------------------------------------------------------------
@@ -183,6 +153,47 @@ Nslices.name    = 'Nslices';
 Nslices.help    = {'Number of slices in one volume'};
 Nslices.strtype = 'e';
 Nslices.num     = [Inf Inf];
+Nscans.val     = {37};
+
+
+
+%--------------------------------------------------------------------------
+% onset_slice
+%--------------------------------------------------------------------------
+onset_slice         = cfg_entry;
+onset_slice.tag     = 'onset_slice';
+onset_slice.name    = 'onset_slice';
+onset_slice.help    = {'...'};
+onset_slice.strtype = 'e';
+onset_slice.num     = [Inf Inf];
+onset_slice.val     = {19};
+
+%--------------------------------------------------------------------------
+% Nprep
+%--------------------------------------------------------------------------
+Nprep         = cfg_entry;
+Nprep.tag     = 'Nprep';
+Nprep.name    = 'Nprep';
+Nprep.help    = {'preparation (e.g. shimming) volumes acuqired before first dummy'};
+Nprep.strtype = 'e';
+Nprep.num     = [Inf Inf];
+Nprep.val     = {[]};
+
+%--------------------------------------------------------------------------
+% time_slice_to_slice
+%--------------------------------------------------------------------------
+time_slice_to_slice         = cfg_entry;
+time_slice_to_slice.tag     = 'time_slice_to_slice';
+time_slice_to_slice.name    = 'time_slice_to_slice';
+time_slice_to_slice.help    = {
+    'duration between acquisition of two different slices'
+    'if empty, set to default value TR/Nslices'
+    'differs e.g. if slice timing was minimal and TR was bigger than needed'
+    'to acquire Nslices'
+    };
+time_slice_to_slice.strtype = 'e';
+time_slice_to_slice.num     = [Inf Inf];
+time_slice_to_slice.val     = {[]};
 
 %--------------------------------------------------------------------------
 % sqpar
