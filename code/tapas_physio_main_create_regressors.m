@@ -80,7 +80,7 @@ end
 % the latter is only necessary, if no patch is used and therefore no scan event
 % triggers are written into the last column of the scanphyslog-file
 useNominal = isempty(thresh.scan_timing) || ...
-    strcmpi(thresh.scan_timing, 'nominal');
+    strcmpi(thresh.scan_timing.method, 'nominal');
 if useNominal
     [VOLLOCS, LOCS] = tapas_physio_create_nominal_scan_timing(ons_secs.t, sqpar);
 else

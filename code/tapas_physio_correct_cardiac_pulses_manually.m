@@ -17,8 +17,8 @@ function [ons_secs, outliersHigh, outliersLow] = tapas_physio_correct_cardiac_pu
 
 
 percentile = thresh_cardiac.percentile;
-upperThresh = thresh_cardiac.upperThresh;
-lowerThresh = thresh_cardiac.lowerThresh;
+upperThresh = thresh_cardiac.upper_thresh;
+lowerThresh = thresh_cardiac.lower_thresh;
 
 [outliersHigh,outliersLow,fh] = tapas_physio_cardiac_detect_outliers(ons_secs.cpulse, percentile, upperThresh, lowerThresh);
 if any(outliersHigh)

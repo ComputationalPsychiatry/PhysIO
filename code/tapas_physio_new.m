@@ -135,16 +135,42 @@ else
     sqpar.onset_slice       = 19;  
     
     
+    %% model
+    % Determines the physiological noise model derived from preprocessed physiological data
+    % 'RETROICOR' - as in Glover el al, MRM 44, 2000
+    % 'HRV' - heart rate variability, as in Chang et al, 2009
+    % 'RVT' respiratory volume time, as in Birn et al., 2006
+    % The above can be combined e.g. 'RETROICOR_HRV', 'RETROICOR_RVT', 
+    % 'RETROICOR_HRV_RVT, 'HRV_RVT' 
+    model.type = '';
+    model.input_other_multiple_regressors = ''; % other nuisance regressors to be included in design matrix
+    % either txt-file or mat-file with variable R
+    model.output_multiple_regressors = '';      % output file for usage in SPM multiple_regressors GLM-specification
+    % either txt-file or mat-file with variable R
+    model.order.c = [];                         % natural number, order of cardiac phase Fourier expansion
+    model.order.r = [];                         % natural number, order of respiratory phase Fourier expansion
+    model.order.cr = [];                        % natural number, order of cardiac-respiratory-phase-interaction Fourier expansion
+    % See Harvey et al, JMRI 28, 2008
+    model.order.orthogonalise = 'none';         % string indicating which regressors shall be orthogonalised;
+    % mainly needed, if acquisition was triggered to heartbeat (set to 'cardiac') OR
+    % if session mean shall be evaluated (e.g. SFNR-studies, set to 'all')
+    % 'n' or 'none'     - no orthogonalisation is performed
+    % Possible Values (default: 'none'
+    %   'c' or 'cardiac'  - only cardiac regressors are orthogonalised
+    %   'r' or 'resp'     - only respiration regressors are orthogonalised
+    %   'mult'            - only multiplicative regressors are orthogonalised
+    %   'all'             - all physiological regressors are orthogonalised to each other
+    model.R = [];                               % output design matrix of confound regressors, saved in 'multiple_regressors.mat'
+    
+    
     %% thresh
     % determines thresholds used in preprocessing physiological logfiles,
     % either their timing (thresh.scan_timing) or the peripheral measures
     % itself (thresh.cardiac, thresh.respiration)
-    
-    % thresh.scan_timing.source = 'nominal', 'grad_x', 'grad_y', 'grad_z'
-    
-    % leave empty or set to 'nominal', if nominal scan timing,
-    % derived from sqpar, shall be used
-    thresh.scan_timing = [];
+     
+    % Determination of session timing 
+    %'nominal' or 'gradient' 'gradient_log'
+    thresh.scan_timing.method = 'gradient_log'; 
     thresh.scan_timing.grad_direction = ''; % 'x', 'y', or 'z';
     
     % if set, sequence timing is calculated
@@ -167,7 +193,7 @@ else
     % duration (in seconds) from last slice acq to
     % first slice of next volume;
     % leave [], if .vol-threshold shall be used
-    thresh.vol_spacing          = [];   
+    thresh.scan_timing.vol_spacing          = [];   
     
     thresh.cardiac = [];
     thresh.cardiac.modality = ''; % 'ECG','ECG_raw', or 'OXY'/'PPU' (for pulse oximetry), 'OXY_OLD', [deprecated]
@@ -195,42 +221,17 @@ else
     % 'off' - no manual selection of peaks
     % 'manual' - pick and save additional peaks manually
     % 'load' - load previously selected cardiac pulses
-    thresh.cardiac.posthoc_cpulse_select.file = '';  % filename where cardiac pulses are saved after manual picking
-    
+  
+    % filename where cardiac pulses are saved after manual picking
+      thresh.cardiac.posthoc_cpulse_select.file = '';  
     % Suspicious positions of missing or too many cardiac pulses are
     % pre-selected by detecting outliers in histogram of
     % heart-beat-2-beat-intervals
     thresh.cardiac.posthoc_cpulse_select.percentile = 80; % percentile of beat-2-beat interval histogram that constitutes the "average heart beat duration" in the session
-    thresh.cardiac.posthoc_cpulse_select.upperThresh = 60; % minimum exceedance (in %) from average heartbeat duration to be classified as missing heartbeat
-    thresh.cardiac.posthoc_cpulse_select.lowerThresh = 60; % minimum reduction (in %) from average heartbeat duration to be classified an abundant heartbeat
+    thresh.cardiac.posthoc_cpulse_select.upper_thresh = 60; % minimum exceedance (in %) from average heartbeat duration to be classified as missing heartbeat
+    thresh.cardiac.posthoc_cpulse_select.lower_thresh = 60; % minimum reduction (in %) from average heartbeat duration to be classified an abundant heartbeat
     
     
-    %% model
-    % Determines the physiological noise model derived from preprocessed physiological data
-    % 'RETROICOR' - as in Glover el al, MRM 44, 2000
-    % 'HRV' - heart rate variability, as in Chang et al, 2009
-    % 'RVT' respiratory volume time, as in Birn et al., 2006
-    % The above can be combined e.g. 'RETROICOR_HRV', 'RETROICOR_RVT', 
-    % 'RETROICOR_HRV_RVT, 'HRV_RVT' 
-    model.type = '';
-    model.input_other_multiple_regressors = ''; % other nuisance regressors to be included in design matrix
-    % either txt-file or mat-file with variable R
-    model.output_multiple_regressors = '';      % output file for usage in SPM multiple_regressors GLM-specification
-    % either txt-file or mat-file with variable R
-    model.order.c = [];                         % natural number, order of cardiac phase Fourier expansion
-    model.order.r = [];                         % natural number, order of respiratory phase Fourier expansion
-    model.order.cr = [];                        % natural number, order of cardiac-respiratory-phase-interaction Fourier expansion
-    % See Harvey et al, JMRI 28, 2008
-    model.order.orthogonalise = 'none';         % string indicating which regressors shall be orthogonalised;
-    % mainly needed, if acquisition was triggered to heartbeat (set to 'cardiac') OR
-    % if session mean shall be evaluated (e.g. SFNR-studies, set to 'all')
-    % 'n' or 'none'     - no orthogonalisation is performed
-    % Possible Values (default: 'none'
-    %   'c' or 'cardiac'  - only cardiac regressors are orthogonalised
-    %   'r' or 'resp'     - only respiration regressors are orthogonalised
-    %   'mult'            - only multiplicative regressors are orthogonalised
-    %   'all'             - all physiological regressors are orthogonalised to each other
-    model.R = [];                               % output design matrix of confound regressors, saved in 'multiple_regressors.mat'
     
     %% verbose
     % determines how many figures shall be generated to follow the workflow

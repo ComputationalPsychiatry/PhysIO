@@ -3,7 +3,7 @@ function physio = tapas_physio_cfg_matlabbatch
 %
 % Copyright (C) 2013, Institute for Biomedical Engineering, ETH/Uni Zurich.
 %
-% This file is part of the T, which is released under the terms of the GNU General Public
+% This file is part of the TAPAS PhysIO Toolbox, which is released under the terms of the GNU General Public
 % Licence (GPL), version 3. You can redistribute it and/or modify it under the terms of the GPL
 % (either version 3 or, at your option, any later version). For further details, see the file
 % COPYING or <http://www.gnu.org/licenses/>.
@@ -104,7 +104,7 @@ files.help = {'...'};
 Nscans         = cfg_entry;
 Nscans.tag     = 'Nscans';
 Nscans.name    = 'Nscans';
-Nscans.help    = {'...'};
+Nscans.help    = {'Number of scans (volumes) in design matrix'};
 Nscans.strtype = 'e';
 Nscans.num     = [Inf Inf];
 Nscans.val     = {495};
@@ -115,10 +115,13 @@ Nscans.val     = {495};
 Ndummies         = cfg_entry;
 Ndummies.tag     = 'Ndummies';
 Ndummies.name    = 'Ndummies';
-Ndummies.help    = {'...'};
+Ndummies.help    = {
+    'Number of dummies that were acquired (but do not show up in design matrix'
+    '(also enter correct number, if dummies are not saved in imaging file'
+    };
 Ndummies.strtype = 'e';
 Ndummies.num     = [Inf Inf];
-Nscans.val     = {3};
+Ndummies.val     = {3};
 
 %--------------------------------------------------------------------------
 % TR
@@ -141,7 +144,7 @@ NslicesPerBeat.help    = {'Only for triggered (gated) sequences: '
     'Number of slices acquired per heartbeat'};
 NslicesPerBeat.strtype = 'e';
 NslicesPerBeat.num     = [Inf Inf];
-Nscans.val     = {0};
+NslicesPerBeat.val     = {0};
 
 
 %--------------------------------------------------------------------------
@@ -153,7 +156,7 @@ Nslices.name    = 'Nslices';
 Nslices.help    = {'Number of slices in one volume'};
 Nslices.strtype = 'e';
 Nslices.num     = [Inf Inf];
-Nscans.val     = {37};
+Nslices.val     = {37};
 
 
 
@@ -163,7 +166,9 @@ Nscans.val     = {37};
 onset_slice         = cfg_entry;
 onset_slice.tag     = 'onset_slice';
 onset_slice.name    = 'onset_slice';
-onset_slice.help    = {'...'};
+onset_slice.help    = {
+    'slice to which regressors are temporally aligned'
+    'Typically the slice where your most important activation is expected'};
 onset_slice.strtype = 'e';
 onset_slice.num     = [Inf Inf];
 onset_slice.val     = {19};
@@ -174,7 +179,7 @@ onset_slice.val     = {19};
 Nprep         = cfg_entry;
 Nprep.tag     = 'Nprep';
 Nprep.name    = 'Nprep';
-Nprep.help    = {'preparation (e.g. shimming) volumes acuqired before first dummy'};
+Nprep.help    = {'Preparation (e.g. shimming) volumes acquired before first dummy'};
 Nprep.strtype = 'e';
 Nprep.num     = [Inf Inf];
 Nprep.val     = {[]};
@@ -249,8 +254,8 @@ cr.val     = {1};
 % orthog
 %--------------------------------------------------------------------------
 orthog        = cfg_menu;
-orthog.tag    = 'orthog';
-orthog.name   = 'orthog';
+orthog.tag    = 'orthogonalise';
+orthog.name   = 'orthogonalise';
 orthog.help   = {'...'};
 orthog.labels = {'none' 'cardiac' 'resp' 'mult' 'all'};
 orthog.values = {'none' 'cardiac' 'resp' 'mult' 'all'};
@@ -311,8 +316,8 @@ input_other_multiple_regressors.tag     = 'input_other_multiple_regressors';
 input_other_multiple_regressors.name    = 'input_other_multiple_regressors';
 input_other_multiple_regressors.val     = {{''}};
 input_other_multiple_regressors.help    = {'...'};
-input_other_multiple_regressors.filter  = 'mat';
-input_other_multiple_regressors.ufilter = '.*';
+input_other_multiple_regressors.filter  = '.*';
+input_other_multiple_regressors.ufilter = '.mat$|.txt$';
 input_other_multiple_regressors.num     = [0 1];
 
 %--------------------------------------------------------------------------
@@ -333,58 +338,25 @@ model.help = {'...'};
 %==========================================================================
 
 
-%--------------------------------------------------------------------------
-% manual_peak_select
-%--------------------------------------------------------------------------
-manual_peak_select        = cfg_menu;
-manual_peak_select.tag    = 'manual_peak_select';
-manual_peak_select.name   = 'manual_peak_select';
-manual_peak_select.help   = {'...'};
-manual_peak_select.labels = {'true' 'false'};
-manual_peak_select.values = {true false};
-manual_peak_select.val    = {true};
+% ==========================================================================
+%% Subsub-structure scan_timing
+%==========================================================================
 
 %--------------------------------------------------------------------------
-% kRpeakfile
+% scan_timing_method
 %--------------------------------------------------------------------------
-kRpeakfile         = cfg_files;
-kRpeakfile.tag     = 'kRpeakfile';
-kRpeakfile.name    = 'kRpeakfile';
-kRpeakfile.val     = {{''}};
-kRpeakfile.help    = {'...'};
-kRpeakfile.filter  = 'any';
-kRpeakfile.ufilter = '.*';
-kRpeakfile.num     = [0 1];
+scan_timing_method        = cfg_menu;
+scan_timing_method.tag    = 'scan_timing_method';
+scan_timing_method.name   = 'method';
+scan_timing_method.help   = {
+ 'method to determine slice onset times for regressors'
+'''nominal'' - to derive slice acquisition timing from sqpar directly'
+'''gradient'' or ''gradient_log'' - derive from logged gradient time courses'
+    };
+scan_timing_method.labels = {'nominal' 'gradient_log'};
+scan_timing_method.values = {'nominal' 'gradient_log'};
+scan_timing_method.val    = {'gradient_log'};
 
-%--------------------------------------------------------------------------
-% min
-%--------------------------------------------------------------------------
-min       = cfg_entry;
-min.tag     = 'min';
-min.name    = 'min';
-min.help    = {'...'};
-min.strtype = 'e';
-min.num     = [Inf Inf];
-
-%--------------------------------------------------------------------------
-% modality
-%--------------------------------------------------------------------------
-modality        = cfg_menu;
-modality.tag    = 'modality';
-modality.name   = 'modality';
-modality.help   = {'...'};
-modality.labels = {'ECG', 'OXY/PPU'};
-modality.values = {'ECG', 'PPU'};
-modality.val    = {'ECG'};
-
-%--------------------------------------------------------------------------
-% cardiac
-%--------------------------------------------------------------------------
-cardiac      = cfg_branch;
-cardiac.tag  = 'cardiac';
-cardiac.name = 'cardiac';
-cardiac.val  = {modality min kRpeakfile manual_peak_select};
-cardiac.help = {'...'};
 
 %--------------------------------------------------------------------------
 % grad_direction
@@ -393,9 +365,9 @@ grad_direction        = cfg_menu;
 grad_direction.tag    = 'grad_direction';
 grad_direction.name   = 'grad_direction';
 grad_direction.help   = {'...'};
-grad_direction.labels = {'use nominal timing' 'x' 'y' 'z'};
-grad_direction.values = {[] 'x' 'y' 'z'};
-grad_direction.val    = {[]};
+grad_direction.labels = {'x' 'y' 'z'};
+grad_direction.values = {'x' 'y' 'z'};
+grad_direction.val    = {'y'};
 
 %--------------------------------------------------------------------------
 % vol_spacing
@@ -403,7 +375,9 @@ grad_direction.val    = {[]};
 vol_spacing         = cfg_entry;
 vol_spacing.tag     = 'vol_spacing';
 vol_spacing.name    = 'vol_spacing';
-vol_spacing.help    = {'...'};
+vol_spacing.help    = {'time (in ms) between last slice of n-th volume' 
+    'and 1st slice of n+1-th volume(overrides .vol-threshold)'
+    'NOTE: Leave empty if .vol shall be used'};
 vol_spacing.strtype = 'e';
 vol_spacing.num     = [Inf Inf];
 vol_spacing.val     = {[]};
@@ -414,7 +388,7 @@ vol_spacing.val     = {[]};
 vol         = cfg_entry;
 vol.tag     = 'vol';
 vol.name    = 'vol';
-vol.help    = {'...'};
+vol.help    = {'Gradient Amplitude Threshold for Start of new Volume'};
 vol.strtype = 'e';
 vol.num     = [Inf Inf];
 vol.val     = {[]};
@@ -425,10 +399,10 @@ vol.val     = {[]};
 slice         = cfg_entry;
 slice.tag     = 'slice';
 slice.name    = 'slice';
-slice.help    = {'...'};
+slice.help    = {'Gradient Amplitude Threshold for Start of new slice'};
 slice.strtype = 'e';
 slice.num     = [Inf Inf];
-slice.val     = {[]};
+slice.val     = {1800};
 
 %--------------------------------------------------------------------------
 % zero
@@ -436,10 +410,10 @@ slice.val     = {[]};
 zero         = cfg_entry;
 zero.tag     = 'zero';
 zero.name    = 'zero';
-zero.help    = {'...'};
+zero.help    = {'Gradient Amplitude Threshold below which values will be set to 0.'};
 zero.strtype = 'e';
 zero.num     = [Inf Inf];
-zero.val     = {[]};
+zero.val     = {1700};
 
 %--------------------------------------------------------------------------
 % scan_timing
@@ -447,8 +421,184 @@ zero.val     = {[]};
 scan_timing      = cfg_branch;
 scan_timing.tag  = 'scan_timing';
 scan_timing.name = 'scan_timing';
-scan_timing.val  = {grad_direction zero slice vol vol_spacing};
-scan_timing.help = {'...'};
+scan_timing.val  = {scan_timing_method grad_direction zero slice vol vol_spacing};
+scan_timing.help = {'Determines scan timing from nominal scan parameters or logged gradient time courses'};
+
+
+% ==========================================================================
+%% Subsub-structure cardiac
+%==========================================================================
+
+
+%--------------------------------------------------------------------------
+% modality
+%--------------------------------------------------------------------------
+modality        = cfg_menu;
+modality.tag    = 'modality';
+modality.name   = 'modality';
+modality.help   = {'Shall ECG or PPU data be read from logfiles?'};
+modality.labels = {'ECG', 'OXY/PPU'};
+modality.values = {'ECG', 'PPU'};
+modality.val    = {'ECG'};
+
+
+%--------------------------------------------------------------------------
+% initial_cpulse_select_method
+%--------------------------------------------------------------------------
+initial_cpulse_select_method        = cfg_menu;
+initial_cpulse_select_method.tag    = 'manual_peak_select';
+initial_cpulse_select_method.name   = 'manual_peak_select';
+initial_cpulse_select_method.help   = {
+     'The initial cardiac pulse selection structure: Determines how the'
+    'majority of cardiac pulses is detected'
+    ' ''auto''    - auto generation of representative QRS-wave; detection via'
+    '             maximising auto-correlation with it'
+    ' ''load_from_logfile'' - from phys logfile, detected R-peaks of scanner' 
+    ' ''manual''  - via manually selected QRS-wave for autocoreelations'
+    ' ''load''    - from previous manual/auto run'
+   };
+initial_cpulse_select_method.labels = {
+    'auto', 'load_from_logfile', 'manual', 'load'};
+initial_cpulse_select_method.values = { 'auto', 'load_from_logfile', 'manual', 'load'};
+initial_cpulse_select_method.val    = {'load_from_logfile'};
+
+%--------------------------------------------------------------------------
+% initial_cpulse_select_file
+%--------------------------------------------------------------------------
+initial_cpulse_select_file         = cfg_entry;
+initial_cpulse_select_file.tag     = 'file';
+initial_cpulse_select_file.name    = 'file';
+initial_cpulse_select_file.help    = {'...'};
+initial_cpulse_select_file.strtype = 's';
+initial_cpulse_select_file.num     = [1 Inf];
+initial_cpulse_select_file.val     = {'kRpeakfile.mat'};
+
+
+
+%--------------------------------------------------------------------------
+% min
+%--------------------------------------------------------------------------
+min       = cfg_entry;
+min.tag     = 'min';
+min.name    = 'min';
+min.help    = {'minimum correlation value considered a peak (for auto, manual, load-methods).'};
+min.strtype = 'e';
+min.num     = [Inf Inf];
+min.val     = {0.4};
+
+
+%--------------------------------------------------------------------------
+% initial_cpulse_select
+%--------------------------------------------------------------------------
+initial_cpulse_select      = cfg_branch;
+initial_cpulse_select.tag  = 'initial_cpulse_select';
+initial_cpulse_select.name = 'initial_cpulse_select';
+initial_cpulse_select.val  = {initial_cpulse_select_method min initial_cpulse_select_file};
+initial_cpulse_select.help = {
+    'The initial cardiac pulse selection structure: Determines how the'
+    'majority of cardiac pulses is detected.'
+   };
+
+
+
+%--------------------------------------------------------------------------
+% posthoc_cpulse_select_method
+%--------------------------------------------------------------------------
+posthoc_cpulse_select_method        = cfg_menu;
+posthoc_cpulse_select_method.tag    = 'method';
+posthoc_cpulse_select_method.name   = 'method';
+posthoc_cpulse_select_method.help   = {
+    '''off'' - no manual selection of peaks'
+    '''manual'' - pick and save additional peaks manually'
+    '''load'' - load previously selected cardiac pulses'
+   };
+posthoc_cpulse_select_method.labels = {
+    'off', 'manual', 'load'};
+posthoc_cpulse_select_method.values = {'off', 'manual', 'load'};
+posthoc_cpulse_select_method.val    = {'off'};
+
+%--------------------------------------------------------------------------
+% posthoc_cpulse_select_file
+%--------------------------------------------------------------------------
+posthoc_cpulse_select_file         = cfg_entry;
+posthoc_cpulse_select_file.tag     = 'file';
+posthoc_cpulse_select_file.name    = 'file';
+posthoc_cpulse_select_file.help    = {'...'};
+posthoc_cpulse_select_file.strtype = 's';
+posthoc_cpulse_select_file.num     = [1 Inf];
+posthoc_cpulse_select_file.val     = {'cpulse.mat'};
+
+
+
+%--------------------------------------------------------------------------
+% posthoc_cpulse_select_percentile
+%--------------------------------------------------------------------------
+posthoc_cpulse_select_percentile       = cfg_entry;
+posthoc_cpulse_select_percentile.tag     = 'percentile';
+posthoc_cpulse_select_percentile.name    = 'percentile';
+posthoc_cpulse_select_percentile.help    = {
+    'percentile of beat-2-beat interval histogram that constitutes the'
+    'average heart beat duration in the session'};
+posthoc_cpulse_select_percentile.strtype = 'e';
+posthoc_cpulse_select_percentile.num     = [Inf Inf];
+posthoc_cpulse_select_percentile.val     = {80};
+
+%--------------------------------------------------------------------------
+% posthoc_cpulse_select_upper_thresh
+%--------------------------------------------------------------------------
+posthoc_cpulse_select_upper_thresh       = cfg_entry;
+posthoc_cpulse_select_upper_thresh.tag     = 'upper_thresh';
+posthoc_cpulse_select_upper_thresh.name    = 'upper_thresh';
+posthoc_cpulse_select_upper_thresh.help    = {
+    'minimum exceedance (in %) from average heartbeat duration '
+    'to be classified as missing heartbeat'};
+posthoc_cpulse_select_upper_thresh.strtype = 'e';
+posthoc_cpulse_select_upper_thresh.num     = [Inf Inf];
+posthoc_cpulse_select_upper_thresh.val     = {60};
+
+%--------------------------------------------------------------------------
+% posthoc_cpulse_select_lower_thresh
+%--------------------------------------------------------------------------
+posthoc_cpulse_select_lower_thresh       = cfg_entry;
+posthoc_cpulse_select_lower_thresh.tag     = 'lower_thresh';
+posthoc_cpulse_select_lower_thresh.name    = 'lower_thresh';
+posthoc_cpulse_select_lower_thresh.help    = {
+    'minimum reduction (in %) from average heartbeat duration'
+    'to be classified an abundant heartbeat'};
+posthoc_cpulse_select_lower_thresh.strtype = 'e';
+posthoc_cpulse_select_lower_thresh.num     = [Inf Inf];
+posthoc_cpulse_select_lower_thresh.val     = {60};
+
+
+%--------------------------------------------------------------------------
+% posthoc_cpulse_select
+%--------------------------------------------------------------------------
+posthoc_cpulse_select      = cfg_branch;
+posthoc_cpulse_select.tag  = 'posthoc_cpulse_select';
+posthoc_cpulse_select.name = 'posthoc_cpulse_select';
+posthoc_cpulse_select.val  = {posthoc_cpulse_select_method ...
+    posthoc_cpulse_select_file ...
+    posthoc_cpulse_select_percentile ...
+    posthoc_cpulse_select_upper_thresh ...
+    posthoc_cpulse_select_lower_thresh};
+posthoc_cpulse_select.help = {
+    'The posthoc cardiac pulse selection structure: If only few (<20)'
+    'cardiac pulses are missing in a session due to bad signal quality, a'
+    'manual selection after visual inspection is possible using the'
+    'following parameters. The results are saved for reproducibility.' 
+   };
+
+
+
+%--------------------------------------------------------------------------
+% cardiac
+%--------------------------------------------------------------------------
+cardiac      = cfg_branch;
+cardiac.tag  = 'cardiac';
+cardiac.name = 'cardiac';
+cardiac.val  = {modality initial_cpulse_select posthoc_cpulse_select};
+cardiac.help = {'...'};
+
 
 %--------------------------------------------------------------------------
 % thresh
@@ -467,15 +617,40 @@ thresh.help = {'Thresholding parameters for de-noising of raw peripheral data'
 %==========================================================================
 
 %--------------------------------------------------------------------------
-% verbose
+% level
 %--------------------------------------------------------------------------
 level         = cfg_entry;
-level.tag     = 'zero';
-level.name    = 'zero';
+level.tag     = 'level';
+level.name    = 'level';
 level.help    = {'...'};
 level.strtype = 'e';
 level.num     = [Inf Inf];
-level.val     = {[]};
+level.val     = {2};
+
+%--------------------------------------------------------------------------
+% fig_output_file
+%--------------------------------------------------------------------------
+fig_output_file         = cfg_entry;
+fig_output_file.tag     = 'fig_output_file';
+fig_output_file.name    = 'fig_output_file';
+fig_output_file.help    = {'file name where figures are saved to; leave empty to not save'};
+fig_output_file.strtype = 's';
+fig_output_file.num     = [1 Inf];
+fig_output_file.val     = {'PhysIO_output_level2.fig.ps'};
+
+
+
+
+%--------------------------------------------------------------------------
+% use_tabs
+%--------------------------------------------------------------------------
+use_tabs        = cfg_menu;
+use_tabs.tag    = 'use_tabs';
+use_tabs.name   = 'use_tabs';
+use_tabs.help   = {'use spm_tabs for plotting'};
+use_tabs.labels = {'true' 'false'};
+use_tabs.values = {true, false};
+use_tabs.val    = {false};
 
 
 %--------------------------------------------------------------------------
@@ -483,9 +658,44 @@ level.val     = {[]};
 %--------------------------------------------------------------------------
 verbose        = cfg_branch;
 verbose.tag    = 'verbose';
-verbose.name   = 'Display informative figures';
-verbose.help   = {'...'};
-verbose.val    = {level};
+verbose.name   = 'verbose';
+verbose.help   = {
+' determines how many figures shall be generated to follow the workflow'
+    ' of the toolbox and whether the graphical output shall be saved (to a'
+    ' PostScript-file)'
+    ' 0 = no graphical output;'
+    ' 1 = (default) main plots : Fig 1: gradient scan timing (if selected) ;'
+    '                            Fig 2: heart beat/breathing statistics & outlier;'
+    '                            Fig 3: final multiple_regressors matrix'
+    ' 2 = debugging plots        for setting up new study or if Fig 2 had'
+    '                            outliers'
+    '                            Fig 1: raw phys logfile data'
+    '                            Fig 2: gradient scan timing (if selected)'
+    '                            Fig 3: cutout interval of logfile for'
+    '                            regressor creation (including scan timing'
+    '                            and raw phys data)'
+    '                            Fig 4: heart beat/breathing statistics & outlier;'
+    '                            Fig 5: time course of all sampled RETROICOR'
+    '                                   regressors'
+    '                            Fig 6: final multiple_regressors matrix'
+    ''
+    ' 3 = all plots'
+    '                            Fig 1: raw phys logfile data'
+    '                            Fig 2: gradient scan timing (if selected)'
+    '                            Fig 3: Slice assignment to volumes'
+    '                            Fig 4: cutout interval of logfile for'
+    '                            regressor creation (including scan timing'
+    '                            and raw phys data)'
+    '                            Fig 5: heart beat/breathing statistics & outlier;'
+    '                            Fig 6: cardiac phase data of all slices'
+    '                            Fig 7: respiratory phase data and'
+    '                                   histogram transfer function'
+    '                            Fig 8: time course of all sampled RETROICOR'
+    '                                   regressors'
+    '                            Fig 9: final multiple_regressors matrix'
+     
+};
+verbose.val    = {level fig_output_file use_tabs};
 
 
 

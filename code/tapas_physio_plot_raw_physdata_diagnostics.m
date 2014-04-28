@@ -23,8 +23,8 @@ ah = subplot(2,1,1);
 
 if hasCardiacData
     percentile = thresh_cardiac.percentile;
-    upperThresh = thresh_cardiac.upperThresh;
-    lowerThresh = thresh_cardiac.lowerThresh;
+    upperThresh = thresh_cardiac.upper_thresh;
+    lowerThresh = thresh_cardiac.lower_thresh;
     [outliersHigh,outliersLow,fh] = tapas_physio_cardiac_detect_outliers(cpulse, percentile, upperThresh, lowerThresh, ah);
 end
 title( 'temporal lag between subsequent heartbeats (seconds)');
