@@ -33,7 +33,7 @@ vendor.val    = {'Philips'};
 % cardiac
 %--------------------------------------------------------------------------
 cardiac         = cfg_files;
-cardiac.tag     = 'log_cardiac';
+cardiac.tag     = 'cardiac';
 cardiac.name    = 'log_cardiac';
 cardiac.val     = {{'/Users/kasperla/Documents/code/matlab/smoothing_trunk/tSNR_fMRI_SPM/CheckPhysRETROICOR/PhysIOToolbox/examples/Philips/ECG3T/SCANPHYSLOG.log'}};
 cardiac.help    = {'...'};
@@ -45,7 +45,7 @@ cardiac.num     = [1 1];
 % respiration (filename)
 %--------------------------------------------------------------------------
 respiration         = cfg_files;
-respiration.tag     = 'log_respiration';
+respiration.tag     = 'respiration';
 respiration.name    = 'log_respiration';
 respiration.val     = {{'/Users/kasperla/Documents/code/matlab/smoothing_trunk/tSNR_fMRI_SPM/CheckPhysRETROICOR/PhysIOToolbox/examples/Philips/ECG3T/SCANPHYSLOG.log'}};
 respiration.help    = {'...'};
@@ -144,7 +144,7 @@ NslicesPerBeat.help    = {'Only for triggered (gated) sequences: '
     'Number of slices acquired per heartbeat'};
 NslicesPerBeat.strtype = 'e';
 NslicesPerBeat.num     = [Inf Inf];
-NslicesPerBeat.val     = {0};
+NslicesPerBeat.val     = {[]};
 
 
 %--------------------------------------------------------------------------
@@ -346,7 +346,7 @@ model.help = {'...'};
 % scan_timing_method
 %--------------------------------------------------------------------------
 scan_timing_method        = cfg_menu;
-scan_timing_method.tag    = 'scan_timing_method';
+scan_timing_method.tag    = 'method';
 scan_timing_method.name   = 'method';
 scan_timing_method.help   = {
  'method to determine slice onset times for regressors'
@@ -446,8 +446,8 @@ modality.val    = {'ECG'};
 % initial_cpulse_select_method
 %--------------------------------------------------------------------------
 initial_cpulse_select_method        = cfg_menu;
-initial_cpulse_select_method.tag    = 'manual_peak_select';
-initial_cpulse_select_method.name   = 'manual_peak_select';
+initial_cpulse_select_method.tag    = 'method';
+initial_cpulse_select_method.name   = 'method';
 initial_cpulse_select_method.help   = {
      'The initial cardiac pulse selection structure: Determines how the'
     'majority of cardiac pulses is detected'
@@ -636,7 +636,7 @@ fig_output_file.name    = 'fig_output_file';
 fig_output_file.help    = {'file name where figures are saved to; leave empty to not save'};
 fig_output_file.strtype = 's';
 fig_output_file.num     = [1 Inf];
-fig_output_file.val     = {'PhysIO_output_level2.fig.ps'};
+fig_output_file.val     = {'PhysIO_output_level2.fig'};
 
 
 
@@ -721,10 +721,12 @@ physio.vout = @vout_physio;
 % function out = run_physio(job)
 %==========================================================================
 function out = run_physio(job)
-[~, R] = tapas_physio_main_create_regressors(job.files,  ...
+
+job.verbose.fig_handles = [];
+[~, R] = tapas_physio_main_create_regressors(job.log_files,  ...
     job.sqpar, job.model, job.thresh, job.verbose);
 
-out.physnoisereg = job.files.output_multiple_regressors;
+out.physnoisereg = job.model.output_multiple_regressors;
 out.R = R;
 
 

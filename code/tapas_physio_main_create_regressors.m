@@ -55,6 +55,8 @@ end
 % fill up empty parameters
 physio = tapas_physio_fill_empty_parameters(physio);
 
+% replace cellstrings
+physio = tapas_physio_cell2char(physio);
 
 % set sub-structures for readability; NOTE: copy by value, physio-structure not
 % updated!

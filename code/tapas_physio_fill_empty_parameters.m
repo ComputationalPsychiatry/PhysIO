@@ -32,7 +32,7 @@ if isempty(physio.sqpar.NslicesPerBeat)
 end
 
 if isempty(physio.sqpar.time_slice_to_slice)
-    physio.sqpar.NslicesPerBeat = physio.sqpar.TR/physio.sqpar.Nslices;
+    physio.sqpar.time_slice_to_slice = physio.sqpar.TR/physio.sqpar.Nslices;
 end
 
 if isempty(physio.log_files.sampling_interval)
