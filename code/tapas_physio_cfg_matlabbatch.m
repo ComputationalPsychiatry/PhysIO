@@ -11,7 +11,8 @@ function physio = tapas_physio_cfg_matlabbatch
 % $Id$
 
 
-
+pathThis = fileparts(mfilename('fullpath')); % TODO: more elegant via SPM!
+addpath(pathThis);
 
 %==========================================================================
 %% Sub-structure log_files
@@ -35,7 +36,7 @@ vendor.val    = {'Philips'};
 cardiac         = cfg_files;
 cardiac.tag     = 'cardiac';
 cardiac.name    = 'log_cardiac';
-cardiac.val     = {{'/Users/kasperla/Documents/code/matlab/smoothing_trunk/tSNR_fMRI_SPM/CheckPhysRETROICOR/PhysIOToolbox/examples/Philips/ECG3T/SCANPHYSLOG.log'}};
+%cardiac.val     = {{'/Users/kasperla/Documents/code/matlab/smoothing_trunk/tSNR_fMRI_SPM/CheckPhysRETROICOR/PhysIOToolbox/examples/Philips/ECG3T/SCANPHYSLOG.log'}};
 cardiac.help    = {'...'};
 cardiac.filter  = 'any';
 cardiac.ufilter = '.*';
@@ -47,7 +48,7 @@ cardiac.num     = [1 1];
 respiration         = cfg_files;
 respiration.tag     = 'respiration';
 respiration.name    = 'log_respiration';
-respiration.val     = {{'/Users/kasperla/Documents/code/matlab/smoothing_trunk/tSNR_fMRI_SPM/CheckPhysRETROICOR/PhysIOToolbox/examples/Philips/ECG3T/SCANPHYSLOG.log'}};
+% respiration.val     = {{'/Users/kasperla/Documents/code/matlab/smoothing_trunk/tSNR_fMRI_SPM/CheckPhysRETROICOR/PhysIOToolbox/examples/Philips/ECG3T/SCANPHYSLOG.log'}};
 respiration.help    = {'...'};
 respiration.filter  = 'any';
 respiration.ufilter = '.*';
@@ -107,7 +108,7 @@ Nscans.name    = 'Nscans';
 Nscans.help    = {'Number of scans (volumes) in design matrix'};
 Nscans.strtype = 'e';
 Nscans.num     = [Inf Inf];
-Nscans.val     = {495};
+%Nscans.val     = {495};
 
 %--------------------------------------------------------------------------
 % Ndummies
@@ -121,7 +122,7 @@ Ndummies.help    = {
     };
 Ndummies.strtype = 'e';
 Ndummies.num     = [Inf Inf];
-Ndummies.val     = {3};
+%Ndummies.val     = {3};
 
 %--------------------------------------------------------------------------
 % TR
@@ -132,7 +133,7 @@ TR.name    = 'TR';
 TR.help    = {'Repetition time in seconds'};
 TR.strtype = 'e';
 TR.num     = [Inf Inf];
-TR.val     = {2.5};
+%TR.val     = {2.5};
 
 %--------------------------------------------------------------------------
 % NslicesPerBeat
@@ -156,7 +157,7 @@ Nslices.name    = 'Nslices';
 Nslices.help    = {'Number of slices in one volume'};
 Nslices.strtype = 'e';
 Nslices.num     = [Inf Inf];
-Nslices.val     = {37};
+%Nslices.val     = {37};
 
 
 
@@ -171,7 +172,7 @@ onset_slice.help    = {
     'Typically the slice where your most important activation is expected'};
 onset_slice.strtype = 'e';
 onset_slice.num     = [Inf Inf];
-onset_slice.val     = {19};
+%onset_slice.val     = {19};
 
 %--------------------------------------------------------------------------
 % Nprep
@@ -355,7 +356,7 @@ scan_timing_method.help   = {
     };
 scan_timing_method.labels = {'nominal' 'gradient_log'};
 scan_timing_method.values = {'nominal' 'gradient_log'};
-scan_timing_method.val    = {'gradient_log'};
+scan_timing_method.val    = {'nominal'};
 
 
 %--------------------------------------------------------------------------
