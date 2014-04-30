@@ -1,4 +1,4 @@
-function physio_zip2ship(rev)
+function physio_zip2ship(rev, zipAll)
 % deletes all unnecessary output files and zips code and examples folder
 % separately 
 %
@@ -32,6 +32,11 @@ if ~nargin
 else 
     srev = sprintf('%d', rev');
 end
+
+if nargin < 2
+    zipAll = false;
+end
+
 physio_cleanup_example_output_files();
 currD = fileparts(mfilename('fullpath'));
 
@@ -44,11 +49,22 @@ copyfile(fullfile(currD, 'examples'), fullfile(exportD, 'examples'));
 zipF = fullfile(currD, sprintf('PhysIOToolbox_r%s_examples.zip', srev));
 zip(zipF, exportD);
 
-% copy and zip code and examples
-rmdir(fullfile(exportD, 'examples'),'s');
 copyfile(fullfile(currD, 'code'), fullfile(exportD, 'code'));
 mkdir(exportD, 'manual');
 copyfile(fullfile(currD, 'manual/*.pdf'), fullfile(exportD, 'manual'));
+
+% copy and zip all
+if zipAll
+zipF = fullfile(currD, sprintf('PhysIOToolbox_r%s_all.zip', srev));
+zip(zipF, exportD);
+end
+
+% copy and zip code and manual
+rmdir(fullfile(exportD, 'examples'),'s');
+rmdir(fullfile(exportD, 'manual'),'s')
+mkdir(exportD, 'manual');
+copyfile(fullfile(currD, 'manual/QuickStart*.pdf'), fullfile(exportD, 'manual'));
+
 zipF = fullfile(currD, sprintf('PhysIOToolbox_r%s_code.zip', srev));
 zip(zipF, exportD);
 
