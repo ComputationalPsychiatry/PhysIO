@@ -98,7 +98,7 @@ end
 % plot whether physdata is alright or events are missing (too low/high
 % heart rate? breathing amplitude overshoot?)
 if hasCardiacData
-    thresh.cardiac.modality = 'OXY'; % 'ECG' or 'OXY' (for pulse oximetry)
+    % thresh.cardiac.modality = 'OXY'; % 'ECG' or 'OXY' (for pulse oximetry)
     
     %% initial pulse select via load from logfile or autocorrelation with 1
     %% cardiac pulse
