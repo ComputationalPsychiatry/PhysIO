@@ -106,53 +106,54 @@ switch lower(cardiac_modality)
         do_manual_peakfind = true;
         switch thresh_cardiac.method
             case 'auto'
-                do_manual_peakfind = false;
                 [cpulse, verbose] = tapas_physio_get_cardiac_pulses_auto(c, t, ...
                     thresh_cardiac.min, dt120, verbose);
-        end
-        
-        % manual peak selection, if no file selected and loading is
-        % specified
-        if do_manual_peakfind
-            hasKrpeakLogfile = exist(thresh_cardiac.file,'file') || ...
-                exist([thresh_cardiac.file '.mat'],'file');
-            if ~hasKrpeakLogfile && strcmp(thresh_cardiac.method, 'load');
-                do_manual_peakfind = true;
-            else
-                do_manual_peakfind = false;
-            end
-            
-            if do_manual_peakfind
-                thresh_cardiac.kRpeak = [];
-                hasECGMin = isfield(thresh_cardiac, 'min') && ~isempty(thresh_cardiac.min);
-                if ~hasECGMin
-                    thresh_cardiac.min = 0.5;
+            otherwise % load, load_from_logfile, manual
+                
+                
+                % manual peak selection, if no file selected and loading is
+                % specified
+                
+                hasKrpeakLogfile = exist(thresh_cardiac.file,'file') || ...
+                    exist([thresh_cardiac.file '.mat'],'file');
+                
+                % if no file exists, also do manual peak-find
+                doSelectTemplateManually = strcmpi(...
+                    thresh_cardiac.method, 'manual') || ~hasKrpeakLogfile
+                
+                if doSelectTemplateManually
+                    thresh_cardiac.kRpeak = [];
+                    hasECGMin = isfield(thresh_cardiac, 'min') && ~isempty(thresh_cardiac.min);
+                    if ~hasECGMin
+                        thresh_cardiac.min = 0.5;
+                    end
+                else
+                    fprintf('Loading %s\n', thresh_cardiac.file);
+                    ECGfile = load(thresh_cardiac.file);
+                    thresh_cardiac.min = ECGfile.ECG_min;
+                    thresh_cardiac.kRpeak = ECGfile.kRpeak;
                 end
-            else
-                fprintf('Loading %s\n', thresh_cardiac.file);
-                ECGfile = load(thresh_cardiac.file);
-                thresh_cardiac.min = ECGfile.ECG_min;
-                thresh_cardiac.kRpeak = ECGfile.kRpeak;
-            end
-            
-            inp_events = [];
-            ECG_min = thresh_cardiac.min;
-            kRpeak = thresh_cardiac.kRpeak;
-            if do_manual_peakfind
-                while ECG_min
-                    [cpulse, ECG_min_new, kRpeak] = tapas_physio_find_ecg_r_peaks(t,c, ECG_min, [], inp_events);
-                    ECG_min = input('Press 0, then return, if right ECG peaks were found, otherwise type next numerical choice for ECG_min and continue the selection: ');
+                
+                inp_events = [];
+                ECG_min = thresh_cardiac.min;
+                kRpeak = thresh_cardiac.kRpeak;
+                if doSelectTemplateManually
+                    while ECG_min
+                        [cpulse, ECG_min_new, kRpeak] = tapas_physio_find_ecg_r_peaks(t,c, ECG_min, [], inp_events);
+                        fprintf('Press 0, then return, if right ECG peaks were found\n');
+                        ECG_min = input('otherwise type next numerical choice for ECG_min and continue the selection: ');
+                    end
+                else
+                    [cpulse, ECG_min_new, kRpeak] = tapas_physio_find_ecg_r_peaks(t,c, ECG_min, kRpeak, inp_events);
                 end
-            else
-                [cpulse, ECG_min_new, kRpeak] = tapas_physio_find_ecg_r_peaks(t,c, ECG_min, kRpeak, inp_events);
-            end
-            ECG_min = ECG_min_new;
-            cpulse = t(cpulse);
-            % save manually found peak parameters to file
-            if do_manual_peakfind
-                save(thresh_cardiac.file, 'ECG_min', 'kRpeak');
-            end
-        end
+                ECG_min = ECG_min_new;
+                cpulse = t(cpulse);
+                
+                % save manually found peak parameters to file
+                if doSelectTemplateManually
+                    save(thresh_cardiac.file, 'ECG_min', 'kRpeak');
+                end
+        end %  switch thresh_cardiac.method
     otherwise
         disp('How did you measure your cardiac cycle, dude? (ECG, OXY)');
 end
