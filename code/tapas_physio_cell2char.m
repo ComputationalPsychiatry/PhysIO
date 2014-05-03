@@ -23,6 +23,7 @@ function physio = tapas_physio_cell2char(physio)
 % COPYING or <http://www.gnu.org/licenses/>.
 %
 % $Id: teditRETRO.m 464 2014-04-27 11:58:09Z kasperla $
+physio.save_dir = char(physio.save_dir);
 physio.log_files.cardiac = char(physio.log_files.cardiac);
 physio.log_files.respiration = char(physio.log_files.respiration);
 physio.model.input_other_multiple_regressors = char(...

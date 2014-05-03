@@ -14,6 +14,20 @@ function physio = tapas_physio_cfg_matlabbatch
 pathThis = fileparts(mfilename('fullpath')); % TODO: more elegant via SPM!
 addpath(pathThis);
 
+
+%--------------------------------------------------------------------------
+% save_dir (directory) - where all data is saved
+%--------------------------------------------------------------------------
+save_dir         = cfg_files;
+save_dir.tag     = 'save_dir';
+save_dir.name    = 'save_dir';
+save_dir.val     = {{''}};
+save_dir.help    = {'Specify a directory where output of modelling and figures shall be saved.'
+    'Default: current working directory'};
+save_dir.filter  = 'dir';
+save_dir.ufilter = '.*';
+save_dir.num     = [0 1];
+
 %==========================================================================
 %% Sub-structure log_files
 %==========================================================================
@@ -712,7 +726,7 @@ verbose.val    = {level fig_output_file use_tabs};
 physio      = cfg_exbranch;
 physio.tag  = 'physio';
 physio.name = 'TAPAS PhysIO Toolbox';
-physio.val  = {files sqpar model thresh verbose};
+physio.val  = {save_dir files sqpar model thresh verbose};
 physio.help = {'...'};
 physio.prog = @run_physio;
 physio.vout = @vout_physio;
@@ -725,7 +739,7 @@ function out = run_physio(job)
 
 job.verbose.fig_handles = [];
 [~, R] = tapas_physio_main_create_regressors(job.log_files,  ...
-    job.sqpar, job.model, job.thresh, job.verbose);
+    job.sqpar, job.model, job.thresh, job.verbose, job.save_dir);
 
 out.physnoisereg = job.model.output_multiple_regressors;
 out.R = R;

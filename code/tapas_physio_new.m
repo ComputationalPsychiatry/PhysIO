@@ -50,13 +50,17 @@ end
 ons_secs = [];
 
 if nargin >= 2
+    save_dir = physio_in.save_dir;
     log_files   = physio_in.log_files;
     thresh  = physio_in.thresh;
     sqpar   = physio_in.sqpar;
     model   = physio_in.model;
     verbose = physio_in.verbose;
 else
-    
+    %% save_dir 
+    % directory where output model and figure-files are saved to
+    % leave empty to use current directory
+    save_dir = ''; 
     
     %% log_files
     % structure containing general physiological log-file information
@@ -331,6 +335,8 @@ switch default_scheme
 end
 
 %% assemble output
+
+physio.save_dir = save_dir;
 physio.log_files   = log_files;
 physio.sqpar   = sqpar;
 physio.model   = model;
