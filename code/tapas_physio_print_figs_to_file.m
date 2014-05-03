@@ -1,4 +1,4 @@
-function physio_print_figs_to_ps(verbose)
+function tapas_physio_print_figs_to_file(verbose, save_dir)
 % prints all figure handles in verbose-struct to specified filename there
 %
 %   physio_print_figs_to_ps(verbose)
@@ -26,6 +26,10 @@ function physio_print_figs_to_ps(verbose)
 % COPYING or <http://www.gnu.org/licenses/>.
 %
 % $Id$
+if nargin > 1
+    verbose.fig_output_file = fullfile(save_dir, verbose.fig_output_file);
+end
+
 if isempty(verbose.fig_handles)
     warning('No figures found to save into PS-file')
 else

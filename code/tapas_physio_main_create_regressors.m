@@ -1,5 +1,5 @@
-function [physio_out, R, ons_secs] = tapas_physio_main_create_regressors(log_files, ...
-    sqpar, model, thresh, verbose)
+function [physio_out, R, ons_secs] = tapas_physio_main_create_regressors(...
+    log_files, sqpar, model, thresh, verbose, save_dir)
 % RETROICOR - regressor creation based on Glover, G. MRM 44, 2000
 %
 % USAGE
@@ -7,8 +7,8 @@ function [physio_out, R, ons_secs] = tapas_physio_main_create_regressors(log_fil
 %
 %   OR
 %
-% [physio_out, R, ons_secs] = tapas_physio_main_create_regressors(log_files, ...
-%    sqpar, model, thresh, verbose)
+% [physio_out, R, ons_secs] = tapas_physio_main_create_regressors(...
+%    log_files, sqpar, model, thresh, verbose, save_dir);
 %
 %------------------------------------------------------------------------
 % IN
@@ -45,6 +45,7 @@ if nargin == 1 % assuming sole PhysIO-object as input
     physio      = log_files; % first argument of function
 else % assemble physio-structure
     physio = tapas_physio_new();
+    physio.save_dir = save_dir;
     physio.log_files = log_files;
     physio.thresh  = thresh;
     physio.sqpar   = sqpar;
@@ -58,8 +59,12 @@ physio = tapas_physio_fill_empty_parameters(physio);
 % replace cellstrings
 physio = tapas_physio_cell2char(physio);
 
+% prepend absolute directories - save_dir
+physio = tapas_physio_prepend_absolute_paths(physio);
+
 % set sub-structures for readability; NOTE: copy by value, physio-structure not
 % updated!
+save_dir = physio.save_dir;
 log_files = physio.log_files;
 thresh  = physio.thresh;
 sqpar   = physio.sqpar;
@@ -213,6 +218,7 @@ if isfield(verbose, 'fig_output_file') && ~isempty(verbose.fig_output_file)
     tapas_physio_print_figs_to_file(verbose);
 end
 
+physio_out.save_dir     = save_dir;
 physio_out.log_files    = log_files;
 physio_out.thresh       = thresh;
 physio_out.sqpar        = sqpar;
