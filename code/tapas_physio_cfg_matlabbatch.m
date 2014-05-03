@@ -38,8 +38,21 @@ save_dir.num     = [0 1];
 vendor        = cfg_menu;
 vendor.tag    = 'vendor';
 vendor.name   = 'vendor';
-vendor.help   = {'Choose Vendor of your scanner from list or Custom'
-    'Custom logfiles should be ASCII-files with one sample per row'};
+vendor.help   = {'Choose Vendor of your scanner from list or Custom (e.g. for BrainVoyager)'
+    ''
+    '''Custom'' expects the logfiles (separate files for cardiac and respiratory)'
+    '  to be plain text, with one cardiac (or respiratory) sample per row.'
+    '  If heartbeat (R-wave peak) events are recorded as well, they have to be put'
+    '  as a 2nd column in the cardiac logfile by specifying a 1; 0 in all other rows'
+    '  e.g.:'
+    '      0.2  0'
+    '      0.4  1 <- cardiac pulse event'
+    '      0.2  0'
+    '      -0.3 0'
+    ''
+    ' NOTE: the sampling interval has to be specified'
+    'for these files as well (s.b.)'
+    };
 vendor.labels = {'Philips', 'GE', 'Siemens', 'Custom'};
 vendor.values = {'Philips', 'GE', 'Siemens', 'Custom'};
 vendor.val    = {'Philips'};
@@ -51,10 +64,13 @@ cardiac         = cfg_files;
 cardiac.tag     = 'cardiac';
 cardiac.name    = 'log_cardiac';
 %cardiac.val     = {{'/Users/kasperla/Documents/code/matlab/smoothing_trunk/tSNR_fMRI_SPM/CheckPhysRETROICOR/PhysIOToolbox/examples/Philips/ECG3T/SCANPHYSLOG.log'}};
-cardiac.help    = {'...'};
+cardiac.help    = {'logfile with cardiac, i.e. ECG/PPU (pulse oximetry) data'
+    'Select 0 files, if only respiratory data is available'
+    'For Philips, same as respiratory logfile.'
+    };
 cardiac.filter  = 'any';
 cardiac.ufilter = '.*';
-cardiac.num     = [1 1];
+cardiac.num     = [0 1];
 
 %--------------------------------------------------------------------------
 % respiration (filename)
@@ -63,7 +79,10 @@ respiration         = cfg_files;
 respiration.tag     = 'respiration';
 respiration.name    = 'log_respiration';
 % respiration.val     = {{'/Users/kasperla/Documents/code/matlab/smoothing_trunk/tSNR_fMRI_SPM/CheckPhysRETROICOR/PhysIOToolbox/examples/Philips/ECG3T/SCANPHYSLOG.log'}};
-respiration.help    = {'...'};
+respiration.help    = {'logfile with respiratory, i.e. breathing belt amplitude data'
+    'Select 0 files, if only cardiac data available'
+    'For Philips, same as cardiac logfile.'
+    };
 respiration.filter  = 'any';
 respiration.ufilter = '.*';
 respiration.num     = [0 1];
@@ -102,7 +121,7 @@ files      = cfg_branch;
 files.tag  = 'log_files';
 files.name = 'log_files';
 files.val  = {vendor cardiac respiration sampling_interval, relative_start_acquisition};
-files.help = {'...'};
+files.help = {'Specify log files where peripheral data was stored, and their properties.'};
 
 
 

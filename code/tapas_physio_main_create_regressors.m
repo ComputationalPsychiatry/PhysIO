@@ -193,15 +193,15 @@ end
 
 input_R = [input_R, convHRV, convRVT];
 
-if isempty(R) && isempty(input_R)
-    error('Please specify valid model.type');
-end
 
 % 4.2   Orthogonalisation of regressors ensures numerical stability for
 %       otherwise correlated cardiac regressors
 [R, verbose] = tapas_physio_orthogonalise_physiological_regressors(cardiac_sess, respire_sess, ...
     mult_sess, input_R, model.order.orthogonalise, verbose);
 
+if isempty(R)
+    error('Please specify valid model.type');
+end
 
 
 % 4.3   Save Multiple Regressors file for SPM
