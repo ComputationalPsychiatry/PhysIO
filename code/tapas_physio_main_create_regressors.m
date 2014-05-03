@@ -147,7 +147,11 @@ end
 
 if verbose.level >= 1
     verbose.fig_handles(end+1) = ...
-        tapas_physio_plot_raw_physdata_diagnostics(ons_secs.cpulse, ons_secs.r, thresh.cardiac.posthoc_cpulse_select);
+        tapas_physio_plot_raw_physdata_diagnostics(ons_secs.cpulse, ...
+        ons_secs.r, thresh.cardiac.posthoc_cpulse_select, verbose.level);
+else % without figure creation
+     tapas_physio_plot_raw_physdata_diagnostics(ons_secs.cpulse, ...
+        ons_secs.r, thresh.cardiac.posthoc_cpulse_select, 0);
 end
 
 if hasRespData
