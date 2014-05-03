@@ -30,8 +30,9 @@ if nargin > 1
     verbose.fig_output_file = fullfile(save_dir, verbose.fig_output_file);
 end
 
-if isempty(verbose.fig_handles)
-    warning('No figures found to save into PS-file')
+if isempty(verbose.fig_handles) && verbose.level > 0 && ...
+    ~isempty(verbose.fig_output_file)
+    warning('No figures found to save to file')
 else
     [pfx fn sfx] = fileparts(verbose.fig_output_file);
     switch sfx
@@ -52,6 +53,7 @@ else
             for k=1:length(verbose.fig_handles)
                 saveas(verbose.fig_handles(k), fullfile(pfx,[fn sprintf('_%02d', k) sfx]));
             end
+        case '' % empty, do nothing!
         otherwise %'jpg', 'tiff', 'fig', ... basically everything Matlab supports via print
             switch sfx
                 case {'.jpeg', '.jpg'}

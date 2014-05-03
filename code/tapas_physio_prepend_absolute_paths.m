@@ -22,11 +22,14 @@ function physio = tapas_physio_prepend_absolute_paths(physio)
 % COPYING or <http://www.gnu.org/licenses/>.
 %
 % $Id: teditRETRO.m 464 2014-04-27 11:58:09Z kasperla $
+
+save_dir = physio.save_dir;
+
 physio.verbose.fig_output_file = fullfile(save_dir, ...
     physio.verbose.fig_output_file);
 
 physio.model.output_multiple_regressors = fullfile(save_dir, ...
-    physio.model.output_multiple_regressor);
+    physio.model.output_multiple_regressors);
 
 physio.thresh.cardiac.initial_cpulse_select.file = fullfile(save_dir, ...
     physio.thresh.cardiac.initial_cpulse_select.file);

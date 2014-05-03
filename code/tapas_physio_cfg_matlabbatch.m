@@ -390,7 +390,7 @@ grad_direction.val    = {'y'};
 vol_spacing         = cfg_entry;
 vol_spacing.tag     = 'vol_spacing';
 vol_spacing.name    = 'vol_spacing';
-vol_spacing.help    = {'time (in ms) between last slice of n-th volume' 
+vol_spacing.help    = {'time (in seconds) between last slice of n-th volume' 
     'and 1st slice of n+1-th volume(overrides .vol-threshold)'
     'NOTE: Leave empty if .vol shall be used'};
 vol_spacing.strtype = 'e';
@@ -485,8 +485,8 @@ initial_cpulse_select_file.tag     = 'file';
 initial_cpulse_select_file.name    = 'file';
 initial_cpulse_select_file.help    = {'...'};
 initial_cpulse_select_file.strtype = 's';
-initial_cpulse_select_file.num     = [1 Inf];
-initial_cpulse_select_file.val     = {'kRpeakfile.mat'};
+initial_cpulse_select_file.num     = [0 Inf];
+initial_cpulse_select_file.val     = {'initial_cpulse_kRpeakfile.mat'};
 
 
 
@@ -540,8 +540,8 @@ posthoc_cpulse_select_file.tag     = 'file';
 posthoc_cpulse_select_file.name    = 'file';
 posthoc_cpulse_select_file.help    = {'...'};
 posthoc_cpulse_select_file.strtype = 's';
-posthoc_cpulse_select_file.num     = [1 Inf];
-posthoc_cpulse_select_file.val     = {'cpulse.mat'};
+posthoc_cpulse_select_file.num     = [0 Inf];
+posthoc_cpulse_select_file.val     = {'posthoc_cpulse.mat'};
 
 
 
@@ -648,10 +648,12 @@ level.val     = {2};
 fig_output_file         = cfg_entry;
 fig_output_file.tag     = 'fig_output_file';
 fig_output_file.name    = 'fig_output_file';
-fig_output_file.help    = {'file name where figures are saved to; leave empty to not save'};
+fig_output_file.help    = {'file name where figures are saved to;'
+    'supported figure formats(via filename-suffix): jpg, png, fig, ps'
+    'leave empty to not save output figures'};
 fig_output_file.strtype = 's';
-fig_output_file.num     = [1 Inf];
-fig_output_file.val     = {'PhysIO_output_level2.fig'};
+fig_output_file.num     = [0 Inf];
+fig_output_file.val     = {''};
 
 
 
