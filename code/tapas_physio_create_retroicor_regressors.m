@@ -57,7 +57,7 @@ rsampint    = t(2)-t(1);
 %% Get phase, downsample and Fourier-expand
 sample_points   = tapas_physio_get_sample_points(ons_secs, sqpar);
 
-if order.c && hasCardiacData
+if (order.c || order.cr) && hasCardiacData
     if verbose.level >= 3
     [c_phase, verbose.fig_handles(end+1)]    = ...
         tapas_physio_get_cardiac_phase(cpulse, spulse, verbose.level, svolpulse);
@@ -71,7 +71,7 @@ else
     c_sample_phase = [];
 end
 
-if order.r && hasRespData
+if (order.r || order.cr) && hasRespData
     fr = ons_secs.fr; 
     
     if verbose.level >=3
