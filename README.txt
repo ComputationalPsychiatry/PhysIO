@@ -77,6 +77,12 @@ February 20th, 2014
 
 revision: $Revision: 429 $
 
+Major Release Notes (r485):
+- SPM matlabbatch GUI implemented (Call via Batch -> SPM -> Tools -> TAPAS PhysIO Toolbox)
+- job .m/.mat-files created for all example datasets
+- script for example data renamed and included into code-folder
+- bugfixes cpulse-initial-select method-handling (auto/manual/load)
+
 Major Release Notes (r429):
 - Cardiac and Respiratory response function regressors integrated in workflow (heart rate and breathing volume computation)
 - Handling of Cardiac and Respiratory Logfiles only
@@ -116,16 +122,16 @@ See subdirectory "manual"
 
 REFERENCES
 
-Birn, Rasmus M., Jason B. Diamond, Monica A. Smith, and Peter A. Bandettini. 2006. “Separating Respiratory-variation-related Fluctuations from Neuronal-activity-related Fluctuations in fMRI.” NeuroImage 31 (4) (July 15): 1536–1548. 	doi:10.1016/j.neuroimage.2006.02.048.
+Birn, Rasmus M., Jason B. Diamond, Monica A. Smith, and Peter A. Bandettini. 2006. ?Separating Respiratory-variation-related Fluctuations from Neuronal-activity-related Fluctuations in fMRI.? NeuroImage 31 (4) (July 15): 1536?1548. 	doi:10.1016/j.neuroimage.2006.02.048.
 
-Glover, G H, T Q Li, and D Ress. 2000. “Image-based Method for Retrospective Correction of Physiological Motion Effects in fMRI: RETROICOR.” Magnetic Resonance in Medicine: Official Journal of the Society of Magnetic Resonance in Medicine / 		Society of Magnetic Resonance in Medicine 44 (1) (July): 162–7. doi:10893535.
+Glover, G H, T Q Li, and D Ress. 2000. ?Image-based Method for Retrospective Correction of Physiological Motion Effects in fMRI: RETROICOR.? Magnetic Resonance in Medicine: Official Journal of the Society of Magnetic Resonance in Medicine / 		Society of Magnetic Resonance in Medicine 44 (1) (July): 162?7. doi:10893535.
 
-Harvey, Ann K., Kyle T.S. Pattinson, Jonathan C.W. Brooks, Stephen D. Mayhew, Mark Jenkinson, and Richard G. Wise. 2008. “Brainstem Functional Magnetic Resonance Imaging: Disentangling Signal from Physiological Noise.” Journal of Magnetic 		Resonance Imaging 28 (6): 1337–1344. doi:10.1002/jmri.21623.
+Harvey, Ann K., Kyle T.S. Pattinson, Jonathan C.W. Brooks, Stephen D. Mayhew, Mark Jenkinson, and Richard G. Wise. 2008. ?Brainstem Functional Magnetic Resonance Imaging: Disentangling Signal from Physiological Noise.? Journal of Magnetic 		Resonance Imaging 28 (6): 1337?1344. doi:10.1002/jmri.21623.
 
-Hutton, C., O. Josephs, J. Stadler, E. Featherstone, A. Reid, O. Speck, J. Bernarding, and N. Weiskopf. 2011. “The Impact of Physiological Noise Correction on fMRI at 7 T.” NeuroImage 57 (1) (July 1): 101–112. 	doi:10.1016/j.neuroimage.2011.04.018.
+Hutton, C., O. Josephs, J. Stadler, E. Featherstone, A. Reid, O. Speck, J. Bernarding, and N. Weiskopf. 2011. ?The Impact of Physiological Noise Correction on fMRI at 7 T.? NeuroImage 57 (1) (July 1): 101?112. 	doi:10.1016/j.neuroimage.2011.04.018.
 
 Josephs, O., Howseman, A.M., Friston, K., Turner, R., 1997. "Physiological noise modelling for multi-slice EPI fMRI using SPM." Proceedings of the 5th Annual Meeting of ISMRM, Vancouver, Canada, p. 1682
-Kasper, Lars, Sarah Marti, S. Johanna Vannesjö, Chloe Hutton, Ray Dolan, Nikolaus Weiskopf, Klaas Enno Stephan, and Klaas Paul Prüssmann. 2009. “Cardiac Artefact Correction for Human Brainstem fMRI at 7 Tesla.” In Proc. Org. Hum.  Brain Mapping 		15, 395. San Francisco.
+Kasper, Lars, Sarah Marti, S. Johanna Vannesj?, Chloe Hutton, Ray Dolan, Nikolaus Weiskopf, Klaas Enno Stephan, and Klaas Paul Pr?ssmann. 2009. ?Cardiac Artefact Correction for Human Brainstem fMRI at 7 Tesla.? In Proc. Org. Hum.  Brain Mapping 		15, 395. San Francisco.
 
 
 VERSION OF THIS FILE
