@@ -39,7 +39,7 @@ c = c-mean(c); c = c./std(c); % normalize time series
         if debug
             figure(1);clf;
             subplot 211;
-            plot(t, c, 'k'); title('Finding first heartbeat, backwards')
+            plot(t, c, 'k'); title('Finding first peak (heartbeat/max inhale), backwards')
             hold all;
         end
         % DEBUG
@@ -164,7 +164,7 @@ c = c-mean(c); c = c./std(c); % normalize time series
                                             hold all;
                                             plot(pulseCleanedTemplate);
                                             hold off;
-                                            title('Correlating current window with template ECG wave');
+                                            title('Correlating current window with template wave');
                                         end
                     %DEBUG
                     
@@ -183,7 +183,7 @@ c = c-mean(c); c = c./std(c); % normalize time series
                 if debug
                     if (n>100) && (n< size(c,1)-100)
                         figure(1);subplot 211;plot(t,similarityToTemplate,'b-')
-                        title('Finding first heartbeat, backwards');
+                        title('Finding first peak (heartbeat/max inhale), backwards');
                         xlim([t(n-100) t(n+100)])
                     end
                 end
@@ -315,12 +315,12 @@ c = c-mean(c); c = c./std(c); % normalize time series
         
         if verbose.level >=2
             verbose.fig_handles(end+1) = tapas_physio_get_default_fig_params();
-            titstr = 'PPU-OXY: Heart Beat Detection';
+            titstr = 'Heart Beat/Maximum Inhalation Detection';
             set(gcf, 'Name', titstr);
             plot(t, c, 'k');
             hold all;
             stem(t(cpulse),4*ones(size(cpulse)), 'r');
-            legend('PPU time course', 'Detected cardiac pulses');
+            legend('Raw time course', 'Detected maxima (cardiac pulses / max inhalations)');
             title(titstr);
         end
         
