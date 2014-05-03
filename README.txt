@@ -22,48 +22,88 @@ along with this program (see the file COPYING).  If not, see
 <http://www.gnu.org/licenses/>.
 ************************************************************************
 
-GENERAL
+PURPOSE
 
-The PhysIO Toolbox provides physiological noise correction for fMRI-data from peripheral measures (ECG/pulse oximetry, breathing belt). It is model-based, i.e. creates nuisance regressors from the physiological monitoring that can enter a General Linear Model (GLM) analysis, e.g. SPM8.
-Furthermore, for PHILIPS SCANPHYSLOG logfiles, it provides means to statistically assess peripheral data (e.g. heart rate variability) and recover imperfect measures (e.g. distorted R-peaks of the ECG).
+The PhysIO Toolbox provides model-based physiological noise correction of 
+fMRI data using peripheral measures of respiration and cardiac pulsation. 
+It incorporates noise models of cardiac/respiratory phase (RETROICOR, 
+Glover et al. 2000), as well as heart rate variability and respiratory 
+volume per time (cardiac response function, Chang et. al, 2009, respiratory 
+response function, Birn et al. 2006). The toolbox is usable via the SPM 
+batch editor, performs automatic pre-processing of noisy peripheral data 
+and outputs nuisance regressor files directly suitable for SPM 
+(?multiple_regressors.txt?).
+
+BACKGROUND
+
+The PhysIO Toolbox provides physiological noise correction for fMRI-data 
+from peripheral measures (ECG/pulse oximetry, breathing belt). It is 
+model-based, i.e. creates nuisance regressors from the physiological 
+monitoring that can enter a General Linear Model (GLM) analysis, e.g. 
+SPM8/12. Furthermore, for PHILIPS SCANPHYSLOG logfiles, it provides means 
+to statistically assess peripheral data (e.g. heart rate variability) and 
+recover imperfect measures (e.g. distorted R-peaks of the ECG).
 
 Facts about physiological noise in fMRI:
-- Physiological noise can explain 20-60 % of variance in fMRI voxel time series (Birn2006, Hutton2011, Harvey2008.
-	- Physiological noise affects a lot of brain regions (s. figure, e.g. brainstem or OFC), especially next to CSF, arteries (Hutton2011). 
-	- If not accounted for, this is a key factor limiting sensitivity for effects of interest.
-- Physiological noise contributions increase with field strength; they become a particular concern at and above 3 Tesla (Kasper2009, Hutton2011).
-- In resting state fMRI, disregarding physiological noise leads to wrong connectivity results (Birn2006).
+- Physiological noise can explain 20-60 % of variance in fMRI voxel time 
+  series (Birn2006, Hutton2011, Harvey2008.
+	- Physiological noise affects a lot of brain regions (s. figure, e.g. 
+      brainstem or OFC), especially next to CSF, arteries (Hutton2011). 
+	- If not accounted for, this is a key factor limiting sensitivity for 
+      effects of interest.
+- Physiological noise contributions increase with field strength; they 
+  become a particular concern at and above 3 Tesla (Kasper2009, Hutton2011).
+- In resting state fMRI, disregarding physiological noise leads to wrong 
+  connectivity results (Birn2006).
 
-=> Some kind of physiological noise correction is highly recommended for every statistical fMRI analysis.
+=> Some kind of physiological noise correction is highly recommended for 
+   every statistical fMRI analysis.
 
 Model-based correction of physiological noise: 
-- Physiological noise can be decomposed into periodic time series following heart rate and breathing cycle.
-- The Fourier expansion of cardiac and respiratory phases was introduced as RETROICOR (RETROspective Image CORrection, Glover2000, see also Josephs1997).
-- These Fourier Terms can enter a General Linear Model (GLM) as nuisance regressors, analogous to movement parameters.
-- As the physiological noise regressors augment the GLM and explain variance in the time series, they increase sensitivity in all contrasts of interest.
+- Physiological noise can be decomposed into periodic time series following 
+  heart rate and breathing cycle.
+- The Fourier expansion of cardiac and respiratory phases was introduced as 
+  RETROICOR (RETROspective Image CORrection, Glover2000, 
+  see also Josephs1997).
+- These Fourier Terms can enter a General Linear Model (GLM) as nuisance 
+  regressors, analogous to movement parameters.
+- As the physiological noise regressors augment the GLM and explain 
+  variance in the time series, they increase sensitivity in all contrasts 
+  of interest.
 		
 
 FEATURES OF THIS TOOLBOX
 
 Physiological Noise Modeling :
-- Modeling physiological noise regressors from peripheral data (breathing belt, ECG, pulse oximeter) 
+- Modeling physiological noise regressors from peripheral data 
+  (breathing belt, ECG, pulse oximeter) 
 - State of the art RETROICOR cardiac and respiratory phase expansion
-- Flexible expansion orders to model different contributions of cardiac, respiratory and interaction terms (see Harvey2008, Hutton2011)
-- Automatic creation of nuisance regressors, full integration into standard GLMs,
-   tested for SPM8 ("multiple_regressors.mat")
+- Cardiac response function (Chang et al, 2009) and respiratory response 
+  function (Birn et al. 2006) modelling of heart-rate variability and 
+  respiratory volume  per time influence on physiological noise
+- Flexible expansion orders to model different contributions of cardiac, 
+  respiratory and interaction terms (see Harvey2008, Hutton2011)
+- Automatic creation of nuisance regressors, full integration into standard 
+  GLMs, tested for SPM8/12 ("multiple_regressors.mat")
 
 Philips SCANPHYSLOG-file handling:
-The toolbox is dedicated to seamless integration into a clinical research setting and therefore offers correction methods to recover physiological data from imperfect peripheral measures.
+The toolbox is dedicated to seamless integration into a clinical research s
+etting and therefore offers correction methods to recover physiological 
+data from imperfect peripheral measures.
 For Philips SCANPHYSLOG-files, this includes
-- Automatic alignment of scan volume timing and physiological time series from logged gradient timecourses
-- Automatic detection of ECG-R-peak events from raw ECG-signal, even if online detection (and logging) was unsuccessful
+- Automatic alignment of scan volume timing and physiological time series 
+  from logged gradient timecourses
+- Automatic detection of ECG-R-peak events from raw ECG-signal, even if 
+  online detection (and logging) was unsuccessful
 
 
 COMPATIBILITY & SUPPORT
 
 - Matlab Toolbox
-- Input: Fully integrated to work with physiological logfiles for Philips MR systems (SCANPHYSLOG)
-	- also: interface for general heart-beat time stamps & breathing volume time courses from other log formats
+- Input: 
+    - Fully integrated to work with physiological logfiles for Philips MR systems (SCANPHYSLOG)
+    - tested for General Electric (GE) log-files
+	- also: interface for 'Custom', i.e. general heart-beat time stamps & breathing volume time courses from other log formats
 - Output: Nuisance regressors for mass-univariate statistical analysis with SPM5,8,12
 - Part of the TNU Software Edition: long term support and ongoing development
 
@@ -73,14 +113,15 @@ DOWNLOADS & RELEASE INFORMATION
 - Current Release: 
 
 PhysIO_Toolbox_14 (Code | Examples)
-February 20th, 2014
+May 3rd, 2014
 
-revision: $Revision: 429 $
+revision: $Revision: 497 $
 
-Major Release Notes (r485):
+Major Release Notes (r497):
 - SPM matlabbatch GUI implemented (Call via Batch -> SPM -> Tools -> TAPAS PhysIO Toolbox)
+- improved, automatic heartbeat detection for noisy ECG now standard for ECG and Pulse oximetry (courtesy of Steffen Bollmann)
+- QuickStart-Manual and PhysIO-Background presentation expanded/updated
 - job .m/.mat-files created for all example datasets
-- script for example data renamed and included into code-folder
 - bugfixes cpulse-initial-select method-handling (auto/manual/load)
 
 Major Release Notes (r429):
