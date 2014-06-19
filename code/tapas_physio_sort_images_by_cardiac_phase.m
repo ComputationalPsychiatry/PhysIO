@@ -81,7 +81,7 @@ nVols = sqpar.Nscans;
 [h, cardiacPhaseArray] = hist(c_phase, nCardiacPhases);
 
 if verbose
-    figure;bar(pos,h); xlabel('cardiac phase'); ylabel('counts');
+    figure;bar(cardiacPhaseArray,h); xlabel('cardiac phase'); ylabel('counts');
 end
 
 widthBin = mean(diff(cardiacPhaseArray));
