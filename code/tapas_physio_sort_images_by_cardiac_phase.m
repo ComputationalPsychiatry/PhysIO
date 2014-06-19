@@ -128,12 +128,25 @@ end
 
 %% Find for all phases and slices corresponding volumes
 indVolPerPhaseSlice = cell(nCardiacPhases,nSlices);
+nVolPerPhaseSlice = zeros(nCardiacPhases,nSlices);
 for iPhase = 1:nCardiacPhases
     for iSlice = 1:nSlices
         indTmp = find(tableVolSliPhase(:,3) == iPhase & ...
             tableVolSliPhase(:,2) == iSlice);
         indVolPerPhaseSlice{iPhase,iSlice} = tableVolSliPhase(indTmp,1);
+         nVolPerPhaseSlice(iPhase, iSlice) = numel(indTmp);
     end
+end
+
+if verbose
+    stringTitle = 'Count of volumes falling into phase/slice bin';
+    figure('Name', stringTitle);
+    imagesc(nVolPerPhaseSlice);
+    xlabel('cardiac phase');
+    ylabel('slice number');
+    title(stringTitle);
+    colorbar;
+    
 end
 
 %% re-sort time series according to cardiac phase, take mean and first ..
@@ -162,10 +175,12 @@ end
 iVolArray = 1:nCardiacPhases;
 fnIn = fnTimeSeries;
 
-fnOut = ['cPhaseMeanVols_' fnIn];
+[dirOut,fn,ext] = fileparts(fnIn);
+
+fnOut = fullfile(dirOut, ['cPhaseMeanVols_' fn, ext]);
 reuse_nifti_hdr(fnIn, fnOut, imgCardiacPhasesMeanVols, iVolArray);
 
-fnOut = ['cPhaseFirstVol_' fnIn];
+fnOut = fullfile(dirOut, ['cPhaseFirstVol_' fn, ext]);
 reuse_nifti_hdr(fnIn, fnOut, imgCardiacPhasesFirstVol, iVolArray);
 
 
