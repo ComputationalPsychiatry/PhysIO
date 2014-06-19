@@ -1,7 +1,7 @@
 function [tableVolSliPhase, indVolPerPhaseSlice, imgCardiacPhasesMeanVols, ...
     imgCardiacPhasesFirstVol] = ...
     tapas_physio_sort_images_by_cardiac_phase(ons_secs, sqpar, nCardiacPhases, ...
-    fnTimeSeries, verbose)
+    fnTimeSeries, verbose, dirOut)
 %performs retrospective cardiac gating of image time series using phys logfile
 %
 % [tableVolSliPhase, indVolPerPhaseSlice, imgCardiacPhasesMeanVols, ...
@@ -59,6 +59,9 @@ function [tableVolSliPhase, indVolPerPhaseSlice, imgCardiacPhasesMeanVols, ...
 if nargin < 5
     verbose = false;
 end
+
+hasDirOut = nargin >=6;
+
 cpulse = ons_secs.cpulse;
 spulse = ons_secs.spulse;
 svolpulse = ons_secs.svolpulse;
@@ -175,7 +178,11 @@ end
 iVolArray = 1:nCardiacPhases;
 fnIn = fnTimeSeries;
 
-[dirOut,fn,ext] = fileparts(fnIn);
+if hasDirOut
+    [~,fn,ext] = fileparts(fnIn);
+else
+    [dirOut,fn,ext] = fileparts(fnIn);
+end
 
 fnOut = fullfile(dirOut, ['cPhaseMeanVols_' fn, ext]);
 reuse_nifti_hdr(fnIn, fnOut, imgCardiacPhasesMeanVols, iVolArray);
