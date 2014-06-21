@@ -185,9 +185,12 @@ else
 end
 
 fnOut = fullfile(dirOut, ['cPhaseMeanVols_' fn, ext]);
+delete(fnOut);
 reuse_nifti_hdr(fnIn, fnOut, imgCardiacPhasesMeanVols, iVolArray);
 
 fnOut = fullfile(dirOut, ['cPhaseFirstVol_' fn, ext]);
+delete(fnOut);
+
 reuse_nifti_hdr(fnIn, fnOut, imgCardiacPhasesFirstVol, iVolArray);
 
 
