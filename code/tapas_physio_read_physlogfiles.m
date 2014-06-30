@@ -54,7 +54,7 @@ switch lower(log_files.vendor)
     case 'ge'
         [c, r, t, cpulse] = tapas_physio_read_physlogfiles_GE(log_files);
     case 'siemens'
-        disp('Ask the FIL about it...');
+        [c, r, t, cpulse] = tapas_physio_read_physlogfiles_siemens(log_files);
     case 'custom'
         [c, r, t, cpulse] = tapas_physio_read_physlogfiles_custom(log_files);
 end

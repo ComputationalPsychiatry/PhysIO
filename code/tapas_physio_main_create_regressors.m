@@ -75,6 +75,9 @@ verbose = physio.verbose;
 [ons_secs.c, ons_secs.r, ons_secs.t, ons_secs.cpulse] = ...
     tapas_physio_read_physlogfiles(log_files, thresh.cardiac.modality);
 
+% since resampling might have occured, dt is recalculated
+dt = ons_secs.t(2)-ons_secs.t(1); 
+
 hasCardiacData = ~isempty(ons_secs.c);
 hasRespData = ~isempty(ons_secs.r);
 
@@ -156,7 +159,8 @@ end
 
 if hasRespData
     % filter respiratory signal
-    ons_secs.fr = tapas_physio_filter_respiratory(ons_secs.r, log_files.sampling_interval);
+    ons_secs.fr = tapas_physio_filter_respiratory(ons_secs.r, ...
+        dt);
 end
 
 %% 4. Create RETROICOR/response function regressors for SPM

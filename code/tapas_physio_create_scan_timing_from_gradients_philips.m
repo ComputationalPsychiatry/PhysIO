@@ -114,7 +114,7 @@ y = cell2mat(z);
 
 Nsamples=size(y,1);
 
-dt = log_files.sampling_interval; 
+dt = log_files.sampling_interval(1); 
 
 %default: 500 Hz sampling frequency
 if isempty(dt)

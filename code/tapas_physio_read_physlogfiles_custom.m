@@ -35,23 +35,69 @@ function [c, r, t, cpulse] = tapas_physio_read_physlogfiles_custom(log_files)
 % $Id$
 
 %% read out values
-if ~isempty(log_files.respiration)
+DEBUG = true;
+
+hasRespirationFile = ~isempty(log_files.respiration);
+hasCardiacFile = ~isempty(log_files.cardiac);
+
+if hasRespirationFile
     r = load(log_files.respiration, 'ascii');
 else 
     r = [];
 end
 
-if ~isempty(log_files.cardiac)
+if hasCardiacFile
     c = load(log_files.cardiac, 'ascii');
 else 
     c = [];
 end
-nSamples = max(size(c,1), size(r,1));
 
+%% resample data, if differen sampling frequencies given
+dt = log_files.sampling_interval;
 
+hasDifferentSamplingRates = numel(dt) > 1;
 
-dt = log_files.sampling_interval; %500 Hz sampling frequency
-t= -log_files.relative_start_acquisition + ((0:(nSamples-1))*dt)'; 
+if hasDifferentSamplingRates && hasCardiacFile && hasRespirationFile
+    dtCardiac = dt(1);
+    dtRespiration = dt(2);
+    isHigherSamplingCardiac = dtCardiac < dtRespiration;
+    
+    nSamplesRespiration = size(r,1);
+    nSamplesCardiac = size(c,1);
+    
+    tCardiac = -log_files.relative_start_acquisition + ...
+        ((0:(nSamplesCardiac-1))*dtCardiac)';
+    
+    
+    tRespiration = -log_files.relative_start_acquisition + ...
+        ((0:(nSamplesRespiration-1))*dtRespiration)';
+    
+    if isHigherSamplingCardiac
+        t = tCardiac;
+        rInterp = interp1(tRespiration, r, t);
+        
+        if DEBUG
+            fh = plot_interpolation(tRespiration, r, t, rInterp, ...
+                {'respiratory', 'cardiac'});
+        end
+        r = rInterp;
+        
+    else
+        t = tRespiration;
+        cInterp = interp1(tCardiac, c, t);
+        
+        if DEBUG
+            fh = plot_interpolation(tCardiac, c, t, cInterp, ...
+                {'cardiac', 'respiratory'});
+        end
+        c = cInterp;
+          
+    end
+    
+else
+    nSamples = max(size(c,1), size(r,1));
+    t = -log_files.relative_start_acquisition + ((0:(nSamples-1))*dt)';
+end
 
 hasCpulses = size(c,2) > 1; %2nd column with pulse indicator set to one
 
@@ -61,4 +107,21 @@ if hasCpulses
     c = c(:,1);
 else
     cpulse = [];
+end
+
+end
+
+%% local function to plot interpolation result
+function fh = plot_interpolation(tOrig, yOrig, tInterp, yInterp, ...
+    stringOrigInterp)
+fh = tapas_physio_get_default_fig_params;
+stringTitle = sprintf('Interpolation of %s signal', stringOrigInterp{1});
+set(fh, 'Name', stringTitle);
+plot(tInterp, yInterp,'g+--'); hold all;
+plot(tOrig, yOrig, 'r.'); 
+legend({
+    sprintf('after interpolation to %s timing', ...
+    stringOrigInterp{1}), ...
+    sprintf('original %s time series', stringOrigInterp{2}) });
+title(stringTitle);
 end
