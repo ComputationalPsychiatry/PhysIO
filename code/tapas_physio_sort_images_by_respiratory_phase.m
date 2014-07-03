@@ -1,24 +1,26 @@
-function [tableVolSliPhase, indVolPerPhaseSlice, imgCardiacPhasesMeanVols, ...
-    imgCardiacPhasesFirstVol, fh] = ...
-    tapas_physio_sort_images_by_cardiac_phase(ons_secs, sqpar, nCardiacPhases, ...
+function [tableVolSliPhase, indVolPerPhaseSlice, imgRespiratoryPhasesMeanVols, ...
+    imgRespiratoryPhasesFirstVol, fh] = ...
+    tapas_physio_sort_images_by_respiratory_phase(ons_secs, sqpar, nRespiratoryPhases, ...
     fnTimeSeries, verbose, dirOut)
-%performs retrospective cardiac gating of image time series using phys logfile
+% TODO: Test functionality, does not work yet!
 %
-% [tableVolSliPhase, indVolPerPhaseSlice, imgCardiacPhasesMeanVols, ...
-%    imgCardiacPhasesFirstVol] = ...
-%   tapas_physio_sort_images_by_cardiac_phase(ons_secs, sqpar, nCardiacPhases, ...
+%performs retrospective respiratory gating of image time series using phys logfile
+%
+% [tableVolSliPhase, indVolPerPhaseSlice, imgrespiratoryPhasesMeanVols, ...
+%    imgrespiratoryPhasesFirstVol] = ...
+%   tapas_physio_sort_images_by_respiratory_phase(ons_secs, sqpar, nRespiratoryPhases, ...
 %    fnTimeSeries, verbose);
 %
-% Given cardiac phases after running tapas_physio_main_create_regressors,
-% this function sorts all slices of all volumes according to the cardiac phase 
+% Given respiratory phases after running tapas_physio_main_create_regressors,
+% this function sorts all slices of all volumes according to the respiratory phase 
 % they were acquired in, giving an averaged (and 1st pass) movie of
-% cardiac-cycle related brain movement, similar to a gated cine-imaging
+% respiratory-cycle related brain movement, similar to a gated cine-imaging
 % technique.
 %
 % IN
 %   ons_secs        physio.ons_secs, structure of onsets in seconds, see also tapas_physio_new
 %   sqpar           physio.sqpar, structure of sequence parameters, see also tapas_physio_new
-%   nCardiacPhases  number of cardiac phases (i.e. cine movie frames) to
+%   nRespiratoryPhases  number of respiratory phases (i.e. cine movie frames) to
 %                   bin-sort into
 %   fnTimeSeries    file name of (nifti-) time series to re-sort according
 %                   to bins
@@ -28,21 +30,21 @@ function [tableVolSliPhase, indVolPerPhaseSlice, imgCardiacPhasesMeanVols, ...
 %   tableVolSliPhase [nSlices*nVols, 3], table-like matrix holding per
 %                   column 1 : volume index
 %                   column 2 : slice index
-%                   column 3 : cardiac phase
-%   indVolPerPhaseSlice {nCardiacPhases, nSlices}
+%                   column 3 : respiratory phase
+%   indVolPerPhaseSlice {nRespiratoryPhases, nSlices}
 %                   - cell array where entry {iPhase, iSlice} holds
-%                   vector of volumes where iSlice was acquired in cardiac
+%                   vector of volumes where iSlice was acquired in respiratory
 %                   phase iPhase
 %   
-%   cPhaseMeanVols_<fnTimeSeries>.nii  time series of cardiac phase volumes,
-%                  with same slices of the same cardiac phase averaged over
+%   cPhaseMeanVols_<fnTimeSeries>.nii  time series of respiratory phase volumes,
+%                  with same slices of the same respiratory phase averaged over
 %                  all corresponding volumes
-%   cPhaseFirstVol_<fnTimeSeries>.nii  time series of cardiac phase volumes,
+%   cPhaseFirstVol_<fnTimeSeries>.nii  time series of respiratory phase volumes,
 %                  with first slice-occurence of each phase stacked
 %                  together in volumes
 %
 % EXAMPLE
-%   tapas_physio_sort_images_by_cardiac_phase
+%   tapas_physio_sort_images_by_respiratory_phase
 %
 %   See also
 %
@@ -55,24 +57,35 @@ function [tableVolSliPhase, indVolPerPhaseSlice, imgCardiacPhasesMeanVols, ...
 % (either version 3 or, at your option, any later version). For further details, see the file
 % COPYING or <http://www.gnu.org/licenses/>.
 %
-% $Id: teditRETRO.m 464 2014-04-27 11:58:09Z kasperla $
+% $Id$
 if nargin < 5
     verbose = false;
 end
 
 hasDirOut = nargin >=6;
 
-cpulse = ons_secs.cpulse;
-spulse = ons_secs.spulse;
-svolpulse = ons_secs.svolpulse;
+fr = ons_secs.fr;
+dt = ons_secs.t(2) - ons_secs.t(1);
 
-c_phase    = tapas_physio_get_cardiac_phase(cpulse, spulse, 1, svolpulse);
+r_phase    = tapas_physio_get_respiratory_phase(fr, dt);
+
+
+slicenum = 1:sqpar.Nslices;
+
+sample_points  = tapas_physio_get_sample_points(ons_secs, sqpar, slicenum);
+
+nSamples = length(sample_points);
+
+iSampleIndex = zeros(nSamples,1);
+for iSample = 1:nSamples
+   [~, iSampleIndex(iSample)] = min(abs(ons_secs.t - sample_points(iSample))); 
+end
 
 hasPreps = ~isempty(sqpar.Nprep);
 if hasPreps
-    c_phase    = c_phase(((sqpar.Ndummies+sqpar.Nprep)*sqpar.Nslices+1):end);
+    r_phase    = r_phase(((sqpar.Ndummies+sqpar.Nprep)*sqpar.Nslices+1):end);
 else
-    c_phase    = c_phase((sqpar.Ndummies*sqpar.Nslices+1):end);
+    r_phase    = r_phase((sqpar.Ndummies*sqpar.Nslices+1):end);
 end
 
 %% Histogram and bin the phases ...
@@ -80,34 +93,34 @@ end
 nSlices = sqpar.Nslices;
 nVols = sqpar.Nscans;
 
-% cardiacPhaseArray = linspace(0,2*pi,nCardiacPhases);
-[h, cardiacPhaseArray] = hist(c_phase, nCardiacPhases);
+% respiratoryPhaseArray = linspace(0,2*pi,nRespiratoryPhases);
+[h, respPhaseArray] = hist(r_phase, nRespiratoryPhases);
 
 if verbose
     fh(1) = tapas_physio_get_default_fig_params();
-    bar(cardiacPhaseArray,h); xlabel('cardiac phase'); ylabel('counts');
+    bar(respPhaseArray,h); xlabel('respiratory phase'); ylabel('counts');
 end
 
-widthBin = mean(diff(cardiacPhaseArray));
+widthBin = mean(diff(respPhaseArray));
 
-leftBorderPhase = cardiacPhaseArray - widthBin/2;
-rightBorderPhase = cardiacPhaseArray + widthBin/2;
+leftBorderPhase = respPhaseArray - widthBin/2;
+rightBorderPhase = respPhaseArray + widthBin/2;
 
 
 %% Sort phases into bins
-iLocPhaseArray = cell(nCardiacPhases,1);
-iSliceArray = cell(nCardiacPhases,1);
-iVolArray = cell(nCardiacPhases,1);
+iLocPhaseArray = cell(nRespiratoryPhases,1);
+iSliceArray = cell(nRespiratoryPhases,1);
+iVolArray = cell(nRespiratoryPhases,1);
 %iPhaseVolSliceArray = zeros(nVols, nSlices);
 iPhaseVolSliceArray = zeros(nSlices, nVols);
 
-% table holding volume, slice and cardiac phase index in three columns
+% table holding volume, slice and respiratory phase index in three columns
 [I1, I2] = meshgrid(1:nVols,1:nSlices);
 tableVolSliPhase = [I1(:), I2(:), nan(nSlices*nVols,1)];
 
-for iPhase = 1:nCardiacPhases
-    iLocPhaseArray{iPhase} = find(c_phase >= leftBorderPhase(iPhase) & ...
-        c_phase <= rightBorderPhase(iPhase));
+for iPhase = 1:nRespiratoryPhases
+    iLocPhaseArray{iPhase} = find(r_phase >= leftBorderPhase(iPhase) & ...
+        r_phase <= rightBorderPhase(iPhase));
     iSliceArray{iPhase} = mod(iLocPhaseArray{iPhase},nSlices) + 1;
     iVolArray{iPhase} = floor(iLocPhaseArray{iPhase}/nVols) + 1;
     %    iPhaseVolSliceArray(iVolArray{iPhase}, iSliceArray{iPhase}) = ...
@@ -118,12 +131,12 @@ for iPhase = 1:nCardiacPhases
 end
 
 
-%% Plot cardiac phase per slice and volume
+%% Plot respiratory phase per slice and volume
 if verbose
     fh(2) = tapas_physio_get_default_fig_params();
     imagesc(iPhaseVolSliceArray);
     xlabel('Volumes'); ylabel('slice');
-    title('Cardiac phase per slice and volume');
+    title('respiratory phase per slice and volume');
     colorbar;
 end
 
@@ -132,9 +145,9 @@ end
 [~, img4D] = spm_img_load(fnTimeSeries);
 
 %% Find for all phases and slices corresponding volumes
-indVolPerPhaseSlice = cell(nCardiacPhases,nSlices);
-nVolPerPhaseSlice = zeros(nCardiacPhases,nSlices);
-for iPhase = 1:nCardiacPhases
+indVolPerPhaseSlice = cell(nRespiratoryPhases,nSlices);
+nVolPerPhaseSlice = zeros(nRespiratoryPhases,nSlices);
+for iPhase = 1:nRespiratoryPhases
     for iSlice = 1:nSlices
         indTmp = find(tableVolSliPhase(:,3) == iPhase & ...
             tableVolSliPhase(:,2) == iSlice);
@@ -148,37 +161,37 @@ if verbose
     fh(3) = tapas_physio_get_default_fig_params();
     set(fh(3), 'Name', stringTitle);
     imagesc(nVolPerPhaseSlice);
-    xlabel('cardiac phase');
+    xlabel('respiratory phase');
     ylabel('slice number');
     title(stringTitle);
     colorbar;
     
 end
 
-%% re-sort time series according to cardiac phase, take mean and first ..
+%% re-sort time series according to respiratory phase, take mean and first ..
 % occurences of each phase to get movie
 nX = size(img4D,1);
 nY = size(img4D,2);
-imgCardiacPhasesMeanVols = zeros(nX, nY, nSlices, nCardiacPhases);
-imgCardiacPhasesFirstVol = zeros(nX, nY, nSlices, nCardiacPhases);
+imgRespiratoryPhasesMeanVols = zeros(nX, nY, nSlices, nRespiratoryPhases);
+imgRespiratoryPhasesFirstVol = zeros(nX, nY, nSlices, nRespiratoryPhases);
 
 % fill out image with phases
-for iPhase = 1:nCardiacPhases
+for iPhase = 1:nRespiratoryPhases
     for iSlice = 1:nSlices
         if isempty(indVolPerPhaseSlice{iPhase, iSlice})
             warning('No volumes with phase %d, slice %d exist', iPhase, ...
                 iSlice);
         else
-            imgCardiacPhasesMeanVols(:,:,iSlice,iPhase) = ...
+            imgRespiratoryPhasesMeanVols(:,:,iSlice,iPhase) = ...
                 mean(img4D(:,:,iSlice, indVolPerPhaseSlice{iPhase, iSlice}), 4);
-            imgCardiacPhasesFirstVol(:,:,iSlice,iPhase) = ...
+            imgRespiratoryPhasesFirstVol(:,:,iSlice,iPhase) = ...
                 img4D(:,:,iSlice, indVolPerPhaseSlice{iPhase, iSlice}(1));
         end
     end
 end
 
 %% save images
-iVolArray = 1:nCardiacPhases;
+iVolArray = 1:nRespiratoryPhases;
 fnIn = fnTimeSeries;
 
 if hasDirOut
@@ -187,14 +200,14 @@ else
     [dirOut,fn,ext] = fileparts(fnIn);
 end
 
-fnOut = fullfile(dirOut, ['cPhaseMeanVols_' fn, ext]);
+fnOut = fullfile(dirOut, ['rPhaseMeanVols_' fn, ext]);
 delete(fnOut);
-reuse_nifti_hdr(fnIn, fnOut, imgCardiacPhasesMeanVols, iVolArray);
+reuse_nifti_hdr(fnIn, fnOut, imgRespiratoryPhasesMeanVols, iVolArray);
 
-fnOut = fullfile(dirOut, ['cPhaseFirstVol_' fn, ext]);
+fnOut = fullfile(dirOut, ['rPhaseFirstVol_' fn, ext]);
 delete(fnOut);
 
-reuse_nifti_hdr(fnIn, fnOut, imgCardiacPhasesFirstVol, iVolArray);
+reuse_nifti_hdr(fnIn, fnOut, imgRespiratoryPhasesFirstVol, iVolArray);
 
 
 
@@ -221,7 +234,7 @@ function [T, Y, V] = spm_img_load(fn, verbose)
 % Author: Lars Kasper
 % Created: 2013-08-01
 % Copyright (C) 2013 Institute for Biomedical Engineering, ETH/Uni Zurich.
-% $Id: spm_img_load.m 449 2014-03-26 11:32:56Z kasperla $
+% $Id$
 if nargin < 2
     verbose = false;
 end
@@ -277,7 +290,7 @@ function V = reuse_nifti_hdr(fnIn, fnOut, Y, iVolArray)
 % Author: Lars Kasper
 % Created: 2013-11-12
 % Copyright (C) 2013 Institute for Biomedical Engineering, ETH/Uni Zurich.
-% $Id: reuse_nifti_hdr.m 382 2013-12-11 18:53:04Z kasperla $
+% $Id$
 W = spm_vol(fnIn);
 nVols = length(W);
 if nargin < 4

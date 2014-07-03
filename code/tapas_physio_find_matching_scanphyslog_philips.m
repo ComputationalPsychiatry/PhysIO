@@ -3,11 +3,15 @@ function fnPhysLogArray = tapas_physio_find_matching_scanphyslog_philips(...
 %returns file name(s) of matching SCANPHYSLOG-file for a given .nii-file
 %whose exported name is the original Philips name
 %
-%   output = tapas_physio_find_matching_scanphyslog_philips(input)
+%   fnPhyslogArray = tapas_physio_find_matching_scanphyslog_philips(...
+%       fnImageArray, pathLogFiles))
 %
 % IN
-%
+%       fnImageArray    cell of image files, e.g. os_20062014_0904060_10_1_wipepitrig1mmtra150dynV42_typ0 
+%       pathLogFiles    path with SCANPHYSLOG*.log
+% 
 % OUT
+%       fnPhysLogArray  array of matching log files
 %
 % EXAMPLE
 %   tapas_physio_find_matching_scanphyslog_philips
