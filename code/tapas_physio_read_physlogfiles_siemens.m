@@ -1,4 +1,4 @@
-function [c, r, t, cpulse] = tapas_physio_read_physlogfiles_siemens(log_files, ...
+function [c, r, t, cpulse, verbose] = tapas_physio_read_physlogfiles_siemens(log_files, ...
     verbose)
 % reads out physiological time series and timing vector for Siemens
 % logfiles of peripheral cardiac monitoring (ECG/Breathing Belt or
@@ -45,9 +45,9 @@ function [c, r, t, cpulse] = tapas_physio_read_physlogfiles_siemens(log_files, .
 %% read out values
 
 if nargin < 2
-    verbose = false;
+    verbose.level = 0;
 end
-DEBUG = verbose;
+DEBUG = verbose.level >=2;
 
 cpulse = [];
 dt = log_files.sampling_interval;
@@ -189,7 +189,7 @@ if ~isempty(log_files.cardiac)
     
     if DEBUG
         stringTitle = 'Raw Siemens physlog data';
-        fh = tapas_physio_get_default_fig_params();
+        verbose.fig_handles(end+1) = tapas_physio_get_default_fig_params();
         set(gcf, 'Name', stringTitle);
         stem(cpulse, ampl*ones(size(cpulse)), 'g'); hold all;
         stem(cpulse_off, ampl*ones(size(cpulse_off)), 'r');
