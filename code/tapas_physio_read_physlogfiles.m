@@ -1,4 +1,5 @@
-function [c, r, t, cpulse] = tapas_physio_read_physlogfiles(log_files, cardiac_modality)
+function [c, r, t, cpulse] = tapas_physio_read_physlogfiles(log_files, cardiac_modality, ...
+    verbose)
 % reads out physiological time series and timing vector depending on the
 % MR scanner vendor and the modality of peripheral cardiac monitoring (ECG
 % or pulse oximetry)
@@ -47,6 +48,10 @@ if nargin < 2
     cardiac_modality = 'ECG';
 end
 
+if nargin < 3
+    verbose.level = 0;
+end
+
 switch lower(log_files.vendor)
     case 'philips'
         [c, r, t, cpulse] = tapas_physio_read_physlogfiles_philips(...
@@ -54,7 +59,8 @@ switch lower(log_files.vendor)
     case 'ge'
         [c, r, t, cpulse] = tapas_physio_read_physlogfiles_GE(log_files);
     case 'siemens'
-        [c, r, t, cpulse] = tapas_physio_read_physlogfiles_siemens(log_files);
+        [c, r, t, cpulse] = tapas_physio_read_physlogfiles_siemens(log_files, ...
+            verbose.level >= 2);
     case 'custom'
         [c, r, t, cpulse] = tapas_physio_read_physlogfiles_custom(log_files);
 end

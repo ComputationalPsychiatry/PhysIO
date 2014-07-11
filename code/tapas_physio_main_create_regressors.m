@@ -73,7 +73,8 @@ verbose = physio.verbose;
 
 %% 1. Read in vendor-specific physiological log-files
 [ons_secs.c, ons_secs.r, ons_secs.t, ons_secs.cpulse] = ...
-    tapas_physio_read_physlogfiles(log_files, thresh.cardiac.modality);
+    tapas_physio_read_physlogfiles(log_files, thresh.cardiac.modality, ...
+    verbose);
 
 % since resampling might have occured, dt is recalculated
 dt = ons_secs.t(2)-ons_secs.t(1); 
