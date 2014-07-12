@@ -49,7 +49,7 @@ c = c-mean(c); c = c./std(c); % normalize time series
         [tmp, cpulseFirstGuess] = tapas_physio_findpeaks( ...
             c,'minpeakheight',thresh_min,'minpeakdistance', dt120);
         
-        %second step
+        %second step, refined heart rate estimate
         averageHeartRateInSamples = round(mean(diff(cpulseFirstGuess)));
         [tmp, cpulseSecondGuess] = tapas_physio_findpeaks(c,...
             'minpeakheight',thresh_min,...
@@ -60,27 +60,14 @@ c = c-mean(c); c = c./std(c); % normalize time series
            stem(t(cpulseSecondGuess),4*ones(length(cpulseSecondGuess),1),'r')
         end
         
-        %test signal/detection quality
-        signalQualityIsBad = false;
-        
-        distanceBetweenPeaks = diff(cpulseSecondGuess);
-        
-        
-        nBins = length(distanceBetweenPeaks)/10;
-        [n,dtbin] = hist(distanceBetweenPeaks,nBins);
-        
-        percentile = 0.8;
-        deviationPercent = 20;
-        iPercentile = find(cumsum(n)>percentile*sum(n),1,'first');
-        if dtbin(end) > (1+deviationPercent/100)*dtbin(iPercentile)
-            signalQualityIsBad = true;
-        end
-        
         %always use the correlation based method for testing
         signalQualityIsBad = true;
         
         if signalQualityIsBad
-            %build template based on the guessed peaks
+            
+            % build template based on the guessed peaks:
+            % cut out all data around the detected (presumed) R-peaks
+            %   => these are the representative "QRS"-waves
             halfTemplateWidthInSeconds = 0.1;
             halfTemplateWidthInSamples = round(halfTemplateWidthInSeconds / dt);
             for n=2:numel(cpulseSecondGuess)-2
@@ -93,34 +80,33 @@ c = c-mean(c); c = c./std(c); % normalize time series
             %delete first zero-elements of the template
             template(1,:) = [];
             
+            % template as average of the found representative waves
             pulseTemplate = mean(template);
             
             % delete the peaks deviating from the mean too
             % much before building the final template
+            indHighQualityTemplates = [];
             for n=1:size(template,1)
                 correlation = corrcoef(template(n,:),pulseTemplate);
                 similarityToTemplate(n) = correlation(1,2);
+                
+                 if similarityToTemplate(n) > 0.95
+                    indHighQualityTemplates(end+1) = n;
+                 end
+                
             end
             
-            count = 1;
-            for n=1:size(template,1)
-                if similarityToTemplate(n) > 0.95
-                    cleanedTemplate(count,:)=template(n,:);
-                    count=count+1;
-                end
-            end
+            % final template for peak search
+            pulseCleanedTemplate = mean(template(indHighQualityTemplates,:));
             
-            if exist('cleanedTemplate','var')
-                pulseCleanedTemplate=mean(cleanedTemplate);
-                clear similarityToTemplate
-            else
-                pulseCleanedTemplate = mean(template);
-            end
+            % Determine starting peak for the search:
+            %   search for a representative R-peak in the first 20 peaks
             
-            %determine starting peak for the search
-            forStart=round(2*halfTemplateWidthInSamples+1);
-            forEnd=cpulseSecondGuess(20);
-            for n=forStart:forEnd
+            % TODO: maybe replace via convolution with template? "matched
+            % filter theorem"?
+            centreSampleStart = round(2*halfTemplateWidthInSamples+1);
+            centreSampleEnd = cpulseSecondGuess(20);
+            for n=centreSampleStart:centreSampleEnd
                 startSignalIndex=n-halfTemplateWidthInSamples;
                 endSignalIndex=n+halfTemplateWidthInSamples;
                 
@@ -142,7 +128,10 @@ c = c-mean(c); c = c./std(c); % normalize time series
             [C_bestMatch,I_bestMatch] = max(similarityToTemplate);
             clear similarityToTemplate
             
-            %now compute backwards to the beginning
+            % now compute backwards to the beginning: 
+            % go average heartbeat by heartbeat back and look (with
+            % decreasing weighting for higher distance) for highest 
+            % correlation with template heartbeat
             n=I_bestMatch;
             peakNumber = 1;
             similarityToTemplate=zeros(size(t,1),1);
@@ -170,7 +159,7 @@ c = c-mean(c); c = c./std(c); % normalize time series
                     
                     % weight correlations far away from template center
                     % less; since heartbeat to be expected in window center
-                    gaussianWindow = gausswin(2*searchStepsTotal+1);
+                    % gaussianWindow = gausswin(2*searchStepsTotal+1);
                     %                     currentWeight = gaussianWindow(searchPosition+searchStepsTotal+1);
                     
                     currentWeight = abs(c(n+searchPosition+1));
@@ -204,10 +193,10 @@ c = c-mean(c); c = c./std(c); % normalize time series
                 
                 
                 n=bestPosition-averageHeartRateInSamples;
-            end
+            end % END: going backwards to beginning of time course
             
-            
-            n=bestPosition;
+            %% Now go forward through the whole time series
+            n=bestPosition; % 1st R-peak
             peakNumber=1;
             clear cpulse;
             %now correlate template with PPU signal at the positions
