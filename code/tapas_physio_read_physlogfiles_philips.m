@@ -12,6 +12,9 @@ function [c, r, t, cpulse] = tapas_physio_read_physlogfiles_philips(log_files, c
 %           .sampling_interval
 %           .relative_start_acquisition
 %   cardiac_modality    'ECG' for ECG, 'OXY'/'PPU' for pulse oximetry
+%                       Note: Append '_wifi'
+%                       for adjusted sampling rate in
+%                       wireless Ingenia Scanners
 %
 % OUT
 %   c                   cardiac time series (ECG or pulse oximetry)
@@ -54,8 +57,18 @@ Nsamples=size(y,1);
 dt = log_files.sampling_interval;
 
 %default: 500 Hz sampling frequency
+isWifi = regexpi(cardiac_modality, '_wifi');
+
+if isWifi
+    cardiac_modality = regexprep(cardiac_modality, '_wifi', '', 'ignorecase');
+end
+
 if isempty(dt)
-    dt = 2e-3;
+    if isWifi
+        dt = 1/496;
+    else
+        dt = 2e-3;
+    end
 end
 
 t= -log_files.relative_start_acquisition + ((0:(Nsamples-1))*dt)';

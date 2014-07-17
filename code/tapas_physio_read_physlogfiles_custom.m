@@ -1,4 +1,5 @@
-function [c, r, t, cpulse] = tapas_physio_read_physlogfiles_custom(log_files)
+function [c, r, t, cpulse] = tapas_physio_read_physlogfiles_custom(log_files, ...
+    verbose)
 % reads out physiological time series and timing vector from custom-made logfiles
 %   of peripheral cardiac monitoring (ECG
 % or pulse oximetry)
@@ -35,7 +36,7 @@ function [c, r, t, cpulse] = tapas_physio_read_physlogfiles_custom(log_files)
 % $Id$
 
 %% read out values
-DEBUG = true;
+DEBUG = verbose.level >=3;
 
 hasRespirationFile = ~isempty(log_files.respiration);
 hasCardiacFile = ~isempty(log_files.cardiac);
@@ -79,6 +80,7 @@ if hasDifferentSamplingRates && hasCardiacFile && hasRespirationFile
         if DEBUG
             fh = plot_interpolation(tRespiration, r, t, rInterp, ...
                 {'respiratory', 'cardiac'});
+            verbose.fig_handles(end+1) = fh;
         end
         r = rInterp;
         
@@ -89,6 +91,7 @@ if hasDifferentSamplingRates && hasCardiacFile && hasRespirationFile
         if DEBUG
             fh = plot_interpolation(tCardiac, c, t, cInterp, ...
                 {'cardiac', 'respiratory'});
+            verbose.fig_handles(end+1) = fh;
         end
         c = cInterp;
           
@@ -119,6 +122,7 @@ stringTitle = sprintf('Interpolation of %s signal', stringOrigInterp{1});
 set(fh, 'Name', stringTitle);
 plot(tInterp, yInterp,'g+--'); hold all;
 plot(tOrig, yOrig, 'r.'); 
+xlabel('t (seconds');
 legend({
     sprintf('after interpolation to %s timing', ...
     stringOrigInterp{1}), ...

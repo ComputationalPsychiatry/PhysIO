@@ -99,10 +99,10 @@ switch lower(cardiac_modality)
         
         
         %courtesy of Steffen Bollmann, KiSpi Zurich
-    case {'oxy','ppu'}
+    case {'oxy','ppu', 'oxy_wifi', 'ppu_wifi'}
         [cpulse, verbose] = tapas_physio_get_cardiac_pulses_auto(c, t, ...
             thresh_cardiac.min, dt120, verbose);
-    case 'ecg'
+    case {'ecg', 'ecg_wifi'}
         do_manual_peakfind = true;
         switch thresh_cardiac.method
             case 'auto'

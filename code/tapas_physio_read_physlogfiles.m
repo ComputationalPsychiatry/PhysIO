@@ -57,11 +57,13 @@ switch lower(log_files.vendor)
         [c, r, t, cpulse] = tapas_physio_read_physlogfiles_philips(...
             log_files, cardiac_modality);
     case 'ge'
-        [c, r, t, cpulse] = tapas_physio_read_physlogfiles_GE(log_files);
+        [c, r, t, cpulse] = tapas_physio_read_physlogfiles_GE(log_files, ...
+            verbose);
     case 'siemens'
         [c, r, t, cpulse, verbose] = tapas_physio_read_physlogfiles_siemens(log_files, ...
             verbose);
     case 'custom'
-        [c, r, t, cpulse] = tapas_physio_read_physlogfiles_custom(log_files);
+        [c, r, t, cpulse] = tapas_physio_read_physlogfiles_custom(log_files, ...
+            verbose);
 end
 end

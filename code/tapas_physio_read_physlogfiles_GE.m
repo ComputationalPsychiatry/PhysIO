@@ -1,22 +1,27 @@
-function [c, r, t, cpulse] = tapas_physio_read_physlogfiles_GE(log_files)
+function [c, r, t, cpulse] = tapas_physio_read_physlogfiles_GE(log_files, ...
+verbose)
 % reads out physiological time series and timing vector depending on the
 % MR scanner vendor and the modality of peripheral cardiac monitoring (ECG
 % or pulse oximetry)
 %
-%   [cpulse, rpulse, t, c] = tapas_physio_read_physlogfiles_GE(logfiles)
+%   [cpulse, rpulse, t, c] = tapas_physio_read_physlogfiles_GE(logfiles, ...
+%                               verbose)
 %
-%   NOTE: if one 
+%   NOTE: if one
 %
 % IN    log_files
 %       .log_cardiac        contains ECG or pulse oximeter time course
 %                           for GE: ECGData...
 %       .log_respiration    contains breathing belt amplitude time course
 %                           for GE: RespData...
-%       .sampling_interval  1 entry: sampling interval (seconds) 
+%       .sampling_interval  1 entry: sampling interval (seconds)
 %                           for both log files
 %                           2 entries: 1st entry sampling interval (seconds)
 %                           for cardiac logfile, 2nd entry for respiratory
 %                           logfile
+%       verbose
+%       .level              debugging plots are created if level >=3
+%       .fig_handles        appended by handle to output figure
 %
 % OUT
 %   cpulse              time events of R-wave peak in cardiac time series (seconds)
@@ -45,7 +50,7 @@ function [c, r, t, cpulse] = tapas_physio_read_physlogfiles_GE(log_files)
 % $Id$
 
 %% read out values
-DEBUG = true;
+DEBUG = verbose.level >= 3;
 
 hasRespirationFile = ~isempty(log_files.respiration);
 hasCardiacFile = ~isempty(log_files.cardiac);
@@ -90,6 +95,7 @@ if hasDifferentSamplingRates && hasCardiacFile && hasRespirationFile
         if DEBUG
             fh = plot_interpolation(tRespiration, r, t, rInterp, ...
                 {'respiratory', 'cardiac'});
+            verbose.fig_handles(end+1) = fh;
         end
         r = rInterp;
         
@@ -100,9 +106,10 @@ if hasDifferentSamplingRates && hasCardiacFile && hasRespirationFile
         if DEBUG
             fh = plot_interpolation(tCardiac, c, t, cInterp, ...
                 {'cardiac', 'respiratory'});
+            verbose.fig_handles(end+1) = fh;
         end
         c = cInterp;
-          
+        
     end
     
 else
@@ -120,11 +127,12 @@ fh = tapas_physio_get_default_fig_params;
 stringTitle = sprintf('Interpolation of %s signal', stringOrigInterp{1});
 set(fh, 'Name', stringTitle);
 plot(tInterp, yInterp,'g+--'); hold all;
-plot(tOrig, yOrig, 'r.'); 
+plot(tOrig, yOrig, 'r.');
 legend({
     sprintf('after interpolation to %s timing', ...
     stringOrigInterp{1}), ...
     sprintf('original %s time series', stringOrigInterp{2}) });
 title(stringTitle);
+xlabel('time (seconds');
 end
 

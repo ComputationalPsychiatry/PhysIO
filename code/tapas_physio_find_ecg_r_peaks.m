@@ -79,12 +79,14 @@ sy = conv(y./sqrt(sum(kRpeak.^2)),kRpeak/sqrt(sum(kRpeak.^2)),'same');
 
 peaks_found     = false;
 thresh_changed  = false;
+dt = t(2) - t(1);
+nSamplesBpm120 = floor((60/120)/dt);
 % lower threshold until peaks are found in autocorrelation function
 while ~peaks_found
     if ECG_min < 0
-        [tmp, events] = tapas_physio_findpeaks(-sy,'minpeakheight', -ECG_min, 'minpeakdistance',200);
+        [tmp, events] = tapas_physio_findpeaks(-sy,'minpeakheight', -ECG_min, 'minpeakdistance',nSamplesBpm120);
     else
-        [tmp, events] = tapas_physio_findpeaks(sy,'minpeakheight', ECG_min, 'minpeakdistance',200);
+        [tmp, events] = tapas_physio_findpeaks(sy,'minpeakheight', ECG_min, 'minpeakdistance',nSamplesBpm120);
     end
     peaks_found = ~isempty(events);
     if ~peaks_found
