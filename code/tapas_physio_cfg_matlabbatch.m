@@ -512,16 +512,19 @@ initial_cpulse_select_method.name   = 'method';
 initial_cpulse_select_method.help   = {
     'The initial cardiac pulse selection structure: Determines how the'
     'majority of cardiac pulses is detected'
-    ' ''auto''    - auto generation of representative QRS-wave; detection via'
-    '             maximising auto-correlation with it'
+    ' ''auto_matched''     - auto generation of template QRS wave, '
+    '             matched-filter detection of heartbeats (experimental)'
+    ' ''auto_template''    - auto generation of representative QRS-wave; detection via'
+    '             maximising auto-correlation with it (default)'
     ' ''load_from_logfile'' - from phys logfile, detected R-peaks of scanner'
-    ' ''manual''  - via manually selected QRS-wave for autocoreelations'
-    ' ''load''    - from previous manual/auto run'
+    ' ''manual_template''  - via manually selected QRS-wave for autocorrelations'
+    ' ''load_template''    - from previous manual/auto run'
     };
 initial_cpulse_select_method.labels = {
-    'auto', 'load_from_logfile', 'manual', 'load'};
-initial_cpulse_select_method.values = { 'auto', 'load_from_logfile', 'manual', 'load'};
-initial_cpulse_select_method.val    = {'auto'};
+    'auto_matched', 'auto_template', 'load_from_logfile', 'manual_template', 'load_template'};
+initial_cpulse_select_method.values = { 
+        'auto_matched', 'auto_template', 'load_from_logfile', 'manual_template', 'load_template'};
+initial_cpulse_select_method.val    = {'auto_template'};
 
 %--------------------------------------------------------------------------
 % initial_cpulse_select_file

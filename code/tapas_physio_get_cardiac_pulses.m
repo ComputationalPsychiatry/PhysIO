@@ -79,13 +79,13 @@ switch lower(cardiac_modality)
             thresh_cardiac.min, dt120, verbose);
     case {'ecg', 'ecg_wifi'}
         switch thresh_cardiac.method
-            case 'auto'
+            case {'auto', 'auto_template'}
                 [cpulse, verbose] = tapas_physio_get_cardiac_pulses_auto( ...
                     c, t, thresh_cardiac.min, dt120, verbose);
             case 'load_from_logfile'
                 warning('How did you end up here? I better do nothing.');
                 cpulse = [];
-            case {'manual', 'load', 'load_template'} % load/determine manual template
+            case {'manual', 'manual_template', 'load', 'load_template'} % load/determine manual template
                 [cpulse, verbose] = ...
                     tapas_physio_get_cardiac_pulses_manual_template(...
                         c, t, thresh_cardiac, verbose);
