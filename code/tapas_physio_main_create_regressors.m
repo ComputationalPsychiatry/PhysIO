@@ -112,10 +112,12 @@ if hasCardiacData
     %% initial pulse select via load from logfile or autocorrelation with 1
     %% cardiac pulse
     switch thresh.cardiac.initial_cpulse_select.method
-        case {'manual', 'load', 'auto'}
+        case {'load_from_logfile', ''}
+            % do nothing
+        otherwise
+            % run one of the various cardiac pulse detection algorithms
             [ons_secs.cpulse, verbose] = tapas_physio_get_cardiac_pulses(ons_secs.t, ons_secs.c, ...
                 thresh.cardiac.initial_cpulse_select, thresh.cardiac.modality, [], verbose);
-        case {'load_from_logfile', ''}
     end
     
     %% post-hoc: hand pick additional cardiac pulses or load from previous
@@ -152,7 +154,8 @@ end
 if verbose.level >= 1
     verbose.fig_handles(end+1) = ...
         tapas_physio_plot_raw_physdata_diagnostics(ons_secs.cpulse, ...
-        ons_secs.r, thresh.cardiac.posthoc_cpulse_select, verbose.level);
+        ons_secs.r, thresh.cardiac.posthoc_cpulse_select, verbose.level, ...
+    ons_secs.t, ons_secs.c);
 else % without figure creation
      tapas_physio_plot_raw_physdata_diagnostics(ons_secs.cpulse, ...
         ons_secs.r, thresh.cardiac.posthoc_cpulse_select, 0);

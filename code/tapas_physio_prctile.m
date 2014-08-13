@@ -13,7 +13,7 @@ function p = tapas_physio_prctile(x, percentile)
 %   p           value of percentile for data vector
 % EXAMPLE
 %   x = randn(1000,1);
-%   p = tapas_physio_prctile (x, 95) % returns median
+%   p = tapas_physio_prctile (x, 50) % returns median
 %   figure;hist(x,100);yl = ylim;hold all;stem(p, yl(2));
 %
 %   See also prctile tapas_physio_plot_raw_physdata_diagnostics tapas_physio_create_scan_timing_from_gradients_philips

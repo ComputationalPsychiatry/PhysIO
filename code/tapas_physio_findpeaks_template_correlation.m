@@ -1,128 +1,41 @@
-function [cpulse, verbose] = tapas_physio_get_cardiac_pulses_auto(...
-    c, t, thresh_min, dt120, verbose)
-%automated, iterative pulse detection from cardiac (ECG/OXY) data
+function [cpulse, verbose] = tapas_physio_findpeaks_template_correlation(...
+    c, pulseCleanedTemplate, cpulseSecondGuess, averageHeartRateInSamples, ...
+    verbose)
+% Finds peaks of a time series via pre-determined template via maxima of
+% correlations via going backward from search starting point in time
+% series, and afterwards forward again
 %
-%   [cpulse, verbose] = tapas_physio_get_cardiac_pulses_auto(...
-%    c, t, thresh_min, dt120, verbose)
+%   [cpulse, verbose] = tapas_physio_findpeaks_template_correlation(...
+%       c, pulseCleanedTemplate, cpulseSecondGuess, averageHeartRateInSamples, verbose)
 %
 % IN
 %
 % OUT
 %
 % EXAMPLE
-%   tapas_physio_get_cardiac_pulses_auto
+%   tapas_physio_findpeaks_template_correlation
 %
 %   See also
 %
-% Author: Steffen Bollmann, Kinderspital Zurich
-% Created: 2014-03-20
+% Author: Steffen Bollmann, merged in this function: Lars Kasper
+% Created: 2014-08-05
 % Copyright (C) 2014 TNU, Institute for Biomedical Engineering, University of Zurich and ETH Zurich.
 %
-% This file is part of the physIO toolbox, which is released under the terms of the GNU General Public
+% This file is part of the TAPAS PhysIO Toolbox, which is released under the terms of the GNU General Public
 % Licence (GPL), version 3. You can redistribute it and/or modify it under the terms of the GPL
 % (either version 3 or, at your option, any later version). For further details, see the file
 % COPYING or <http://www.gnu.org/licenses/>.
 %
 % $Id$
-if nargin < 5
-    verbose.level = 0;
-    verbose.fig_handles = [];
-end
-
-debug = verbose.level >= 3;
-dt = t(2) - t(1);
-
-c = c-mean(c); c = c./std(c); % normalize time series
-
-
-%guess peaks in two steps with updated avereage heartrate
-%first step
-[tmp, cpulseFirstGuess] = tapas_physio_findpeaks( ...
-    c,'minpeakheight',thresh_min,'minpeakdistance', dt120);
-
-hasFirstGuessPeaks = ~isempty(cpulseFirstGuess);
-
-%second step, refined heart rate estimate
-
-if hasFirstGuessPeaks
-    
-    averageHeartRateInSamples = round(mean(diff(cpulseFirstGuess)));
-    [tmp, cpulseSecondGuess] = tapas_physio_findpeaks(c,...
-        'minpeakheight',thresh_min,...
-        'minpeakdistance', round(0.5*averageHeartRateInSamples));
-    
-    if debug
-        fh = tapas_physio_get_default_fig_params;
-        subplot(3,1,1);
-        hold off
-        stem(t(cpulseSecondGuess),4*ones(length(cpulseSecondGuess),1),'r')
-        hold all;
-        plot(t, c, 'k'); title('Finding first peak (heartbeat/max inhale), backwards')
-    end
-else
-    if debug
-        fh = tapas_physio_get_default_fig_params;
-        subplot(3,1,1);
-        plot(t, c, 'k'); title('Finding first peak (heartbeat/max inhale), backwards')
-    end
-    
-end
-
-%% Build template based on the guessed peaks:
-% cut out all data around the detected (presumed) R-peaks
-%   => these are the representative "QRS"-waves
-
-shortenTemplateFactor = 0.5; % template should only be length of a fraction of average heartbeat length
-halfTemplateWidthInSamples = round(shortenTemplateFactor * (averageHeartRateInSamples / 2));
-for n=2:numel(cpulseSecondGuess)-2
-    startTemplate = cpulseSecondGuess(n)-halfTemplateWidthInSamples;
-    endTemplate = cpulseSecondGuess(n)+halfTemplateWidthInSamples;
-    
-    template(n,:) = c(startTemplate:endTemplate);
-end
-
-%delete first zero-elements of the template
-template(1,:) = [];
-
-% template as average of the found representative waves
-pulseTemplate = mean(template);
-
-if debug
-    figure(fh);
-    subplot(3,1,2);
-    tTemplate = dt*(0:2*halfTemplateWidthInSamples);
-    plot(tTemplate, template');
-    hold all;
-    plot(tTemplate, pulseTemplate', '.-r', 'LineWidth', 3, 'Marker', ...
-        'o');
-    xlabel('t (seconds)');
-    title('Templates of physiology time courses per heart beat and mean template');
-    
-end
-
-% delete the peaks deviating from the mean too
-% much before building the final template
-indHighQualityTemplates = [];
-for n=1:size(template,1)
-    correlation = corrcoef(template(n,:),pulseTemplate);
-    similarityToTemplate(n) = correlation(1,2);
-    
-    if similarityToTemplate(n) > 0.95
-        indHighQualityTemplates(end+1) = n;
-    end
-    
-end
-
-% final template for peak search
-pulseCleanedTemplate = mean(template(indHighQualityTemplates,:));
 
 % Determine starting peak for the search:
 %   search for a representative R-peak in the first 20 peaks
 
 % TODO: maybe replace via convolution with template? "matched
 % filter theorem"?
-
 debug = verbose.level >= 4;
+
+halfTemplateWidthInSamples = floor(numel(pulseCleanedTemplate)/2);
 
 centreSampleStart = round(2*halfTemplateWidthInSamples+1);
 centreSampleEnd = cpulseSecondGuess(20);
@@ -157,7 +70,7 @@ n=I_bestMatch;
 bestPosition = n; % to capture case where 1st R-peak is best
 
 peakNumber = 1;
-similarityToTemplate=zeros(size(t,1),1);
+similarityToTemplate=zeros(size(c,1),1);
 
 searchStepsTotal=round(0.5*averageHeartRateInSamples);
 while n > 1+searchStepsTotal+halfTemplateWidthInSamples
@@ -243,7 +156,7 @@ while n < size(c,1)-searchStepsTotal-halfTemplateWidthInSamples
         correlation = corrcoef(signalPart,pulseCleanedTemplate);
         
         %DEBUG
-        if debug && ~mod(n, 1000)
+        if debug && ~mod(n, 100)
             figure(1);
             subplot 212;
             plot(signalPart);
@@ -265,7 +178,7 @@ while n < size(c,1)-searchStepsTotal-halfTemplateWidthInSamples
     end
     
     %DEBUG
-    if debug && ~mod(n, 100)
+    if debug
         if (n>100) && (n< size(c,1)-100)
             figure(1);subplot 211;plot(t,similarityToTemplate,'b-')
             xlim([t(n-100) t(n+100)])
@@ -283,7 +196,7 @@ while n < size(c,1)-searchStepsTotal-halfTemplateWidthInSamples
     [C_bestMatch,I_bestMatch] = max(searchRangeValues);
     bestPosition = indexSearchRange(I_bestMatch);
     
-    if debug && ~mod(n, 100)
+    if debug
         stem(t(bestPosition),4,'g');
     end
     
@@ -318,19 +231,3 @@ while n < size(c,1)-searchStepsTotal-halfTemplateWidthInSamples
         n=bestPosition+averageHeartRateInSamples;
     end
 end
-
-
-if verbose.level >=2
-    verbose.fig_handles(end+1) = tapas_physio_get_default_fig_params();
-    titstr = 'Peak Detection from Automatically Generated Template';
-    set(gcf, 'Name', titstr);
-    plot(t, c, 'k');
-    hold all;
-    stem(t(cpulse),4*ones(size(cpulse)), 'r');
-    legend('Raw time course', 'Detected maxima (cardiac pulses / max inhalations)');
-    title(titstr);
-end
-
-
-cpulse = t(cpulse);
-

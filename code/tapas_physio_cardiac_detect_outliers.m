@@ -74,7 +74,7 @@ if ~isempty(percentile) && ~isempty(deviationPercentUp) && ~isempty(deviationPer
         hold all;
         hp(2) = plot( [tCardiac(2); tCardiac(end)], [upperThresh,upperThresh], 'g--', 'LineWidth',2);
         hp(3) = plot( [tCardiac(2); tCardiac(end)], [lowerThresh,lowerThresh], 'b--', 'LineWidth',2);
-        legend('Temporal lag between subsequent heartbeats', 'Upper threshold for selecting outliers', ...
+        legend(hp, 'Temporal lag between subsequent heartbeats', 'Upper threshold for selecting outliers', ...
             'Lower threshold for selecting outliers');
     end
     

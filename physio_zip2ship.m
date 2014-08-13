@@ -5,7 +5,7 @@ function physio_zip2ship(rev, zipAll)
 %   output = physio_zip2ship(rev)
 %
 % IN
-%   rev - revision number
+%   rev - revision number as a string or integer value
 %
 % OUT
 %   PhysIOToolbox_r<rev>_code.zip
