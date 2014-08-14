@@ -37,6 +37,10 @@ debug = verbose.level >= 4;
 
 halfTemplateWidthInSamples = floor(numel(pulseCleanedTemplate)/2);
 
+[~,zTransformedTemplate] = tapas_physio_corrcoef12(pulseCleanedTemplate,...
+    pulseCleanedTemplate);
+isZTransformed = [0 1];
+
 centreSampleStart = round(2*halfTemplateWidthInSamples+1);
 centreSampleEnd = cpulseSecondGuess(20);
 for n=centreSampleStart:centreSampleEnd
@@ -44,7 +48,8 @@ for n=centreSampleStart:centreSampleEnd
     endSignalIndex=n+halfTemplateWidthInSamples;
     
     signalPart = c(startSignalIndex:endSignalIndex);
-    correlation = corrcoef(signalPart,pulseCleanedTemplate);
+    correlation = tapas_physio_corrcoef12(signalPart,zTransformedTemplate, ...
+        isZTransformed);
     
     %Debug
     if debug && ~mod(n, 100)
@@ -55,7 +60,7 @@ for n=centreSampleStart:centreSampleEnd
     end
     % Debug
     
-    similarityToTemplate(n) = correlation(1,2);
+    similarityToTemplate(n) = correlation;
 end
 
 [C_bestMatch,I_bestMatch] = max(similarityToTemplate);
@@ -79,7 +84,8 @@ while n > 1+searchStepsTotal+halfTemplateWidthInSamples
         endSignalIndex=n+halfTemplateWidthInSamples+searchPosition;
         
         signalPart = c(startSignalIndex:endSignalIndex);
-        correlation = corrcoef(signalPart,pulseCleanedTemplate);
+        correlation = tapas_physio_corrcoef12(signalPart,zTransformedTemplate, ...
+            isZTransformed);
         
         %DEBUG
         if debug && ~mod(n, 100)
@@ -99,7 +105,7 @@ while n > 1+searchStepsTotal+halfTemplateWidthInSamples
         %                     currentWeight = gaussianWindow(searchPosition+searchStepsTotal+1);
         
         currentWeight = abs(c(n+searchPosition+1));
-        correlationWeighted =  currentWeight .* correlation(1,2);
+        correlationWeighted =  currentWeight .* correlation;
         similarityToTemplate(n+searchPosition) = correlationWeighted;
         
     end
@@ -153,7 +159,8 @@ while n < size(c,1)-searchStepsTotal-halfTemplateWidthInSamples
         endSignalIndex=n+halfTemplateWidthInSamples+searchPosition;
         
         signalPart = c(startSignalIndex:endSignalIndex);
-        correlation = corrcoef(signalPart,pulseCleanedTemplate);
+        correlation = tapas_physio_corrcoef12(signalPart,zTransformedTemplate, ...
+            isZTransformed);
         
         %DEBUG
         if debug && ~mod(n, 100)
@@ -171,7 +178,7 @@ while n < size(c,1)-searchStepsTotal-halfTemplateWidthInSamples
         %                     locationWeight = 1;
         amplitudeWeight = abs(c(n+searchPosition+1));
         %                     amplitudeWeight = 1;
-        correlationWeighted =  locationWeight .* amplitudeWeight .* correlation(1,2);
+        correlationWeighted =  locationWeight .* amplitudeWeight .* correlation;
         similarityToTemplate(n+searchPosition) = correlationWeighted;
         
         
