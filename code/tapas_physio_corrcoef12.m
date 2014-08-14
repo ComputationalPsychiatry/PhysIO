@@ -1,7 +1,9 @@
 function [correlation,x,y] = tapas_physio_corrcoef12(x,y, isZtransformed)
-% computes correlation coefficient (i.e. entry (1,2) of correlation matrix) 
+% computes correlation coefficient (i.e. entry (1,2) of correlation matrix)
 % quickly between two time series
-% 
+% The speed-up is mainly due to in-line re-implementation of costly
+% statistical functions, i.e. mean, std, cov, and usage of a pre-applied
+% z-transformation of either of the inputs
 %
 %   [correlation,x,y] = tapas_physio_corrcoef12(x,y, isZtransformed)
 %
@@ -12,7 +14,7 @@ function [correlation,x,y] = tapas_physio_corrcoef12(x,y, isZtransformed)
 %   isZtransformed [1,2] vector stating whether x,y or both are
 %                   z-transformed, i.e. mean-corrected and divided by their
 %                   standard deviation
-%                   example: 
+%                   example:
 %                   isZtransformed = [1,0] means that x is z-transformed,
 %                   by y is not, i.e. (y-mean(y))/std(y) will be computed
 % OUT
@@ -34,28 +36,37 @@ function [correlation,x,y] = tapas_physio_corrcoef12(x,y, isZtransformed)
 % COPYING or <http://www.gnu.org/licenses/>.
 %
 % $Id$
-doUseSlow = false;
-
 if nargin < 3
     isZtransformed = [0 0];
 end
 
+% This is the old implementation; uncomment for comparison purposes
+%doUseSlow = false;
+%if doUseSlow
+%    correlation = corrcoef(x,y);
+%    correlation = correlation(1,2);
+%else %fast, using shortcuts and in-line implementationf of mean/std/cov...
 
-if doUseSlow
-    correlation = corrcoef(x,y);
-    correlation = correlation(1,2);
-else %fast, using shortcuts...
-    %C(i,j)/SQRT(C(i,i)*C(j,j)).
-    
+
+%C(i,j)/SQRT(C(i,i)*C(j,j)).
+
+nSamples = numel(x);
+normFactor = 1/(nSamples-1);
+
+% make column vectors
+if size(x,1) ~= nSamples
     x = x(:);
     y = y(:);
-    nSamples = numel(x);
-
-    if ~isZtransformed(1)
-       x = x - mean(x); x = x./sqrt(x'*x/(nSamples-1));
-    end
-    if ~isZtransformed(2)
-        y = y - mean(y); y = y./sqrt(y'*y/(nSamples-1));
-    end
-    correlation = x'*y;
 end
+
+if ~isZtransformed(1) % perform z-transformation
+    x = x - sum(x)/nSamples;
+    x = x./sqrt(x'*x*normFactor);
+end
+if ~isZtransformed(2) % perform z-transformation
+    y = y - sum(y)/nSamples;
+    y = y./sqrt(y'*y*normFactor);
+end
+correlation = x'*y*normFactor;
+
+%end % else doUseSlow

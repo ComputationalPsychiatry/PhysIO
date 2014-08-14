@@ -147,6 +147,8 @@ clear cpulse;
 %deviating from the initial starting point by a gaussian
 searchStepsTotal=round(0.5*averageHeartRateInSamples);
 
+gaussianWindow = gausswin(2*searchStepsTotal+1); % for weighted searching of max correlation
+     
 if n < searchStepsTotal+halfTemplateWidthInSamples+1
     n=searchStepsTotal+halfTemplateWidthInSamples+1;
 end
@@ -173,7 +175,6 @@ while n < size(c,1)-searchStepsTotal-halfTemplateWidthInSamples
         end
         %  DEBUG
         
-        gaussianWindow = gausswin(2*searchStepsTotal+1);
         locationWeight = gaussianWindow(searchPosition+searchStepsTotal+1);
         %                     locationWeight = 1;
         amplitudeWeight = abs(c(n+searchPosition+1));
