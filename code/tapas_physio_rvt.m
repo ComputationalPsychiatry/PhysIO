@@ -49,6 +49,7 @@ dtBreath = round(2/dt); %in seconds, minimum distance between two breaths
 % times)
 thresh_cardiac = [];
 thresh_cardiac.min = .1; 
+thresh_cardiac.method = 'auto_template';
 
 if nargin < 4
     verbose.level = 0;
