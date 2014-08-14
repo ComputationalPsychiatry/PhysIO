@@ -121,12 +121,17 @@ end
 
 % delete the peaks deviating from the mean too
 % much before building the final template
-for n=1:size(template,1)
-    correlation = corrcoef(template(n,:),pulseTemplate);
-    similarityToTemplate(n) = correlation(1,2);
+[~, pulseTemplate] = tapas_physio_corrcoef12(pulseTemplate, pulseTemplate);
+isZtransformed = [0 1];
+
+nTemplates = size(template,1);
+similarityToTemplate = zeros(nTemplates,1);
+for n=1:nTemplates
+    similarityToTemplate(n) = tapas_physio_corrcoef12(template(n,:),pulseTemplate, ...
+        isZtransformed);
 end
 
-% final template for peak search from best-matching templates
+%% Final template for peak search from best-matching templates
 
 thresholdHighQualityCorrelation = 0.95;
 
