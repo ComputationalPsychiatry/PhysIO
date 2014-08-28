@@ -103,7 +103,8 @@ COMPATIBILITY & SUPPORT
 - Input: 
     - Fully integrated to work with physiological logfiles for Philips MR systems (SCANPHYSLOG)
     - tested for General Electric (GE) log-files
-	- also: interface for 'Custom', i.e. general heart-beat time stamps & breathing volume time courses from other log formats
+    - preliminary implementation for Siemens log-files
+    - also: interface for 'Custom', i.e. general heart-beat time stamps & breathing volume time courses from other log formats
 - Output: Nuisance regressors for mass-univariate statistical analysis with SPM5,8,12
 - Part of the TNU Software Edition: long term support and ongoing development
 
@@ -113,9 +114,13 @@ DOWNLOADS & RELEASE INFORMATION
 - Current Release: 
 
 PhysIO_Toolbox_14 (Code | Examples)
-May 3rd, 2014
+August 25th, 2014
 
 revision: $Revision: 497 $
+
+Major Release Notes (533):
+- Read-in of Siemens plain text log files; new example dataset for Siemens
+- Speed up and debugging of ‘auto’-detection method for noisy cardiac data => ‘auto_matched’
 
 Major Release Notes (r497):
 - SPM matlabbatch GUI implemented (Call via Batch -> SPM -> Tools -> TAPAS PhysIO Toolbox)

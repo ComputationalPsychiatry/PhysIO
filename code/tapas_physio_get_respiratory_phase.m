@@ -1,4 +1,4 @@
-function [rphase, fh] = tapas_physio_get_respiratory_phase(pulset,rsampint,...
+function [rphase, fh] = tapas_physio_get_respiratory_phase(pulset, rsampint,...
     verbose, thresh)
 
 % get_respiratory_phase is a function for creating respiratory phase regressor.
@@ -85,7 +85,6 @@ sumh = cumsumh(end);
 rphase=pi*(cumsumh(binnum)/sumh).*dnormpulse+pi;
 
 
-if nargin < 3, verbose = 0; end
 if verbose
     fh = tapas_physio_get_default_fig_params();
     set(fh, 'Name', 'get_respiratory_phase: histogram for respiratory phase estimation');
