@@ -45,7 +45,21 @@ mkdir(exportD);
 
 % copy and zip examples with manual
 copyfile(fullfile(currD, 'README.txt'), exportD);
-copyfile(fullfile(currD, 'examples'), fullfile(exportD, 'examples'));
+
+dirExamples = {
+    'GE/Pulseoxy_15m4'
+    'Philips/ECG3T'
+    'Philips/ECG7T'
+    'Philips/PPU'
+    'Siemens/ECG3T'
+};
+
+nExamples = numel(dirExamples);
+for iExample = 1:nExamples
+    mkdir(fullfile(exportD, 'examples', dirExamples{iExample}));
+    copyfile(fullfile(currD, 'examples', dirExamples{iExample}), ...
+        fullfile(exportD, 'examples',dirExamples{iExample}));
+end
 mkdir(exportD, 'manual');
 copyfile(fullfile(currD, 'manual/*.pdf'), fullfile(exportD, 'manual'));
 
