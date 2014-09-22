@@ -120,8 +120,8 @@ function fh = plot_interpolation(tOrig, yOrig, tInterp, yInterp, ...
 fh = tapas_physio_get_default_fig_params;
 stringTitle = sprintf('Interpolation of %s signal', stringOrigInterp{1});
 set(fh, 'Name', stringTitle);
-plot(tInterp, yInterp,'g+--'); hold all;
-plot(tOrig, yOrig, 'r.'); 
+plot(tOrig, yOrig, 'go--');  hold all;
+plot(tInterp, yInterp,'r.');
 xlabel('t (seconds');
 legend({
     sprintf('after interpolation to %s timing', ...

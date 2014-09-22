@@ -1,5 +1,5 @@
 function [VOLLOCS, LOCS] = tapas_physio_create_nominal_scan_timing(t, sqpar)
-% creates locations of scan volume and slice events in time vector of SCANPHYSLOG-files
+% Creates locations of scan volume and slice events in time vector of SCANPHYSLOG-files
 %
 %   [VOLLOCS, LOCS] = tapas_physio_create_nominal_scan_timing(t, sqpar);
 %
@@ -61,7 +61,8 @@ LOCS = zeros(NallVols*Nslices,1);
 TR = sqpar.TR;
    
 
-if isempty(sqpar.time_slice_to_slice) %default for equidistantly spaced slices
+%default for equidistantly spaced slices
+if isempty(sqpar.time_slice_to_slice) 
     sqpar.time_slice_to_slice = TR/Nslices;
 end
 
@@ -70,7 +71,8 @@ if do_count_from_start % t = 0 is assumed to be the start of the scan
     for n = 1:NallVols
         [tmp, VOLLOCS(n)] = min(abs(t - TR*(n-1)));
         for s = 1:Nslices
-            [tmp, LOCS((n-1)*Nslices + s)] = min(abs(t - (TR*(n-1)+sqpar.time_slice_to_slice*(s-1))));
+            [tmp, LOCS((n-1)*Nslices + s)] = min(abs(t - ...
+                (TR*(n-1)+sqpar.time_slice_to_slice*(s-1))));
         end
     end   
 else
@@ -78,7 +80,8 @@ else
     for n = 1:NallVols
         [tmp, VOLLOCS(NallVols-n+1)] = min(abs(t - (tRef-TR*n)));
         for s = 1:Nslices
-            [tmp, LOCS((NallVols - n)*Nslices + s)] = min(abs(t - (tRef-TR*n+sqpar.time_slice_to_slice*(s-1))));
+            [tmp, LOCS((NallVols - n)*Nslices + s)] = min(abs(t - ...
+                (tRef-TR*n+sqpar.time_slice_to_slice*(s-1))));
         end
     end
 end

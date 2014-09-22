@@ -97,6 +97,9 @@ sampling_interval.name    = 'sampling_interval';
 sampling_interval.help    = {
     'sampling interval of phys log files (in seconds)'
     ' If empty, default values are used: 2 ms for Philips, 25 ms for GE and others'
+    ' If cardiac and respiratory sampling rate differ, enter them as vector'
+    ' [sampling_interval_cardiac, sampling_interval_respiratory]'
+    ''
     ' Note: If you use a WiFi-Philips device for peripheral monitoring'
     '       (Ingenia system), please change this value to 1/496, '
     '       i.e. a sampling rate of 496 Hz)'

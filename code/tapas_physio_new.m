@@ -65,8 +65,18 @@ else
     %% log_files
     % structure containing general physiological log-file information
     
-    % vendor name           'Philips', 'GE', ('Siemens') or 'Custom'
-    %                       'depending on your MR Scanner system
+    % vendor name           ...depending on your MR Scanner system
+    %                       'Philips'
+    %                       'GE', 
+    %                       'Siemens' 
+    %                       'Siemens_Tics' - new Siemens physiological
+    %                       logging with time stamps in tics (= steps of 2.
+    %                       5 ms since midnight) and
+    %                       extra acquisition (scan_timing) logfile with 
+    %                       time stamps of all volumes and slices
+    %
+    %                       or 
+    %                       'Custom'
     %
     %  'Custom' expects the logfiles (separate files for cardiac and respiratory)
     %  to be plain text, with one cardiac (or
@@ -84,19 +94,25 @@ else
     %
     % NOTE: the sampling interval has to be specified for these files as 
     % well (s.b.)
+    
     log_files.vendor       = '';
                                 
     log_files.cardiac      = ''; % 'SCANPHYSLOG.log'; logfile with cardiac data
     
-    % ogfile with respiratory data, e.g. 'SCANPHYSLOG.log'; 
+    % Logfile with respiratory data, e.g. 'SCANPHYSLOG.log'; 
     % (same as .cardiac for Philips)
     log_files.respiration  = ''; 
     
-    % sampling interval in seconds (i.e. time between two rows in logfile
+    % Sampling interval in seconds (i.e. time between two rows in logfile
     % if empty, default value will be set: 2e-3 for Philips, variable for GE, e.g. 40e-3
+%         1 entry: sampling interval (seconds)
+%         for both cardiac + respiratory log file
+%         2 entries: 1st entry sampling interval (seconds)
+%         for cardiac logfile, 2nd entry for respiratory
+%         logfile
     log_files.sampling_interval = []; 
     
-    % time (in seconds) when the 1st scan (or, if existing, dummy) started,
+    % Time (in seconds) when the 1st scan (or, if existing, dummy) started,
     % relative to the start of the logfile recording; 
     % e.g.  0 if simultaneous start
     %       10, if 1st scan starts 10
@@ -172,8 +188,11 @@ else
     % either their timing (thresh.scan_timing) or the peripheral measures
     % itself (thresh.cardiac, thresh.respiration)
      
-    % Determination of session timing 
-    %'nominal' or 'gradient' 'gradient_log'
+    % Method to determine slice acquisition onset times
+    % 'scan_timing_log' - individual scan timing logfile with time stamps ("tics") for each slice and volume (e.g. Siemens_Cologne)
+    % 'nominal' - to derive slice acquisition timing from sqpar directly
+    % 'gradient' or 'gradient_log' - derive from logged gradient time courses
+    %                                in SCANPHYSLOG-files (Philips only)
     thresh.scan_timing.method = 'gradient_log'; 
     thresh.scan_timing.grad_direction = ''; % 'x', 'y', or 'z';
     

@@ -62,8 +62,8 @@ physio = tapas_physio_cell2char(physio);
 % prepend absolute directories - save_dir
 physio = tapas_physio_prepend_absolute_paths(physio);
 
-% set sub-structures for readability; NOTE: copy by value, physio-structure not
-% updated!
+% set sub-structures for readability; NOTE: copy by value, physio-structure
+% not updated!
 save_dir = physio.save_dir;
 log_files = physio.log_files;
 thresh  = physio.thresh;
@@ -87,20 +87,33 @@ if verbose.level >= 2
 end
 
 
-%% 2. Create scan timing nominally or from gradient time-course
-% the latter is only necessary, if no patch is used and therefore no scan event
-% triggers are written into the last column of the scanphyslog-file
+%% 2. Create scan timing nominally or from logfile 
+% (Philips: via gradient time-course; Siemens (NEW): from tics)
 useNominal = isempty(thresh.scan_timing) || ...
     strcmpi(thresh.scan_timing.method, 'nominal');
 if useNominal
-    [VOLLOCS, LOCS] = tapas_physio_create_nominal_scan_timing(ons_secs.t, sqpar);
+    [VOLLOCS, LOCS] = ...
+    tapas_physio_create_nominal_scan_timing(ons_secs.t, sqpar);
 else
-    [VOLLOCS, LOCS, verbose] = tapas_physio_create_scan_timing_from_gradients_philips( ...
-        log_files, thresh.scan_timing, sqpar, verbose);
+    switch thresh.scan_timing.method
+        case {'gradient', 'gradient_log'}
+            [VOLLOCS, LOCS, verbose] = ...
+                tapas_physio_create_scan_timing_from_gradients_philips( ...
+                log_files, thresh.scan_timing, sqpar, verbose);
+        case 'scan_timing_log'
+            [VOLLOCS, LOCS, verbose] = ...
+                tapas_physio_create_scan_timing_from_tics_siemens( ...
+                ons_secs.t, log_files, verbose);
+    end
 end
 
+% remove arbitrary offset in time vector now, since all timings have now
+% been aligned to ons_secs.t
+ons_secs.t = ons_secs.t -ons_secs.t(1);
+
 [ons_secs.svolpulse, ons_secs.spulse, ons_secs.spulse_per_vol, verbose] = ...
-    tapas_physio_get_onsets_from_locs(ons_secs.t, VOLLOCS, LOCS, sqpar, verbose);
+    tapas_physio_get_onsets_from_locs(...
+    ons_secs.t, VOLLOCS, LOCS, sqpar, verbose);
 
 
 %% 3. Extract and check physiological parameters (onsets)

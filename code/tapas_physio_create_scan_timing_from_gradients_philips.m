@@ -1,5 +1,5 @@
 function [VOLLOCS, LOCS, verbose] = tapas_physio_create_scan_timing_from_gradients_philips(log_files, thresh, sqpar, verbose)
-%extracts slice and volume scan events from gradients timecourse of Philips
+% Extracts slice and volume scan events from gradients timecourse of Philips
 % SCANPHYSLOG file
 %
 %   [VOLLOCS, LOCS] = tapas_physio_create_scan_timing_from_gradients_philips(logfile,
@@ -59,6 +59,10 @@ function [VOLLOCS, LOCS, verbose] = tapas_physio_create_scan_timing_from_gradien
 %   verbose                
 %
 % OUT
+%           VOLLOCS         - locations in time vector, when volume scan
+%                             events started
+%           LOCS            - locations in time vector, when slice or volume scan
+%                             events started
 %
 % EXAMPLE
 %   [VOLLOCS, LOCS] = tapas_physio_create_scan_timing_from_gradients_philips(logfile,

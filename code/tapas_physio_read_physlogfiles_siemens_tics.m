@@ -1,8 +1,11 @@
-function [c, r, t, cpulse] = tapas_physio_read_physlogfiles_GE(log_files, ...
-verbose)
-% reads out physiological time series and timing vector depending on the
-% MR scanner vendor and the modality of peripheral cardiac monitoring (ECG
-% or pulse oximetry)
+function [c, r, t, cpulse, verbose] = tapas_physio_read_physlogfiles_siemens_tics(...
+    log_files, verbose)
+% reads out physiological time series of Siemens logfiles with Tics
+% The latest implementation of physiological logging in Siemens uses Tics,
+% i.e. time stamps of 2.5 ms duration that are reset every day at midnight.
+% These are used as a common time scale in all physiological logfiles -
+% even though individual sampling times may vary - including cardiac,
+% respiratory, pulse oximetry and acquisition time data itself
 %
 %   [cpulse, rpulse, t, c] = tapas_physio_read_physlogfiles_GE(logfiles, ...
 %                               verbose)
@@ -11,9 +14,9 @@ verbose)
 %
 % IN    log_files
 %       .log_cardiac        contains ECG or pulse oximeter time course
-%                           for GE: ECGData...
+%                           for Siemens: *_PULS.log or _ECG[1-4].log.
 %       .log_respiration    contains breathing belt amplitude time course
-%                           for GE: RespData...
+%                           for Siemens: *_RESP.log
 %       .sampling_interval  1 entry: sampling interval (seconds)
 %                           for both log files
 %                           2 entries: 1st entry sampling interval (seconds)
@@ -34,13 +37,13 @@ verbose)
 %
 % EXAMPLE
 %   [ons_secs.cpulse, ons_secs.rpulse, ons_secs.t, ons_secs.c] =
-%       tapas_physio_read_physlogfiles_GE(logfiles);
+%       tapas_physio_read_physlogfiles_siemens_tics(logfiles);
 %
 %   See also tapas_physio_main_create_regressors
 %
 % Author: Lars Kasper
-% Created: 2013-02-16
-% Copyright (C) 2013 Institute for Biomedical Engineering, ETH/Uni Zurich.
+% Created: 2014-09-08
+% Copyright (C) 2014 Institute for Biomedical Engineering, ETH/Uni Zurich.
 %
 % This file is part of the PhysIO toolbox, which is released under the terms of the GNU General Public
 % Licence (GPL), version 3. You can redistribute it and/or modify it under the terms of the GPL
@@ -55,39 +58,68 @@ DEBUG = verbose.level >= 3;
 hasRespirationFile = ~isempty(log_files.respiration);
 hasCardiacFile = ~isempty(log_files.cardiac);
 
+% Cardiac and respiratory sampling intervals are ignored, since Tics are
+% assumed to be counted in files
+dt = log_files.sampling_interval;
+
+switch numel(dt)
+    case 3
+        dtTics = dt(3);
+    otherwise
+        dtTics = 2.5e-3;
+end
+
+dtCardiac = dtTics;
+dtRespiration = dtTics;
+
+
 if hasRespirationFile
-    r = load(log_files.respiration, 'ascii');
+    fid = fopen(log_files.respiration);
+    C = textscan(fid, '%d %d %d', 'HeaderLines', 1);
+    rTics           = double(C{1});
+    tRespiration    = rTics*dtRespiration ...
+        - log_files.relative_start_acquisition;
+    r               = double(C{2});
+    rSignals        = double(C{3});
 else
-    r = [];
+    r               = [];
+    tRespiration    = [];
 end
 
 if hasCardiacFile
-    c = load(log_files.cardiac, 'ascii');
+    fid = fopen(log_files.cardiac);
+    C = textscan(fid, '%d %d %d', 'HeaderLines', 1);
+    cTics           = double(C{1});
+    tCardiac        = cTics*dtCardiac ...
+        - log_files.relative_start_acquisition;
+    c               = double(C{2});
+    cSignals        = double(C{3});
 else
-    c = [];
+    c               = [];
+    tCardiac        = [];
 end
+
+
 
 %% interpolate to greater precision, if 2 different sampling rates are given
 
-dt = log_files.sampling_interval;
+if DEBUG
+    fh = plot_raw_physlogs(tCardiac, c, tRespiration, r, ...
+        hasCardiacFile, hasRespirationFile);
+    verbose.fig_handles(end+1) = fh;
+end
 
-hasDifferentSamplingRates = numel(dt) > 1;
 
-if hasDifferentSamplingRates && hasCardiacFile && hasRespirationFile
-    dtCardiac = dt(1);
-    dtRespiration = dt(2);
-    isHigherSamplingCardiac = dtCardiac < dtRespiration;
+hasDifferentSampling = ~isequal(tCardiac, tRespiration);
+
+if hasDifferentSampling && hasCardiacFile && hasRespirationFile
     
     nSamplesRespiration = size(r,1);
     nSamplesCardiac = size(c,1);
+    dtCardiac = tCardiac(2)-tCardiac(1);
+    dtRespiration = tRespiration(2) - tRespiration(1);
     
-    tCardiac = -log_files.relative_start_acquisition + ...
-        ((0:(nSamplesCardiac-1))*dtCardiac)';
-    
-    
-    tRespiration = -log_files.relative_start_acquisition + ...
-        ((0:(nSamplesRespiration-1))*dtRespiration)';
-    
+    isHigherSamplingCardiac = dtCardiac < dtRespiration;
     if isHigherSamplingCardiac
         t = tCardiac;
         rInterp = interp1(tRespiration, r, t);
@@ -113,14 +145,39 @@ if hasDifferentSamplingRates && hasCardiacFile && hasRespirationFile
     end
     
 else
-    nSamples = size(c,1);
-    t = -log_files.relative_start_acquisition + ((0:(nSamples-1))*dt)';
+    nSamples = max(size(c,1), size(r,1));
+    t = -log_files.relative_start_acquisition + ((0:(nSamples-1))*...
+        min(dtCardiac, dtRespiration))';
 end
 
 cpulse = [];
 end
 
-% local function to plot interpolation result
+% Local function to plot raw read-in data;
+function fh = plot_raw_physlogs(tCardiac, c, tRespiration, r, ...
+    hasCardiacFile, hasRespirationFile)
+fh = tapas_physio_get_default_fig_params();
+stringTitle = 'Siemens Tics - Read-in cardiac and respiratory logfiles';
+set(gcf, 'Name', stringTitle);
+stringLegend = {};
+tOffset = min([tRespiration; tCardiac]);
+if hasCardiacFile
+    plot(tCardiac-tOffset, c, 'r.-'); hold all;
+    stringLegend{1, end+1} =  ...
+        sprintf('Cardiac time course, start time %5.2e', tOffset);
+end
+
+if hasRespirationFile
+    plot(tRespiration-tOffset, r, 'g.-');
+    stringLegend{1, end+1} =  ...
+        sprintf('Respiratory time course, start time %5.2e', tOffset);
+end
+xlabel('t (seconds)');
+legend(stringLegend);
+title(stringTitle);
+end
+
+%% Local function to plot interpolation result
 function fh = plot_interpolation(tOrig, yOrig, tInterp, yInterp, ...
     stringOrigInterp)
 fh = tapas_physio_get_default_fig_params;
