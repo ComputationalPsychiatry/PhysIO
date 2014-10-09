@@ -7,8 +7,19 @@ function physio = tapas_physio_new(default_scheme, physio_in)
 %   default_scheme  - if set, default values for structure entries are set
 %                       according to the application
 %                       different templates are predefined, e.g.
-%                       'empty' (default) - all strings are set to '', all
-%                                     numbers to []
+%                       'empty'   - all strings are set to '', all
+%                                     numbers to [] (default)
+%                       'Philips':  good initial values for scans acquired
+%                                   on a Philips 3T system
+%                               model: RETROICOR;
+%                               vendor: Philips;
+%                               heartbeat detection: ECG, load_from_logfile
+%                                                    Philips detected peaks
+%                                                    no posthoc-detection
+%                               scan_timing:         gradient_log
+%                                                    uses gradient data
+%                                                    from SCANPHYSLOG-file
+%
 %                       'RETROICOR' order of RETROICOR expansion taken from
 %                       Harvey2008, JRMI28(6), p1337ff.
 %                       'scan_timing_from_start'
@@ -25,6 +36,9 @@ function physio = tapas_physio_new(default_scheme, physio_in)
 %   this file. Just scroll down and read through the comments!
 %
 % EXAMPLE
+%   physio = tapas_physio_new('default')
+%       OR = tapas_physio_new():
+%
 %   physio = tapas_physio_new('empty')
 %   physio = tapas_physio_new('RETROICOR');
 %   physio = tapas_physio_new('manual_peak_select', physio);
@@ -57,25 +71,25 @@ if nargin >= 2
     model   = physio_in.model;
     verbose = physio_in.verbose;
 else
-    %% save_dir 
+    %% save_dir
     % directory where output model and figure-files are saved to
     % leave empty to use current directory
-    save_dir = ''; 
+    save_dir = '';
     
     %% log_files
     % structure containing general physiological log-file information
     
     % vendor name           ...depending on your MR Scanner system
     %                       'Philips'
-    %                       'GE', 
-    %                       'Siemens' 
+    %                       'GE',
+    %                       'Siemens'
     %                       'Siemens_Tics' - new Siemens physiological
     %                       logging with time stamps in tics (= steps of 2.
     %                       5 ms since midnight) and
-    %                       extra acquisition (scan_timing) logfile with 
+    %                       extra acquisition (scan_timing) logfile with
     %                       time stamps of all volumes and slices
     %
-    %                       or 
+    %                       or
     %                       'Custom'
     %
     %  'Custom' expects the logfiles (separate files for cardiac and respiratory)
@@ -92,28 +106,28 @@ else
     %      -0.3 0
     %
     %
-    % NOTE: the sampling interval has to be specified for these files as 
+    % NOTE: the sampling interval has to be specified for these files as
     % well (s.b.)
     
     log_files.vendor       = '';
-                                
+    
     log_files.cardiac      = ''; % 'SCANPHYSLOG.log'; logfile with cardiac data
     
-    % Logfile with respiratory data, e.g. 'SCANPHYSLOG.log'; 
+    % Logfile with respiratory data, e.g. 'SCANPHYSLOG.log';
     % (same as .cardiac for Philips)
-    log_files.respiration  = ''; 
+    log_files.respiration  = '';
     
     % Sampling interval in seconds (i.e. time between two rows in logfile
     % if empty, default value will be set: 2e-3 for Philips, variable for GE, e.g. 40e-3
-%         1 entry: sampling interval (seconds)
-%         for both cardiac + respiratory log file
-%         2 entries: 1st entry sampling interval (seconds)
-%         for cardiac logfile, 2nd entry for respiratory
-%         logfile
-    log_files.sampling_interval = []; 
+    %         1 entry: sampling interval (seconds)
+    %         for both cardiac + respiratory log file
+    %         2 entries: 1st entry sampling interval (seconds)
+    %         for cardiac logfile, 2nd entry for respiratory
+    %         logfile
+    log_files.sampling_interval = [];
     
     % Time (in seconds) when the 1st scan (or, if existing, dummy) started,
-    % relative to the start of the logfile recording; 
+    % relative to the start of the logfile recording;
     % e.g.  0 if simultaneous start
     %       10, if 1st scan starts 10
     %       seconds AFTER physiological
@@ -133,26 +147,26 @@ else
     
     % number of full volumes saved (volumes in nifti file,
     % usually rows in your design matrix)
-    sqpar.Nscans            = [];   
+    sqpar.Nscans            = [];
     
     % set to >=0 to count scans and dummy
     % number of non-dummy, volume like preparation pulses
     % before 1st dummy scan. If set, logfile is read from beginning,
     % otherwise volumes are counted from last detected volume in the logfile
-    sqpar.Nprep             = [];   
+    sqpar.Nprep             = [];
     
     % time between the acquisition of 2 subsequent
     % slices; typically TR/Nslices or minTR/Nslices,
     % if minimal temporal slice spacing was chosen
     % NOTE: only necessary, if thresh.grad_direction
     % is empty and nominal scan timing is used
-    sqpar.time_slice_to_slice  = [];   
+    sqpar.time_slice_to_slice  = [];
     
     % slice whose scan onset determines the adjustment of the
     % regressor timing to a particular slice for the whole volume
     % volumes from beginning of run, i.e. logfile,
-    % includes counting of preparation gradients    
-    sqpar.onset_slice       = 19;  
+    % includes counting of preparation gradients
+    sqpar.onset_slice       = [];
     
     
     %% model
@@ -160,8 +174,8 @@ else
     % 'RETROICOR' - as in Glover el al, MRM 44, 2000
     % 'HRV' - heart rate variability, as in Chang et al, 2009
     % 'RVT' respiratory volume time, as in Birn et al., 2006
-    % The above can be combined e.g. 'RETROICOR_HRV', 'RETROICOR_RVT', 
-    % 'RETROICOR_HRV_RVT, 'HRV_RVT' 
+    % The above can be combined e.g. 'RETROICOR_HRV', 'RETROICOR_RVT',
+    % 'RETROICOR_HRV_RVT, 'HRV_RVT'
     model.type = '';
     model.input_other_multiple_regressors = ''; % other nuisance regressors to be included in design matrix
     % either txt-file or mat-file with variable R
@@ -187,13 +201,13 @@ else
     % determines thresholds used in preprocessing physiological logfiles,
     % either their timing (thresh.scan_timing) or the peripheral measures
     % itself (thresh.cardiac, thresh.respiration)
-     
+    
     % Method to determine slice acquisition onset times
     % 'scan_timing_log' - individual scan timing logfile with time stamps ("tics") for each slice and volume (e.g. Siemens_Cologne)
     % 'nominal' - to derive slice acquisition timing from sqpar directly
     % 'gradient' or 'gradient_log' - derive from logged gradient time courses
     %                                in SCANPHYSLOG-files (Philips only)
-    thresh.scan_timing.method = 'gradient_log'; 
+    thresh.scan_timing.method = 'gradient_log';
     thresh.scan_timing.grad_direction = ''; % 'x', 'y', or 'z';
     
     % if set, sequence timing is calculated
@@ -204,19 +218,19 @@ else
     
     % should be those which are unrelated to slice acquisition start
     
-     % minimum gradient amplitude to be exceeded when a slice scan starts
-    thresh.scan_timing.slice    = [];  
+    % minimum gradient amplitude to be exceeded when a slice scan starts
+    thresh.scan_timing.slice    = [];
     
     % minimum gradient amplitude to be exceeded when a new volume starts;
     % leave [], if volume events shall be determined as
     % every Nslices-th scan event or via vol_spacing
-    thresh.scan_timing.vol      = [];  
+    thresh.scan_timing.vol      = [];
     
     
     % duration (in seconds) from last slice acq to
     % first slice of next volume;
     % leave [], if .vol-threshold shall be used
-    thresh.scan_timing.vol_spacing          = [];   
+    thresh.scan_timing.vol_spacing          = [];
     
     thresh.cardiac = [];
     thresh.cardiac.modality = ''; % 'ECG','ECG_raw', or 'OXY'/'PPU' (for pulse oximetry), 'OXY_OLD', [deprecated]
@@ -225,10 +239,10 @@ else
     % majority of cardiac pulses is detected
     % 'auto'    - auto generation of representative QRS-wave; detection via
     %             maximising auto-correlation with it
-    % 'load_from_logfile' - from phys logfile, detected R-peaks of scanner 
+    % 'load_from_logfile' - from phys logfile, detected R-peaks of scanner
     % 'manual'  - via manually selected QRS-wave for autocoreelations
     % 'load'    - from previous manual/auto run
-    thresh.cardiac.initial_cpulse_select.method = 'load_from_logfile'; 
+    thresh.cardiac.initial_cpulse_select.method = 'load_from_logfile';
     thresh.cardiac.initial_cpulse_select.file = ''; % file containing reference ECG-peak (variable kRpeak)
     % used for method 'manual' or 'load' [default: not set] string of file containing a
     % if method == 'manual', this file is saved after picking the QRS-wave
@@ -244,9 +258,9 @@ else
     % 'off' - no manual selection of peaks
     % 'manual' - pick and save additional peaks manually
     % 'load' - load previously selected cardiac pulses
-  
+    
     % filename where cardiac pulses are saved after manual picking
-      thresh.cardiac.posthoc_cpulse_select.file = '';  
+    thresh.cardiac.posthoc_cpulse_select.file = '';
     % Suspicious positions of missing or too many cardiac pulses are
     % pre-selected by detecting outliers in histogram of
     % heart-beat-2-beat-intervals
@@ -362,3 +376,9 @@ physio.model   = model;
 physio.thresh  = thresh;
 physio.verbose = verbose;
 physio.ons_secs = ons_secs;
+
+%% call functions for specific initial value settings (e.g. 3T Philips system)
+switch default_scheme
+    case 'Philips'
+        physio = tapas_physio_init_philips(physio);
+end
