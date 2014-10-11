@@ -25,5 +25,11 @@ for c = 1:length(SPM.xCon)
     cnames{c} = SPM.xCon(c).name;
 end
 indC = find(cell2mat(cellfun(@(x) ~isempty(x), strfind(cnames, cname), 'UniformOutput', false)));
-if isempty(indC), indC = 0; end
+
+if isempty(indC)
+    indC = 0;
+else
+    % if multiple regressors of same name found, take first one
+    indC = indC(1);
+end
 end

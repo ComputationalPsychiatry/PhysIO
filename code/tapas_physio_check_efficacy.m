@@ -18,7 +18,8 @@
 % general paths study
 pathSPM         = '~/Documents/code/matlab/spm12b';
 pathPhysIO      = '~/Documents/code/matlab/spm12b/toolbox/PhysIO';
-fileReport      = '~/Dropbox/Andreiuta/physio_rest_ioio_pharm/physio_IOIO_pharm/results/PhysIOTest.ps'; % where contrast maps are saved
+fileReport      = ['~/Dropbox/Andreiuta/physio_rest_ioio_pharm/' ...
+    'physio_IOIO_pharm/results/PhysIOTest_cardiac_overview_inferior_sliceParallel.ps']; % where contrast maps are saved
 
 % logfile names sorted per session
 nSess = 1;
@@ -29,10 +30,10 @@ nSess = 1;
 pathDataRoot    = '/Users/kasperla/Dropbox/Andreiuta/physio_rest_ioio_pharm/physio_IOIO_pharm/glmAnalysis';
 
 % prefix of all subject directories
-maskSubjects    = 'DMPAD_*'; 
+maskSubjects    = 'DMPAD_*';
 
 % GLM analysis subdirectory of subject folder
-dirGLM          = ''; 
+dirGLM          = '';
 
 % includes subdirectory of subject folder and file name mask
 maskStructural  = '^meanfunct_rest.nii';
@@ -54,6 +55,20 @@ namesPhysContrasts = {
     'Movement'
     };
 
+% selection of physiological contrasts to be reported, corresponding to
+% namesPhysContrasts order
+indReportPhysContrasts = 2;
+
+
+reportContrastThreshold     = 0.001; % 0.05; 0.001;
+reportContrastCorrection    = 'none'; % 'FWE'; 'none';
+%reportContrastPosition      = [0 -15 -2*16]; 'max'; % 'max' to jump to max; or [x,y,z] in mm
+%fovMillimeter               = 50; %mm; choose 0 to plot whole FOV (bounding box)
+reportContrastPosition      = [0 0 -30]; 'max'; % 'max' to jump to max; or [x,y,z] in mm
+fovMillimeter               = 0; %mm; choose 0 to plot whole FOV (bounding box)
+
+% if true, voxel space (parallel to slices), not world space (with interpolation) is used
+doPlotSliceParallel = true; 
 
 physio          = tapas_physio_new('RETROICOR');
 model           = physio.model; % holding number of physiological regressors
@@ -78,26 +93,29 @@ for s = subjectIndices
         pathSubject = fullfile(pathDataRoot,dirSubject); %dirSubject = scan
         pathAnalysis = fullfile(pathDataRoot,dirSubject,dirGLM);
         fileSPM = fullfile(pathAnalysis, 'SPM.mat');
-        fileStruct = spm_select('FPList', fullfile(pathSubject, maskStructural));
+        fileStruct = spm_select('ExtFPList', pathSubject, maskStructural);
+        
+        
         
         %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         % Create and plot phys regressors F-contrasts
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         if exist(fileSPM, 'file')
             load(fileSPM);
-            nContrasts = numel(namesPhysContrasts);
+            nContrasts = numel(indReportPhysContrasts);
             
             
             % Check whether contrasts already exist in SPM.mat
             indContrasts = zeros(nContrasts,1);
-            for iContrast = 1:nContrasts
-                indContrasts(iContrast) = tapas_physio_check_get_xcon_index(SPM, ...
-                    namesPhysContrasts{iContrast});
+            for c = 1:nContrasts
+                iC = indReportPhysContrasts(c);
+                indContrasts(c) = tapas_physio_check_get_xcon_index(SPM, ...
+                    namesPhysContrasts{iC});
             end
             
-            % generate contrasts only if not already existing
+            % Generate contrasts only if not already existing
             matlabbatch = tapas_physio_check_prepare_job_contrasts(fileSPM, ...
-                model, SPM, pathPhysIO);
+                model, SPM, indReportPhysContrasts, pathPhysIO);
             matlabbatch{1}.spm.stats.con.consess(find(indContrasts)) = [];
             if ~isempty(matlabbatch{1}.spm.stats.con.consess)
                 spm_jobman('run', matlabbatch);
@@ -105,18 +123,47 @@ for s = subjectIndices
             end
             
             % report contrasts
-            for iContrast = 1:nContrasts
-                indContrasts(iContrast) = tapas_physio_check_get_xcon_index(SPM, ...
-                    namesPhysContrasts{iContrast});
+            for c = 1:nContrasts
+                iC = indReportPhysContrasts(c);
+                indContrasts(c) = tapas_physio_check_get_xcon_index(SPM, ...
+                    namesPhysContrasts{iC});
                 load(fullfile(pathPhysIO, 'tapas_physio_check_job_report'));
                 matlabbatch{1}.spm.stats.results.spmmat = cellstr(fileSPM);
-                matlabbatch{1}.spm.stats.results.conspec.titlestr = [dirSubject ' - ' namesPhysContrasts{iContrast}];
-                matlabbatch{1}.spm.stats.results.conspec.contrasts = indContrasts(iContrast);
+                matlabbatch{1}.spm.stats.results.conspec.titlestr = [dirSubject ' - ' namesPhysContrasts{iC}];
+                matlabbatch{1}.spm.stats.results.conspec.contrasts = indContrasts(c);
+                
+                % contrast report correction
+                matlabbatch{1}.spm.stats.results.conspec.thresh = reportContrastThreshold;
+                matlabbatch{1}.spm.stats.results.conspec.threshdesc = reportContrastCorrection;
+                
                 spm_jobman('run', matlabbatch);                     % report result
                 %                     spm_print(fileReport)
                 spm_sections(xSPM,hReg, fileStruct);                % overlay structural
-                spm_mip_ui('Jump',spm_mip_ui('FindMIPax'),'glmax'); % goto global max
-                spm_print(fileReport)
+                
+                % voxel, not world space
+                if doPlotSliceParallel
+                    spm_orthviews('Space',1)
+                end
+                
+                spm_orthviews('Zoom', fovMillimeter); % zoom to FOV*2 view
+                spm_orthviews('Interp', 0); % next neighbour interpolation plot
+               
+                
+                if isequal(reportContrastPosition, 'max');
+                    spm_mip_ui('Jump',spm_mip_ui('FindMIPax'),'glmax'); % goto global max
+                else
+                    spm_mip_ui('SetCoords', reportContrastPosition, ...
+                        spm_mip_ui('FindMIPax')); % goto global max
+                end
+                
+                
+                % spm_print always prepend current directory to print-file
+                % name :-(
+                [pathReport, filenameReport] = fileparts(fileReport);
+                pathTmp = pwd;
+                cd(pathReport);
+                spm_print(filenameReport);
+                cd(pathTmp);
             end
             
             titstr = [dirSubject, ' - SPM.xX.X'];

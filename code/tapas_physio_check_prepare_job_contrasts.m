@@ -1,4 +1,5 @@
-function matlabbatch = tapas_physio_check_prepare_job_contrasts(fileSPM, SPM, dirCheckPhys)
+function matlabbatch = tapas_physio_check_prepare_job_contrasts(fileSPM, ...
+    model, SPM, indReportPhysContrasts, dirCheckPhys)
 % adapts contrast generator for physiogical regressors to actual SPM-file
 % (directory & design matrix columns)
 %
@@ -15,8 +16,10 @@ function matlabbatch = tapas_physio_check_prepare_job_contrasts(fileSPM, SPM, di
 
 if ~exist('SPM', 'var'), load(fileSPM); end
 
+
+
 [colAll, colCard, colResp, colMult, colMove] = ...
-    tapas_physio_check_get_regressor_columns(SPM);
+    tapas_physio_check_get_regressor_columns(SPM, model);
 con{1} = colAll;
 con{2} = colCard;
 con{3} = colResp;
@@ -26,8 +29,13 @@ con{5} = colMove;
 load(fullfile(dirCheckPhys,'tapas_physio_check_job_contrasts.mat'));
 matlabbatch{1}.spm.stats.con.spmmat{1} = fileSPM;
 
-for c = 1:5
-    F{c} = zeros(max(con{c}));
-    F{c}(sub2ind(size(F{c}),con{c}, con{c})) = 1;
+nContrasts = numel(indReportPhysContrasts);
+for c = 1:nContrasts
+    iC = indReportPhysContrasts(c);
+    F{c} = zeros(max(con{iC}));
+    F{c}(sub2ind(size(F{c}),con{iC}, con{iC})) = 1;
     matlabbatch{1}.spm.stats.con.consess{c}.fcon.convec{1} = F{c};
 end
+
+% remove additional contrasts in matlabbatch
+matlabbatch{1}.spm.stats.con.consess(nContrasts+1:end) = [];

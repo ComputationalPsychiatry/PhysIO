@@ -1,13 +1,13 @@
 function [colAll, colCard, colResp, colMult, colMove] = ...
-    tapas_physio_check_get_regressor_columns(SPM, physio)
+    tapas_physio_check_get_regressor_columns(SPM, model)
 %
 % returns indices of physiological regressors in an SPM design-matrix,
 % pooled over all sessions for later creation of an F-contrast
 %
 % INPUT:
 %   SPM     SPM.mat
-%   physio  physIO-structure
-%    .model
+%   model  physIO.model-structure
+%    
 %
 % OUTPUT:
 %   colAll     - index vector of all physiological regressor columns in design matrix (from SPM.xX.names)
@@ -36,7 +36,6 @@ if nargin < 2
     nResp = 8;
     nMult = 4;
 else
-    model = physio.model;
     
     if ~isempty(model.input_other_multiple_regressors)
         nMove = 6;
@@ -44,9 +43,9 @@ else
         nMove = 0;
     end
     
-    nCard = model.c*2;
-    nResp = model.r*2;
-    nMult = model.cr*4;
+    nCard = model.order.c*2;
+    nResp = model.order.r*2;
+    nMult = model.order.cr*4;
 end
 
 cnames = SPM.xX.name';
