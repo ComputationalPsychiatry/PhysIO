@@ -16,12 +16,18 @@ function args = tapas_physio_report_contrasts(varargin)
 %                   )
 %
 % IN
-%                 pathPhysIO:  path of physIO Toolbox code
+%   
+%   Required parameters:
+%
 %                  fileReport: post-script file to print results to
 %              fileStructural: structural underlay for results,
 %                              e.g. 'mean.nii'
 %                     fileSpm: SPM.mat holding physiological regressors, 
 %                              e.g.'SPM.mat'
+%
+%   Optional Parameters:
+%
+%                  pathPhysIO:  path of physIO Toolbox code
 %          namesPhysContrasts: cell Array of contrast names in design matrix
 %                              e.g. {'All Phys', 'Cardiac', 'Respiratory',
 %                               'Card X Resp Interation', 'Movement'}
@@ -173,10 +179,12 @@ for c = 1:nContrasts
     % spm_print always prepend current directory to print-file
     % name :-(
     [pathReport, filenameReport] = fileparts(fileReport);
-    pathTmp = pwd;
-    cd(pathReport);
-    spm_print(filenameReport);
-    cd(pathTmp);
+    if ~isempty(pathReport)
+        pathTmp = pwd;
+        cd(pathReport);
+        spm_print(filenameReport);
+        cd(pathTmp);
+    end
 end
 
 titstr = [titleGraphicsWindow, ' - SPM.xX.X'];
