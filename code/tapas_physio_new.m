@@ -61,7 +61,8 @@ if ~nargin
     default_scheme = 'empty';
 end
 
-ons_secs = [];
+
+
 
 if nargin >= 2
     save_dir = physio_in.save_dir;
@@ -70,22 +71,33 @@ if nargin >= 2
     sqpar   = physio_in.sqpar;
     model   = physio_in.model;
     verbose = physio_in.verbose;
+    ons_secs = physio_in.ons_secs;
 else
+    
+    
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% save_dir
     % directory where output model and figure-files are saved to
     % leave empty to use current directory
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     save_dir = '';
     
-    %% log_files
-    % structure containing general physiological log-file information
     
-    % vendor name           ...depending on your MR Scanner system
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% log_files
+    % Structure containing general physiological log-file information
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    log_files              = [];
+    
+    % vendor                Name depending on your MR Scanner system
     %                       'Philips'
     %                       'GE',
     %                       'Siemens'
     %                       'Siemens_Tics' - new Siemens physiological
-    %                       logging with time stamps in tics (= steps of 2.
-    %                       5 ms since midnight) and
+    %                       logging with time stamps in tics
+    %                       (= steps of 2.5 ms since midnight) and
     %                       extra acquisition (scan_timing) logfile with
     %                       time stamps of all volumes and slices
     %
@@ -113,6 +125,9 @@ else
     
     log_files.cardiac      = ''; % 'SCANPHYSLOG.log'; logfile with cardiac data
     
+    % additional log-file type with tics to time conversion (for SIEMENS_tics-log files)
+    log_files.scan_timing  = ''; 
+    
     % Logfile with respiratory data, e.g. 'SCANPHYSLOG.log';
     % (same as .cardiac for Philips)
     log_files.respiration  = '';
@@ -138,7 +153,13 @@ else
     %       thresh.scan_timing is set
     log_files.relative_start_acquisition = 0;
     
-    %% sqpar
+    
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% sqpar - Parameters for sequence timing, i.e. slice and volume
+    %  acquisition starts, TR, number of scans etc.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    sqpar = [];
     
     sqpar.Nslices           = [];   % number of slices per volume in fMRI scan
     sqpar.NslicesPerBeat    = [];   % usually equals Nslices, unless you trigger with the heart beat
@@ -169,22 +190,39 @@ else
     sqpar.onset_slice       = [];
     
     
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% model
     % Determines the physiological noise model derived from preprocessed physiological data
-    % 'RETROICOR' - as in Glover el al, MRM 44, 2000
-    % 'HRV' - heart rate variability, as in Chang et al, 2009
-    % 'RVT' respiratory volume time, as in Birn et al., 2006
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    model = [];
+    
+    % 'RETROICOR'   as in Glover el al, MRM 44, 2000l
+    %               order of expansion:  See Harvey et al, JMRI 28, 2008
+    % 'HRV'         heart rate variability, as in Chang et al, 2009
+    % 'RVT'         respiratory volume time, as in Birn et al., 2006
+    %
     % The above can be combined e.g. 'RETROICOR_HRV', 'RETROICOR_RVT',
     % 'RETROICOR_HRV_RVT, 'HRV_RVT'
     model.type = '';
-    model.input_other_multiple_regressors = ''; % other nuisance regressors to be included in design matrix
+    
+    % other nuisance regressors to be included in design matrix
     % either txt-file or mat-file with variable R
-    model.output_multiple_regressors = '';      % output file for usage in SPM multiple_regressors GLM-specification
+    model.input_other_multiple_regressors = '';
+    
+    % output file for usage in SPM multiple_regressors GLM-specification
     % either txt-file or mat-file with variable R
-    model.order.c = [];                         % natural number, order of cardiac phase Fourier expansion
-    model.order.r = [];                         % natural number, order of respiratory phase Fourier expansion
-    model.order.cr = [];                        % natural number, order of cardiac-respiratory-phase-interaction Fourier expansion
-    % See Harvey et al, JMRI 28, 2008
+    model.output_multiple_regressors = '';
+    
+    % natural number, order of cardiac phase Fourier expansion
+    model.order.c = [];
+    
+    % natural number, order of respiratory phase Fourier expansion
+    model.order.r = [];
+    
+    % natural number, order of cardiac-respiratory-phase-interaction Fourier expansion
+    model.order.cr = [];
+    
     model.order.orthogonalise = 'none';         % string indicating which regressors shall be orthogonalised;
     % mainly needed, if acquisition was triggered to heartbeat (set to 'cardiac') OR
     % if session mean shall be evaluated (e.g. SFNR-studies, set to 'all')
@@ -197,16 +235,23 @@ else
     model.R = [];                               % output design matrix of confound regressors, saved in 'multiple_regressors.mat'
     
     
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% thresh
-    % determines thresholds used in preprocessing physiological logfiles,
+    % Determines thresholds used in preprocessing physiological logfiles,
     % either their timing (thresh.scan_timing) or the peripheral measures
     % itself (thresh.cardiac, thresh.respiration)
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    thresh = [];
     
     % Method to determine slice acquisition onset times
-    % 'scan_timing_log' - individual scan timing logfile with time stamps ("tics") for each slice and volume (e.g. Siemens_Cologne)
-    % 'nominal' - to derive slice acquisition timing from sqpar directly
-    % 'gradient' or 'gradient_log' - derive from logged gradient time courses
-    %                                in SCANPHYSLOG-files (Philips only)
+    % 'scan_timing_log'     individual scan timing logfile with time stamps
+    %                       ("tics") for each slice and volume
+    %                       (e.g. Siemens_Cologne)
+    % 'nominal'             derive slice acquisition timing from sqpar
+    %                       directly
+    % 'gradient'            derive from logged gradient time courses
+    %   or 'gradient_log'   in SCANPHYSLOG-files (Philips only)
     thresh.scan_timing.method = 'gradient_log';
     thresh.scan_timing.grad_direction = ''; % 'x', 'y', or 'z';
     
@@ -243,24 +288,33 @@ else
     % 'manual'  - via manually selected QRS-wave for autocoreelations
     % 'load'    - from previous manual/auto run
     thresh.cardiac.initial_cpulse_select.method = 'load_from_logfile';
-    thresh.cardiac.initial_cpulse_select.file = ''; % file containing reference ECG-peak (variable kRpeak)
-    % used for method 'manual' or 'load' [default: not set] string of file containing a
+    
+    % file containing reference ECG-peak (variable kRpeak)
+    % used for method 'manual' or 'load' [default: not set]
     % if method == 'manual', this file is saved after picking the QRS-wave
     % such that results are reproducible
-    thresh.cardiac.initial_cpulse_select.min = [];  % threshold for correlation with QRS-wave to find cardiac pulses
-    thresh.cardiac.initial_cpulse_select.kRpeak = []; % variable saving an example cardiac QRS-wave to correlate with ECG time series
+    thresh.cardiac.initial_cpulse_select.file = '';
+    
+    % threshold for correlation with QRS-wave to find cardiac pulses
+    thresh.cardiac.initial_cpulse_select.min = [];
+    
+    % variable saving an example cardiac QRS-wave to correlate with
+    % ECG time series
+    thresh.cardiac.initial_cpulse_select.kRpeak = [];
     
     % The posthoc cardiac pulse selection structure: If only few (<20)
     % cardiac pulses are missing in a session due to bad signal quality, a
     % manual selection after visual inspection is possible using the
     % following parameters. The results are saved for reproducibility
-    thresh.cardiac.posthoc_cpulse_select.method = 'off'; % 'off', 'manual', 'load'
-    % 'off' - no manual selection of peaks
-    % 'manual' - pick and save additional peaks manually
-    % 'load' - load previously selected cardiac pulses
+    %
+    % 'off'     - no manual selection of peaks
+    % 'manual'  - pick and save additional peaks manually
+    % 'load'    - load previously selected cardiac pulses
+    thresh.cardiac.posthoc_cpulse_select.method = 'off';
     
     % filename where cardiac pulses are saved after manual picking
     thresh.cardiac.posthoc_cpulse_select.file = '';
+    
     % Suspicious positions of missing or too many cardiac pulses are
     % pre-selected by detecting outliers in histogram of
     % heart-beat-2-beat-intervals
@@ -269,11 +323,14 @@ else
     thresh.cardiac.posthoc_cpulse_select.lower_thresh = 60; % minimum reduction (in %) from average heartbeat duration to be classified an abundant heartbeat
     
     
-    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% verbose
     % determines how many figures shall be generated to follow the workflow
     % of the toolbox and whether the graphical output shall be saved (to a
     % PostScript-file)
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    verbose = [];
+    
     % 0 = no graphical output;
     % 1 = (default) main plots : Fig 1: gradient scan timing (if selected) ;
     %                            Fig 2: heart beat/breathing statistics & outlier;
@@ -323,10 +380,13 @@ else
     %         index, e.g. 'PhysIO_output_fig01.jpg'
     
     
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% ons_secs
     % output structure holding all time-dependent variables, i.e. onsets, specified in seconds
     % all elements but .raw are cropped to the acquisition window of
     % interest
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     ons_secs                     = [];
     
     % read-in data
@@ -367,7 +427,11 @@ switch default_scheme
         thresh.cardiac.posthoc_cpulse_select.lowerThresh = 30;
 end
 
-%% assemble output
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Assemble output
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 physio.save_dir = save_dir;
 physio.log_files   = log_files;

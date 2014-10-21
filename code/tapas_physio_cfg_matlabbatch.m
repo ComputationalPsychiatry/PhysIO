@@ -38,23 +38,38 @@ save_dir.num     = [0 1];
 vendor        = cfg_menu;
 vendor.tag    = 'vendor';
 vendor.name   = 'vendor';
-vendor.help   = {'Choose Vendor of your scanner from list or Custom (e.g. for BrainVoyager)'
-    ''
-    '''Custom'' expects the logfiles (separate files for cardiac and respiratory)'
-    '  to be plain text, with one cardiac (or respiratory) sample per row.'
-    '  If heartbeat (R-wave peak) events are recorded as well, they have to be put'
-    '  as a 2nd column in the cardiac logfile by specifying a 1; 0 in all other rows'
+vendor.help   = {' vendor                Name depending on your MR Scanner system'
+    '                       ''Philips'''
+    '                       ''GE'''
+    '                       ''Siemens'''
+    '                       ''Siemens_Tics'' - new Siemens physiological'
+    '                       logging with time stamps in tics'
+    '                       (= steps of 2.5 ms since midnight) and'
+    '                       extra acquisition (scan_timing) logfile with'
+    '                       time stamps of all volumes and slices'
+    ' '
+    '                       or'
+    '                       ''Custom'''
+    ' '
+    '  ''Custom'' expects the logfiles (separate files for cardiac and respiratory)'
+    '  to be plain text, with one cardiac (or'
+    '  respiratory) sample per row;'
+    '  If heartbeat (R-wave peak) events are'
+    '  recorded as well, they have to be put'
+    '  as a 2nd column in the cardiac logfile'
+    '  by specifying a 1; 0 in all other rows'
     '  e.g.:'
     '      0.2  0'
     '      0.4  1 <- cardiac pulse event'
     '      0.2  0'
     '      -0.3 0'
-    ''
-    ' NOTE: the sampling interval has to be specified'
-    'for these files as well (s.b.)'
+    ' '
+    ' '
+    ' NOTE: the sampling interval has to be specified for these files as'
+    ' well (s.b.)'
     };
-vendor.labels = {'Philips', 'GE', 'Siemens', 'Custom'};
-vendor.values = {'Philips', 'GE', 'Siemens', 'Custom'};
+vendor.labels = {'Philips', 'GE', 'Siemens', 'Siemens_Tics', 'Custom'};
+vendor.values = {'Philips', 'GE', 'Siemens', 'Siemens_Tics', 'Custom'};
 vendor.val    = {'Philips'};
 
 %--------------------------------------------------------------------------
@@ -87,6 +102,20 @@ respiration.filter  = 'any';
 respiration.ufilter = '.*';
 respiration.num     = [0 1];
 
+%--------------------------------------------------------------------------
+% respiration (filename)
+%--------------------------------------------------------------------------
+log_scan_timing         = cfg_files;
+log_scan_timing.tag     = 'scan_timing';
+log_scan_timing.name    = 'log_scan_timing';
+log_scan_timing.help    = {
+    'Acquistion timing info file'
+    'Relates occurence of volume/slice start events to tics (counts since start of day)'
+    '(for SIEMENS_tics-logging type only)'
+    };
+log_scan_timing.filter  = 'any';
+log_scan_timing.ufilter = '.*';
+log_scan_timing.num     = [0 1];
 
 %--------------------------------------------------------------------------
 % sampling_interval
@@ -99,6 +128,10 @@ sampling_interval.help    = {
     ' If empty, default values are used: 2 ms for Philips, 25 ms for GE and others'
     ' If cardiac and respiratory sampling rate differ, enter them as vector'
     ' [sampling_interval_cardiac, sampling_interval_respiratory]'
+    ' '
+    ' If cardiac, respiratory and acquisition timing (tics) sampling rate differ,'
+    'enter them as a vector:'
+    ' [sampling_interval_cardiac, sampling_interval_respiratory sampling_interval_tics_acquisition_timing]'
     ''
     ' Note: If you use a WiFi-Philips device for peripheral monitoring'
     '       (Ingenia system), please change this value to 1/496, '
@@ -128,7 +161,8 @@ relative_start_acquisition.val     = {0};
 files      = cfg_branch;
 files.tag  = 'log_files';
 files.name = 'log_files';
-files.val  = {vendor cardiac respiration sampling_interval, relative_start_acquisition};
+files.val  = {vendor cardiac respiration log_scan_timing, ...
+    sampling_interval, relative_start_acquisition};
 files.help = {'Specify log files where peripheral data was stored, and their properties.'};
 
 
@@ -413,12 +447,14 @@ scan_timing_method        = cfg_menu;
 scan_timing_method.tag    = 'method';
 scan_timing_method.name   = 'method';
 scan_timing_method.help   = {
-    'method to determine slice onset times for regressors'
-    '''nominal'' - to derive slice acquisition timing from sqpar directly'
-    '''gradient'' or ''gradient_log'' - derive from logged gradient time courses'
+' method to determine slice onset times'
+' ''scan_timing_log'' - individual scan timing logfile with time stamps ("tics") for each slice and volume (e.g. Siemens_Cologne)'
+' ''nominal'' - to derive slice acquisition timing from sqpar directly'
+' ''gradient'' or ''gradient_log'' - derive from logged gradient time courses'
+'                                in SCANPHYSLOG-files (Philips only)'
     };
-scan_timing_method.labels = {'nominal' 'gradient_log'};
-scan_timing_method.values = {'nominal' 'gradient_log'};
+scan_timing_method.labels = {'nominal' 'gradient_log', 'scan_timing_log'};
+scan_timing_method.values = {'nominal' 'gradient_log', 'scan_timing_log'};
 scan_timing_method.val    = {'nominal'};
 
 
