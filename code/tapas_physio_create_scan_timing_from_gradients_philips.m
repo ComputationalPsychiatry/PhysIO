@@ -113,9 +113,12 @@ if do_count_from_start
 end
 
 
-[z{1:10}]=textread(logfile,'%d %d %d %d %d %d %d %d %d %d','commentstyle', 'shell');
+[z{1:10}]=textread(logfile,'%d %d %d %d %d %d %d %d %d %s','commentstyle', 'shell');
+z{10} = hex2dec(z{10}); % hexadecimal acquisition codes converted;
 y = cell2mat(z);
 
+
+acq_codes = y(:,10);
 Nsamples=size(y,1);
 
 dt = log_files.sampling_interval(1); 
@@ -179,6 +182,13 @@ t = -log_files.relative_start_acquisition + ((0:(Nsamples-1))*dt)';
         set(gcf,'Name', 'Thresholding Gradient for slice acq start detection');
         fs(1) = subplot(3,1,1);
         plot(t, y(:,7:9));
+        
+         if ismember(8,acq_codes)
+            hold all;
+            stem(t, acq_codes*max(max(abs(y(:,[7:9]))))/20);
+        end
+        
+        
         legend('gradient x', 'gradient y', 'gradient z');
         title('Raw Gradient Time-courses');
         fs(2) = subplot(3,1,2);

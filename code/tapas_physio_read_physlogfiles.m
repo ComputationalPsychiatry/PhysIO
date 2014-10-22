@@ -1,4 +1,4 @@
-function [c, r, t, cpulse, verbose] = tapas_physio_read_physlogfiles(log_files, cardiac_modality, ...
+function [c, r, t, cpulse, acq_codes, verbose] = tapas_physio_read_physlogfiles(log_files, cardiac_modality, ...
     verbose)
 % reads out physiological time series and timing vector depending on the
 % MR scanner vendor and the modality of peripheral cardiac monitoring (ECG
@@ -22,10 +22,12 @@ function [c, r, t, cpulse, verbose] = tapas_physio_read_physlogfiles(log_files, 
 %   cardiac_modality    'ECG' for ECG, 'OXY'/'PPU' for pulse oximetry, default: 'ECG'
 %
 % OUT
-%   cpulse              time events of R-wave peak in cardiac time series (seconds)
+%   c                   cardiac time series (ECG or pulse oximetry)
 %   r                   respiratory time series
 %   t                   vector of time points (in seconds)
-%   c                   cardiac time series (ECG or pulse oximetry)
+%   cpulse              time events of R-wave peak in cardiac time series (seconds)
+%   acq_codes           slice/volume start events marked by number <> 0
+%                       for time points in t
 %
 % EXAMPLE
 %   [ons_secs.cpulse, ons_secs.rpulse, ons_secs.t, ons_secs.c] =
@@ -54,7 +56,7 @@ end
 
 switch lower(log_files.vendor)
     case 'philips'
-        [c, r, t, cpulse] = ...
+        [c, r, t, cpulse, acq_codes] = ...
         tapas_physio_read_physlogfiles_philips(log_files, cardiac_modality);
     case 'ge'
         [c, r, t, cpulse] = ...

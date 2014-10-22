@@ -1,4 +1,4 @@
-function [c, r, t, cpulse] = tapas_physio_read_physlogfiles_philips(log_files, cardiac_modality)
+function [c, r, t, cpulse, acq_codes] = tapas_physio_read_physlogfiles_philips(log_files, cardiac_modality)
 % reads out physiological time series and timing vector depending on the
 % MR scanner vendor and the modality of peripheral cardiac monitoring (ECG
 % or pulse oximetry)
@@ -21,6 +21,8 @@ function [c, r, t, cpulse] = tapas_physio_read_physlogfiles_philips(log_files, c
 %   r                   respiratory time series
 %   t                   vector of time points (in seconds)
 %   cpulse              time events of R-wave peak in cardiac time series (seconds)
+%   acq_codes           slice/volume start events marked by number <> 0
+%                       for time points in t
 %
 % EXAMPLE
 %   [ons_secs.cpulse, ons_secs.rpulse, ons_secs.t, ons_secs.c] =
@@ -40,8 +42,8 @@ function [c, r, t, cpulse] = tapas_physio_read_physlogfiles_philips(log_files, c
 % $Id$
 
 %% read out values
-hasCardiac = ~isempty(log_files.cardiac);
-hasResp = ~isempty(log_files.respiration);
+hasCardiac  = ~isempty(log_files.cardiac);
+hasResp     = ~isempty(log_files.respiration);
 
 if hasCardiac
     logfile = log_files.cardiac;
@@ -49,15 +51,18 @@ else
     logfile = log_files.respiration;
 end
 
-[z{1:10}]=textread(logfile,'%d %d %d %d %d %d %d %d %d %d','commentstyle', 'shell');
-y = cell2mat(z);
+[z{1:10}]   = textread(logfile,'%d %d %d %d %d %d %d %d %d %s','commentstyle', 'shell');
+z{10}       = hex2dec(z{10});
 
-Nsamples=size(y,1);
+y           = cell2mat(z);
+acq_codes   = y(:,10);
 
-dt = log_files.sampling_interval;
+Nsamples    = size(y,1);
+
+dt          = log_files.sampling_interval;
 
 %default: 500 Hz sampling frequency
-isWifi = regexpi(cardiac_modality, '_wifi');
+isWifi      = regexpi(cardiac_modality, '_wifi');
 
 if isWifi
     cardiac_modality = regexprep(cardiac_modality, '_wifi', '', 'ignorecase');
