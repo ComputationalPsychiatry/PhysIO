@@ -61,14 +61,18 @@ switch lower(log_files.vendor)
     case 'ge'
         [c, r, t, cpulse] = ...
             tapas_physio_read_physlogfiles_GE(log_files, verbose);
+        acq_codes = [];
     case 'siemens'
         [c, r, t, cpulse, verbose] = ...
             tapas_physio_read_physlogfiles_siemens(log_files, verbose);
+        acq_codes = [];
     case 'siemens_tics'
         [c, r, t, cpulse, verbose] = ...
             tapas_physio_read_physlogfiles_siemens_tics(log_files, verbose);
+        acq_codes = [];
     case 'custom'
         [c, r, t, cpulse] = ...
             tapas_physio_read_physlogfiles_custom(log_files, verbose);
+        acq_codes = [];
 end
 end
