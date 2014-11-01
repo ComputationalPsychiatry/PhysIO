@@ -109,8 +109,11 @@ nVols = sqpar.Nscans;
 [h, cardiacPhaseArray] = hist(c_phase, nCardiacPhases);
 
 if verbose
+    stringTitle = 'Number of slice/volume occurences of each cardiac phase';
     fh(1) = tapas_physio_get_default_fig_params();
+    set(gcf, 'Name', stringTitle);
     bar(cardiacPhaseArray,h); xlabel('cardiac phase'); ylabel('counts');
+    title(stringTitle);
 end
 
 widthBin = mean(diff(cardiacPhaseArray));
@@ -145,16 +148,20 @@ end
 
 %% Plot cardiac phase per slice and volume
 if verbose
+    stringTitle = 'Cardiac phase per slice and volume';
     fh(2) = tapas_physio_get_default_fig_params();
+    set(gcf, 'Name', stringTitle);
     imagesc(iPhaseVolSliceArray);
     xlabel('Volumes'); ylabel('slice');
-    title('Cardiac phase per slice and volume');
+    title(stringTitle);
     colorbar;
 end
+
 
 %% load image file
 
 [~, img4D] = spm_img_load(fnTimeSeries);
+
 
 %% Find for all phases and slices corresponding volumes
 indVolPerPhaseSlice = cell(nCardiacPhases,nSlices);
@@ -180,7 +187,8 @@ if verbose
     
 end
 
-%% re-sort time series according to cardiac phase, take mean and first ..
+
+%% Re-sort time series according to cardiac phase, take mean and first ..
 % occurences of each phase to get movie
 nX = size(img4D,1);
 nY = size(img4D,2);
@@ -202,7 +210,8 @@ for iPhase = 1:nCardiacPhases
     end
 end
 
-%% save images
+
+%% Save images
 iVolArray = 1:nCardiacPhases;
 fnIn = fnTimeSeries;
 
