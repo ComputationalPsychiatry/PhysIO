@@ -105,6 +105,13 @@ end
 nSlices = sqpar.Nslices;
 nVols = sqpar.Nscans;
 
+% if too short c_phase, count volumes from back
+hascroppedCphase = numel(c_phase)/nSlices < nVols;
+if hascroppedCphase
+    nVols = numel(c_phase)/nSlices;
+    iOffset = sqpar.Nscans -nVols + 1;
+end
+
 % cardiacPhaseArray = linspace(0,2*pi,nCardiacPhases);
 [h, cardiacPhaseArray] = hist(c_phase, nCardiacPhases);
 
@@ -162,6 +169,9 @@ end
 
 [~, img4D] = spm_img_load(fnTimeSeries);
 
+if hascroppedCphase
+    img4D = img4D(:,:,:,iOffset:end);
+end
 
 %% Find for all phases and slices corresponding volumes
 indVolPerPhaseSlice = cell(nCardiacPhases,nSlices);
