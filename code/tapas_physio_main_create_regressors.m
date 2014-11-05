@@ -77,7 +77,7 @@ verbose = physio.verbose;
     log_files, thresh.cardiac.modality, verbose);
 
 % since resampling might have occured, dt is recalculated
-dt = ons_secs.t(2)-ons_secs.t(1); 
+dt = ons_secs.t(2)-ons_secs.t(1);
 
 hasCardiacData = ~isempty(ons_secs.c);
 hasRespData = ~isempty(ons_secs.r);
@@ -87,13 +87,13 @@ if verbose.level >= 2
 end
 
 
-%% 2. Create scan timing nominally or from logfile 
+%% 2. Create scan timing nominally or from logfile
 % (Philips: via gradient time-course; Siemens (NEW): from tics)
 useNominal = isempty(thresh.scan_timing) || ...
     strcmpi(thresh.scan_timing.method, 'nominal');
 if useNominal
     [VOLLOCS, LOCS] = ...
-    tapas_physio_create_nominal_scan_timing(ons_secs.t, sqpar);
+        tapas_physio_create_nominal_scan_timing(ons_secs.t, sqpar);
 else
     switch thresh.scan_timing.method
         case {'gradient', 'gradient_log'}
@@ -168,9 +168,9 @@ if verbose.level >= 1
     verbose.fig_handles(end+1) = ...
         tapas_physio_plot_raw_physdata_diagnostics(ons_secs.cpulse, ...
         ons_secs.r, thresh.cardiac.posthoc_cpulse_select, verbose.level, ...
-    ons_secs.t, ons_secs.c);
+        ons_secs.t, ons_secs.c);
 else % without figure creation
-     tapas_physio_plot_raw_physdata_diagnostics(ons_secs.cpulse, ...
+    tapas_physio_plot_raw_physdata_diagnostics(ons_secs.cpulse, ...
         ons_secs.r, thresh.cardiac.posthoc_cpulse_select, 0);
 end
 
@@ -209,7 +209,7 @@ else
     convRVT = [];
 end
 
-% 4.1.  Load other confound regressors, e.g. realigment parameters
+%% 4.1.  Load other confound regressors, e.g. realigment parameters
 if isfield(model, 'input_other_multiple_regressors') && ~isempty(model.input_other_multiple_regressors)
     input_R = tapas_physio_load_other_multiple_regressors(model.input_other_multiple_regressors);
 else
@@ -219,30 +219,12 @@ end
 input_R = [input_R, convHRV, convRVT];
 
 
-% 4.2   Orthogonalisation of regressors ensures numerical stability for
+%% 4.2   Orthogonalisation of regressors ensures numerical stability for
 %       otherwise correlated cardiac regressors
 [R, verbose] = tapas_physio_orthogonalise_physiological_regressors(cardiac_sess, respire_sess, ...
     mult_sess, input_R, model.order.orthogonalise, verbose);
 
-if isempty(R)
-    error('Please specify valid model.type');
-end
-
-
-% 4.3   Save Multiple Regressors file for SPM
-[fpfx, fn, fsfx] = fileparts(model.output_multiple_regressors);
-
-switch fsfx
-    case '.mat'
-        save(model.output_multiple_regressors, 'R');
-    otherwise
-        save(model.output_multiple_regressors, 'R', '-ascii', '-double', '-tabs');
-end
 model.R = R;
-
-if isfield(verbose, 'fig_output_file') && ~isempty(verbose.fig_output_file)
-    tapas_physio_print_figs_to_file(verbose);
-end
 
 physio_out.save_dir     = save_dir;
 physio_out.log_files    = log_files;
@@ -252,3 +234,32 @@ physio_out.model        = model;
 physio_out.verbose      = verbose;
 physio_out.ons_secs     = ons_secs;
 
+
+%% 4.3   Save Multiple Regressors file for SPM
+
+switch lower(model.type)
+    case 'none'
+        disp('No model estimated. Saving read log-files data into output-file instead: Check variablephysio.ons_secs');
+        if ~isempty(model.output_multiple_regressors)
+            [fpfx, fn, fsfx] = fileparts(model.output_multiple_regressors);
+            save(fullfile(fpfx, fn, '.mat'), 'physio_out');
+        end
+        
+    otherwise
+        [fpfx, fn, fsfx] = fileparts(model.output_multiple_regressors);
+        
+        switch fsfx
+            case '.mat'
+                save(model.output_multiple_regressors, 'R');
+            otherwise
+                save(model.output_multiple_regressors, 'R', '-ascii', '-double', '-tabs');
+        end
+end
+
+
+
+%% 5. Save output figures to files
+
+if isfield(verbose, 'fig_output_file') && ~isempty(verbose.fig_output_file)
+    tapas_physio_print_figs_to_file(verbose);
+end
