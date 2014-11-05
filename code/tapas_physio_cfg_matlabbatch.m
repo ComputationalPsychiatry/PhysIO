@@ -180,7 +180,11 @@ files.help = {'Specify log files where peripheral data was stored, and their pro
 Nscans         = cfg_entry;
 Nscans.tag     = 'Nscans';
 Nscans.name    = 'Nscans';
-Nscans.help    = {'Number of scans (volumes) in design matrix'};
+Nscans.help    = {
+    'Number of scans (volumes) in design matrix.'
+    'Put exactly the same number as you have image volumes in your SPM GLM'
+    'design specification.'
+    };
 Nscans.strtype = 'e';
 Nscans.num     = [Inf Inf];
 %Nscans.val     = {495};
@@ -369,8 +373,9 @@ order.help = {'...'};
 model_type        = cfg_menu;
 model_type.tag    = 'type';
 model_type.name   = 'type';
-model_type.help   = {'...'};
+model_type.help   = {'Physiological Model estimated'};
 model_type.labels = {
+    'none (only read-in of logfile data into physio.ons_secs)'
     'RETROICOR (RETRO)'
     'Heart Rate Variability (HRV)'
     'Respiratory Volume per Time (RVT)'
@@ -380,6 +385,7 @@ model_type.labels = {
     'RETRO+HRV+RVT'
     };
 model_type.values = {
+    'none'
     'RETROICOR'
     'HRV'
     'RVT'
@@ -426,7 +432,8 @@ model.tag  = 'model';
 model.name = 'model';
 model.val  = {model_type, order, input_other_multiple_regressors, ...
     output_multiple_regressors};
-model.help = {'...'};
+model.help = {['Physiological Model to be estimated and Included in GLM ' ... 
+    'multiple_regressors.txt']};
 
 
 
@@ -552,9 +559,9 @@ initial_cpulse_select_method.help   = {
     'The initial cardiac pulse selection structure: Determines how the'
     'majority of cardiac pulses is detected'
     ' ''auto_matched''     - auto generation of template QRS wave, '
-    '             matched-filter detection of heartbeats (experimental)'
+    '             matched-filter/autocorrelation detection of heartbeats (default)'
     ' ''auto_template''    - auto generation of representative QRS-wave; detection via'
-    '             maximising auto-correlation with it (default)'
+    '             maximising auto-correlation with it'
     ' ''load_from_logfile'' - from phys logfile, detected R-peaks of scanner'
     ' ''manual_template''  - via manually selected QRS-wave for autocorrelations'
     ' ''load_template''    - from previous manual/auto run'
@@ -563,7 +570,7 @@ initial_cpulse_select_method.labels = {
     'auto_matched', 'auto_template', 'load_from_logfile', 'manual_template', 'load_template'};
 initial_cpulse_select_method.values = { 
         'auto_matched', 'auto_template', 'load_from_logfile', 'manual_template', 'load_template'};
-initial_cpulse_select_method.val    = {'auto_template'};
+initial_cpulse_select_method.val    = {'auto_matched'};
 
 %--------------------------------------------------------------------------
 % initial_cpulse_select_file

@@ -197,6 +197,8 @@ else
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     model = [];
     
+    % 'none'        no physiological model is computed; only the read-out
+    %               logfile data is read out and saved in physio.ons_secs
     % 'RETROICOR'   as in Glover el al, MRM 44, 2000l
     %               order of expansion:  See Harvey et al, JMRI 28, 2008
     % 'HRV'         heart rate variability, as in Chang et al, 2009
