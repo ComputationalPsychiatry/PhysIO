@@ -241,8 +241,8 @@ switch lower(model.type)
     case 'none'
         disp('No model estimated. Saving read log-files data into output-file instead: Check variablephysio.ons_secs');
         if ~isempty(model.output_multiple_regressors)
-            [fpfx, fn, fsfx] = fileparts(model.output_multiple_regressors);
-            save(fullfile(fpfx, fn, '.mat'), 'physio_out');
+            [fpfx, fn] = fileparts(model.output_multiple_regressors);
+            save(fullfile(fpfx, [fn '.mat']), 'physio_out');
         end
         
     otherwise
