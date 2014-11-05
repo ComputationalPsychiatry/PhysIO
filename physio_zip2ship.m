@@ -1,15 +1,21 @@
-function physio_zip2ship(rev, zipAll)
+function physio_zip2ship(rev, zipWhat)
 % deletes all unnecessary output files and zips code and examples folder
 % separately
 %
 %   output = physio_zip2ship(rev)
 %
 % IN
-%   rev - revision number as a string or integer value
-%
+%   rev     revision number as a string or integer value
+%   zipWhat  determines which part of the code will be zipped
+%           'withSiemensTics'       copy proprietary specs of Siemens Tics
+%                                   logfiles as well
+%           'withoutSiemensTics'    do not copy Siemens tics code
+%           'all'                   one big file with code and examples
 % OUT
 %   PhysIOToolbox_r<rev>_code.zip
 %   PhysIOToolbox_r<rev>_examples.zip
+%   PhysIOToolbox_r<rev>_all.zip    for zipWhat 'all', code and
+%                                   examples are combined in this logfile
 %
 % EXAMPLE
 %   physio_zip2ship(193)
@@ -34,7 +40,7 @@ else
 end
 
 if nargin < 2
-    zipAll = false;
+    zipWhat = 'withoutSiemensTics';
 end
 
 physio_cleanup_example_output_files();
@@ -52,7 +58,7 @@ dirExamples = {
     'Philips/ECG7T'
     'Philips/PPU'
     'Siemens/ECG3T'
-};
+    };
 
 nExamples = numel(dirExamples);
 for iExample = 1:nExamples
@@ -69,9 +75,19 @@ zip(zipF, exportD);
 copyfile(fullfile(currD, 'code'), fullfile(exportD, 'code'));
 
 % copy and zip all
-if zipAll
-    zipF = fullfile(currD, sprintf('PhysIOToolbox_r%s_all.zip', srev));
-    zip(zipF, exportD);
+switch zipWhat
+    case 'all'
+        zipF = fullfile(currD, sprintf('PhysIOToolbox_r%s_all.zip', srev));
+        zip(zipF, exportD);
+    case 'withoutSiemensTics'
+        fileArraySiemensTics = {
+            'tapas_physio_create_scan_timing_from_tics_siemens.m'
+            'tapas_physio_read_physlogfiles_siemens_tics.m'
+            };
+        nFiles = numel(fileArraySiemensTics);
+        for iFile = 1:nFiles
+            delete(fullfile(exportD, 'code', fileArraySiemensTics{iFile}));
+        end
 end
 
 % copy and zip code and manual
