@@ -1,6 +1,11 @@
 function [cpulse, verbose] = tapas_physio_get_cardiac_pulses_auto(...
     c, t, thresh_min, dt120, verbose)
-%automated, iterative pulse detection from cardiac (ECG/OXY) data
+% DEPRECATED:
+%    This function is now integrated in
+%    tapas_physio_get_cardiac_pulses_auto_matched by setting
+%   methodPeakDetection = 'correlation';
+%
+% automated, iterative pulse detection from cardiac (ECG/OXY) data
 %
 %   [cpulse, verbose] = tapas_physio_get_cardiac_pulses_auto(...
 %    c, t, thresh_min, dt120, verbose)

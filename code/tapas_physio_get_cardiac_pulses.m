@@ -8,7 +8,7 @@ function [cpulse, verbose] = tapas_physio_get_cardiac_pulses(t, c, ...
 %   t                  vector of time series of log file (in seconds, corresponds to c)
 %   c                  raw time series of ECG or pulse oximeter
 %   thresh_cardiac      is a structure with the following elements
-%           .method - 'auto', 'manual_template', 'load_from_logfile',
+%           .method -  'auto_matched', 'manual_template', 'load_from_logfile',
 %                       'load_template'
 %                      Specifies how to determine QRS-wave from noisy input
 %                      data

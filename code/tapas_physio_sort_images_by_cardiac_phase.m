@@ -193,8 +193,7 @@ if verbose
     xlabel('cardiac phase');
     ylabel('slice number');
     title(stringTitle);
-    colorbar;
-    
+    colorbar; 
 end
 
 

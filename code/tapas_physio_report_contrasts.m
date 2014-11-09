@@ -30,14 +30,17 @@ function args = tapas_physio_report_contrasts(varargin)
 %                  pathPhysIO:  path of physIO Toolbox code
 %          namesPhysContrasts: cell Array of contrast names in design matrix
 %                              e.g. {'All Phys', 'Cardiac', 'Respiratory',
-%                               'Card X Resp Interation', 'Movement'}
+%                               'Card X Resp Interation', 
+%                               'HeartRateVariability', 
+%                               'RespiratoryVolumePerTime', 'Movement'}
 %
 %      indReportPhysContrasts: vector of contrast indices to be reported
-%                               e.g. [1:5] for all physiological contrasts
+%                               e.g. [1:7] for all physiological contrasts
 %     reportContrastThreshold: 0.001
 %    reportContrastCorrection: 'none' or 'FWE'
-%      reportContrastPosition: 'max'
-%               fovMillimeter: 0 is full field of view
+%      reportContrastPosition: 'max' or [1,3] vector of crosshair position
+%                               (in mm)
+%               fovMillimeter: field of view in mm; set to 0 for full FOV
 %         doPlotSliceParallel: if true, slices are plotted parallel to
 %                              their slice acquisition direction
 %                       model: physio.model-substructure holding 
@@ -91,6 +94,8 @@ defaults.namesPhysContrasts = {
     'Cardiac'
     'Respiratory'
     'Card X Resp Interation'
+    'HeartRateVariability'
+    'RespiratoryVolumePerTime'
     'Movement'
     };
 
@@ -120,6 +125,9 @@ tapas_physio_strip_fields(args);
 load(fileSpm);
 nContrasts = numel(indReportPhysContrasts);
 
+% Temporarily set window style to undocked, so that SPM opens as usual
+tmpWindowStyle = get(0, 'DefaultFigureWindowStyle');
+set(0, 'DefaultFigureWindowStyle', 'normal');
 
 % Check whether contrasts already exist in SPM.mat
 indContrasts = zeros(nContrasts,1);
@@ -131,7 +139,7 @@ end
 
 % Generate contrasts only if not already existing
 matlabbatch = tapas_physio_check_prepare_job_contrasts(fileSpm, ...
-    model, SPM, indReportPhysContrasts, pathPhysIO);
+    model, SPM, indReportPhysContrasts, pathPhysIO, namesPhysContrasts);
 matlabbatch{1}.spm.stats.con.consess(find(indContrasts)) = [];
 if ~isempty(matlabbatch{1}.spm.stats.con.consess)
     spm_jobman('run', matlabbatch);
@@ -190,3 +198,6 @@ end
 titstr = [titleGraphicsWindow, ' - SPM.xX.X'];
 title(regexprep(titstr,'_','\\_'));
 set(gcf,'Name', titstr);
+
+set(0, 'DefaultFigureWindowStyle', tmpWindowStyle);
+
