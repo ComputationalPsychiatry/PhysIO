@@ -129,7 +129,7 @@ nContrasts = numel(indReportPhysContrasts);
 tmpWindowStyle = get(0, 'DefaultFigureWindowStyle');
 set(0, 'DefaultFigureWindowStyle', 'normal');
 
-% Check whether contrasts already exist in SPM.mat
+%% Check whether contrasts already exist in SPM.mat
 indContrasts = zeros(nContrasts,1);
 for c = 1:nContrasts
     iC = indReportPhysContrasts(c);
@@ -137,16 +137,22 @@ for c = 1:nContrasts
         namesPhysContrasts{iC});
 end
 
-% Generate contrasts only if not already existing
-matlabbatch = tapas_physio_check_prepare_job_contrasts(fileSpm, ...
-    model, SPM, indReportPhysContrasts, pathPhysIO, namesPhysContrasts);
-matlabbatch{1}.spm.stats.con.consess(find(indContrasts)) = [];
-if ~isempty(matlabbatch{1}.spm.stats.con.consess)
-    spm_jobman('run', matlabbatch);
-    load(fileSpm);
+
+%% Generate contrasts only if not already existing
+
+if ~isempty(model)
+    
+    matlabbatch = tapas_physio_check_prepare_job_contrasts(fileSpm, ...
+        model, SPM, indReportPhysContrasts, pathPhysIO, namesPhysContrasts);
+    matlabbatch{1}.spm.stats.con.consess(find(indContrasts)) = [];
+    if ~isempty(matlabbatch{1}.spm.stats.con.consess)
+        spm_jobman('run', matlabbatch);
+        load(fileSpm);
+    end
+    
 end
 
-% report contrasts
+%% report contrasts
 for c = 1:nContrasts
     iC = indReportPhysContrasts(c);
     indContrasts(c) = tapas_physio_check_get_xcon_index(SPM, ...
