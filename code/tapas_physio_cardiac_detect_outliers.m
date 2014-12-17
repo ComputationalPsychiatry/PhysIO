@@ -36,9 +36,12 @@ function [outliersHigh,outliersLow,fh] = ...
 
 dt = diff(tCardiac);
 
+if nargin < 5
+    isVerbose = 1;
+end
 
 if isVerbose
-    if nargin < 5
+    if nargin < 6
         fh = tapas_physio_get_default_fig_params();
         set(fh, 'Name','Diagnostics raw phys time series');
     else

@@ -681,21 +681,66 @@ posthoc_cpulse_select_lower_thresh.val     = {60};
 
 
 %--------------------------------------------------------------------------
-% posthoc_cpulse_select
+% posthoc_cpulse_select_method_off
 %--------------------------------------------------------------------------
-posthoc_cpulse_select      = cfg_branch;
-posthoc_cpulse_select.tag  = 'posthoc_cpulse_select';
-posthoc_cpulse_select.name = 'posthoc_cpulse_select';
-posthoc_cpulse_select.val  = {posthoc_cpulse_select_method ...
+
+posthoc_cpulse_select_method_off         = cfg_branch;
+posthoc_cpulse_select_method_off.tag  = 'off';
+posthoc_cpulse_select_method_off.name = 'Off';
+posthoc_cpulse_select_method_off.val  = {};
+posthoc_cpulse_select_method_off.help = {'No manual post-hoc pulse selection'};
+
+
+
+%--------------------------------------------------------------------------
+% posthoc_cpulse_select_method_manual
+%--------------------------------------------------------------------------
+
+posthoc_cpulse_select_method_manual      = cfg_branch;
+posthoc_cpulse_select_method_manual.tag  = 'manual';
+posthoc_cpulse_select_method_manual.name = 'Manual';
+posthoc_cpulse_select_method_manual.help = {'Manual post-hoc cardiac pulse selection by clicking'};
+
+posthoc_cpulse_select_method_manual.val = {...
     posthoc_cpulse_select_file ...
     posthoc_cpulse_select_percentile ...
     posthoc_cpulse_select_upper_thresh ...
     posthoc_cpulse_select_lower_thresh};
+
+
+
+%--------------------------------------------------------------------------
+% posthoc_cpulse_select_method_load
+%--------------------------------------------------------------------------
+
+posthoc_cpulse_select_method_load      = cfg_branch;
+posthoc_cpulse_select_method_load.tag  = 'load';
+posthoc_cpulse_select_method_load.name = 'Load';
+posthoc_cpulse_select_method_load.help = {'Loads manually selected cardiac pulses from file'};
+posthoc_cpulse_select_method_load.val = {
+    posthoc_cpulse_select_file};
+
+
+%--------------------------------------------------------------------------
+% posthoc_cpulse_select
+%--------------------------------------------------------------------------
+
+posthoc_cpulse_select      = cfg_choice;
+posthoc_cpulse_select.tag  = 'posthoc_cpulse_select';
+posthoc_cpulse_select.name = 'Post-hoc Selection of Cardiac Pulses';
+posthoc_cpulse_select.val  = {posthoc_cpulse_select_method_off};
+posthoc_cpulse_select.values = {posthoc_cpulse_select_method_off, ...
+    posthoc_cpulse_select_method_manual, ...
+    posthoc_cpulse_select_method_load};
+    
+
 posthoc_cpulse_select.help = {
     'The posthoc cardiac pulse selection structure: If only few (<20)'
     'cardiac pulses are missing in a session due to bad signal quality, a'
     'manual selection after visual inspection is possible using the'
     'following parameters. The results are saved for reproducibility.'
+    ''
+    'Refers to physio.thresh.cardiac.posthoc_cpulse_select.method in physio-structure'
     };
 
 
@@ -833,6 +878,23 @@ physio.vout = @vout_physio;
 % function out = run_physio(job)
 %==========================================================================
 function out = run_physio(job)
+
+%% Rename job fields to the ones actually used in physio-structure
+
+% job.thresh.cardiac.posthoc_cpulse_select
+if isfield(job.thresh.cardiac.posthoc_cpulse_select, 'off')
+    job.thresh.cardiac.posthoc_cpulse_select.method = 'off';
+    job.thresh.cardiac.posthoc_cpulse_select = rmfield(...
+        job.thresh.cardiac.posthoc_cpulse_select, 'off');
+elseif isfield(job.thresh.cardiac.posthoc_cpulse_select, 'manual')
+    job.thresh.cardiac.posthoc_cpulse_select = ...
+        job.thresh.cardiac.posthoc_cpulse_select.manual;
+     job.thresh.cardiac.posthoc_cpulse_select.method = 'manual';
+elseif isfield(job.thresh.cardiac.posthoc_cpulse_select, 'load')
+    job.thresh.cardiac.posthoc_cpulse_select = ...
+        job.thresh.cardiac.posthoc_cpulse_select.load;
+     job.thresh.cardiac.posthoc_cpulse_select.method = 'load';
+end
 
 job.verbose.fig_handles = [];
 [~, R] = tapas_physio_main_create_regressors(job.log_files,  ...
