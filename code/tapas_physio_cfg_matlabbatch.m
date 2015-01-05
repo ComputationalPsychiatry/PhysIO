@@ -447,23 +447,6 @@ model.help = {['Physiological Model to be estimated and Included in GLM ' ...
 %% Subsub-structure scan_timing
 %==========================================================================
 
-%--------------------------------------------------------------------------
-% scan_timing_method
-%--------------------------------------------------------------------------
-scan_timing_method        = cfg_menu;
-scan_timing_method.tag    = 'method';
-scan_timing_method.name   = 'method';
-scan_timing_method.help   = {
-' method to determine slice onset times'
-' ''scan_timing_log'' - individual scan timing logfile with time stamps ("tics") for each slice and volume (e.g. Siemens_Cologne)'
-' ''nominal'' - to derive slice acquisition timing from sqpar directly'
-' ''gradient'' or ''gradient_log'' - derive from logged gradient time courses'
-'                                in SCANPHYSLOG-files (Philips only)'
-    };
-scan_timing_method.labels = {'nominal' 'gradient_log', 'scan_timing_log'};
-scan_timing_method.values = {'nominal' 'gradient_log', 'scan_timing_log'};
-scan_timing_method.val    = {'nominal'};
-
 
 %--------------------------------------------------------------------------
 % grad_direction
@@ -522,14 +505,77 @@ zero.strtype = 'e';
 zero.num     = [Inf Inf];
 zero.val     = {1700};
 
+
+
+
+%--------------------------------------------------------------------------
+% scan_timing_method_gradient_log
+%--------------------------------------------------------------------------
+
+
+scan_timing_method_gradient_log = cfg_branch;
+scan_timing_method_gradient_log.tag = 'gradient_log';
+scan_timing_method_gradient_log.name = 'gradient_log';
+scan_timing_method_gradient_log.val  = {
+   grad_direction 
+   zero 
+   slice 
+   vol 
+   vol_spacing
+};
+scan_timing_method_gradient_log.help = { ...
+    ' Derive scan-timing from logged gradient time courses'
+    ' in SCANPHYSLOG-files (Philips only)'};
+
+
+
+%--------------------------------------------------------------------------
+% scan_timing_method_nominal
+%--------------------------------------------------------------------------
+
+scan_timing_method_nominal = cfg_branch;
+scan_timing_method_nominal.tag = 'nominal';
+scan_timing_method_nominal.name = 'nominal';
+scan_timing_method_nominal.val  = {};
+scan_timing_method_nominal.help = { ...
+    ' Derive scan-timing for sqpar (nominal scan timing parameters)'};
+
+
+%--------------------------------------------------------------------------
+% scan_timing_method_scan_timing_log
+%--------------------------------------------------------------------------
+
+scan_timing_method_scan_timing_log = cfg_branch;
+scan_timing_method_scan_timing_log.tag = 'scan_timing_log';
+scan_timing_method_scan_timing_log.name = 'scan_timing_log';
+scan_timing_method_scan_timing_log.val  = {};
+scan_timing_method_scan_timing_log.help = { ...
+    ' Derive scan-timing from individual scan timing logfile with time '
+    ' stamps ("tics") for each slice and volume (e.g. Siemens_Cologne)'};
+
+ 
+ 
+
 %--------------------------------------------------------------------------
 % scan_timing
 %--------------------------------------------------------------------------
-scan_timing      = cfg_branch;
+scan_timing      = cfg_choice;
 scan_timing.tag  = 'scan_timing';
-scan_timing.name = 'scan_timing';
-scan_timing.val  = {scan_timing_method grad_direction zero slice vol vol_spacing};
-scan_timing.help = {'Determines scan timing from nominal scan parameters or logged gradient time courses'};
+scan_timing.name = 'Scan/Physlog Time Synchronization';
+scan_timing.values  = {scan_timing_method_nominal, ...
+    scan_timing_method_gradient_log, ...
+    scan_timing_method_scan_timing_log};
+scan_timing.val = {scan_timing_method_nominal};
+scan_timing.help = {'Determines scan timing from nominal scan parameters or logged gradient time courses'
+    ''
+' Available methods to determine slice onset times'
+' ''scan_timing_log'' - individual scan timing logfile with time stamps ("tics") for each slice and volume (e.g. Siemens_Cologne)'
+' ''nominal'' - to derive slice acquisition timing from sqpar directly'
+' ''gradient'' or ''gradient_log'' - derive from logged gradient time courses'
+'                                in SCANPHYSLOG-files (Philips only)'
+    };
+
+
 
 
 % ==========================================================================
@@ -549,28 +595,6 @@ modality.values = {'ECG', 'PPU', 'ECG_WiFi', 'PPU_Wifi'};
 modality.val    = {'ECG'};
 
 
-%--------------------------------------------------------------------------
-% initial_cpulse_select_method
-%--------------------------------------------------------------------------
-initial_cpulse_select_method        = cfg_menu;
-initial_cpulse_select_method.tag    = 'method';
-initial_cpulse_select_method.name   = 'method';
-initial_cpulse_select_method.help   = {
-    'The initial cardiac pulse selection structure: Determines how the'
-    'majority of cardiac pulses is detected'
-    ' ''auto_matched''     - auto generation of template QRS wave, '
-    '             matched-filter/autocorrelation detection of heartbeats (default)'
-    ' ''auto_template''    - auto generation of representative QRS-wave; detection via'
-    '             maximising auto-correlation with it'
-    ' ''load_from_logfile'' - from phys logfile, detected R-peaks of scanner'
-    ' ''manual_template''  - via manually selected QRS-wave for autocorrelations'
-    ' ''load_template''    - from previous manual/auto run'
-    };
-initial_cpulse_select_method.labels = {
-    'auto_matched', 'auto_template', 'load_from_logfile', 'manual_template', 'load_template'};
-initial_cpulse_select_method.values = { 
-        'auto_matched', 'auto_template', 'load_from_logfile', 'manual_template', 'load_template'};
-initial_cpulse_select_method.val    = {'auto_matched'};
 
 %--------------------------------------------------------------------------
 % initial_cpulse_select_file
@@ -591,41 +615,123 @@ initial_cpulse_select_file.val     = {'initial_cpulse_kRpeakfile.mat'};
 min       = cfg_entry;
 min.tag     = 'min';
 min.name    = 'min';
-min.help    = {'minimum correlation value considered a peak (for auto, manual, load-methods).'};
+min.help    = {'Minimum correlation value considered a peak (for auto, manual, load-methods).'};
 min.strtype = 'e';
 min.num     = [Inf Inf];
 min.val     = {0.4};
 
 
 %--------------------------------------------------------------------------
+% initial_cpulse_select_method_auto_template
+%--------------------------------------------------------------------------
+
+initial_cpulse_select_method_auto_template = cfg_branch;
+initial_cpulse_select_method_auto_template.tag = 'auto_template';
+initial_cpulse_select_method_auto_template.name = 'auto_template';
+initial_cpulse_select_method_auto_template.val  = {
+    min 
+    initial_cpulse_select_file    
+};
+initial_cpulse_select_method_auto_template.help = { ...
+    ' Auto generation of representative QRS-wave; detection via'
+    '             maximising auto-correlation with it (default)'};
+
+
+
+
+%--------------------------------------------------------------------------
+% initial_cpulse_select_method_auto_matched
+%--------------------------------------------------------------------------
+
+initial_cpulse_select_method_auto_matched = cfg_branch;
+initial_cpulse_select_method_auto_matched.tag = 'auto_matched';
+initial_cpulse_select_method_auto_matched.name = 'auto_matched';
+initial_cpulse_select_method_auto_matched.val  = {
+    min 
+    initial_cpulse_select_file    
+};
+initial_cpulse_select_method_auto_matched.help = { ...
+    'Auto generation of template QRS wave, '
+    '             matched-filter/autocorrelation detection of heartbeats'
+    };
+
+
+
+
+%--------------------------------------------------------------------------
+% initial_cpulse_select_method_manual_template
+%--------------------------------------------------------------------------
+
+initial_cpulse_select_method_manual_template = cfg_branch;
+initial_cpulse_select_method_manual_template.tag = 'manual_template';
+initial_cpulse_select_method_manual_template.name = 'manual_template';
+initial_cpulse_select_method_manual_template.val  = {
+    min 
+    initial_cpulse_select_file    
+};
+initial_cpulse_select_method_manual_template.help = { ...
+    'Manually select QRS-wave for autocorrelation detection'
+    };
+
+
+%--------------------------------------------------------------------------
+% initial_cpulse_select_method_load_template
+%--------------------------------------------------------------------------
+
+initial_cpulse_select_method_load_template = cfg_branch;
+initial_cpulse_select_method_load_template.tag = 'load_template';
+initial_cpulse_select_method_load_template.name = 'load_template';
+initial_cpulse_select_method_load_template.val  = {
+    min 
+    initial_cpulse_select_file    
+};
+initial_cpulse_select_method_load_template.help = { ...
+    'Load template from previous manual/auto run to perform autocorrelation detection of hearbeats'
+    };
+
+
+
+%--------------------------------------------------------------------------
+% initial_cpulse_select_method_load_from_logfile
+%--------------------------------------------------------------------------
+
+initial_cpulse_select_method_load_from_logfile = cfg_branch;
+initial_cpulse_select_method_load_from_logfile.tag = 'load_from_logfile';
+initial_cpulse_select_method_load_from_logfile.name = 'load_from_logfile';
+initial_cpulse_select_method_load_from_logfile.val  = {};
+initial_cpulse_select_method_load_from_logfile.help = { ...
+    'Load heartbeat data from Phys-logfile, detected R-peaks of scanner'};
+
+
+%--------------------------------------------------------------------------
 % initial_cpulse_select
 %--------------------------------------------------------------------------
-initial_cpulse_select      = cfg_branch;
+initial_cpulse_select      = cfg_choice;
 initial_cpulse_select.tag  = 'initial_cpulse_select';
-initial_cpulse_select.name = 'initial_cpulse_select';
-initial_cpulse_select.val  = {initial_cpulse_select_method min initial_cpulse_select_file};
+initial_cpulse_select.name = 'Initial Detection of Heartbeats';
+initial_cpulse_select.val  = {initial_cpulse_select_method_load_from_logfile};
+initial_cpulse_select.values  = {
+    initial_cpulse_select_method_auto_matched, ...
+    initial_cpulse_select_method_auto_template, ...
+    initial_cpulse_select_method_load_from_logfile, ...
+    initial_cpulse_select_method_manual_template, ...
+    initial_cpulse_select_method_load_template, ...
+    };
+
+
+
 initial_cpulse_select.help = {
     'The initial cardiac pulse selection structure: Determines how the'
-    'majority of cardiac pulses is detected.'
+    'majority of cardiac pulses is detected in a first pass.'
+    ' ''auto_matched''     - auto generation of template QRS wave, '
+    '             matched-filter/autocorrelation detection of heartbeats'
+    ' ''auto_template''    - auto generation of representative QRS-wave; detection via'
+    '             maximising auto-correlation with it (default)'
+    ' ''load_from_logfile'' - from phys logfile, detected R-peaks of scanner'
+    ' ''manual_template''  - via manually selected QRS-wave for autocorrelations'
+    ' ''load_template''    - from previous manual/auto run'
     };
 
-
-
-%--------------------------------------------------------------------------
-% posthoc_cpulse_select_method
-%--------------------------------------------------------------------------
-posthoc_cpulse_select_method        = cfg_menu;
-posthoc_cpulse_select_method.tag    = 'method';
-posthoc_cpulse_select_method.name   = 'method';
-posthoc_cpulse_select_method.help   = {
-    '''off'' - no manual selection of peaks'
-    '''manual'' - pick and save additional peaks manually'
-    '''load'' - load previously selected cardiac pulses'
-    };
-posthoc_cpulse_select_method.labels = {
-    'off', 'manual', 'load'};
-posthoc_cpulse_select_method.values = {'off', 'manual', 'load'};
-posthoc_cpulse_select_method.val    = {'off'};
 
 %--------------------------------------------------------------------------
 % posthoc_cpulse_select_file
@@ -881,24 +987,9 @@ function out = run_physio(job)
 
 %% Rename job fields to the ones actually used in physio-structure
 
-% job.thresh.cardiac.posthoc_cpulse_select
-if isfield(job.thresh.cardiac.posthoc_cpulse_select, 'off')
-    job.thresh.cardiac.posthoc_cpulse_select.method = 'off';
-    job.thresh.cardiac.posthoc_cpulse_select = rmfield(...
-        job.thresh.cardiac.posthoc_cpulse_select, 'off');
-elseif isfield(job.thresh.cardiac.posthoc_cpulse_select, 'manual')
-    job.thresh.cardiac.posthoc_cpulse_select = ...
-        job.thresh.cardiac.posthoc_cpulse_select.manual;
-     job.thresh.cardiac.posthoc_cpulse_select.method = 'manual';
-elseif isfield(job.thresh.cardiac.posthoc_cpulse_select, 'load')
-    job.thresh.cardiac.posthoc_cpulse_select = ...
-        job.thresh.cardiac.posthoc_cpulse_select.load;
-     job.thresh.cardiac.posthoc_cpulse_select.method = 'load';
-end
+physio = tapas_physio_job2physio(job);
 
-job.verbose.fig_handles = [];
-[~, R] = tapas_physio_main_create_regressors(job.log_files,  ...
-    job.sqpar, job.model, job.thresh, job.verbose, job.save_dir);
+[~, R] = tapas_physio_main_create_regressors(physio);
 
 out.physnoisereg = job.model.output_multiple_regressors;
 out.R = R;
