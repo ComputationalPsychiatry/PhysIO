@@ -1,12 +1,12 @@
 function [pulseCleanedTemplate, cpulseSecondGuess, averageHeartRateInSamples] = ...
     tapas_physio_get_cardiac_pulse_template(t, c, thresh_min, ...
-    dt120, verbose)
+    minPulseDistanceSamples, verbose)
 % determines cardiac template by a 2-pass peak detection and averaging of
 % closest matches to mean and refinements
 %
 % [pulseCleanedTemplate, cpulseSecondGuess, averageHeartRateInSamples] = ...
 %     tapas_physio_get_cardiac_pulse_template(t, c, thresh_min, ...
-%    dt120)
+%    minPulseDistanceSamples)
 %
 % IN
 %
@@ -34,7 +34,7 @@ debug = verbose.level >= 3;
 dt = t(2) - t(1);
 
 [tmp, cpulseFirstGuess] = tapas_physio_findpeaks( ...
-    c,'minpeakheight',thresh_min,'minpeakdistance', dt120);
+    c,'minpeakheight',thresh_min,'minpeakdistance', minPulseDistanceSamples);
 
 hasFirstGuessPeaks = ~isempty(cpulseFirstGuess);
 
