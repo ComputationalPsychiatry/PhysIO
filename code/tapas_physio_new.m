@@ -254,6 +254,9 @@ else
     %                       directly
     % 'gradient'            derive from logged gradient time courses
     %   or 'gradient_log'   in SCANPHYSLOG-files (Philips only)
+    % 'gradient_auto'       derive from logged gradient time courses
+    %   or 'gradient_log_auto'   in SCANPHYSLOG-files automatically, i.e.
+    %                       without defining thresholds (Philips only)
     thresh.scan_timing.method = 'gradient_log';
     thresh.scan_timing.grad_direction = ''; % 'x', 'y', or 'z';
     
