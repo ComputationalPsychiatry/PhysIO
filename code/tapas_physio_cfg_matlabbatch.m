@@ -533,11 +533,11 @@ scan_timing_method_gradient_log.help = { ...
 %--------------------------------------------------------------------------
 
 
-scan_timing_method_gradient_log = cfg_branch;
-scan_timing_method_gradient_log.tag = 'gradient_log_auto';
-scan_timing_method_gradient_log.name = 'gradient_log_auto';
-scan_timing_method_gradient_log.val  = {};
-scan_timing_method_gradient_log.help = { ...
+scan_timing_method_gradient_log_auto = cfg_branch;
+scan_timing_method_gradient_log_auto.tag = 'gradient_log_auto';
+scan_timing_method_gradient_log_auto.name = 'gradient_log_auto';
+scan_timing_method_gradient_log_auto.val  = {};
+scan_timing_method_gradient_log_auto.help = { ...
     ' Derive scan-timing from logged gradient time courses'
     ' in SCANPHYSLOG-files automatically (Philips only), '
     ' using prior information on TR and number of slices, '
@@ -580,18 +580,18 @@ scan_timing.tag  = 'scan_timing';
 scan_timing.name = 'Scan/Physlog Time Synchronization';
 scan_timing.values  = {scan_timing_method_nominal, ...
     scan_timing_method_gradient_log, ...
-      scan_timing_method_gradient_log_auto, ...
+    scan_timing_method_gradient_log_auto, ...
     scan_timing_method_scan_timing_log};
 scan_timing.val = {scan_timing_method_nominal};
 scan_timing.help = {'Determines scan timing from nominal scan parameters or logged gradient time courses'
     ''
 ' Available methods to determine slice onset times'
-' ''scan_timing_log'' - individual scan timing logfile with time stamps ("tics") for each slice and volume (e.g. Siemens_Cologne)'
 ' ''nominal''         - to derive slice acquisition timing from sqpar directly'
 ' ''gradient_log''    - derive from logged gradient time courses'
 '                                in SCANPHYSLOG-files (Philips only)'
 ' ''gradient_log_auto'' - as gradient_log, but thresholds are determined'
 '                         automatically from TR and number of slices expected' 
+' ''scan_timing_log'' - individual scan timing logfile with time stamps ("tics") for each slice and volume (e.g. Siemens_Cologne)'
 };
 
 
