@@ -51,10 +51,21 @@ else
     logfile = log_files.respiration;
 end
 
-[z{1:10}]   = textread(logfile,'%d %d %d %d %d %d %d %d %d %s','commentstyle', 'shell');
-z{10}       = hex2dec(z{10});
+% use textread as long as it exists, for it is much faster (factor 4) than
+% textscan; TODO: use fread ans sscanf to make it even faster...
+if exist('textread')
+    [z{1:10}]   = textread(logfile,'%d %d %d %d %d %d %d %d %d %s','commentstyle', 'shell');
+else
+    fid     = fopen(logfile, 'r');
+    z       = textscan(fid, '%d %d %d %d %d %d %d %d %d %s', 'commentstyle', '#');
+    z(1:9)  = cellfun(@double, z(1:9), 'UniformOutput', false);
+    fclose(fid);
+end
 
+z{10}       = hex2dec(z{10}); % hexadecimal acquisition codes converted;
 y           = cell2mat(z);
+
+
 acq_codes   = y(:,10);
 
 Nsamples    = size(y,1);

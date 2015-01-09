@@ -81,6 +81,29 @@ function [VOLLOCS, LOCS, verbose] = tapas_physio_create_scan_timing_from_gradien
 %
 % $Id$
 
+
+% smaller than typical single shot EPI slice duration (including waiting
+% for TE)
+minSliceDuration = 0.040; 
+
+doDetectVolumesByCounting           = (~isfield(thresh, 'vol') || ...
+    isempty(thresh.vol)) && (~isfield(thresh, 'vol_spacing') || ...
+    isempty(thresh.vol_spacing));
+doDetectVolumesByGradientAmplitude  = ~doDetectVolumesByCounting && ...
+    (~isfield(thresh, 'vol_spacing') || isempty(thresh.vol_spacing));
+doCountSliceEventsFromLogfileStart  = isfield(sqpar, 'Nprep') && ...
+    ~isempty(sqpar.Nprep);
+
+%% check consistency of thresh-values
+
+if thresh.slice <= thresh.zero
+    error('Please set thresh.scan_timing.slice > thresh.scan_timing.zero');
+end
+
+if doDetectVolumesByGradientAmplitude && (thresh.slice > thresh.vol)
+    error('Please set thresh.scan_timing.vol > thresh.scan_timing.slice');
+end
+
 % everything stored in 1 logfile
 if ~isfield(log_files, 'cardiac') || isempty(log_files.cardiac)
     logfile = log_files.respiration;
@@ -88,47 +111,42 @@ else
     logfile = log_files.cardiac;
 end
 
-do_detect_vol_events_by_count = (~isfield(thresh, 'vol') || isempty(thresh.vol)) && (~isfield(thresh, 'vol_spacing') || isempty(thresh.vol_spacing));
-do_detect_vol_events_by_grad_height = ~do_detect_vol_events_by_count && (~isfield(thresh, 'vol_spacing') || isempty(thresh.vol_spacing));
-
-% check consistency of thresh-values
-
-if thresh.slice <= thresh.zero
-    error('Please set thresh.scan_timing.slice > thresh.scan_timing.zero');
-end
-
-if do_detect_vol_events_by_grad_height && (thresh.slice > thresh.vol)
-    error('Please set thresh.scan_timing.vol > thresh.scan_timing.slice');
-end
-
-
-
 Nscans          = sqpar.Nscans;
 Ndummies        = sqpar.Ndummies;
 NslicesPerBeat  = sqpar.NslicesPerBeat;
 Nslices         = sqpar.Nslices;
-do_count_from_start = isfield(sqpar, 'Nprep') && ~isempty(sqpar.Nprep);
-if do_count_from_start
+
+
+if doCountSliceEventsFromLogfileStart
     Nprep = sqpar.Nprep;
 end
 
+%% Read columns of physlog-file and convert into double
+% use textread as long as it exists, for it is much faster (factor 4) than
+% textscan; TODO: use fread ans sscanf to make it even faster...
+if exist('textread')
+    [z{1:10}]   = textread(logfile,'%d %d %d %d %d %d %d %d %d %s','commentstyle', 'shell');
+else
+    fid     = fopen(logfile, 'r');
+    z       = textscan(fid, '%d %d %d %d %d %d %d %d %d %s', 'commentstyle', '#');
+    z(1:9)  = cellfun(@double, z(1:9), 'UniformOutput', false);
+    fclose(fid);
+end
 
-[z{1:10}]=textread(logfile,'%d %d %d %d %d %d %d %d %d %s','commentstyle', 'shell');
-z{10} = hex2dec(z{10}); % hexadecimal acquisition codes converted;
-y = cell2mat(z);
+z{10}       = hex2dec(z{10}); % hexadecimal acquisition codes converted;
+y           = cell2mat(z);
 
+acq_codes   = y(:,10);
+nSamples    = size(y,1);
 
-acq_codes = y(:,10);
-Nsamples=size(y,1);
-
-dt = log_files.sampling_interval(1);
+dt          = log_files.sampling_interval(1);
 
 %default: 500 Hz sampling frequency
 if isempty(dt)
-    dt = 2e-3;
+    dt      = 2e-3;
 end
 
-t = -log_files.relative_start_acquisition + ((0:(Nsamples-1))*dt)';
+t           = -log_files.relative_start_acquisition + ((0:(nSamples-1))*dt)';
 
 
 
@@ -143,7 +161,7 @@ switch lower(thresh.grad_direction)
     case {'xyz', 'abs'}
         gradient_choice = sqrt(sum(y(:,7:9).^2,2));
 end
-gradient_choice = reshape(gradient_choice, length(gradient_choice),1);
+gradient_choice         = reshape(gradient_choice, [] ,1);
 
 % if no gradient timecourse was recorded in the logfile (due to insufficient
 % Philips software keys), return nominal timing instead
@@ -157,14 +175,12 @@ z2 = gradient_choice; z2(z2<thresh.zero)=0;
 z2 = z2 + rand(size(z2)); % to find double-peaks/plateaus, make them a bit different
 
 
-minSliceDuration = 0.0650; % smaller than typical single shot EPI slice duration
-
-[tmp,LOCS]    = tapas_physio_findpeaks(z2,'minpeakheight',thresh.slice, ...
+[tmp, LOCS]    = tapas_physio_findpeaks(z2,'minpeakheight',thresh.slice, ...
     'minpeakdistance', ceil(minSliceDuration/dt));
 
 try
-    if do_detect_vol_events_by_count
-        if do_count_from_start
+    if doDetectVolumesByCounting
+        if doCountSliceEventsFromLogfileStart
             VOLLOCS = LOCS(Nprep*Nslices + ...
                 (1:Nslices:(Ndummies+Nscans)*Nslices));
         else % count from end
@@ -172,7 +188,7 @@ try
         end
         
     else
-        if do_detect_vol_events_by_grad_height
+        if doDetectVolumesByGradientAmplitude
             [tmp, VOLLOCS] = tapas_physio_findpeaks(z2, ...
                 'minpeakheight', thresh.vol, ...
                 'minpeakdistance', 2*(Nslices-1));
@@ -180,8 +196,8 @@ try
             VOLLOCS = LOCS(find((diff(LOCS) > thresh.vol_spacing/dt)) + 1);
         end
     end
-    LOCS    = reshape(LOCS,length(LOCS),1);
-    VOLLOCS = reshape(VOLLOCS,length(VOLLOCS),1);
+    LOCS    = reshape(LOCS, [], 1);
+    VOLLOCS = reshape(VOLLOCS, [], 1);
 catch
     VOLLOCS = [];
 end
@@ -197,11 +213,10 @@ if verbose.level>=1
     hold all;
     plot(t, y(:,7:9));
     
-   
     
     if ismember(8,acq_codes)
         hold all;
-        stem(t, acq_codes*max(max(abs(y(:,[7:9]))))/20);
+        stem(t, acq_codes*max(max(abs(y(:,7:9))))/20);
     end
     
     
@@ -211,14 +226,14 @@ if verbose.level>=1
     % Plot gradient thresholding for slice timing determination
     fs(2) = subplot(3,1,2);
     hp = plot(t,[gradient_choice z2]); hold all;
-    hp(end+1) = plot(t, repmat(thresh.zero, length(t),1));
-    hp(end+1) = plot(t, repmat(thresh.slice, length(t),1));
+    hp(end+1) = plot(t, repmat(thresh.zero, nSamples, 1));
+    hp(end+1) = plot(t, repmat(thresh.slice, nSamples, 1));
     lg = {'Chosen gradient for thresholding', ...
         'Gradient with values < thresh.zero set to 0', ...
         'thresh.zero', 'thresh.slice'};
     
-    if do_detect_vol_events_by_grad_height
-        hp(end+1) = plot(t, repmat(thresh.vol, length(t),1));
+    if doDetectVolumesByGradientAmplitude
+        hp(end+1) = plot(t, repmat(thresh.vol, nSamples, 1));
         lg{end+1} = 'thresh.vol';
     end
     title({'Thresholding Gradient for slice acq start detection', '- found scan events -'});
@@ -228,16 +243,13 @@ if verbose.level>=1
     % Plot gradient thresholding for slice timing determination
     
     if ~isempty(VOLLOCS)
-        hp(end+1) = stem(t(VOLLOCS),1.25*max(gradient_choice)*ones(size(VOLLOCS))); hold all
+        hp(end+1) = stem(t(VOLLOCS), 1.25*max(gradient_choice)*ones(size(VOLLOCS))); hold all
         lg{end+1} = sprintf('Found volume events (N = %d)', numel(VOLLOCS));
     end
     
     if ~isempty(LOCS)
-        hp(end+1) = stem(t(LOCS),max(gradient_choice)*ones(size(LOCS))); hold all
+        hp(end+1) = stem(t(LOCS), max(gradient_choice)*ones(size(LOCS))); hold all
         lg{end+1} = sprintf('Found slice events (N = %d)', numel(LOCS));
-        
-        
-        
         
         dLocsSecs = diff(LOCS)*dt*1000;
         ymin = tapas_physio_prctile(dLocsSecs, 25);
@@ -256,6 +268,7 @@ if verbose.level>=1
     
 end
 
+
 %% Return error if not enough events flund
 % VOLLOCS = find(abs(diff(z2))>thresh.vol);
 if isempty(VOLLOCS) || isempty(LOCS)
@@ -264,7 +277,7 @@ elseif length(LOCS) < NslicesPerBeat
     error('Too few slice start events found. Decrease thresh.slice after considering the Thresholding figure');
 end
 
-if do_count_from_start
+if doCountSliceEventsFromLogfileStart
     if length(VOLLOCS)< (Nprep+Nscans+Ndummies)
         error(['Not enough volume events found. \n\tFound:  %d\n ' ...
             '\tNeeded: %d+%d+%d (Nprep+Ndummies+Nscans)\n' ...
