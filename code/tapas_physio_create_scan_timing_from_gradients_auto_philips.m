@@ -150,16 +150,19 @@ end
 gradient_choice         = reshape(gradient_choice, [] ,1);
 
 
-[tmp, LOCS]    = tapas_physio_findpeaks(z2,'minpeakheight',thresh.slice, ...
-    'minpeakdistance', ceil(minSliceDuration/dt));
-
-
 
 %% 1. Determine template for a gradient time-course during a volume
 
-thresh_min                  = tapas_physio_prctile(gradient_choice, 20);
+%% high-pass filter above slice
+
+%% low-pass filter below volume...
+
+%% OR: maybe create a template with the expected properties: 
+% nSlices-fold symmetry, repeated on TR-grid => like a convolution (?)
+
+thresh_min                  = tapas_physio_prctile(gradient_choice, 80);
 minVolumeDistanceSamples    = ceil(sqpar.TR*0.95/dt);
-[templateGradientVolume, secondGuessVOLLOCS, averageTR] = ...
+[templateGradientVolume, secondGuessVOLLOCS, averageTRSamples] = ...
     tapas_physio_get_cardiac_pulse_template(t, gradient_choice, thresh_min, ...
     minVolumeDistanceSamples, verbose);
 
@@ -168,7 +171,7 @@ minVolumeDistanceSamples    = ceil(sqpar.TR*0.95/dt);
 %% 2. Determine volume events from template using cross-correlation
  
 [VOLLOCS, verbose] = tapas_physio_findpeaks_template_correlation(...
-            c, templateGradientVolume, secondGuessVOLLOCS, averageHeartRateInSamples, ...
+            c, templateGradientVolume, secondGuessVOLLOCS, averageTRSamples, ...
             verbose);
 
         
