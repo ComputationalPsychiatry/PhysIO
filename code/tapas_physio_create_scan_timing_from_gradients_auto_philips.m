@@ -83,6 +83,9 @@ function [VOLLOCS, LOCS, verbose] = ...
 
 % smaller than typical single shot EPI slice duration (including waiting
 % for TE)
+
+debug = verbose.level >=2 ;
+
 minSliceDuration = 0.040; 
 
 doCountSliceEventsFromLogfileStart  = isfield(sqpar, 'Nprep') && ...
@@ -136,7 +139,9 @@ t           = -log_files.relative_start_acquisition + ((0:(nSamples-1))*dt)';
 
 
 % finding scan volume starts (svolpulse)
-thresh.grad_direction = 'abs';
+thresh.grad_direction = 'x';
+
+G = y(:,7:9);
 switch lower(thresh.grad_direction)
     case 'x'
         gradient_choice = y(:,7);
@@ -149,7 +154,9 @@ switch lower(thresh.grad_direction)
 end
 gradient_choice         = reshape(gradient_choice, [] ,1);
 
-
+if debug
+    plot_gradient(G);
+end
 
 %% 1. Determine template for a gradient time-course during a volume
 
@@ -160,22 +167,41 @@ gradient_choice         = reshape(gradient_choice, [] ,1);
 %% OR: maybe create a template with the expected properties: 
 % nSlices-fold symmetry, repeated on TR-grid => like a convolution (?)
 
-thresh_min                  = tapas_physio_prctile(gradient_choice, 80);
+% take template from end of readout to avoid problems with initial
+% values...
 minVolumeDistanceSamples    = ceil(sqpar.TR*0.95/dt);
-[templateGradientVolume, secondGuessVOLLOCS, averageTRSamples] = ...
-    tapas_physio_get_cardiac_pulse_template(t, gradient_choice, thresh_min, ...
-    minVolumeDistanceSamples, verbose);
 
+
+rangeTemplateDetermination  =  (nSamples-(nDummies+nScans) * ...
+    minVolumeDistanceSamples + 1):nSamples;
+templateTime                = t(rangeTemplateDetermination);
+templateG                   = gradient_choice(rangeTemplateDetermination);
+thresh_min                  = tapas_physio_prctile(templateG, 80);
+
+[templateGradientVolume, secondGuessVOLLOCS, averageTRSamples] = ...
+    tapas_physio_get_cardiac_pulse_template(templateTime, templateG, ...
+    verbose, ...
+    'thresh_min', thresh_min, ...
+    'minCycleSamples', minVolumeDistanceSamples, ...
+    'shortenTemplateFactor', 1);
+
+if debug
+    verbose.fig_handles(end+1) = plot_template(t, templateGradientVolume);
+end
 
 
 %% 2. Determine volume events from template using cross-correlation
  
 [VOLLOCS, verbose] = tapas_physio_findpeaks_template_correlation(...
-            c, templateGradientVolume, secondGuessVOLLOCS, averageTRSamples, ...
-            verbose);
+    gradient_choice, templateGradientVolume, secondGuessVOLLOCS,...
+    averageTRSamples, verbose);
 
-        
-        
+if debug
+    verbose.fig_handles(end+1) = plot_volume_events( VOLLOCS, t, ...
+        gradient_choice, templateGradientVolume, secondGuessVOLLOCS);
+end
+
+
 %% 3. Determine slice events from volume positions and info on number of slices
         
 nVolumes = numel(VOLLOCS);
@@ -245,17 +271,9 @@ if verbose.level>=1
     
     % Plot gradient thresholding for slice timing determination
     fs(2) = subplot(3,1,2);
-    hp = plot(t,[gradient_choice z2]); hold all;
-    hp(end+1) = plot(t, repmat(thresh.zero, nSamples, 1));
-    hp(end+1) = plot(t, repmat(thresh.slice, nSamples, 1));
-    lg = {'Chosen gradient for thresholding', ...
-        'Gradient with values < thresh.zero set to 0', ...
-        'thresh.zero', 'thresh.slice'};
+    hp = plot(t,gradient_choice); hold all;
+    lg = {'Chosen gradient for thresholding'};
     
-    if doDetectVolumesByGradientAmplitude
-        hp(end+1) = plot(t, repmat(thresh.vol, nSamples, 1));
-        lg{end+1} = 'thresh.vol';
-    end
     title({'Thresholding Gradient for slice acq start detection', '- found scan events -'});
     legend(hp, lg);
     xlabel('t(s)');
@@ -313,3 +331,48 @@ else
     end
 end
 
+end
+
+%% local functions for debugging plots
+
+%% Plot template for volume repetition
+function fh = plot_template(t, templateGradientVolume)
+
+stringTitle = 'Template Gradient Timecourse during 1 Volume';
+    fh = tapas_physio_get_default_fig_params();
+    set(gcf, 'Name', stringTitle);
+    
+    nSamplesTemplate = numel(templateGradientVolume);
+    plot(t(1:nSamplesTemplate), templateGradientVolume);
+    xlabel('t (s)')
+    title(stringTitle);
+end
+
+
+%% Plot Detected volume events
+function fh = plot_volume_events(VOLLOCS, t, G, ...
+    templateGradientVolume, secondGuessVOLLOCS)
+
+    stringTitle = 'Template Gradient Timecourse during 1 Volume';
+    fh = tapas_physio_get_default_fig_params();
+    set(gcf, 'Name', stringTitle);
+    
+    ampl    = max(abs(G));
+    sG      = conv(G, templateGradientVolume, 'same');
+    
+    plot(t, G); hold all;
+    plot(t, sG);
+    stem(t(VOLLOCS), ampl*ones(size(VOLLOCS)));
+    stem(t(secondGuessVOLLOCS), ampl*ones(size(secondGuessVOLLOCS)));
+     
+    stringLegend = {
+        'Gradient Timecourse'
+        'Gradient Timecourse convolved with Template'
+        'Final detected volume events'
+        'Prior detected volume events'
+        };
+    
+    xlabel('t (s)')
+    title(stringTitle);
+    legend(stringLegend)
+end

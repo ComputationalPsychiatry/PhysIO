@@ -141,6 +141,7 @@ end % END: going backwards to beginning of time course
 n=bestPosition; % 1st R-peak
 peakNumber=1;
 clear cpulse;
+
 %now correlate template with PPU signal at the positions
 %where we would expect a peak based on the average heartrate and
 %search in the neighborhood for the best peak, but weight the peaks

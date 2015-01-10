@@ -92,7 +92,7 @@ else
     log_files              = [];
     
     % vendor                Name depending on your MR Scanner system
-    %                       'Philips'
+    %                       'Philips' (default)
     %                       'GE',
     %                       'Siemens'
     %                       'Siemens_Tics' - new Siemens physiological
@@ -121,7 +121,7 @@ else
     % NOTE: the sampling interval has to be specified for these files as
     % well (s.b.)
     
-    log_files.vendor       = '';
+    log_files.vendor       = 'Philips';
     
     log_files.cardiac      = ''; % 'SCANPHYSLOG.log'; logfile with cardiac data
     
@@ -283,7 +283,7 @@ else
     thresh.scan_timing.vol_spacing          = [];
     
     thresh.cardiac = [];
-    thresh.cardiac.modality = ''; % 'ECG','ECG_raw', or 'OXY'/'PPU' (for pulse oximetry), 'OXY_OLD', [deprecated]
+    thresh.cardiac.modality = 'ecg_wifi'; % 'ECG','ECG_raw', or 'OXY'/'PPU' (for pulse oximetry), 'OXY_OLD', [deprecated]
     
     % The initial cardiac pulse selection structure: Determines how the
     % majority of cardiac pulses is detected
