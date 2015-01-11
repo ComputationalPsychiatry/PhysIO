@@ -1,9 +1,12 @@
-function [VOLLOCS, LOCS, verbose] = tapas_physio_create_scan_timing_from_gradients_philips(log_files, thresh, sqpar, verbose)
+function [VOLLOCS, LOCS, verbose] = ...
+    tapas_physio_create_scan_timing_from_gradients_philips(log_files, ...
+    thresh, sqpar, verbose)
 % Extracts slice and volume scan events from gradients timecourse of Philips
 % SCANPHYSLOG file
 %
-%   [VOLLOCS, LOCS] = tapas_physio_create_scan_timing_from_gradients_philips(logfile,
-%   thresh);
+%   [VOLLOCS, LOCS] = ...
+%   tapas_physio_create_scan_timing_from_gradients_philips(logfile,
+%       thresh, sqpar, verbose);
 %
 % IN
 %   log_files   is a structure containing the following filenames (with full
