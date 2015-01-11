@@ -1,12 +1,14 @@
 function G = tapas_physio_rescale_gradient_gain_fluctuations(G, ...
-    minStepDistanceSamples)
+    minStepDistanceSamples, doNormalize)
 % Removes infrequent gain changes in gradient time courses (i.e. steps)
 %
 % G = tapas_physio_rescale_gradient_gain_fluctuations(G, ...
 %    minStepDistanceSamples);
 %
 % IN
-%
+%   doNormalize     default: true; if true, every gain interval will have
+%                   max 1 after rescaling; 
+%                   if false: gain of last interval chosen for all other
 % OUT
 %
 % EXAMPLE
@@ -26,12 +28,14 @@ function G = tapas_physio_rescale_gradient_gain_fluctuations(G, ...
 % $Id$
 
 % Determine gain fluctuations via steps in sliding-window-maximum
-
+if nargin < 3
+    doNormalize = 1;
+end
 verbose                 = true;
 minPeakHeight           = 1000; % TODO: remove this heuristic!
 ignoreBoundaryPercent   = 30; % for gain estimation in interval margin 
                              % is ignored in case of a slow change
-                             
+normFactor              = 1;  % gradients normalized to this value                     
                             
 n   = minStepDistanceSamples;
 mG  = tapas_physio_maxfilter(abs(G), n);
@@ -60,6 +64,7 @@ if nGainSwitches > 0
         stringTitle = 'Detected Gradient Gain Fluctuations';
         fh = tapas_physio_get_default_fig_params();
         set(gcf, 'Name', stringTitle);
+        hs(1) = subplot(2,1,1);
         hp(1) = plot(G); hold all;
         hp(2) = plot(mG);
         hp(3) = plot(dmG);
@@ -91,7 +96,11 @@ if nGainSwitches > 0
             (idxGainEnd-ignoreBoundarySamples))));
         
          G(idxGainStart:idxGainEnd) = G(idxGainStart:idxGainEnd)/...
-             gainArray(iGainSwitch)*gainArray(end);
+             gainArray(iGainSwitch)*normFactor;
+         
+         if ~doNormalize
+             normFactor = gainArray(end);
+         end
          
          if verbose
             hp(6) = line([idxGainStart, idxGainEnd], ... 
@@ -102,10 +111,15 @@ if nGainSwitches > 0
     end
     
     if verbose
-        hp(7) = plot(G, 'LineWidth', 4);
         legend(hp, {'G','maxFilterG', 'diff maxFilterG', 'Gain Increases', ...
-            'Gain Drops', 'Median Gains Per Interval', ...
-            'Corrected Gradient Time-course'});
+            'Gain Drops', 'Median Gains Per Interval'});
+        hs(2) = subplot(2,1,2);
+
+        hp(7) = plot(G, 'LineWidth', 4);
+        stringTitle = 'Corrected Gradient Time-course';
+        legend(stringTitle);
+        title(stringTitle);
+        linkaxes(hs, 'x');
     end
   
 end

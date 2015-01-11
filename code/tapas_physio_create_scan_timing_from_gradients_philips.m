@@ -124,20 +124,7 @@ if doCountSliceEventsFromLogfileStart
     Nprep = sqpar.Nprep;
 end
 
-%% Read columns of physlog-file and convert into double
-% use textread as long as it exists, for it is much faster (factor 4) than
-% textscan; TODO: use fread ans sscanf to make it even faster...
-if exist('textread')
-    [z{1:10}]   = textread(logfile,'%d %d %d %d %d %d %d %d %d %s','commentstyle', 'shell');
-else
-    fid     = fopen(logfile, 'r');
-    z       = textscan(fid, '%d %d %d %d %d %d %d %d %d %s', 'commentstyle', '#');
-    z(1:9)  = cellfun(@double, z(1:9), 'UniformOutput', false);
-    fclose(fid);
-end
-
-z{10}       = hex2dec(z{10}); % hexadecimal acquisition codes converted;
-y           = cell2mat(z);
+y = tapas_physio_read_physlogfiles_philips_matrix(logfile);
 
 acq_codes   = y(:,10);
 nSamples    = size(y,1);
@@ -172,11 +159,6 @@ gradient_choice         = reshape(gradient_choice, [] ,1);
 minStepDistanceSamples = 3*ceil(sqpar.TR/dt);
 gradient_choice = tapas_physio_rescale_gradient_gain_fluctuations(...
     gradient_choice, minStepDistanceSamples);
-
-ampl = max(abs(gradient_choice(~isinf(gradient_choice))));
-  
-
-gradient_choice = gradient_choice./ampl;
 
 % if no gradient timecourse was recorded in the logfile (due to insufficient
 % Philips software keys), return nominal timing instead
@@ -231,6 +213,7 @@ if verbose.level>=1
     
     if ismember(8,acq_codes)
         hold all;
+        ampl = max(abs(y(~isinf(y))));
         stem(t, ampl/20*acq_codes);
     end
     

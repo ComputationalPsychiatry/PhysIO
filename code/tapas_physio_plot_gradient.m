@@ -36,7 +36,9 @@ end
 
 colorOrder = get(0, 'DefaultAxesColorOrder');
 
-fh = figure('Name', stringTitle);
+
+fh = tapas_physio_get_default_fig_params();
+set(gcf, 'Name', stringTitle);
 
 G(:,4) = sqrt(sum(G.*G,2));
 

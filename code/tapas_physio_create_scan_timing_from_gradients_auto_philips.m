@@ -1,23 +1,23 @@
 function [VOLLOCS, LOCS, verbose] = ...
     tapas_physio_create_scan_timing_from_gradients_auto_philips(log_files, ...
-    sqpar, verbose)
+    thresh, sqpar, verbose)
 % Automatically extracts slice/volume scan events from gradient timecourse
 % SCANPHYSLOG file
 %
 % [VOLLOCS, LOCS, verbose] = ...
 %     tapas_physio_create_scan_timing_from_gradients_auto_philips(log_files, ...
-%     sqpar, verbose)
+%     thresh, sqpar, verbose)
 %
-% This function determines slice/volume starts from the gradient time course 
-% automatically by assuming a regularity of them from the 
+% This function determines slice/volume starts from the gradient time course
+% automatically by assuming a regularity of them from the
 % sequence timing parameters, in particular TR and number of slices
 %
-% Therefore, unlike tapas_physio_create_scan_timing_from_gradients_philips, 
+% Therefore, unlike tapas_physio_create_scan_timing_from_gradients_philips,
 % no thresholds of slice/volume starts have to be given to determine the
 % timing and are inferred on iteratively instead.
 %
 %   Workflow
-%   1. Determine template of each volume gradient time course by using TR. 
+%   1. Determine template of each volume gradient time course by using TR.
 %   2. Determine volume events using volume template (counting either from
 %   start or end of the time series)
 %   3. Determine slice events between all detected volumes
@@ -86,7 +86,7 @@ function [VOLLOCS, LOCS, verbose] = ...
 
 debug = verbose.level >=2 ;
 
-minSliceDuration = 0.040; 
+minSliceDuration = 0.040;
 
 doCountSliceEventsFromLogfileStart  = isfield(sqpar, 'Nprep') && ...
     ~isempty(sqpar.Nprep);
@@ -109,20 +109,7 @@ if doCountSliceEventsFromLogfileStart
     Nprep = sqpar.Nprep;
 end
 
-%% Read columns of physlog-file and convert into double
-% use textread as long as it exists, for it is much faster (factor 4) than
-% textscan; TODO: use fread ans sscanf to make it even faster...
-if exist('textread')
-    [z{1:10}]   = textread(logfile,'%d %d %d %d %d %d %d %d %d %s','commentstyle', 'shell');
-else
-    fid     = fopen(logfile, 'r');
-    z       = textscan(fid, '%d %d %d %d %d %d %d %d %d %s', 'commentstyle', '#');
-    z(1:9)  = cellfun(@double, z(1:9), 'UniformOutput', false);
-    fclose(fid);
-end
-
-z{10}       = hex2dec(z{10}); % hexadecimal acquisition codes converted;
-y           = cell2mat(z);
+y = tapas_physio_read_physlogfiles_philips_matrix(logfile);
 
 acq_codes   = y(:,10);
 nSamples    = size(y,1);
@@ -139,7 +126,6 @@ t           = -log_files.relative_start_acquisition + ((0:(nSamples-1))*dt)';
 
 
 % finding scan volume starts (svolpulse)
-thresh.grad_direction = 'x';
 
 G = y(:,7:9);
 switch lower(thresh.grad_direction)
@@ -159,6 +145,13 @@ if debug
 end
 
 
+if verbose.level>=1
+    % Depict all gradients, raw
+    [fh, fs] = plot_raw_gradients(t, y, acq_codes);
+    verbose.fig_handles(end+1) = fh;
+end
+
+
 % For new Ingenia log-files, recorded gradient strength may change after a
 % certain time and introduce steps that are bad for recording
 
@@ -166,28 +159,21 @@ minStepDistanceSamples = 3*ceil(sqpar.TR/dt);
 gradient_choice = tapas_physio_rescale_gradient_gain_fluctuations(...
     gradient_choice, minStepDistanceSamples);
 
-ampl = max(abs(gradient_choice(~isinf(gradient_choice))));
 
-gradient_choice = gradient_choice./ampl;
-  
-
-%% 1. Determine template for a gradient time-course during a volume
-
-%% high-pass filter above slice
-
-%% low-pass filter below volume...
-
-%% OR: maybe create a template with the expected properties: 
-% nSlices-fold symmetry, repeated on TR-grid => like a convolution (?)
-
+%% 1. Create slice template
 % take template from end of readout to avoid problems with initial
 % values...
 minVolumeDistanceSamples    = ceil(sqpar.TR*0.95/dt);
 minSliceDistanceSamples     = ceil(minSliceDuration/dt);
 
+if doCountSliceEventsFromLogfileStart
+    rangeTemplateDetermination = 1:(nDummies + nScans)*...
+        minVolumeDistanceSamples;
+else
+    rangeTemplateDetermination  =  (nSamples-(nDummies+nScans) * ...
+        minVolumeDistanceSamples + 1):nSamples;
+end
 
-rangeTemplateDetermination  =  (nSamples-(nDummies+nScans) * ...
-    minVolumeDistanceSamples + 1):nSamples;
 templateTime                = t(rangeTemplateDetermination);
 templateG                   = gradient_choice(rangeTemplateDetermination);
 thresh_min                  = tapas_physio_prctile(templateG, 80);
@@ -197,127 +183,77 @@ thresh_min                  = tapas_physio_prctile(templateG, 80);
     verbose, ...
     'thresh_min', thresh_min, ...
     'minCycleSamples', minSliceDistanceSamples, ...
-    'shortenTemplateFactor', 1);
+    'shortenTemplateFactor', 0.5);
 
 if debug
     verbose.fig_handles(end+1) = plot_template(t, templateGradientSlice);
 end
 
 
-%% 2. Determine volume events from template using cross-correlation
- 
+
+%% 2. Determine slice events from template using cross-correlation
+
 [LOCS, verbose] = tapas_physio_findpeaks_template_correlation(...
     gradient_choice, templateGradientSlice, secondGuessLOCS,...
     averageTRSliceSamples, verbose);
 
-if debug
-    verbose.fig_handles(end+1) = plot_volume_events( LOCS, t, ...
-        gradient_choice, templateGradientSlice, secondGuessLOCS);
+% Template-correlation algorithm expects regular cycles, but in certain
+% parts of the gradient time course (preparation, end of log-file), there
+% are no cycles expected and the gradient is silent. Therefore, remove
+% those ill-detected LOCS
+
+minTemplateAmplitude = max(abs(templateGradientSlice))*0.1;
+LOCS(abs(gradient_choice(LOCS))<minTemplateAmplitude) = [];
+
+VOLLOCS = [];
+
+if verbose.level>=1
+    % Plot gradient thresholding for slice timing determination
+    axes(fs(2));
+    
+    % Plot gradient thresholding for slice timing determination
+    plot_gradients_thresholds_events(t, gradient_choice, VOLLOCS, LOCS);
+    linkaxes(fs(1:2), 'x');
 end
-% 
-% 
-% %% 3. Determine slice events from volume positions and info on number of slices
-%         
-% nVolumes = numel(VOLLOCS);
-% 
-% % Start searching for slice event slightly before volume event to include
-% % the volume event as the first slice
-% nShiftSamples = ceil(minSliceDuration/2/dt); 
-% fprintf('Finding slice events of volumes %04d/%04d',0, nVolumes);
-% LOCS = cell(nVolumes,1);
-% 
-% minSliceDistanceSamples = ceil(minSliceDuration/dt);
-% for iVol = 1:nVolumes
-%     fprintf('\b\b\b\b\b\b\b\b\b%04d/%04d', iVol, nVolumes);
-%     
-%     iStart          = VOLLOCS(iVol) - nShiftSamples;
-%     iEnd            = VOLLOCS(iVol+1) - nShiftSamples;
-%     [~, LOCS{iVol}] = tapas_physio_findpeaks(...
-%         gradient_choice(iStart:iEnd), ...
-%         'minPeakDistance', minSliceDistanceSamples, ...
-%         'nPeaks', nSlices);
-% 
-%     LOCS{iVol} = LOCS{iVol} + iStart - 1;
-% end
-% fprintf('\n');
-% 
-% LOCS = cell2mat(LOCS')';
-% 
+
+if verbose.level>=1
+    axes(fs(3));
+    plot_diff_LOCS(t, LOCS, dt);
+    linkaxes(fs,'x');
+end
+
+if debug
+    verbose.fig_handles(end+1) = plot_slice_events( LOCS, t, ...
+        gradient_choice, templateGradientSlice, secondGuessLOCS);
+    
+    
+    plot_diff_LOCS(t, LOCS, dt)
+end
+
 
 
 %% Select relevant events from detected ones using sequence parameter info
 
 try
     
-    if doCountSliceEventsFromLogfileStart
-        VOLLOCS = LOCS(Nprep*nSlices + ...
-            (1:nSlices:(nDummies+nScans)*nSlices));
-    else % count from end
-        VOLLOCS = LOCS((end-(nDummies+nScans)*nSlices+1):nSlices:end);
+    % VOLLOCS-detection via spacing
+    if isfield(thresh, 'vol_spacing') && ~isempty(thresh.vol_spacing)
+        VOLLOCS = LOCS(find((diff(LOCS) > thresh.vol_spacing/dt)) + 1);
+        
+    else
+        if doCountSliceEventsFromLogfileStart
+            VOLLOCS = LOCS(Nprep*nSlices + ...
+                (1:nSlices:(nDummies+nScans)*nSlices));
+        else % count from end
+            VOLLOCS = LOCS((end-(nDummies+nScans)*nSlices+1):nSlices:end);
+        end
     end
-
+    
     LOCS    = reshape(LOCS, [], 1);
     VOLLOCS = reshape(VOLLOCS, [], 1);
+    
 catch
     VOLLOCS = [];
-end
-
-if verbose.level>=1
-    
-    % Depict all gradients, raw
-    verbose.fig_handles(end+1) = tapas_physio_get_default_fig_params();
-    set(gcf,'Name', 'Thresholding Gradient for slice acq start detection');
-    fs(1) = subplot(3,1,1); 
-    
-    plot(t, sqrt(sum(y(:,7:9).^2,2)), '--k');
-    hold all;
-    plot(t, y(:,7:9));
-    
-    
-    if ismember(8,acq_codes)
-        hold all;
-        stem(t, acq_codes*max(max(abs(y(:,7:9))))/20);
-    end
-    
-    
-    legend('abs(G_x^2+G_y^2+G_z^2)', 'gradient x', 'gradient y', 'gradient z');
-    title('Raw Gradient Time-courses');
-    
-    % Plot gradient thresholding for slice timing determination
-    fs(2) = subplot(3,1,2);
-    hp = plot(t,gradient_choice); hold all;
-    lg = {'Chosen gradient for thresholding'};
-    
-    title({'Thresholding Gradient for slice acq start detection', '- found scan events -'});
-    legend(hp, lg);
-    xlabel('t(s)');
-    
-    % Plot gradient thresholding for slice timing determination
-    
-    if ~isempty(VOLLOCS)
-        hp(end+1) = stem(t(VOLLOCS), 1.25*ones(size(VOLLOCS))); hold all
-        lg{end+1} = sprintf('Found volume events (N = %d)', numel(VOLLOCS));
-    end
-    
-    if ~isempty(LOCS)
-        hp(end+1) = stem(t(LOCS), ones(size(LOCS))); hold all
-        lg{end+1} = sprintf('Found slice events (N = %d)', numel(LOCS));
-        
-        dLocsSecs = diff(LOCS)*dt*1000;
-        ymin = tapas_physio_prctile(dLocsSecs, 25);
-        ymax = tapas_physio_prctile(dLocsSecs, 99);
-        
-        fs(3) = subplot(3,1,3);
-        plot(t(LOCS(1:end-1)), dLocsSecs); title('duration betwenn scan events - search for bad peaks here!');
-        xlabel('t (s)');
-        ylabel('t (ms)');
-        ylim([0.9*ymin, 1.1*ymax]);
-        linkaxes(fs,'x');
-        
-    end
-    subplot(3,1,2);
-    legend(hp, lg);
-    
 end
 
 
@@ -352,14 +288,14 @@ end
 %% Plot template for volume repetition
 function fh = plot_template(t, templateGradientVolume)
 
-stringTitle = 'Template Gradient Timecourse during 1 Volume';
-    fh = tapas_physio_get_default_fig_params();
-    set(gcf, 'Name', stringTitle);
-    
-    nSamplesTemplate = numel(templateGradientVolume);
-    plot(t(1:nSamplesTemplate), templateGradientVolume);
-    xlabel('t (s)')
-    title(stringTitle);
+stringTitle = 'Template Gradient Timecourse during 1 Slice';
+fh = tapas_physio_get_default_fig_params();
+set(gcf, 'Name', stringTitle);
+
+nSamplesTemplate = numel(templateGradientVolume);
+plot(t(1:nSamplesTemplate), templateGradientVolume);
+xlabel('t (s)')
+title(stringTitle);
 end
 
 
@@ -367,26 +303,121 @@ end
 function fh = plot_volume_events(VOLLOCS, t, G, ...
     templateGradientVolume, secondGuessVOLLOCS)
 
-    stringTitle = 'Template Gradient Timecourse during 1 Volume';
-    fh = tapas_physio_get_default_fig_params();
-    set(gcf, 'Name', stringTitle);
-    
-    ampl    = max(abs(G));
-    sG      = conv(G, templateGradientVolume, 'same');
-    
-    plot(t, G); hold all;
-    plot(t, sG);
-    stem(t(VOLLOCS), ampl*ones(size(VOLLOCS)));
-    stem(t(secondGuessVOLLOCS), ampl*ones(size(secondGuessVOLLOCS)));
-     
-    stringLegend = {
-        'Gradient Timecourse'
-        'Gradient Timecourse convolved with Template'
-        'Final detected volume events'
-        'Prior detected volume events'
-        };
-    
-    xlabel('t (s)')
-    title(stringTitle);
-    legend(stringLegend)
+stringTitle = 'Template Gradient Timecourse during 1 Volume';
+fh = tapas_physio_get_default_fig_params();
+set(gcf, 'Name', stringTitle);
+
+ampl    = max(abs(G));
+sG      = conv(G, templateGradientVolume/sum(abs(templateGradientVolume)), ...
+    'same');
+
+plot(t, G); hold all;
+plot(t, sG);
+stem(t(VOLLOCS), ampl*ones(size(VOLLOCS)));
+stem(t(secondGuessVOLLOCS), ampl*ones(size(secondGuessVOLLOCS)));
+
+stringLegend = {
+    'Gradient Timecourse'
+    'Gradient Timecourse convolved with Template'
+    'Final detected volume events'
+    'Prior detected volume events'
+    };
+
+xlabel('t (s)')
+title(stringTitle);
+legend(stringLegend)
+end
+
+
+%% Plot Detected slice events
+function fh = plot_slice_events(LOCS, t, G, ...
+    templateGradientSlice, secondGuessLOCS)
+
+stringTitle = 'Template Gradient Timecourse during 1 Slice';
+fh = tapas_physio_get_default_fig_params();
+set(gcf, 'Name', stringTitle);
+
+ampl    = max(abs(G));
+sG      = conv(G, templateGradientSlice/sum(abs(templateGradientSlice)), ...
+    'same');
+
+plot(t, G); hold all;
+plot(t, sG);
+stem(t(LOCS), ampl*ones(size(LOCS)));
+stem(t(secondGuessLOCS), ampl*ones(size(secondGuessLOCS)));
+
+stringLegend = {
+    'Gradient Timecourse'
+    'Gradient Timecourse convolved with Template'
+    'Final detected slice events'
+    'Prior detected slice events'
+    };
+
+xlabel('t (s)')
+title(stringTitle);
+legend(stringLegend)
+end
+
+
+%% Plot difference between detected slice events
+function plot_diff_LOCS(t, LOCS, dt)
+
+
+dLocsSecs = diff(LOCS)*dt*1000;
+ymin = tapas_physio_prctile(dLocsSecs, 25);
+ymax = tapas_physio_prctile(dLocsSecs, 99);
+
+
+plot(t(LOCS(1:end-1)), dLocsSecs); 
+title('duration between scan events - search for bad peaks here!');
+xlabel('t (s)');
+ylabel('t (ms)');
+ylim([0.9*ymin, 1.1*ymax]);
+
+end
+
+%% Plot all raw gradient time-courses
+function [fh, fs] = plot_raw_gradients(t, y, acq_codes)
+fh = tapas_physio_get_default_fig_params();
+set(gcf,'Name', 'Thresholding Gradient for slice acq start detection');
+for i=1:3, fs(i) = subplot(3,1,i); end
+
+axes(fs(1));
+
+plot(t, sqrt(sum(y(:,7:9).^2,2)), '--k');
+hold all;
+plot(t, y(:,7:9));
+
+
+if ismember(8,acq_codes)
+    hold all;
+    stem(t, acq_codes*max(max(abs(y(:,7:9))))/20);
+end
+
+
+legend('abs(G_x^2+G_y^2+G_z^2)', 'gradient x', 'gradient y', 'gradient z');
+title('Raw Gradient Time-courses');
+end
+
+
+% Plot gradient thresholding for slice timing determination
+function plot_gradients_thresholds_events(t, gradient_choice, VOLLOCS, LOCS)
+
+hp = plot(t,gradient_choice); hold all;
+lg = {'Chosen gradient for thresholding'};
+
+title({'Thresholding Gradient for slice acq start detection', '- found scan events -'});
+legend(hp, lg);
+xlabel('t(s)');
+
+if ~isempty(VOLLOCS)
+    hp(end+1) = stem(t(VOLLOCS), 1.25*ones(size(VOLLOCS))); hold all
+    lg{end+1} = sprintf('Found volume events (N = %d)', numel(VOLLOCS));
+end
+
+if ~isempty(LOCS)
+    hp(end+1) = stem(t(LOCS), ones(size(LOCS))); hold all
+    lg{end+1} = sprintf('Found slice events (N = %d)', numel(LOCS));
+end
+legend(hp, lg);
 end

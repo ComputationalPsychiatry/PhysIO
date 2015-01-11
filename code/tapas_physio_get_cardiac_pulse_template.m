@@ -52,6 +52,9 @@ hasFirstGuessPeaks = ~isempty(cpulse1stGuess);
 
 
 %% Second step, refined heart rate estimate
+
+stringTitle = 'Iterative Template Creation Single Cycle';
+     
 if hasFirstGuessPeaks
     
     averageHeartRateInSamples = round(mean(diff(cpulse1stGuess)));
@@ -64,7 +67,8 @@ if hasFirstGuessPeaks
         
         nPulses1 = length(cpulse1stGuess);
         nPulses2 = length(cpulse2ndGuess);
-        fh= tapas_physio_get_default_fig_params();
+        fh = tapas_physio_get_default_fig_params();
+        set(fh, 'Name', stringTitle);
         verbose.fig_handles(end+1) = fh;
         subplot(3,1,1);
         hold off
@@ -202,4 +206,5 @@ if debug
     hp(2) = plot(tTemplate, pulseCleanedTemplate, '.-g', 'LineWidth', 4, ...
         'Marker', 'x');
     legend(hp, 'mean of templates', 'mean of most similar, chosen templates');
+    suptitle(stringTitle);
 end

@@ -51,20 +51,7 @@ else
     logfile = log_files.respiration;
 end
 
-% use textread as long as it exists, for it is much faster (factor 4) than
-% textscan; TODO: use fread ans sscanf to make it even faster...
-if exist('textread')
-    [z{1:10}]   = textread(logfile,'%d %d %d %d %d %d %d %d %d %s','commentstyle', 'shell');
-else
-    fid     = fopen(logfile, 'r');
-    z       = textscan(fid, '%d %d %d %d %d %d %d %d %d %s', 'commentstyle', '#');
-    z(1:9)  = cellfun(@double, z(1:9), 'UniformOutput', false);
-    fclose(fid);
-end
-
-z{10}       = hex2dec(z{10}); % hexadecimal acquisition codes converted;
-y           = cell2mat(z);
-
+y = tapas_physio_read_physlogfiles_philips_matrix(logfile);
 
 acq_codes   = y(:,10);
 
@@ -95,7 +82,7 @@ t= -log_files.relative_start_acquisition + ((0:(Nsamples-1))*dt)';
 % 10 = scanner signal: 10/20 = scan start/end; 1 = ECG pulse; 2 = OXY max; 8 = scan event TODO: what is 3 and 9???
 % columns 7,8,9: Grad-strengh x,y,z
 
-cpulse = find(z{10}==1);
+cpulse = find(acq_codes==1);
 if ~isempty(cpulse)
     cpulse = t(cpulse);
 end;
