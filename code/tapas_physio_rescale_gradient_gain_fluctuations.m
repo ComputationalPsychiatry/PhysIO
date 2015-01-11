@@ -1,0 +1,107 @@
+function G = tapas_physio_rescale_gradient_gain_fluctuations(G, ...
+    minStepDistanceSamples)
+% Removes infrequent gain changes in gradient time courses (i.e. steps)
+%
+% G = tapas_physio_rescale_gradient_gain_fluctuations(G, ...
+%    minStepDistanceSamples);
+%
+% IN
+%
+% OUT
+%
+% EXAMPLE
+%   tapas_physio_rescale_gradient_gain_fluctuations
+%
+%   See also
+%
+% Author: Lars Kasper
+% Created: 2015-01-11
+% Copyright (C) 2015 TNU, Institute for Biomedical Engineering, University of Zurich and ETH Zurich.
+%
+% This file is part of the TAPAS PhysIO Toolbox, which is released under the terms of the GNU General Public
+% Licence (GPL), version 3. You can redistribute it and/or modify it under the terms of the GPL
+% (either version 3 or, at your option, any later version). For further details, see the file
+% COPYING or <http://www.gnu.org/licenses/>.
+%
+% $Id$
+
+% Determine gain fluctuations via steps in sliding-window-maximum
+
+verbose                 = true;
+minPeakHeight           = 1000; % TODO: remove this heuristic!
+ignoreBoundaryPercent   = 30; % for gain estimation in interval margin 
+                             % is ignored in case of a slow change
+                             
+                            
+n   = minStepDistanceSamples;
+mG  = tapas_physio_maxfilter(abs(G), n);
+dmG = diff(mG);
+
+ignoreBoundarySamples = ceil(n*ignoreBoundaryPercent/100);
+
+% determine positive and negative steps
+[~, idxGainPlus] = findpeaks((dmG), 'minpeakDistance', n, ...
+    'minpeakheight', minPeakHeight);
+[~, idxGainMinus] = findpeaks(-(dmG), 'minpeakDistance', n, ...
+    'minpeakheight', minPeakHeight);
+
+% plus gains refer to max-changes in the future (?)
+idxGainPlus     = idxGainPlus + n;
+
+% + 1 because of diff
+idxGainMinus    = idxGainMinus + 1;
+idxGainSwitch   = [idxGainPlus', idxGainMinus']; 
+
+nGainSwitches = numel(idxGainSwitch);
+
+
+%% Rescale gradients, if gain switches exist
+if nGainSwitches > 0
+    
+    if verbose
+        stringTitle = 'Detected Gradient Gain Fluctuations';
+        figure('Name', stringTitle);
+        hp(1) = plot(G); hold all;
+        hp(2) = plot(mG);
+        hp(3) = plot(dmG);
+        hp(4) = stem(idxGainPlus, mG(idxGainPlus));
+        hp(5) = stem(idxGainMinus, mG(idxGainMinus));
+    end
+
+    % Sort gain switches and add start/end of gradient time course as
+    % interval end points
+    idxGainSwitch = [1, sort(idxGainSwitch, 'ascend'), numel(mG)+1];
+    
+    gainArray = zeros(nGainSwitches+1,1);
+    
+    % for each gain interval, determine median gain and rescale gradient 
+    % time course in interval to gain of first interval
+    for iGainSwitch = 1:nGainSwitches+1
+        idxGainStart    = idxGainSwitch(iGainSwitch);
+        idxGainEnd      = idxGainSwitch(iGainSwitch+1)-1;
+        
+        % Determine gain as max of abs gradient in interval, but ignore
+        % transition boundaries
+        gainArray(iGainSwitch) = max(abs(G(...
+            (idxGainStart+ignoreBoundarySamples): ...
+            (idxGainEnd-ignoreBoundarySamples))));
+        
+         G(idxGainStart:idxGainEnd) = G(idxGainStart:idxGainEnd)/...
+             gainArray(iGainSwitch)*gainArray(1);
+         
+         if verbose
+            hp(6) = line([idxGainStart, idxGainEnd], ... 
+                 [gainArray(iGainSwitch), gainArray(iGainSwitch)], ...
+                 'LineStyle', '--', 'Color',[0 0 0]);
+         end
+         
+    end
+    
+    if verbose
+        hp(7) = plot(G, 'LineWidth', 4);
+        legend(hp, {'G','maxFilterG', 'diff maxFilterG', 'Gain Increases', ...
+            'Gain Drops', 'Median Gains Per Interval', ...
+            'Corrected Gradient Time-course'});
+    end
+  
+end

@@ -155,7 +155,7 @@ end
 gradient_choice         = reshape(gradient_choice, [] ,1);
 
 if debug
-    plot_gradient(G);
+    tapas_physio_plot_gradient(G);
 end
 
 %% 1. Determine template for a gradient time-course during a volume
