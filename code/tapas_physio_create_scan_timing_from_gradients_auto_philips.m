@@ -158,6 +158,19 @@ if debug
     tapas_physio_plot_gradient(G);
 end
 
+
+% For new Ingenia log-files, recorded gradient strength may change after a
+% certain time and introduce steps that are bad for recording
+
+minStepDistanceSamples = 3*ceil(sqpar.TR/dt);
+gradient_choice = tapas_physio_rescale_gradient_gain_fluctuations(...
+    gradient_choice, minStepDistanceSamples);
+
+ampl = max(abs(gradient_choice(~isinf(gradient_choice))));
+
+gradient_choice = gradient_choice./ampl;
+  
+
 %% 1. Determine template for a gradient time-course during a volume
 
 %% high-pass filter above slice
@@ -170,6 +183,7 @@ end
 % take template from end of readout to avoid problems with initial
 % values...
 minVolumeDistanceSamples    = ceil(sqpar.TR*0.95/dt);
+minSliceDistanceSamples     = ceil(minSliceDuration/dt);
 
 
 rangeTemplateDetermination  =  (nSamples-(nDummies+nScans) * ...
@@ -178,57 +192,57 @@ templateTime                = t(rangeTemplateDetermination);
 templateG                   = gradient_choice(rangeTemplateDetermination);
 thresh_min                  = tapas_physio_prctile(templateG, 80);
 
-[templateGradientVolume, secondGuessVOLLOCS, averageTRSamples] = ...
+[templateGradientSlice, secondGuessLOCS, averageTRSliceSamples] = ...
     tapas_physio_get_cardiac_pulse_template(templateTime, templateG, ...
     verbose, ...
     'thresh_min', thresh_min, ...
-    'minCycleSamples', minVolumeDistanceSamples, ...
+    'minCycleSamples', minSliceDistanceSamples, ...
     'shortenTemplateFactor', 1);
 
 if debug
-    verbose.fig_handles(end+1) = plot_template(t, templateGradientVolume);
+    verbose.fig_handles(end+1) = plot_template(t, templateGradientSlice);
 end
 
 
 %% 2. Determine volume events from template using cross-correlation
  
-[VOLLOCS, verbose] = tapas_physio_findpeaks_template_correlation(...
-    gradient_choice, templateGradientVolume, secondGuessVOLLOCS,...
-    averageTRSamples, verbose);
+[LOCS, verbose] = tapas_physio_findpeaks_template_correlation(...
+    gradient_choice, templateGradientSlice, secondGuessLOCS,...
+    averageTRSliceSamples, verbose);
 
 if debug
-    verbose.fig_handles(end+1) = plot_volume_events( VOLLOCS, t, ...
-        gradient_choice, templateGradientVolume, secondGuessVOLLOCS);
+    verbose.fig_handles(end+1) = plot_volume_events( LOCS, t, ...
+        gradient_choice, templateGradientSlice, secondGuessLOCS);
 end
-
-
-%% 3. Determine slice events from volume positions and info on number of slices
-        
-nVolumes = numel(VOLLOCS);
-
-% Start searching for slice event slightly before volume event to include
-% the volume event as the first slice
-nShiftSamples = ceil(minSliceDuration/2/dt); 
-fprintf('Finding slice events of volumes %04d/%04d',0, nVolumes);
-LOCS = cell(nVolumes,1);
-
-minSliceDistanceSamples = ceil(minSliceDuration/dt);
-for iVol = 1:nVolumes
-    fprintf('\b\b\b\b\b\b\b\b\b%04d/%04d', iVol, nVolumes);
-    
-    iStart          = VOLLOCS(iVol) - nShiftSamples;
-    iEnd            = VOLLOCS(iVol+1) - nShiftSamples;
-    [~, LOCS{iVol}] = tapas_physio_findpeaks(...
-        gradient_choice(iStart:iEnd), ...
-        'minPeakDistance', minSliceDistanceSamples, ...
-        'nPeaks', nSlices);
-
-    LOCS{iVol} = LOCS{iVol} + iStart - 1;
-end
-fprintf('\n');
-
-LOCS = cell2mat(LOCS')';
-
+% 
+% 
+% %% 3. Determine slice events from volume positions and info on number of slices
+%         
+% nVolumes = numel(VOLLOCS);
+% 
+% % Start searching for slice event slightly before volume event to include
+% % the volume event as the first slice
+% nShiftSamples = ceil(minSliceDuration/2/dt); 
+% fprintf('Finding slice events of volumes %04d/%04d',0, nVolumes);
+% LOCS = cell(nVolumes,1);
+% 
+% minSliceDistanceSamples = ceil(minSliceDuration/dt);
+% for iVol = 1:nVolumes
+%     fprintf('\b\b\b\b\b\b\b\b\b%04d/%04d', iVol, nVolumes);
+%     
+%     iStart          = VOLLOCS(iVol) - nShiftSamples;
+%     iEnd            = VOLLOCS(iVol+1) - nShiftSamples;
+%     [~, LOCS{iVol}] = tapas_physio_findpeaks(...
+%         gradient_choice(iStart:iEnd), ...
+%         'minPeakDistance', minSliceDistanceSamples, ...
+%         'nPeaks', nSlices);
+% 
+%     LOCS{iVol} = LOCS{iVol} + iStart - 1;
+% end
+% fprintf('\n');
+% 
+% LOCS = cell2mat(LOCS')';
+% 
 
 
 %% Select relevant events from detected ones using sequence parameter info
@@ -281,12 +295,12 @@ if verbose.level>=1
     % Plot gradient thresholding for slice timing determination
     
     if ~isempty(VOLLOCS)
-        hp(end+1) = stem(t(VOLLOCS), 1.25*max(gradient_choice)*ones(size(VOLLOCS))); hold all
+        hp(end+1) = stem(t(VOLLOCS), 1.25*ones(size(VOLLOCS))); hold all
         lg{end+1} = sprintf('Found volume events (N = %d)', numel(VOLLOCS));
     end
     
     if ~isempty(LOCS)
-        hp(end+1) = stem(t(LOCS), max(gradient_choice)*ones(size(LOCS))); hold all
+        hp(end+1) = stem(t(LOCS), ones(size(LOCS))); hold all
         lg{end+1} = sprintf('Found slice events (N = %d)', numel(LOCS));
         
         dLocsSecs = diff(LOCS)*dt*1000;

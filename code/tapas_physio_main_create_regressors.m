@@ -133,8 +133,9 @@ if hasCardiacData
             % do nothing
         otherwise
             % run one of the various cardiac pulse detection algorithms
+            minCardiacCycleSamples = floor((1/(90/60)/dt));
             [ons_secs.cpulse, verbose] = tapas_physio_get_cardiac_pulses(ons_secs.t, ons_secs.c, ...
-                thresh.cardiac.initial_cpulse_select, thresh.cardiac.modality, [], verbose);
+                thresh.cardiac.initial_cpulse_select, thresh.cardiac.modality, minCardiacCycleSamples, verbose);
     end
     
     %% post-hoc: hand pick additional cardiac pulses or load from previous
@@ -243,7 +244,7 @@ physio_out.ons_secs     = ons_secs;
 
 switch lower(model.type)
     case 'none'
-        disp('No model estimated. Saving read log-files data into output-file instead: Check variablephysio.ons_secs');
+        disp('No model estimated. Saving read log-files data into output-file instead: Check variable physio.ons_secs');
         if ~isempty(model.output_multiple_regressors)
             [fpfx, fn] = fileparts(model.output_multiple_regressors);
             save(fullfile(fpfx, [fn '.mat']), 'physio_out');

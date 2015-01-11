@@ -37,8 +37,6 @@ n   = minStepDistanceSamples;
 mG  = tapas_physio_maxfilter(abs(G), n);
 dmG = diff(mG);
 
-ignoreBoundarySamples = ceil(n*ignoreBoundaryPercent/100);
-
 % determine positive and negative steps
 [~, idxGainPlus] = findpeaks((dmG), 'minpeakDistance', n, ...
     'minpeakheight', minPeakHeight);
@@ -60,7 +58,8 @@ if nGainSwitches > 0
     
     if verbose
         stringTitle = 'Detected Gradient Gain Fluctuations';
-        figure('Name', stringTitle);
+        fh = tapas_physio_get_default_fig_params();
+        set(gcf, 'Name', stringTitle);
         hp(1) = plot(G); hold all;
         hp(2) = plot(mG);
         hp(3) = plot(dmG);
@@ -75,11 +74,16 @@ if nGainSwitches > 0
     gainArray = zeros(nGainSwitches+1,1);
     
     % for each gain interval, determine median gain and rescale gradient 
-    % time course in interval to gain of first interval
-    for iGainSwitch = 1:nGainSwitches+1
+    % time course in interval to gain of last interval
+    % last interval, since start of logfile usually not reliably due to
+    % dummies, prep-pulses etc.
+    for iGainSwitch = (nGainSwitches+1):-1:1
         idxGainStart    = idxGainSwitch(iGainSwitch);
         idxGainEnd      = idxGainSwitch(iGainSwitch+1)-1;
         
+        
+        ignoreBoundarySamples = ceil((idxGainEnd-idxGainEnd).*...
+            ignoreBoundaryPercent/100);
         % Determine gain as max of abs gradient in interval, but ignore
         % transition boundaries
         gainArray(iGainSwitch) = max(abs(G(...
@@ -87,7 +91,7 @@ if nGainSwitches > 0
             (idxGainEnd-ignoreBoundarySamples))));
         
          G(idxGainStart:idxGainEnd) = G(idxGainStart:idxGainEnd)/...
-             gainArray(iGainSwitch)*gainArray(1);
+             gainArray(iGainSwitch)*gainArray(end);
          
          if verbose
             hp(6) = line([idxGainStart, idxGainEnd], ... 

@@ -173,6 +173,11 @@ minStepDistanceSamples = 3*ceil(sqpar.TR/dt);
 gradient_choice = tapas_physio_rescale_gradient_gain_fluctuations(...
     gradient_choice, minStepDistanceSamples);
 
+ampl = max(abs(gradient_choice(~isinf(gradient_choice))));
+  
+
+gradient_choice = gradient_choice./ampl;
+
 % if no gradient timecourse was recorded in the logfile (due to insufficient
 % Philips software keys), return nominal timing instead
 if ~any(gradient_choice) % all values zero
@@ -182,7 +187,7 @@ if ~any(gradient_choice) % all values zero
 end
 
 z2 = gradient_choice; z2(z2<thresh.zero)=0;
-z2 = z2 + rand(size(z2)); % to find double-peaks/plateaus, make them a bit different
+z2 = z2 + 1e-4*rand(size(z2)); % to find double-peaks/plateaus, make them a bit different
 
 
 [tmp, LOCS]    = tapas_physio_findpeaks(z2,'minpeakheight',thresh.slice, ...
@@ -226,7 +231,7 @@ if verbose.level>=1
     
     if ismember(8,acq_codes)
         hold all;
-        stem(t, acq_codes*max(max(abs(y(:,7:9))))/20);
+        stem(t, ampl/20*acq_codes);
     end
     
     
@@ -252,13 +257,14 @@ if verbose.level>=1
     
     % Plot gradient thresholding for slice timing determination
     
+    
     if ~isempty(VOLLOCS)
-        hp(end+1) = stem(t(VOLLOCS), 1.25*max(gradient_choice)*ones(size(VOLLOCS))); hold all
+        hp(end+1) = stem(t(VOLLOCS), 1.25*ones(size(VOLLOCS))); hold all
         lg{end+1} = sprintf('Found volume events (N = %d)', numel(VOLLOCS));
     end
     
     if ~isempty(LOCS)
-        hp(end+1) = stem(t(LOCS), max(gradient_choice)*ones(size(LOCS))); hold all
+        hp(end+1) = stem(t(LOCS), ones(size(LOCS))); hold all
         lg{end+1} = sprintf('Found slice events (N = %d)', numel(LOCS));
         
         dLocsSecs = diff(LOCS)*dt*1000;
