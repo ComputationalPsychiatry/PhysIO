@@ -155,9 +155,9 @@ end
 % For new Ingenia log-files, recorded gradient strength may change after a
 % certain time and introduce steps that are bad for recording
 
-minStepDistanceSamples = 3*ceil(sqpar.TR/dt);
+minStepDistanceSamples = 1.5*ceil(sqpar.TR/dt);
 gradient_choice = tapas_physio_rescale_gradient_gain_fluctuations(...
-    gradient_choice, minStepDistanceSamples);
+    gradient_choice, minStepDistanceSamples, verbose);
 
 
 %% 1. Create slice template
@@ -176,14 +176,14 @@ end
 
 templateTime                = t(rangeTemplateDetermination);
 templateG                   = gradient_choice(rangeTemplateDetermination);
-thresh_min                  = tapas_physio_prctile(templateG, 80);
+thresh_min                  = tapas_physio_prctile(abs(templateG), 95);
 
 [templateGradientSlice, secondGuessLOCS, averageTRSliceSamples] = ...
     tapas_physio_get_cardiac_pulse_template(templateTime, templateG, ...
     verbose, ...
     'thresh_min', thresh_min, ...
     'minCycleSamples', minSliceDistanceSamples, ...
-    'shortenTemplateFactor', 0.5);
+    'shortenTemplateFactor', 0.7);
 
 if debug
     verbose.fig_handles(end+1) = plot_template(t, templateGradientSlice);
@@ -223,11 +223,10 @@ if verbose.level>=1
 end
 
 if debug
-    verbose.fig_handles(end+1) = plot_slice_events( LOCS, t, ...
-        gradient_choice, templateGradientSlice, secondGuessLOCS);
-    
-    
-    plot_diff_LOCS(t, LOCS, dt)
+%     verbose.fig_handles(end+1) = plot_slice_events( LOCS, t, ...
+%         gradient_choice, templateGradientSlice, secondGuessLOCS);
+%  
+%     plot_diff_LOCS(t, LOCS, dt)
 end
 
 
@@ -256,6 +255,14 @@ catch
     VOLLOCS = [];
 end
 
+if verbose.level>=1
+    % Plot gradient thresholding for slice timing determination
+    axes(fs(2));
+    
+    % Plot gradient thresholding for slice timing determination
+    plot_gradients_thresholds_events(t, gradient_choice, VOLLOCS, LOCS);
+    linkaxes(fs, 'x');
+end
 
 %% Return error if not enough events flund
 % VOLLOCS = find(abs(diff(z2))>thresh.vol);

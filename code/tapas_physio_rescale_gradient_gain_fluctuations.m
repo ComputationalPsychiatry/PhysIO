@@ -1,11 +1,14 @@
 function G = tapas_physio_rescale_gradient_gain_fluctuations(G, ...
-    minStepDistanceSamples, doNormalize)
+    minStepDistanceSamples, verbose, varargin)
 % Removes infrequent gain changes in gradient time courses (i.e. steps)
 %
-% G = tapas_physio_rescale_gradient_gain_fluctuations(G, ...
-%    minStepDistanceSamples);
+%   G = tapas_physio_rescale_gradient_gain_fluctuations(G, ...
+%       minStepDistanceSamples, doPlot, varargin)
 %
 % IN
+%
+%   varargin as property name/value pairs with the following options:
+%
 %   doNormalize     default: true; if true, every gain interval will have
 %                   max 1 after rescaling; 
 %                   if false: gain of last interval chosen for all other
@@ -28,10 +31,20 @@ function G = tapas_physio_rescale_gradient_gain_fluctuations(G, ...
 % $Id$
 
 % Determine gain fluctuations via steps in sliding-window-maximum
-if nargin < 3
-    doNormalize = 1;
-end
-verbose                 = true;
+
+doPlot = verbose.level >= 3;
+
+defaults.doNormalize = true;
+
+% since gain changes happen for whole slice-waveform, look where slice
+% waveform ends, i.e. a bit earlier for step-up, and a bit later for
+% step-down events of gain
+defaults.doExtendStepToSliceRange = true;
+
+args = tapas_physio_propval(varargin, defaults);
+tapas_physio_strip_fields(args);
+
+doPlot                 = true;
 minPeakHeight           = 1000; % TODO: remove this heuristic!
 ignoreBoundaryPercent   = 30; % for gain estimation in interval margin 
                              % is ignored in case of a slow change
@@ -47,11 +60,31 @@ dmG = diff(mG);
 [~, idxGainMinus] = findpeaks(-(dmG), 'minpeakDistance', n, ...
     'minpeakheight', minPeakHeight);
 
-% plus gains refer to max-changes in the future (?)
-idxGainPlus     = idxGainPlus + n;
+% plus gains refer to max-changes in the future
 
+
+    idxGainPlus     = idxGainPlus + n;
 % + 1 because of diff
 idxGainMinus    = idxGainMinus + 1;
+
+if doExtendStepToSliceRange
+    
+    % search for last zero before detected gain step up
+    if ~isempty(idxGainPlus)
+        for iGain = 1:numel(idxGainPlus)
+            idxGainPlus(iGain) = find(G(1:idxGainPlus(iGain))==0, 1, 'last');
+        end
+    end
+    
+    % search for next zero after detected gain drop
+     if ~isempty(idxGainMinus)
+        for iGain = 1:numel(idxGainMinus)
+            idxGainMinus(iGain) = idxGainMinus(iGain) - 1 + ...
+                find(G(idxGainMinus(iGain):end)==0, 1, 'first');
+        end
+    end
+    
+end
 idxGainSwitch   = [idxGainPlus', idxGainMinus']; 
 
 nGainSwitches = numel(idxGainSwitch);
@@ -60,9 +93,9 @@ nGainSwitches = numel(idxGainSwitch);
 %% Rescale gradients, if gain switches exist
 if nGainSwitches > 0
     
-    if verbose
+    if doPlot
         stringTitle = 'Detected Gradient Gain Fluctuations';
-        fh = tapas_physio_get_default_fig_params();
+        verbose.fig_handles(end+1) = tapas_physio_get_default_fig_params();
         set(gcf, 'Name', stringTitle);
         hs(1) = subplot(2,1,1);
         hp(1) = plot(G); hold all;
@@ -87,7 +120,7 @@ if nGainSwitches > 0
         idxGainEnd      = idxGainSwitch(iGainSwitch+1)-1;
         
         
-        ignoreBoundarySamples = ceil((idxGainEnd-idxGainEnd).*...
+        ignoreBoundarySamples = ceil((idxGainEnd-idxGainStart).*...
             ignoreBoundaryPercent/100);
         % Determine gain as max of abs gradient in interval, but ignore
         % transition boundaries
@@ -102,7 +135,7 @@ if nGainSwitches > 0
              normFactor = gainArray(end);
          end
          
-         if verbose
+         if doPlot
             hp(6) = line([idxGainStart, idxGainEnd], ... 
                  [gainArray(iGainSwitch), gainArray(iGainSwitch)], ...
                  'LineStyle', '--', 'Color',[0 0 0]);
@@ -110,9 +143,9 @@ if nGainSwitches > 0
          
     end
     
-    if verbose
+    if doPlot
         legend(hp, {'G','maxFilterG', 'diff maxFilterG', 'Gain Increases', ...
-            'Gain Drops', 'Median Gains Per Interval'});
+            'Gain Drops', 'Max Abs Gains Per Interval'});
         hs(2) = subplot(2,1,2);
 
         hp(7) = plot(G, 'LineWidth', 4);

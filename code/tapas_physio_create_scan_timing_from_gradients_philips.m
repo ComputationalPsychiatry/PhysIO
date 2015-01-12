@@ -156,9 +156,9 @@ gradient_choice         = reshape(gradient_choice, [] ,1);
 % For new Ingenia log-files, recorded gradient strength may change after a
 % certain time and introduce steps that are bad for recording
 
-minStepDistanceSamples = 3*ceil(sqpar.TR/dt);
+minStepDistanceSamples = 1.5*ceil(sqpar.TR/dt);
 gradient_choice = tapas_physio_rescale_gradient_gain_fluctuations(...
-    gradient_choice, minStepDistanceSamples);
+    gradient_choice, minStepDistanceSamples, verbose);
 
 % if no gradient timecourse was recorded in the logfile (due to insufficient
 % Philips software keys), return nominal timing instead
