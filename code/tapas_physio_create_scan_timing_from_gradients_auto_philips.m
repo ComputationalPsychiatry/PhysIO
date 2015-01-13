@@ -264,6 +264,25 @@ if verbose.level>=1
     linkaxes(fs, 'x');
 end
 
+%% Repair scan event problems...
+
+% remove erroneous volume events, i.e. those due to slice gaps that are
+% assumed to be volume end gaps, and create new volumes with not enough
+% slices
+minVolumeDistanceSamplesError = ceil((1-1/sqpar.Nslices) * sqpar.TR/dt);
+idxVolError = find(diff(VOLLOCS) < minVolumeDistanceSamplesError);
+if ~isempty(idxVolError)
+    VOLLOCS(idxVolError(2:2:end)) = [];
+end
+
+ons.acq_slice_all               = LOCS;
+ons.vol_all                     = VOLLOCS;
+[any_scanevent_repaired, ons]   = ...
+    tapas_physio_repair_scan_events_PHILIPS(ons, sqpar, verbose.level > 2);
+
+LOCS                            = ons.acq_slice_all;
+VOLLOCS                         = ons.vol_all;
+
 %% Return error if not enough events flund
 % VOLLOCS = find(abs(diff(z2))>thresh.vol);
 if isempty(VOLLOCS) || isempty(LOCS)

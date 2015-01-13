@@ -131,7 +131,7 @@ end %repair_scan_events
 %% plot fixing procedure in scantrigger-time-difference view
 function fh = plot_fix_missing_scan_events(ons, dur, index)
 
-fh = tapas_physio_get_default_fig_params(0.5, 0.5);
+fh = tapas_physio_get_default_fig_params();
 set(fh,'Name','Time-difference view between events: Fix missing scan events');
 ax(1) = subplot(3,1,1);
 hold off;
