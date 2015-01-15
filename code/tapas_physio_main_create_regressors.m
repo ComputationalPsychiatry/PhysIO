@@ -79,6 +79,13 @@ verbose = physio.verbose;
 % since resampling might have occured, dt is recalculated
 dt = ons_secs.t(2)-ons_secs.t(1);
 
+% also: normalize cardiac/respiratory data, if wanted
+doNormalize = true;
+if doNormalize
+    ons_secs.c = ons_secs.c/max(abs(ons_secs.c));
+    ons_secs.r = ons_secs.r/max(abs(ons_secs.r));
+end
+
 hasCardiacData = ~isempty(ons_secs.c);
 hasRespData = ~isempty(ons_secs.r);
 
@@ -113,7 +120,7 @@ end
 
 % remove arbitrary offset in time vector now, since all timings have now
 % been aligned to ons_secs.t
-ons_secs.t = ons_secs.t -ons_secs.t(1);
+ons_secs.t = ons_secs.t - ons_secs.t(1);
 
 [ons_secs.svolpulse, ons_secs.spulse, ons_secs.spulse_per_vol, verbose] = ...
     tapas_physio_get_onsets_from_locs(...
@@ -164,6 +171,13 @@ if hasCardiacData
 end
 
 [ons_secs, sqpar] = tapas_physio_crop_scanphysevents_to_acq_window(ons_secs, sqpar);
+
+if hasRespData
+    % filter respiratory signal
+    ons_secs.fr = tapas_physio_filter_respiratory(ons_secs.r, ...
+        dt, doNormalize);
+end
+
 if verbose.level >= 2
     verbose.fig_handles(end+1) = ...
         tapas_physio_plot_cropped_phys_to_acqwindow(ons_secs, sqpar);
@@ -179,11 +193,7 @@ else % without figure creation
         ons_secs.r, thresh.cardiac.posthoc_cpulse_select, 0);
 end
 
-if hasRespData
-    % filter respiratory signal
-    ons_secs.fr = tapas_physio_filter_respiratory(ons_secs.r, ...
-        dt);
-end
+
 
 %% 4. Create RETROICOR/response function regressors for SPM
 if any(strfind(upper(model.type),'RETROICOR'))

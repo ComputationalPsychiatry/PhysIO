@@ -75,9 +75,6 @@ switch lower(cardiac_modality)
             dt120, verbose);
     case {'oxy','ppu', 'oxy_wifi', 'ppu_wifi','ecg', 'ecg_wifi'}
         switch thresh_cardiac.method
-            case {'auto', 'auto_template'}
-                [cpulse, verbose] = tapas_physio_get_cardiac_pulses_auto( ...
-                    c, t, thresh_cardiac.min, dt120, verbose);
             case 'load_from_logfile'
                 warning('How did you end up here? I better do nothing.');
                 cpulse = [];
@@ -85,7 +82,7 @@ switch lower(cardiac_modality)
                 [cpulse, verbose] = ...
                     tapas_physio_get_cardiac_pulses_manual_template(...
                     c, t, thresh_cardiac, verbose);
-            case 'auto_matched'
+            case {'auto', 'auto_template', 'auto_matched'}
                 [cpulse, verbose] = ...
                     tapas_physio_get_cardiac_pulses_auto_matched( ...
                     c, t, thresh_cardiac.min, dt120, verbose);
