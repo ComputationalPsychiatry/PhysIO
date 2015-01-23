@@ -3,6 +3,13 @@ function matlabbatch = tapas_physio_check_prepare_job_contrasts(fileSPM, ...
 % adapts contrast generator for physiogical regressors to actual SPM-file
 % (directory & design matrix columns)
 %
+%   
+% IN
+%   doCreateInverseContrasts    default: false; If true, additional F-contrasts are
+%                               created for all columns but the ones
+%                               specified in indReportPhysContrasts, i.e.
+%                               eye(nRegressors) -
+%                               F-contrast(indReportPhysContrasts)
 % Author: Lars Kasper
 % Created: 2014-01-21
 % Copyright (C) 2014 TNU, Institute for Biomedical Engineering, University of Zurich and ETH Zurich.

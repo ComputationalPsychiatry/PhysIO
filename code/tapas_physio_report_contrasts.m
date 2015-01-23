@@ -79,6 +79,7 @@ defaults.pathPhysIO      = fileparts(mfilename('fullpath'));
 defaults.fileReport      = 'physio_report_contrasts.ps'; % where contrast maps are saved
 defaults.fileStructural  = 'mean.nii';
 defaults.fileSpm         = 'SPM.mat';
+defaults.drawCrosshair   = true;
 
 % names of physiological contrasts to be reported
 % namesPhysContrasts = {
@@ -180,8 +181,7 @@ for c = 1:nContrasts
     
     spm_orthviews('Zoom', fovMillimeter); % zoom to FOV*2 view
     spm_orthviews('Interp', 0); % next neighbour interpolation plot
-    
-    
+ 
     if isequal(reportContrastPosition, 'max');
         spm_mip_ui('Jump',spm_mip_ui('FindMIPax'),'glmax'); % goto global max
     else
@@ -189,7 +189,15 @@ for c = 1:nContrasts
             spm_mip_ui('FindMIPax')); % goto global max
     end
     
+    % to be able to turn off the blue Crosshir
+    if ~ drawCrosshair
+        spm_orthviews('Xhairs','off');
+
+    end
     
+    %         spm_orthviews - spm.st.blobs.cbar
+
+
     % spm_print always prepend current directory to print-file
     % name :-(
     [pathReport, filenameReport] = fileparts(fileReport);
