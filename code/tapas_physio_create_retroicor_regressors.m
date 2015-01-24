@@ -50,8 +50,8 @@ spulse          = ons_secs.spulse;
 t               = ons_secs.t;
 
 hasRespData = ~isempty(r);
-hasPhaseData = ~isempty(ons_secs.c_sample_phase);
-hasCardiacData = hasPhaseDate || ~isempty(cpulse);
+hasPhaseData = isfield(ons_secs, 'c_sample_phase') && ~isempty(ons_secs.c_sample_phase);
+hasCardiacData = hasPhaseData || ~isempty(cpulse);
 
 if ~hasPhaseData
     % compute phases from pulse data

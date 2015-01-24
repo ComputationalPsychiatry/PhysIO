@@ -1,5 +1,5 @@
 function [physio_out, R, ons_secs] = tapas_physio_main_create_regressors(varargin)
-% Main Toolbox Function for preprocessing & modelling from physio-structure 
+% Main Toolbox Function for preprocessing & modelling from physio-structure
 %
 % [physio_out, R, ons_secs] = tapas_physio_main_create_regressors(physio)
 %
@@ -32,7 +32,7 @@ function [physio_out, R, ons_secs] = tapas_physio_main_create_regressors(varargi
 %               Josephs et al. 1997, ISMRM 5, p. 1682
 %               default model order based on Harvey et al. 2008, JMRI 28
 % RVT           (Respiratory volume per time) Birn et al. 2008, NI 40
-% HRV           (Heart-rate  variability) regressor creation based on 
+% HRV           (Heart-rate  variability) regressor creation based on
 %               Chang et al2009, NI 44
 %
 % See also tapas_physio_new
@@ -82,34 +82,48 @@ physio = tapas_physio_prepend_absolute_paths(physio);
 
 % set sub-structures for readability; NOTE: copy by value, physio-structure
 % not updated!
-save_dir = physio.save_dir;
-log_files = physio.log_files;
-thresh  = physio.thresh;
-sqpar   = physio.sqpar;
-model   = physio.model;
-verbose = physio.verbose;
+ons_secs    = physio.ons_secs;
+save_dir    = physio.save_dir;
+log_files   = physio.log_files;
+thresh      = physio.thresh;
+sqpar       = physio.sqpar;
+model       = physio.model;
+verbose     = physio.verbose;
 
 
 hasPhaseLogfile = strcmpi(log_files.vendor, 'CustomPhase');
 
 if ~hasPhaseLogfile
     
-
     
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% 1. Read in vendor-specific physiological log-files
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-[ons_secs.c, ons_secs.r, ons_secs.t, ons_secs.cpulse, ons_secs.acq_codes, ...
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% 1. Read in vendor-specific physiological log-files
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
+    [ons_secs.c, ons_secs.r, ons_secs.t, ons_secs.cpulse, ons_secs.acq_codes, ...
         verbose] = tapas_physio_read_physlogfiles(...
         log_files, thresh.cardiac.modality, verbose);
     
     % also: normalize cardiac/respiratory data, if wanted
     doNormalize = true;
     if doNormalize
-        ons_secs.c = ons_secs.c/max(abs(ons_secs.c));
-        ons_secs.r = ons_secs.r/max(abs(ons_secs.r));
+        maxAbsC = max(abs(ons_secs.c));
+        if ~isempty(maxAbsC)
+            ons_secs.c_scaling = maxAbsC ;
+            ons_secs.c = ons_secs.c/maxAbsC;
+        end
+        
+        maxAbsR = max(abs(ons_secs.r));
+        if ~isempty(maxAbsR)
+            ons_secs.r_scaling = maxAbsR ;
+            ons_secs.r = ons_secs.r/maxAbsR;
+        end
+        
     end
+    
+    % since resampling might have occured, dt is recalculated
+    dt = ons_secs.t(2) - ons_secs.t(1);
     
     hasCardiacData = ~isempty(ons_secs.c);
     hasRespData = ~isempty(ons_secs.r);
@@ -120,12 +134,12 @@ if ~hasPhaseLogfile
     
     
     
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% 2. Create scan timing nominally or from logfile
-% (Philips: via gradient time-course; Siemens (NEW): from tics)
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-useNominal = isempty(thresh.scan_timing) || ...
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% 2. Create scan timing nominally or from logfile
+    % (Philips: via gradient time-course; Siemens (NEW): from tics)
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
+    useNominal = isempty(thresh.scan_timing) || ...
         strcmpi(thresh.scan_timing.method, 'nominal');
     if useNominal
         [VOLLOCS, LOCS] = ...
@@ -157,10 +171,10 @@ useNominal = isempty(thresh.scan_timing) || ...
     
     
     
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% 3. Extract and preprocess physiological data, crop to scan aquisition
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% 3. Extract and preprocess physiological data, crop to scan aquisition
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
     if hasCardiacData
         % thresh.cardiac.modality = 'OXY'; % 'ECG' or 'OXY' (for pulse oximetry)
         %% initial pulse select via load from logfile or autocorrelation with 1
@@ -218,6 +232,10 @@ useNominal = isempty(thresh.scan_timing) || ...
     if verbose.level >= 1
         verbose.fig_handles(end+1) = ...
             tapas_physio_plot_raw_physdata_diagnostics(ons_secs.cpulse, ...
+            ons_secs.r, thresh.cardiac.posthoc_cpulse_select, verbose.level, ...
+            ons_secs.t, ons_secs.c);
+    else % without figure creation    else
+        tapas_physio_plot_raw_physdata_diagnostics(ons_secs.cpulse, ...
             ons_secs.r, thresh.cardiac.posthoc_cpulse_select, 0);
     end
     

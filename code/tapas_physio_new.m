@@ -398,13 +398,17 @@ else
     ons_secs.t              	 = [];  % time vector corresponding to c and r
     ons_secs.c              	 = [];  % raw cardiac waveform (ECG or PPU)
     ons_secs.r              	 = [];  % raw respiration amplitude time course
-    
+    ons_secs.c_scaling           = 1;   % stores scaling factor for cardiac data
+                                        % after normalization
+    ons_secs.r_scaling           = 1;   % stores scaling factor for respiratory data
+                                        % after normalization
+                                        
     % processed elements cardiac pulse detecion and phase estimations
     ons_secs.cpulse         	 = [];  % onset times of cardiac pulse events (e.g. R-peaks)
     ons_secs.c_sample_phase      = [];  % phase in heart-cycle when each slice of each volume was acquired
     ons_secs.fr                  = [];  % filtered respiration amplitude time series
     ons_secs.hr                  = [];  % [nScans,1] estimated heart rate at each scan
-    ons_secs.c_sample_phase      = [];  % phase in respiratory cycle when each slice of each volume was acquired
+    ons_secs.r_sample_phase      = [];  % phase in respiratory cycle when each slice of each volume was acquired
     
     % scan timing parameters
     ons_secs.svolpulse      	 = [];  % [Nscans x 1] onset times of volume scan events

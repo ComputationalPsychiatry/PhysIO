@@ -1,4 +1,4 @@
-function G = tapas_physio_rescale_gradient_gain_fluctuations(G, ...
+function [G, gainArray, normFactor] = tapas_physio_rescale_gradient_gain_fluctuations(G, ...
     minStepDistanceSamples, verbose, varargin)
 % Removes infrequent gain changes in gradient time courses (i.e. steps)
 %
@@ -13,6 +13,11 @@ function G = tapas_physio_rescale_gradient_gain_fluctuations(G, ...
 %                   max 1 after rescaling; 
 %                   if false: gain of last interval chosen for all other
 % OUT
+%   G               normlized gain gradient time course
+%   gainArray       [nSteps+1,1] vector of detected gains (i.e. maxima in
+%                   multiple TR interval) in gradient time course
+%   normFactor      max value to which all intervals are scaled in this
+%                   function
 %
 % EXAMPLE
 %   tapas_physio_rescale_gradient_gain_fluctuations
@@ -44,7 +49,6 @@ defaults.doExtendStepToSliceRange = true;
 args = tapas_physio_propval(varargin, defaults);
 tapas_physio_strip_fields(args);
 
-doPlot                 = true;
 minPeakHeight           = 1000; % TODO: remove this heuristic!
 ignoreBoundaryPercent   = 30; % for gain estimation in interval margin 
                              % is ignored in case of a slow change
@@ -127,13 +131,15 @@ if nGainSwitches > 0
         gainArray(iGainSwitch) = max(abs(G(...
             (idxGainStart+ignoreBoundarySamples): ...
             (idxGainEnd-ignoreBoundarySamples))));
+         
+        if ~doNormalize
+             normFactor = gainArray(end);
+        end
         
-         G(idxGainStart:idxGainEnd) = G(idxGainStart:idxGainEnd)/...
+        G(idxGainStart:idxGainEnd) = G(idxGainStart:idxGainEnd)/...
              gainArray(iGainSwitch)*normFactor;
          
-         if ~doNormalize
-             normFactor = gainArray(end);
-         end
+        
          
          if doPlot
             hp(6) = line([idxGainStart, idxGainEnd], ... 

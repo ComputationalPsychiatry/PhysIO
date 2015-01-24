@@ -107,6 +107,8 @@ if doDetectVolumesByGradientAmplitude && (thresh.slice > thresh.vol)
     error('Please set thresh.scan_timing.vol > thresh.scan_timing.slice');
 end
 
+
+
 % everything stored in 1 logfile
 if ~isfield(log_files, 'cardiac') || isempty(log_files.cardiac)
     logfile = log_files.respiration;
@@ -157,8 +159,16 @@ gradient_choice         = reshape(gradient_choice, [] ,1);
 % certain time and introduce steps that are bad for recording
 
 minStepDistanceSamples = 1.5*ceil(sqpar.TR/dt);
-gradient_choice = tapas_physio_rescale_gradient_gain_fluctuations(...
-    gradient_choice, minStepDistanceSamples, verbose);
+
+% Normalize gradients, if thresholds are smaller than 1, i.e. relative
+doNormalize = max([thresh.slice, thresh.vol, thresh.zero]) < 1;
+
+[gradient_choice, gainArray, normFactor] = ...
+    tapas_physio_rescale_gradient_gain_fluctuations(...
+    gradient_choice, minStepDistanceSamples, verbose, 'doNormalize', ...
+    doNormalize);
+
+
 
 % if no gradient timecourse was recorded in the logfile (due to insufficient
 % Philips software keys), return nominal timing instead
