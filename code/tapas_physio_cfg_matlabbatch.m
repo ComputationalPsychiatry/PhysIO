@@ -1008,9 +1008,9 @@ function out = run_physio(job)
 
 physio = tapas_physio_job2physio(job);
 
-[~, R] = tapas_physio_main_create_regressors(physio);
+[physio_out, R] = tapas_physio_main_create_regressors(physio);
 
-out.physnoisereg = job.model.output_multiple_regressors;
+out.physnoisereg = cellstr(physio_out.model.output_multiple_regressors);
 out.R = R;
 
 

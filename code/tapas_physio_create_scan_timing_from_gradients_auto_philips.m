@@ -137,6 +137,8 @@ switch lower(thresh.grad_direction)
         gradient_choice = y(:,9);
     case {'xyz', 'abs'}
         gradient_choice = sqrt(sum(y(:,7:9).^2,2));
+    otherwise
+        gradient_choice = sqrt(sum(y(:,7:9).^2,2));
 end
 gradient_choice         = reshape(gradient_choice, [] ,1);
 
@@ -223,37 +225,37 @@ if verbose.level>=1
 end
 
 if debug
-%     verbose.fig_handles(end+1) = plot_slice_events( LOCS, t, ...
-%         gradient_choice, templateGradientSlice, secondGuessLOCS);
-%  
-%     plot_diff_LOCS(t, LOCS, dt)
+    %     verbose.fig_handles(end+1) = plot_slice_events( LOCS, t, ...
+    %         gradient_choice, templateGradientSlice, secondGuessLOCS);
+    %
+    %     plot_diff_LOCS(t, LOCS, dt)
 end
 
 
 
 %% Select relevant events from detected ones using sequence parameter info
 
-try
+
+% VOLLOCS-detection via spacing or counting
+nLocs = numel(LOCS);
+
+if isfield(thresh, 'vol_spacing') && ~isempty(thresh.vol_spacing)
+    iVolLocs = find((diff(LOCS) > thresh.vol_spacing/dt)) + 1;
+else
     
-    % VOLLOCS-detection via spacing
-    if isfield(thresh, 'vol_spacing') && ~isempty(thresh.vol_spacing)
-        VOLLOCS = LOCS(find((diff(LOCS) > thresh.vol_spacing/dt)) + 1);
-        
-    else
-        if doCountSliceEventsFromLogfileStart
-            VOLLOCS = LOCS(Nprep*nSlices + ...
-                (1:nSlices:(nDummies+nScans)*nSlices));
-        else % count from end
-            VOLLOCS = LOCS((end-(nDummies+nScans)*nSlices+1):nSlices:end);
-        end
+    
+    if doCountSliceEventsFromLogfileStart
+        iVolLocs = Nprep*nSlices + (1:nSlices:(nDummies+nScans)*nSlices);
+    else % count from end
+        iVolLocs = (nLocs-(nDummies+nScans)*nSlices+1):nSlices:nLocs;
     end
     
-    LOCS    = reshape(LOCS, [], 1);
-    VOLLOCS = reshape(VOLLOCS, [], 1);
-    
-catch
-    VOLLOCS = [];
 end
+
+VOLLOCS = LOCS(iVolLocs(iVolLocs<=nLocs));
+LOCS    = reshape(LOCS, [], 1);
+VOLLOCS = reshape(VOLLOCS, [], 1);
+
 
 if verbose.level>=1
     % Plot gradient thresholding for slice timing determination
@@ -394,7 +396,7 @@ ymin = tapas_physio_prctile(dLocsSecs, 25);
 ymax = tapas_physio_prctile(dLocsSecs, 99);
 
 
-plot(t(LOCS(1:end-1)), dLocsSecs); 
+plot(t(LOCS(1:end-1)), dLocsSecs);
 title('duration between scan events - search for bad peaks here!');
 xlabel('t (s)');
 ylabel('t (ms)');

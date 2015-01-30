@@ -48,7 +48,7 @@ thrmax = 0.5; % gap is large, if gap > thrmax*max(slicegap)
 
 %% repair scan events: some scan event triggers were missed so we have to
 % fill up the holes
-ons.acq_slice = ons.acq_slice_all;
+ons.acq_slice = ons.acq_slice_all(:);
 dur.acq_slice = diff(ons.acq_slice);
 
 %% =======================================================================
@@ -66,7 +66,7 @@ end
 index.gaps                  = find(dur.acq_slice>thrmin*min(dur.acq_slice) ...
                                 & dur.acq_slice<(thrmin+1)*min(dur.acq_slice));
 ons.acq_slice_gaps          = floor((ons.acq_slice(index.gaps)+ons.acq_slice(index.gaps+1))/2);
-ons.acq_slice_filled_gaps   =  sort([ons.acq_slice; ons.acq_slice_gaps]);
+ons.acq_slice_filled_gaps   = sort([ons.acq_slice; ons.acq_slice_gaps]);
 
 %% =======================================================================
 %% gaps at beginning or end of Nslices-volume block still possible
