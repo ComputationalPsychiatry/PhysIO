@@ -113,14 +113,24 @@ DOWNLOADS & RELEASE INFORMATION
 
 - Current Release: 
 
-PhysIO_Toolbox_14 (Code | Examples)
-August 25th, 2014
+PhysIO_Toolbox_15 (Code | Examples)
+January 30th, 2015
 
 revision: $Revision: 497 $
 
+Minor Release Notes (r665):
+- Compatibility tested for SPM12, small bugfixes Batch Dependencies
+- Cleaner Batch Interface with grouped sub-menus (cfg_choice)
+- new model: 'none' to just read out physiological raw data and preprocess,
+  without noise modelling 
+- Philips: Scan-timing via gradient log now automatized (gradient_log_auto)
+- Siemens: Tics-Logfile read-in (proprietary, needs Siemens-agreement)
+- All peak detections (cardiac/respiratory) now via auto_matched algorithm
+- Adapt plots/saving for Matlab R2014b
+
 Major Release Notes (r534):
 - Read-in of Siemens plain text log files; new example dataset for Siemens
-- Speed up and debugging of ‘auto’-detection method for noisy cardiac data => new method thresh.cardiac.initial_cpulse_select.method = ‘auto_matched’
+- Speed up and debugging of auto-detection method for noisy cardiac data => new method thresh.cardiac.initial_cpulse_select.method = ???auto_matched???
 - Error handling for temporary breathing belt failures (Eduardo Aponte, TNU Zurich)
 - slice-wise regressors can be created by setting sqpar.onset_slice to a index vector of slices
 
@@ -156,7 +166,7 @@ NOTE: Your main_ECG/PPU.m etc. scripts from previous versions (<=r159) will not 
 Lead Programmer: Lars Kasper, TNU & MR-Technology Group, IBT, University & ETH Zurich
 
 Contributors: 
-Steffen Bollmann, Kinderspital Zurich & ETH Zurich
+Steffen Bollmann, Children's Hospital Zurich & ETH Zurich
 Jakob Heinzle, TNU Zurich
 Eduardo Aponte, TNU Zurich
 
