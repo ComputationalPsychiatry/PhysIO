@@ -1,7 +1,7 @@
-TAPAS PhysIO Toolbox Version 2014
+TAPAS PhysIO Toolbox Version 2015
 
 ************************************************************************
-Copyright (C) 2012-2014 Lars Kasper <kasper@biomed.ee.ethz.ch>
+Copyright (C) 2012-2015 Lars Kasper <kasper@biomed.ee.ethz.ch>
 Translational Neuromodeling Unit (TNU)
 Institute for Biomedical Engineering
 University of Zurich and ETH Zurich
