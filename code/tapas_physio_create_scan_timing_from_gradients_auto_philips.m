@@ -89,7 +89,7 @@ debug = verbose.level >=2 ;
 minSliceDuration = 0.040;
 
 doCountSliceEventsFromLogfileStart  = ...
-    strcmpi(log_files.scan_align, 'first');
+    strcmpi(log_files.align_scan, 'first');
 
 
 % everything stored in 1 logfile
