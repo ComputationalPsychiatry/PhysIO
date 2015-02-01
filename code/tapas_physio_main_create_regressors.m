@@ -143,7 +143,8 @@ if ~hasPhaseLogfile
         strcmpi(thresh.scan_timing.method, 'nominal');
     if useNominal
         [VOLLOCS, LOCS] = ...
-            tapas_physio_create_nominal_scan_timing(ons_secs.t, sqpar);
+            tapas_physio_create_nominal_scan_timing(ons_secs.t, sqpar, ...
+            log_files.align_scan);
     else
         switch thresh.scan_timing.method
             case {'gradient', 'gradient_log'}

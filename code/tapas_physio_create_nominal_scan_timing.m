@@ -1,4 +1,5 @@
-function [VOLLOCS, LOCS] = tapas_physio_create_nominal_scan_timing(t, sqpar)
+function [VOLLOCS, LOCS] = tapas_physio_create_nominal_scan_timing(t, ...
+    sqpar, align_scan)
 % Creates locations of scan volume and slice events in time vector of SCANPHYSLOG-files
 %
 %   [VOLLOCS, LOCS] = tapas_physio_create_nominal_scan_timing(t, sqpar);
@@ -29,7 +30,11 @@ function [VOLLOCS, LOCS] = tapas_physio_create_nominal_scan_timing(t, sqpar)
 %                             spacing was chosen
 %           .onset_slice    - slice whose scan onset determines the adjustment of the
 %                             regressor timing to a particular slice for the whole volume
-
+%   align_scan              'first' or 'last' (default)
+%                           'first' t == 0 will be aligned to first scan 
+%                                   volume, first slice
+%                           'last'  t(end) will be aligned to last scan 
+%                                   volume, last slice
 % OUT
 %           VOLLOCS         - locations in time vector, when volume scan
 %                             events started
@@ -51,6 +56,10 @@ function [VOLLOCS, LOCS] = tapas_physio_create_nominal_scan_timing(t, sqpar)
 %
 % $Id$
 
+if nargin < 3
+    align_scan = 'last';
+end
+
 Nscans          = sqpar.Nscans;
 Ndummies        = sqpar.Ndummies;
 Nslices         = sqpar.Nslices;
@@ -66,7 +75,7 @@ if isempty(sqpar.time_slice_to_slice)
     sqpar.time_slice_to_slice = TR/Nslices;
 end
 
-do_count_from_start = isfield(sqpar, 'Nprep') && ~isempty(sqpar.Nprep);
+do_count_from_start = strcmpi(align_scan, 'first');
 if do_count_from_start % t = 0 is assumed to be the start of the scan
     for n = 1:NallVols
         [tmp, VOLLOCS(n)] = min(abs(t - TR*(n-1)));

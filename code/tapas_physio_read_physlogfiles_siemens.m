@@ -50,45 +50,39 @@ end
 DEBUG = verbose.level >=2;
 
 % process optional input parameters and overwrite defaults
-defaults.ecgChannel = 'mean'; % 'mean'; 'v1'; 'v2'
+defaults.ecgChannel         = 'mean'; % 'mean'; 'v1'; 'v2'
+defaults.endCropSeconds     = 1;
+
 args                = tapas_physio_propval(varargin, defaults);
 tapas_physio_strip_fields(args);
 
-cpulse = [];
-dt = log_files.sampling_interval;
-endClipSeconds = 1;
+cpulse              = [];
+dt                  = log_files.sampling_interval;
 
-if ~isempty(log_files.respiration)
-    r = load(log_files.respiration, 'ascii');
-    nSamples = size(r,1);
-    t = -log_files.relative_start_acquisition + ((0:(nSamples-1))*dt)';
-else
-    r = [];
-end
 
 if ~isempty(log_files.cardiac)
-    fid = fopen(log_files.cardiac);
-    C = textscan(fid, '%s', 'Delimiter', '\n');
+    fid             = fopen(log_files.cardiac);
+    C               = textscan(fid, '%s', 'Delimiter', '\n');
     fclose(fid);
     
-    % Determine relative start of acquisition, if no
-    % log_files.relative_start_acquisito
-    
+    % Determine relative start of acquisition from dicom headers and
+    % logfile footers
     hasScanTimingDicomImage = ~isempty(log_files.scan_timing);
+    
     if hasScanTimingDicomImage
         
-        
-        
         %Get time stamps from footer:
+        
+        linesFooter = C{1}(2:end);
         LogStartTimeSeconds =   str2num(char(regexprep(linesFooter(~cellfun(@isempty,strfind(linesFooter,...
             'LogStartMDHTime'))),'\D',''))) / 1000;
         LogStopTimeSeconds =    str2num(char(regexprep(linesFooter(~cellfun(@isempty,strfind(linesFooter,...
             'LogStopMDHTime'))),'\D',''))) / 1000;
         
         % load dicom
-        dicomHeader = spm_dicom_headers(fullfile(log_files.scan_timing));
-        ScanStartTimeSeconds = dicomHeader{1}.AcquisitionTime;
-        ScanStopTimeSeconds = dicomHeader{1}.AcquisitionTime + ...
+        dicomHeader             = spm_dicom_headers(fullfile(log_files.scan_timing));
+        ScanStartTimeSeconds    = dicomHeader{1}.AcquisitionTime;
+        ScanStopTimeSeconds     = dicomHeader{1}.AcquisitionTime + ...
             dicomHeader{1}.RepetitionTime/1000;
         
         % This is just a different time-scale, I presume, it does definitely
@@ -100,11 +94,11 @@ if ~isempty(log_files.cardiac)
         
         switch log_files.align_scan
             case 'first'
-                relative_start_acquisition = LogStartTimeSeconds - ...
-                    ScanStartTimeSeconds;
+                relative_start_acquisition = ScanStartTimeSeconds - ...
+                    LogStartTimeSeconds;
             case 'last'
-                relative_start_acquisition = LogStopTimeSeconds - ...
-                    ScanStopTimeSeconds;
+                relative_start_acquisition = ScanStopTimeSeconds - ...
+                    LogStopTimeSeconds;
         end
     else
         relative_start_acquisition = 0;
@@ -114,7 +108,6 @@ if ~isempty(log_files.cardiac)
     relative_start_acquisition = relative_start_acquisition + ...
         log_files.relative_start_acquisition;
     
-    linesFooter = C{1}(2:end);
     
     lineData = C{1}{1};
     iTrigger = regexpi(lineData, '6002'); % signals start of data logging
@@ -129,7 +122,8 @@ if ~isempty(log_files.cardiac)
     
     
     % Filter the trigger markers from the ECG data
-    iNonEcgSignals = [cpulse; cpulse_off; recording_on; recording_off]; %Note: depending on when the scan ends, the last size(t_off)~=size(t_on).
+     %Note: depending on when the scan ends, the last size(t_off)~=size(t_on).
+    iNonEcgSignals = [cpulse; cpulse_off; recording_on; recording_off];
     codeNonEcgSignals = [5000*ones(size(cpulse)); ...
         6000*ones(size(cpulse_off)); ...
         6002*ones(size(recording_on))
@@ -221,7 +215,7 @@ if ~isempty(log_files.cardiac)
     % for now: we assume that log file ends when scan ends (plus a fixed
     % EndClip
     
-    endClipSamples = floor(endClipSeconds/dt);
+    endClipSamples = floor(endCropSeconds/dt);
     stopSample = nSamples - endClipSamples;
     ampl = max(meanChannel); % for plotting timing events
     
@@ -253,6 +247,7 @@ if ~isempty(log_files.cardiac)
         title(stringTitle);
         xlabel('t (seconds)');
     end
+    % crop end of log file
     
     cpulse(cpulse > t(stopSample)) = [];
     t(stopSample+1:end) = [];
@@ -262,5 +257,12 @@ else
     c = [];
 end
 
+if ~isempty(log_files.respiration)
+    r = load(log_files.respiration, 'ascii');
+    nSamples = size(r,1);
+    t = relative_start_acquisition + ((0:(nSamples-1))*dt)';
+else
+    r = [];
+end
 
 end
