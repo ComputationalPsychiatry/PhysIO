@@ -109,10 +109,16 @@ log_scan_timing         = cfg_files;
 log_scan_timing.tag     = 'scan_timing';
 log_scan_timing.name    = 'log_scan_timing';
 log_scan_timing.help    = {
-    'Acquistion timing info file'
-    'Relates occurence of volume/slice start events to tics (counts since start of day)'
-    '(for SIEMENS_tics-logging type only)'
-    };
+    'additional file for relative timing information between logfiles and'
+    ' MRI scans.'
+    ''
+    ' Currently implemented for 2 cases:'
+    ' Siemens:      Enter the first or last Dicom volume of your session here,'
+    '               The time stamp in the dicom header is on the same time'
+    '               axis as the time stamp in the physiological log file'
+    ' Siemens_Tics: log-file which holds table conversion for tics axis to' 
+    '               time conversion' 
+     };
 log_scan_timing.filter  = 'any';
 log_scan_timing.ufilter = '.*';
 log_scan_timing.num     = [0 1];
@@ -156,13 +162,37 @@ relative_start_acquisition.val     = {0};
 
 
 %--------------------------------------------------------------------------
+% align_scan
+%--------------------------------------------------------------------------
+align_scan        = cfg_menu;
+align_scan.tag    = 'align_scan';
+align_scan.name   = 'align_scan';
+align_scan.help   = { 
+    ' Determines which scan shall be aligned to which part of the logfile'
+    ' Typically, aligning the last scan to the end of the logfile is'
+    ' beneficial, since start of logfile and scans might be shifted due'
+    ' to pre-scans'
+    ''
+    ' NOTE: In all cases, log_files.relative_start_acquisition is'
+    '       added to timing after the initial alignmnent to first/last scan'
+    ''
+    ' ''first''   start of logfile will be aligned to first scan volume'
+    ' ''last''    end of logfile will be aligned to last scan volume'
+   
+    };
+align_scan.labels = {'first', 'last'};
+align_scan.values = {'first', 'last'};
+align_scan.val    = {'last'};
+
+
+%--------------------------------------------------------------------------
 % files
 %--------------------------------------------------------------------------
 files      = cfg_branch;
 files.tag  = 'log_files';
 files.name = 'log_files';
 files.val  = {vendor cardiac respiration log_scan_timing, ...
-    sampling_interval, relative_start_acquisition};
+    sampling_interval, relative_start_acquisition, align_scan};
 files.help = {'Specify log files where peripheral data was stored, and their properties.'};
 
 
@@ -260,9 +290,11 @@ Nprep         = cfg_entry;
 Nprep.tag     = 'Nprep';
 Nprep.name    = 'Nprep';
 Nprep.help    = {
-    'Number of preparation volumes (e.g. for shimming) acquired'
-    'before first dummy scan'
-    };
+   ' Count of preparation pulses BEFORE 1st dummy scan.' 
+    ' Only important, if log_files.scan_align = ''first'', since then'
+    ' preparation pulses and dummiy triggers are counted and discarded '
+    ' as first scan onset'
+     };
 Nprep.strtype = 'e';
 Nprep.num     = [Inf Inf];
 Nprep.val     = {[]};

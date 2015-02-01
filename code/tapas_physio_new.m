@@ -125,7 +125,14 @@ else
     
     log_files.cardiac      = ''; % 'SCANPHYSLOG.log'; logfile with cardiac data
     
-    % additional log-file type with tics to time conversion (for SIEMENS_tics-log files)
+    % additional file for relative timing information between logfiles and
+    % MRI scans.
+    % Currently implemented for 2 cases
+    % Siemens:      Enter the first or last Dicom volume of your session here,
+    %               The time stamp in the dicom header is on the same time
+    %               axis as the time stamp in the physiological log file
+    % Siemens_Tics: log-file which holds table conversion for tics axis to 
+    %               time conversion 
     log_files.scan_timing  = ''; 
     
     % Logfile with respiratory data, e.g. 'SCANPHYSLOG.log';
@@ -153,7 +160,18 @@ else
     %       thresh.scan_timing is set
     log_files.relative_start_acquisition = 0;
     
-    
+    % Determines which scan shall be aligned to which part of the logfile
+    % Typically, aligning the last scan to the end of the logfile is
+    % beneficial, since start of logfile and scans might be shifted due
+    % to pre-scans
+    %
+    % NOTE: In all cases, log_files.relative_start_acquisition is
+    %       added to timing after the initial alignmnent to first/last scan
+    %
+    % 'first'   start of logfile will be aligned to first scan volume
+    % 'last'    end of logfile will be aligned to last scan volume
+    log_files.align_scan       = 'last'; 
+
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% sqpar - Parameters for sequence timing, i.e. slice and volume
@@ -169,11 +187,12 @@ else
     % number of full volumes saved (volumes in nifti file,
     % usually rows in your design matrix)
     sqpar.Nscans            = [];
-    
-    % set to >=0 to count scans and dummy
-    % number of non-dummy, volume like preparation pulses
-    % before 1st dummy scan. If set, logfile is read from beginning,
-    % otherwise volumes are counted from last detected volume in the logfile
+        
+    % Count of preparation pulses
+    % BEFORE 1st dummy scan. 
+    % Only important, if log_files.scan_align = 'first', since then
+    % preparation pulses and dummiy triggers are counted and discarded 
+    % as first scan onset
     sqpar.Nprep             = [];
     
     % time between the acquisition of 2 subsequent
