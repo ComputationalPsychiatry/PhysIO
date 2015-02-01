@@ -88,8 +88,8 @@ debug = verbose.level >=2 ;
 
 minSliceDuration = 0.040;
 
-doCountSliceEventsFromLogfileStart  = isfield(sqpar, 'Nprep') && ...
-    ~isempty(sqpar.Nprep);
+doCountSliceEventsFromLogfileStart  = ...
+    strcmpi(log_files.scan_align, 'first');
 
 
 % everything stored in 1 logfile
