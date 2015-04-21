@@ -160,5 +160,7 @@ if nGainSwitches > 0
         title(stringTitle);
         linkaxes(hs, 'x');
     end
-  
+else
+    gainArray = 1;
+    normFactor = 1;
 end
