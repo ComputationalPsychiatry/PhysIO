@@ -266,7 +266,7 @@ if verbose.level>=1
         ymax = tapas_physio_prctile(dLocsSecs, 99);
         
         fs(3) = subplot(3,1,3);
-        plot(t(LOCS(1:end-1)), dLocsSecs); title('duration betwenn scan events - search for bad peaks here!');
+        plot(t(LOCS(1:end-1)), dLocsSecs); title('duration between scan events - search for bad peaks here!');
         xlabel('t (s)');
         ylabel('t (ms)');
         ylim([0.9*ymin, 1.1*ymax]);
