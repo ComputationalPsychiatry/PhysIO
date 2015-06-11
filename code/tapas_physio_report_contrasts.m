@@ -1,4 +1,4 @@
-function args = tapas_physio_report_contrasts(varargin)
+function varargout = tapas_physio_report_contrasts(varargin)
 % This function reports all relevant F-contrast-maps for physIO-created regressors
 % in a given GLM
 %
@@ -124,6 +124,18 @@ args = propval(varargin, defaults);
 tapas_physio_strip_fields(args);
 
 % make sure to use absolute paths from now on...
+if iscell(fileSpm)
+    fileSpm = fileSpm{1};
+end
+
+if iscell(fileStructural)
+    fileStructural = fileStructural{1};
+end
+
+if iscell(fileReport)
+    fileReport = fileReport{1};
+end
+
 fp = fileparts(fileSpm);
 if isempty(fp) || (~ispc && fp(1) ~= '/') || (ispc && fp(2) ~= ':')
     fileSpm = fullfile(pwd, fileSpm);
@@ -241,3 +253,6 @@ set(gcf,'Name', titstr);
 
 set(0, 'DefaultFigureWindowStyle', tmpWindowStyle);
 
+if nargout
+    varargout{1} = args;
+end
