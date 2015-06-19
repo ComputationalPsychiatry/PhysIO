@@ -67,6 +67,11 @@ if ~isZtransformed(2) % perform z-transformation
     y = y - sum(y)/nSamples;
     y = y./sqrt(y'*y*normFactor);
 end
-correlation = x'*y*normFactor;
+
+if numel(x) == numel(y)
+    correlation = x'*y*normFactor;
+else
+    correlation = [];
+end
 
 %end % else doUseSlow

@@ -435,7 +435,7 @@ output_multiple_regressors         = cfg_entry;
 output_multiple_regressors.tag     = 'output_multiple_regressors';
 output_multiple_regressors.name    = 'output_multiple_regressors';
 output_multiple_regressors.help    = {
-    'Output file for physiologica regressors'
+    'Output file for physiological regressors'
     'Choose file name with extension:'
     '.txt for ASCII files with 1 regressor per column'
     '.mat for matlab variable file'
@@ -443,6 +443,22 @@ output_multiple_regressors.help    = {
 output_multiple_regressors.strtype = 's';
 output_multiple_regressors.num     = [1 Inf];
 output_multiple_regressors.val     = {'multiple_regressors.txt'};
+
+%--------------------------------------------------------------------------
+% output_physio
+%--------------------------------------------------------------------------
+output_physio         = cfg_entry;
+output_physio.tag     = 'output_physio';
+output_physio.name    = 'output_physio';
+output_physio.help    = {
+    'Output file for physio-structure with extracted physiological time'
+    'series, detected peak and created regressors'
+    'Choose mat-file name; structure will be saved as variable physio in there.'
+    };
+output_physio.strtype = 's';
+output_physio.num     = [1 Inf];
+output_physio.val     = {'physio.mat'};
+
 
 %--------------------------------------------------------------------------
 % input_other_multiple_regressors
@@ -463,7 +479,7 @@ model      = cfg_branch;
 model.tag  = 'model';
 model.name = 'model';
 model.val  = {model_type, order, input_other_multiple_regressors, ...
-    output_multiple_regressors};
+    output_multiple_regressors, output_physio};
 model.help = {['Physiological Model to be estimated and Included in GLM ' ... 
     'multiple_regressors.txt']};
 
@@ -1040,10 +1056,11 @@ function out = run_physio(job)
 
 physio = tapas_physio_job2physio(job);
 
-[physio_out, R] = tapas_physio_main_create_regressors(physio);
+[physio, R] = tapas_physio_main_create_regressors(physio);
 
-out.physnoisereg = cellstr(physio_out.model.output_multiple_regressors);
+out.physnoisereg = cellstr(physio.model.output_multiple_regressors);
 out.R = R;
+out.physiofile  = cellstr(physio.model.output_physio);
 
 
 %==========================================================================
@@ -1051,6 +1068,11 @@ out.R = R;
 %==========================================================================
 function dep = vout_physio(job)
 dep(1)            = cfg_dep;
-dep(1).sname      = 'physiological noise regressors file';
+dep(1).sname      = 'physiological noise regressors file (Multiple Regresssors)';
 dep(1).src_output = substruct('.','physnoisereg');
 dep(1).tgt_spec   = cfg_findspec({{'filter','mat','strtype','e'}});
+
+dep(2)            = cfg_dep;
+dep(2).sname      = 'PhysIO Structure File';
+dep(2).src_output = substruct('.','physiofile');
+dep(2).tgt_spec   = cfg_findspec({{'filter','mat','strtype','e'}});

@@ -235,6 +235,9 @@ else
     % either txt-file or mat-file with variable R
     model.output_multiple_regressors = '';
     
+    % mat-file where whole physio-structure is saved after finishing main.m
+    model.output_physio = '';
+    
     % natural number, order of cardiac phase Fourier expansion
     model.order.c = [];
     

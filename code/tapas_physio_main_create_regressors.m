@@ -1,4 +1,4 @@
-function [physio_out, R, ons_secs] = tapas_physio_main_create_regressors(varargin)
+function [physio, R, ons_secs] = tapas_physio_main_create_regressors(varargin)
 % Main Toolbox Function for preprocessing & modelling from physio-structure
 %
 % [physio_out, R, ons_secs] = tapas_physio_main_create_regressors(physio)
@@ -317,22 +317,24 @@ input_R = [input_R, convHRV, convRVT];
 
 model.R = R;
 
-physio_out.save_dir     = save_dir;
-physio_out.log_files    = log_files;
-physio_out.thresh       = thresh;
-physio_out.sqpar        = sqpar;
-physio_out.model        = model;
-physio_out.verbose      = verbose;
-physio_out.ons_secs     = ons_secs;
+physio.save_dir     = save_dir;
+physio.log_files    = log_files;
+physio.thresh       = thresh;
+physio.sqpar        = sqpar;
+physio.model        = model;
+physio.verbose      = verbose;
+physio.ons_secs     = ons_secs;
 
+% save final physio-structure in .mat-file
+if ~isempty(model.output_physio)
+    save(model.output_physio, 'physio');
+end
 
 switch lower(model.type)
     case 'none'
-        disp('No model estimated. Saving read log-files data into output-file instead: Check variable physio.ons_secs');
-        if ~isempty(model.output_multiple_regressors)
-            [fpfx, fn] = fileparts(model.output_multiple_regressors);
-            save(fullfile(fpfx, [fn '.mat']), 'physio_out');
-        end
+        disp(['No model estimated. Saving read log-files data into physio ' ...
+            'output-file instead: Check variable physio.ons_secs']);
+       
         
     otherwise
         [fpfx, fn, fsfx] = fileparts(model.output_multiple_regressors);

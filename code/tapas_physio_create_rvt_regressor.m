@@ -67,9 +67,14 @@ end
 % at the 1st and last scans of the session due to convolution
 convRVT = conv(rvt-mean(rvt), rrf, 'same');
 
+% rescaling to -1...1 for display purposes
+convRVT = convRVT./max(abs(convRVT));
+
+
 if verbose.level >= 2
     subplot(2,2,3)
-    plot(sample_points, convRVT,'g');xlabel('time (seconds)');ylabel('resp vol time X resp response function');
+    plot(sample_points, convRVT,'g');xlabel('time (seconds)');
+    ylabel('resp vol time X resp response function');
 end
 
 
@@ -92,5 +97,6 @@ if verbose.level >= 2
     hp{1} = plot(samplePointsOut, rvtOut,'k--');hold all;
     hp{2} = plot(samplePointsOut, convRVTOut,'g');
     xlabel('time (seconds)');ylabel('regessor');
-    legend([hp{1}(1), hp{2}(1)], 'respiratory response regressor', 'respiratory volume time (a. u.)');
+    legend([hp{1}(1), hp{2}(1)], 'respiratory volume time (a. u.)', ...
+        'respiratory response regressor');
 end

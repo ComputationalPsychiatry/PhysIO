@@ -6,7 +6,10 @@ function hr = tapas_physio_hr(cpulse, t)
 % a sliding window of 6 seconds around the time points is used to
 % determine heart rate variability, as suggested in 
 %
-% Chang, Catie, John P. Cunningham, and Gary H. Glover. �Influence of Heart Rate on the BOLD Signal: The Cardiac Response Function.� NeuroImage 44, no. 3 (February 1, 2009): 857�869. doi:10.1016/j.neuroimage.2008.09.029.
+% Chang, Catie, John P. Cunningham, and Gary H. Glover. 
+% Influence of Heart Rate on the BOLD Signal: The Cardiac Response Function.
+% NeuroImage 44, no. 3 (February 1, 2009): 857-869. 
+% doi:10.1016/j.neuroimage.2008.09.029.
 %
 % IN
 %   cpulse  onset times (seconds) of heartbeat pulses (R-wave peak)

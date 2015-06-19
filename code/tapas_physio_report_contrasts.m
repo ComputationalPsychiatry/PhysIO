@@ -28,6 +28,8 @@ function varargout = tapas_physio_report_contrasts(varargin)
 %   Optional Parameters:
 %
 %                  pathPhysIO:  path of physIO Toolbox code
+%               filePhysIO:     mat-file where PhysIO-object was saved
+%                               e.g. physio.mat
 %          namesPhysContrasts: cell Array of contrast names in design matrix
 %                              e.g. {'All Phys', 'Cardiac', 'Respiratory',
 %                               'Card X Resp Interation',
@@ -76,6 +78,7 @@ function varargout = tapas_physio_report_contrasts(varargin)
 defaults.titleGraphicsWindow = '';
 % PhysIO Toolbox code should be in same folder as this file
 defaults.pathPhysIO      = fileparts(mfilename('fullpath'));
+defaults.filePhysIO      = ''; 
 defaults.fileReport      = 'physio_report_contrasts.ps'; % where contrast maps are saved
 defaults.fileStructural  = 'mean.nii';
 defaults.fileSpm         = 'SPM.mat';
@@ -123,6 +126,7 @@ defaults.model                        = physio.model; % holding number of physio
 args = propval(varargin, defaults);
 tapas_physio_strip_fields(args);
 
+
 % make sure to use absolute paths from now on...
 if iscell(fileSpm)
     fileSpm = fileSpm{1};
@@ -134,6 +138,10 @@ end
 
 if iscell(fileReport)
     fileReport = fileReport{1};
+end
+
+if iscell(filePhysIO)
+    filePhysIO = filePhysIO{1};
 end
 
 fp = fileparts(fileSpm);
@@ -151,9 +159,19 @@ if isempty(fp) || (~ispc && fp(1) ~= '/') || (ispc && fp(2) ~= ':')
     fileStructural = fullfile(pwd, fileStructural);
 end
 
+fp = fileparts(filePhysIO);
+if isempty(fp) || (~ispc && fp(1) ~= '/') || (ispc && fp(2) ~= ':')
+    filePhysIO = fullfile(pwd, filePhysIO);
+end
 
 load(fileSpm);
 nContrasts = numel(indReportPhysContrasts);
+
+% if input file given, load PhysIO-object
+if ~isempty(filePhysIO)
+    load(filePhysIO, 'physio');
+    model = physio.model;
+end
 
 % Temporarily set window style to undocked, so that SPM opens as usual
 tmpWindowStyle = get(0, 'DefaultFigureWindowStyle');

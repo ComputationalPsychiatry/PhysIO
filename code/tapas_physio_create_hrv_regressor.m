@@ -63,9 +63,13 @@ end
 % at the 1st and last scans of the session due to convolution
 convHRV = conv(hr-mean(hr), crf, 'same');
 
+% rescaling to -1...1 for display purposes
+convHRV = convHRV./max(abs(convHRV));
+
 if verbose.level>=2
     subplot(2,2,3)
-    plot(sample_points, convHRV,'r');xlabel('time (seconds)');ylabel('heart rate X cardiac response function');
+    plot(sample_points, convHRV,'r');xlabel('time (seconds)');
+    ylabel('heart rate X cardiac response function');
 end
 
 
@@ -88,5 +92,5 @@ if verbose.level>=2
     hp{1} = plot(samplePointsOut, hrOut,'k--'); hold all;
     hp{2} = plot(samplePointsOut, convHRVOut,'r'); 
     xlabel('time (seconds)');ylabel('regessor');
-    legend([hp{1}(1), hp{2}(1)], 'cardiac response regressor', 'heart rate (bpm)');
+    legend([hp{1}(1), hp{2}(1)], 'heart rate (bpm)', 'cardiac response regressor');
 end
