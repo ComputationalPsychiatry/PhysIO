@@ -70,12 +70,12 @@ maxFr = max(abs(fr));
 [~, iTimeRpulseMin] = ismember(timeRpulseMin, t);
 
 % interpolate minima an maxima...as in Birn et al., 2006
-ampRpulseMax = interp1(timeRpulseMax, fr(iTimeRpulseMax), t, 'extrap');
-ampRpulseMin = interp1(timeRpulseMin, fr(iTimeRpulseMin), t, 'extrap');
+ampRpulseMax = interp1(timeRpulseMax, fr(iTimeRpulseMax), t, 'linear', 'extrap');
+ampRpulseMin = interp1(timeRpulseMin, fr(iTimeRpulseMin), t, 'linear', 'extrap');
 
 durationBreath = diff(timeRpulseMax);
 interpDurationBreath = interp1(timeRpulseMax(2:end), durationBreath,t, ...
-    'extrap');
+    'linear', 'extrap');
 
 if verbose.level>=2
     verbose.fig_handles(end+1) = tapas_physio_get_default_fig_params();
