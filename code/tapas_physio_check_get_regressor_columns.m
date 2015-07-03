@@ -6,7 +6,7 @@ function [colAll, colCard, colResp, colMult, colHRV, colRVT, colMove] = ...
 %
 % INPUT:
 %   SPM     SPM.mat
-%   model  physIO.model-structure
+%   model   physIO.model-structure
 %    
 %
 % OUTPUT:

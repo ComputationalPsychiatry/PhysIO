@@ -84,15 +84,6 @@ defaults.fileStructural  = 'mean.nii';
 defaults.fileSpm         = 'SPM.mat';
 defaults.drawCrosshair   = true;
 
-% names of physiological contrasts to be reported
-% namesPhysContrasts = {
-%             'All Phys Regressors'
-%             'Cardiac Regressors'
-%             'Respiratory Regressors'
-%             'Cardiac X Respiratory Interaction'
-%             'Movement Regressors'
-%             };
-
 defaults.namesPhysContrasts = {
     'All Phys'
     'Cardiac'

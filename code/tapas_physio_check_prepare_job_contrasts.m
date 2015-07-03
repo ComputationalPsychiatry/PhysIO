@@ -25,8 +25,6 @@ hasNamesContrasts = nargin >= 6;
 
 if ~exist('SPM', 'var'), load(fileSPM); end
 
-
-
 [colAll, colCard, colResp, colMult, colHRV, colRVT, colMove] = ...
     tapas_physio_check_get_regressor_columns(SPM, model);
 con{1} = colAll;
