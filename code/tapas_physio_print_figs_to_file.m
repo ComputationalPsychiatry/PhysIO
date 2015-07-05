@@ -30,9 +30,11 @@ if nargin > 1
     verbose.fig_output_file = fullfile(save_dir, verbose.fig_output_file);
 end
 
-if isempty(verbose.fig_handles) && verbose.level > 0 && ...
-    ~isempty(verbose.fig_output_file)
-    warning('No figures found to save to file')
+if ~isfield(verbose, 'fig_handles') || numel(verbose.fig_handles) == 0 || ...
+        isempty(verbose.fig_handles) && ~isempty(verbose.fig_output_file)
+    if verbose.level > 0 
+        warning('No figures found to save to file');
+    end
 else
     [pfx fn sfx] = fileparts(verbose.fig_output_file);
     switch sfx

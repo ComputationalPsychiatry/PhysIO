@@ -389,6 +389,10 @@ else
     %                                   regressors
     %                            Fig 9: final multiple_regressors matrix
     verbose.level = 1;
+    verbose.process_log = cell(0,1); 
+                                % stores text outputs of PhysIO Toolbox
+                                % processing, e.g. warnings about missed
+                                % slice triggers, peak height etc.
     verbose.fig_handles = [];     % [nFigs,1] vector; collecting of all generated figure handles during a run of tapas_physio_main_create_regressors
     verbose.fig_output_file = ''; % file name (including extension) where to print all physIO output figures to,
     verbose.use_tabs = false;    % if true, plots are performed in tabs of SPM graphics window

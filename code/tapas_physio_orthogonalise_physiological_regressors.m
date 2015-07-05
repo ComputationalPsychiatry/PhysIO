@@ -72,11 +72,26 @@ end
 if verbose.level
     verbose.fig_handles(end+1) = tapas_physio_get_default_fig_params();
     set(gcf, 'Name', 'RETROICOR GLM regressors');
-    subplot(1,3,1); imagesc(R); title({'physiological regressors matrix for GLM'...
-        ' - specified regressors orthogonalized - '}); colormap gray; xlabel('regressor');ylabel('scan volume');
-    subplot(1,3,2);
-    imagesc(R_non_orth);title('non-orthogonalized regressors for GLM'); colormap gray; xlabel('regressor');
-    subplot(1,3,3);
-    imagesc((R_non_orth-R).^2 );title({'squared differences of raw RETROICOR matrix to'...
-        ' matrix with orthogonalized cardiac regressors'}); colormap gray; xlabel('regressor'); colorbar;
+    
+    switch lower(orthogonalise)
+        case {'n', 'none'}
+            imagesc(R); 
+            title({'Physiological regressor matrix for GLM', ...
+                '- including input confound regressors -'});
+            colormap gray; xlabel('regressor');ylabel('scan volume');
+            
+        otherwise
+            subplot(1,3,1); imagesc(R); title({'Physiological regressor matrix for GLM'...
+                ' - specified regressors orthogonalized - '}); 
+            colormap gray; xlabel('regressor');ylabel('scan volume');
+            subplot(1,3,2);
+            imagesc(R_non_orth);
+            title('non-orthogonalized regressors for GLM'); 
+            colormap gray; xlabel('regressor');
+            subplot(1,3,3);
+            imagesc((R_non_orth-R).^2 );
+            title({'squared differences of raw RETROICOR matrix to'...
+                ' matrix with orthogonalized cardiac regressors'}); 
+            colormap gray; xlabel('regressor'); colorbar;
+    end
 end

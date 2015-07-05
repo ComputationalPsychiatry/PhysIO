@@ -309,7 +309,8 @@ input_R = [input_R, convHRV, convRVT];
 % 4.2   Orthogonalisation of regressors ensures numerical stability for
 %       otherwise correlated cardiac regressors
 
-[R, verbose] = tapas_physio_orthogonalise_physiological_regressors(cardiac_sess, respire_sess, ...
+[R, verbose] = tapas_physio_orthogonalise_physiological_regressors(...
+    cardiac_sess, respire_sess, ...
     mult_sess, input_R, model.order.orthogonalise, verbose);
 
 
