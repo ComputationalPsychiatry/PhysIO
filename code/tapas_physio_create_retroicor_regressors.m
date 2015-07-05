@@ -109,12 +109,13 @@ if ~hasPhaseData
     end
     
 else % compute Fourier expansion directly from cardiac/respiratory phases
-    
+    c_sample_phase = ons_secs.c_sample_phase;
+    r_sample_phase = ons_secs.r_sample_phase;
     if (order.c || order.cr)
         cardiac_sess    = tapas_physio_get_fourier_expansion(...
-            ons_secs.c_sample_phase, order.c);
+            c_sample_phase, order.c);
         respire_sess    = tapas_physio_get_fourier_expansion(...
-            ons_secs.r_sample_phase, order.r);
+            r_sample_phase, order.r);
     else
         cardiac_sess = [];
         respire_sess = [];
