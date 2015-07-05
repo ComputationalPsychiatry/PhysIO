@@ -101,11 +101,13 @@ doCountSliceEventsFromLogfileStart  = ...
 %% check consistency of thresh-values
 
 if thresh.slice <= thresh.zero
-    error('Please set thresh.scan_timing.slice > thresh.scan_timing.zero');
+    verbose = tapas_physio_log('Please set thresh.scan_timing.slice > thresh.scan_timing.zero', ...
+        verbose, 2);
 end
 
 if doDetectVolumesByGradientAmplitude && (thresh.slice > thresh.vol)
-    error('Please set thresh.scan_timing.vol > thresh.scan_timing.slice');
+    verbose = tapas_physio_log('Please set thresh.scan_timing.vol > thresh.scan_timing.slice', ...
+        verbose, 2);
 end
 
 
@@ -175,7 +177,8 @@ doNormalize = max([thresh.slice, thresh.vol, thresh.zero]) < 1;
 % Philips software keys), return nominal timing instead
 if ~any(gradient_choice) % all values zero
     [VOLLOCS, LOCS] = tapas_physio_create_nominal_scan_timing(t, sqpar);
-    warning('No gradient timecourse was logged in the logfile. Using nominal timing from sqpar instead');
+    verbose = tapas_physio_log('No gradient timecourse was logged in the logfile. Using nominal timing from sqpar instead', ...
+        verbose, 1);
     return
 end
 
@@ -282,24 +285,26 @@ end
 %% Return error if not enough events flund
 % VOLLOCS = find(abs(diff(z2))>thresh.vol);
 if isempty(VOLLOCS) || isempty(LOCS)
-    error('No volume start events found, Decrease thresh.vol or thresh.slice after considering the Thresholding figure');
+    verbose = tapas_physio_log('No volume start events found, Decrease thresh.vol or thresh.slice after considering the Thresholding figure', ...
+        verbose, 2);
 elseif length(LOCS) < NslicesPerBeat
-    error('Too few slice start events found. Decrease thresh.slice after considering the Thresholding figure');
+    verbose = tapas_physio_log('Too few slice start events found. Decrease thresh.slice after considering the Thresholding figure', ...
+        verbose, 2);
 end
 
 if doCountSliceEventsFromLogfileStart
     if length(VOLLOCS)< (Nprep+Nscans+Ndummies)
-        error(['Not enough volume events found. \n\tFound:  %d\n ' ...
+        verbose = tapas_physio_log(sprintf(['Not enough volume events found. \n\tFound:  %d\n ' ...
             '\tNeeded: %d+%d+%d (Nprep+Ndummies+Nscans)\n' ...
             'Please lower thresh.vol or thresh.vol_spacing\n'], ...
-            length(VOLLOCS), Nprep, Ndummies, Nscans);
+            length(VOLLOCS), Nprep, Ndummies, Nscans), verbose, 2);
     end
 else
     if length(VOLLOCS)< (Nscans+Ndummies)
-        error(['Not enough volume events found. \n\tFound:  %d\n ' ...
+        verbose = tapas_physio_log(sprintf(['Not enough volume events found. \n\tFound:  %d\n ' ...
             '\tNeeded: %d+%d (Ndummies+Nscans)\n' ...
             'Please lower thresh.vol or thresh.vol_spacing\n'], ...
-            length(VOLLOCS), Ndummies, Nscans);
+            length(VOLLOCS), Ndummies, Nscans), verbose, 2);
     end
 end
 

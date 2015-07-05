@@ -67,12 +67,17 @@ for v = 1:Nallvols-1
     SLICELOCS{v} = LOCS(intersect(find(LOCS>=VOLLOCS(v), Nslices, 'first'), ...
         find(LOCS<VOLLOCS(v+1))));
     if length(SLICELOCS{v})~=Nslices
-        warning(sprintf('Volume event %d: %d instead of %d slice events found\n', v, length(SLICELOCS{v}), Nslices));
+        verbose = tapas_physio_log(sprintf(...
+            'Volume event %d: %d instead of %d slice events found\n', v, ...
+            length(SLICELOCS{v}), Nslices), verbose, 1);
     end
 end
 SLICELOCS{Nallvols} = LOCS(find(LOCS>=VOLLOCS(Nallvols), Nslices, 'first'));
 if length(SLICELOCS{Nallvols})~=Nslices
-    warning(sprintf('Volume event %d: %d instead of %d slice events found\n', Nallvols, length(SLICELOCS{Nallvols}), Nslices));
+    verbose = tapas_physio_log(sprintf(...
+        'Volume event %d: %d instead of %d slice events found\n', ...
+        Nallvols, length(SLICELOCS{Nallvols}), Nslices), ...
+        verbose, 1);
 end
 
 if verbose.level >= 3

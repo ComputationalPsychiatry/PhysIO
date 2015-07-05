@@ -1,4 +1,4 @@
-function [ons_secs, sqpar] = tapas_physio_crop_scanphysevents_to_acq_window(ons_secs, sqpar)
+function [ons_secs, sqpar, verbose] = tapas_physio_crop_scanphysevents_to_acq_window(ons_secs, sqpar, verbose)
 % cropping of ons_secs into acquired scan/presentation session, augmenting
 % sqpar by scan-timing parameters from SCANPHYSLOG-file
 %
@@ -108,8 +108,8 @@ formatstr = ['    maxscan (incl. dummies) = %d \n    ', ...
     'tmax = %6.2f s \n    ', ...
     'mean TR = %6.2f s\n'];
 
-fprintf(1,formatstr, sqpar.maxscan, spulse(1), ...
-    spulse(1+Ndummies*Nslices), tmax, sqpar.meanTR);
+verbose = tapas_physio_log(sprintf(formatstr, sqpar.maxscan, spulse(1), ...
+    spulse(1+Ndummies*Nslices), tmax, sqpar.meanTR), verbose);
 
 
 %% prepare output variable

@@ -70,12 +70,8 @@ if ~hasPhaseData
     if (order.c || order.cr) && hasCardiacData
         
         
-        if verbose.level >= 3
-            [c_phase, verbose.fig_handles(end+1)]    = ...
-                tapas_physio_get_cardiac_phase(cpulse, spulse, verbose.level, svolpulse);
-        else
-            c_phase    = tapas_physio_get_cardiac_phase(cpulse, spulse, 0, svolpulse);
-        end
+        [c_phase, verbose]    = ...
+                tapas_physio_get_cardiac_phase(cpulse, spulse, verbose, svolpulse);
         c_sample_phase  = tapas_physio_downsample_phase(spulse, c_phase, sample_points, rsampint);
         cardiac_sess    = tapas_physio_get_fourier_expansion(c_sample_phase,order.c);
         

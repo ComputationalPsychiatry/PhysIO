@@ -1,4 +1,4 @@
-function tapas_physio_print_figs_to_file(verbose, save_dir)
+function verbose = tapas_physio_print_figs_to_file(verbose, save_dir)
 % prints all figure handles in verbose-struct to specified filename there
 %
 %   physio_print_figs_to_ps(verbose)
@@ -33,7 +33,7 @@ end
 if ~isfield(verbose, 'fig_handles') || numel(verbose.fig_handles) == 0 || ...
         isempty(verbose.fig_handles) && ~isempty(verbose.fig_output_file)
     if verbose.level > 0 
-        warning('No figures found to save to file');
+        tapas_physio_log('No figures found to save to file', verbose, 1);
     end
 else
     [pfx fn sfx] = fileparts(verbose.fig_output_file);

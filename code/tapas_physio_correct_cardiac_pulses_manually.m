@@ -1,4 +1,6 @@
-function [ons_secs, outliersHigh, outliersLow] = tapas_physio_correct_cardiac_pulses_manually(ons_secs,thresh_cardiac)
+function [ons_secs, outliersHigh, outliersLow, verbose] = ...
+    tapas_physio_correct_cardiac_pulses_manually(ons_secs, thresh_cardiac, ...
+    verbose)
 % this function takes the onsets from ECG measure and controls for
 % outliers (more or less than a threshold given by a percentile increased
 % or decreased by upperTresh or lowerThresh percent respectively.
@@ -15,12 +17,16 @@ function [ons_secs, outliersHigh, outliersLow] = tapas_physio_correct_cardiac_pu
 %
 % $Id$
 
+if verbose.level < 1
+    error('Manual picking of cardiac pulses requires verbose.level >= 1');
+end
 
 percentile = thresh_cardiac.percentile;
 upperThresh = thresh_cardiac.upper_thresh;
 lowerThresh = thresh_cardiac.lower_thresh;
 
-[outliersHigh,outliersLow,fh] = tapas_physio_cardiac_detect_outliers(ons_secs.cpulse, percentile, upperThresh, lowerThresh);
+[outliersHigh,outliersLow, verbose] = tapas_physio_cardiac_detect_outliers(...
+    ons_secs.cpulse, percentile, upperThresh, lowerThresh, verbose);
 if any(outliersHigh)
     %disp('Press Enter to proceed to manual peak selection!');
     %pause;
@@ -54,10 +60,11 @@ if any(outliersHigh)
     ons_secs.cpulse = sort([ons_secs.cpulse;additionalPulse]);
     close(fh2);
 end
-close(fh);
+close(verbose.fig_handles(end));
+verbose.fig_handles(end) = [];
 
-
-[outliersHigh,outliersLow,fh] = tapas_physio_cardiac_detect_outliers(ons_secs.cpulse, percentile, upperThresh, lowerThresh);
+[outliersHigh,outliersLow, verbose] = tapas_physio_cardiac_detect_outliers(...
+    ons_secs.cpulse, percentile, upperThresh, lowerThresh, verbose);
 
 nPulses = length(ons_secs.cpulse);
 finalIndex=1:nPulses;
@@ -95,14 +102,23 @@ for indStart = round(nWindow/2):nWindow-2:nPulses
     
 end
 ons_secs.cpulse = sort(ons_secs.cpulse(finalIndex));
-close(fh);
-[outliersHigh,outliersLow,fh] = tapas_physio_cardiac_detect_outliers(ons_secs.cpulse, percentile, upperThresh, lowerThresh);
-close(fh);
+
+close(verbose.fig_handles(end));
+verbose.fig_handles(end) = [];
+
+[outliersHigh,outliersLow, verbose] = tapas_physio_cardiac_detect_outliers(...
+    ons_secs.cpulse, percentile, upperThresh, lowerThresh, verbose);
+
+close(verbose.fig_handles(end));
+verbose.fig_handles(end) = [];
+
 % recursively determine outliers
 if ~isempty(outliersHigh) || ~isempty(outliersLow)
      doManualCorrectionAgain = input('More outliers detected after correction. Do you want to remove them? (1=yes, 0=no; ENTER)');
     if doManualCorrectionAgain
-        [ons_secs, outliersHigh, outliersLow] = tapas_physio_correct_cardiac_pulses_manually(ons_secs,thresh_cardiac);
+        [ons_secs, outliersHigh, outliersLow] = ...
+            tapas_physio_correct_cardiac_pulses_manually(ons_secs, ...
+            thresh_cardiac, verbose);
     end
 end
 

@@ -1,5 +1,5 @@
-function fh = tapas_physio_plot_raw_physdata_diagnostics(cpulse, yResp, ...
-    thresh_cardiac,  isVerbose, t, c)
+function verbose = tapas_physio_plot_raw_physdata_diagnostics(cpulse, yResp, ...
+    thresh_cardiac, verbose, t, c)
 % plots diagnostics for raw physiological time series as monitoried by the
 % MR scanner breathing belt/ECG
 %
@@ -19,9 +19,12 @@ function fh = tapas_physio_plot_raw_physdata_diagnostics(cpulse, yResp, ...
 hasCardiacData = ~isempty(cpulse);
 hasRespData = ~isempty(yResp);
 
+isVerbose = verbose.level > 0;
+
 if isVerbose
     fh = tapas_physio_get_default_fig_params();
-    set(fh, 'Name','Diagnostics raw phys time series');
+    verbose.fig_handles(end+1,1) = fh;
+    set(fh, 'Name','Diagnostics for raw physiological time series');
     ah = subplot(2,1,1);
     
     if hasCardiacData
@@ -38,7 +41,6 @@ if isVerbose
         stem(cpulse, c(timeCpulse), 'r', 'LineWidth', 1);
     end
 else 
-    fh = [];
     ah = [];
 end
 
@@ -46,10 +48,10 @@ if hasCardiacData
     percentile = thresh_cardiac.percentile;
     upperThresh = thresh_cardiac.upper_thresh;
     lowerThresh = thresh_cardiac.lower_thresh;
-    [outliersHigh,outliersLow,fh] = tapas_physio_cardiac_detect_outliers(...
-        cpulse, percentile, upperThresh, lowerThresh, isVerbose, ah);
+    [outliersHigh,outliersLow, verbose] = tapas_physio_cardiac_detect_outliers(...
+        cpulse, percentile, upperThresh, lowerThresh, verbose, ah);
 end
-title( 'temporal lag between subsequent heartbeats (seconds)');
+title('Temporal lag between subsequent heartbeats (seconds)');
 
 % histogram of breathing amplitudes
 
@@ -63,5 +65,5 @@ if hasRespData
         hist(yResp, nBins);
     end
 end
-title('histogram of breathing belt amplitudes');
+title('Histogram of breathing belt amplitudes');
 end

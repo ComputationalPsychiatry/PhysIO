@@ -358,6 +358,7 @@ else
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     verbose = [];
     
+    %-1 = no text or graphics output (text saved in verbose.process_log)
     % 0 = no graphical output;
     % 1 = (default) main plots : Fig 1: gradient scan timing (if selected) ;
     %                            Fig 2: heart beat/breathing statistics & outlier;

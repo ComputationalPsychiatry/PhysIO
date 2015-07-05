@@ -128,9 +128,8 @@ if ~hasPhaseLogfile
     hasCardiacData = ~isempty(ons_secs.c);
     hasRespData = ~isempty(ons_secs.r);
     
-    if verbose.level >= 2
-        verbose.fig_handles(end+1) = tapas_physio_plot_raw_physdata(ons_secs);
-    end
+   
+    verbose = tapas_physio_plot_raw_physdata(ons_secs, verbose);
     
     
     
@@ -186,8 +185,10 @@ if ~hasPhaseLogfile
             otherwise
                 % run one of the various cardiac pulse detection algorithms
                 minCardiacCycleSamples = floor((1/(90/60)/dt));
-                [ons_secs.cpulse, verbose] = tapas_physio_get_cardiac_pulses(ons_secs.t, ons_secs.c, ...
-                    thresh.cardiac.initial_cpulse_select, thresh.cardiac.modality, minCardiacCycleSamples, verbose);
+                [ons_secs.cpulse, verbose] = ...
+                    tapas_physio_get_cardiac_pulses(ons_secs.t, ons_secs.c, ...
+                    thresh.cardiac.initial_cpulse_select, ...
+                    thresh.cardiac.modality, minCardiacCycleSamples, verbose);
         end
         
         
@@ -196,9 +197,9 @@ if ~hasPhaseLogfile
         switch thresh.cardiac.posthoc_cpulse_select.method
             case {'manual'}
                 % additional manual fill-in of more missed pulses
-                [ons_secs, outliersHigh, outliersLow] = ...
+                [ons_secs, outliersHigh, outliersLow, verbose] = ...
                     tapas_physio_correct_cardiac_pulses_manually(ons_secs, ...
-                    thresh.cardiac.posthoc_cpulse_select);
+                    thresh.cardiac.posthoc_cpulse_select, verbose);
             case {'load'}
                 hasPosthocLogFile = exist(thresh.cardiac.posthoc_cpulse_select.file, 'file') || ...
                     exist([thresh.cardiac.posthoc_cpulse_select.file '.mat'], 'file');
@@ -207,9 +208,9 @@ if ~hasPhaseLogfile
                     osload = load(thresh.cardiac.posthoc_cpulse_select.file, 'ons_secs');
                     ons_secs = osload.ons_secs;
                 else
-                    [ons_secs, outliersHigh, outliersLow] = ...
+                    [ons_secs, outliersHigh, outliersLow, verbose] = ...
                         tapas_physio_correct_cardiac_pulses_manually(ons_secs,...
-                        thresh.cardiac.posthoc_cpulse_select);
+                        thresh.cardiac.posthoc_cpulse_select, verbose);
                 end
             case {'off', ''}
         end
@@ -217,7 +218,8 @@ if ~hasPhaseLogfile
     end
     
     
-    [ons_secs, sqpar] = tapas_physio_crop_scanphysevents_to_acq_window(ons_secs, sqpar);
+    [ons_secs, sqpar, verbose] = tapas_physio_crop_scanphysevents_to_acq_window(...
+        ons_secs, sqpar, verbose);
     
     if hasRespData
         % filter respiratory signal
@@ -230,16 +232,9 @@ if ~hasPhaseLogfile
             tapas_physio_plot_cropped_phys_to_acqwindow(ons_secs, sqpar);
     end
     
-    if verbose.level >= 1
-        verbose.fig_handles(end+1) = ...
-            tapas_physio_plot_raw_physdata_diagnostics(ons_secs.cpulse, ...
-            ons_secs.r, thresh.cardiac.posthoc_cpulse_select, verbose.level, ...
-            ons_secs.t, ons_secs.c);
-    else % without figure creation    else
-        tapas_physio_plot_raw_physdata_diagnostics(ons_secs.cpulse, ...
-            ons_secs.r, thresh.cardiac.posthoc_cpulse_select, 0);
-    end
-    
+    verbose = tapas_physio_plot_raw_physdata_diagnostics(ons_secs.cpulse, ...
+        ons_secs.r, thresh.cardiac.posthoc_cpulse_select, verbose, ...
+        ons_secs.t, ons_secs.c);
     
 else
     % Phase data saved in log-file already
@@ -298,7 +293,8 @@ end
 % 4.1 Load other confound regressors, e.g. realigment parameters
 
 if isfield(model, 'input_other_multiple_regressors') && ~isempty(model.input_other_multiple_regressors)
-    input_R = tapas_physio_load_other_multiple_regressors(model.input_other_multiple_regressors);
+    [input_R, verbose] = tapas_physio_load_other_multiple_regressors(...
+        model.input_other_multiple_regressors, verbose);
 else
     input_R = [];
 end
@@ -355,6 +351,5 @@ end
 %% 5. Save output figures to files
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-if isfield(verbose, 'fig_output_file') && ~isempty(verbose.fig_output_file)
-    tapas_physio_print_figs_to_file(verbose);
-end
+[physio.verbose] = tapas_physio_print_figs_to_file(physio.verbose);
+
