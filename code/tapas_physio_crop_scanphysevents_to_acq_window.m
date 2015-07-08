@@ -114,10 +114,11 @@ verbose = tapas_physio_log(sprintf(formatstr, sqpar.maxscan, spulse(1), ...
 
 %% prepare output variable
 
-ons_secs.c        = c;
-ons_secs.r        = r;
-ons_secs.spulse   = spulse;
-ons_secs.cpulse   = cpulse;
-ons_secs.svolpulse= svolpulse;
+ons_secs.c          = c;
+ons_secs.r          = r;
+ons_secs.spulse     = spulse;
+ons_secs.cpulse     = cpulse;
+ons_secs.svolpulse  = svolpulse;
+ 
 end
 

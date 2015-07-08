@@ -23,7 +23,7 @@ isVerbose = verbose.level > 0;
 
 if isVerbose
     fh = tapas_physio_get_default_fig_params();
-    verbose.fig_handles(end+1,1) = fh;
+    verbose.fig_handles(end+1) = fh;
     set(fh, 'Name','Diagnostics for raw physiological time series');
     ah = subplot(2,1,1);
     

@@ -199,7 +199,7 @@ files.help = {'Specify log files where peripheral data was stored, and their pro
 
 
 %==========================================================================
-%% Sub-structure sqpar
+%% Subsub-structure sqpar
 %==========================================================================
 
 
@@ -325,174 +325,8 @@ sqpar.val  = {Nslices NslicesPerBeat TR Ndummies Nscans onset_slice time_slice_t
 sqpar.help = {'Sequence timing parameters, (number of slices, volumes, dummies, volume TR, slice TR ...)'};
 
 
-
-
-%==========================================================================
-%% Sub-structure model
-%==========================================================================
-
-
-%--------------------------------------------------------------------------
-% c
-%--------------------------------------------------------------------------
-c         = cfg_entry;
-c.tag     = 'c';
-c.name    = 'cardiac';
-c.help    = {'Order of Fourier expansion for cardiac phase'
-    ' - equals 1/2 number of cardiac regressors, since sine and cosine terms'
-    'are computed, i.e. sin(phi), cos(phi), sin(2*phi), cos(2*phi), ..., sin(c*phi), cos(c*phi)'
-    };
-c.strtype = 'e';
-c.num     = [1 1];
-c.val     = {3};
-
-%--------------------------------------------------------------------------
-% r
-%--------------------------------------------------------------------------
-r         = cfg_entry;
-r.tag     = 'r';
-r.name    = 'respiratory';
-r.help    = {
-    'Order of Fourier expansion for respiratory phase'
-    ' - equals 1/2 number of respiratory regressors, since sine and cosine terms'
-    'are computed, i.e. sin(phi), cos(phi), sin(2*phi), cos(2*phi), ..., sin(r*phi), cos(r*phi)'
-    };
-r.strtype = 'e';
-r.num     = [1 1];
-r.val     = {4};
-
-%--------------------------------------------------------------------------
-% cr
-%--------------------------------------------------------------------------
-cr         = cfg_entry;
-cr.tag     = 'cr';
-cr.name    = 'cardiac X respiratory';
-cr.help    = {
-    'Order of Fourier expansion for interaction of cardiac and respiratory phase'
-    ' - equals 1/4 number of interaction regressors, since sine and cosine terms'
-    'are computed and multiplied, i.e. sin(phi_c)*cos(phi_r), sin(phi_r)*cos(phi_c)'
-    };
-cr.strtype = 'e';
-cr.num     = [1 1];
-cr.val     = {1};
-
-%--------------------------------------------------------------------------
-% orthog
-%--------------------------------------------------------------------------
-orthog        = cfg_menu;
-orthog.tag    = 'orthogonalise';
-orthog.name   = 'orthogonalise';
-orthog.help   = {
-    'Orthogonalize physiological regressors with respect to each other.'
-    'Note: This is only recommended for triggered/gated acquisition sequences.'
-    };
-orthog.labels = {'none' 'cardiac' 'resp' 'mult' 'all'};
-orthog.values = {'none' 'cardiac' 'resp' 'mult' 'all'};
-orthog.val    = {'none'};
-
-%--------------------------------------------------------------------------
-% order
-%--------------------------------------------------------------------------
-order      = cfg_branch;
-order.tag  = 'order';
-order.name = 'order';
-order.val  = {c r cr orthog};
-order.help = {'...'};
-
-%--------------------------------------------------------------------------
-% model_type
-%--------------------------------------------------------------------------
-model_type        = cfg_menu;
-model_type.tag    = 'type';
-model_type.name   = 'type';
-model_type.help   = {'Physiological Model estimated'};
-model_type.labels = {
-    'none (only read-in of logfile data into physio.ons_secs)'
-    'RETROICOR (RETRO)'
-    'Heart Rate Variability (HRV)'
-    'Respiratory Volume per Time (RVT)'
-    'RETRO+HRV'
-    'RETRO+RVT'
-    'HRV+RVT'
-    'RETRO+HRV+RVT'
-    };
-model_type.values = {
-    'none'
-    'RETROICOR'
-    'HRV'
-    'RVT'
-    'RETROICOR_HRV'
-    'RETROICOR_RVT'
-    'HRV_RVT'
-    'RETROICOR_HRV_RVT'
-    };
-model_type.val    = {'RETROICOR'};
-
-%--------------------------------------------------------------------------
-% output_multiple_regressors
-%--------------------------------------------------------------------------
-output_multiple_regressors         = cfg_entry;
-output_multiple_regressors.tag     = 'output_multiple_regressors';
-output_multiple_regressors.name    = 'output_multiple_regressors';
-output_multiple_regressors.help    = {
-    'Output file for physiological regressors'
-    'Choose file name with extension:'
-    '.txt for ASCII files with 1 regressor per column'
-    '.mat for matlab variable file'
-    };
-output_multiple_regressors.strtype = 's';
-output_multiple_regressors.num     = [1 Inf];
-output_multiple_regressors.val     = {'multiple_regressors.txt'};
-
-%--------------------------------------------------------------------------
-% output_physio
-%--------------------------------------------------------------------------
-output_physio         = cfg_entry;
-output_physio.tag     = 'output_physio';
-output_physio.name    = 'output_physio';
-output_physio.help    = {
-    'Output file for physio-structure with extracted physiological time'
-    'series, detected peak and created regressors'
-    'Choose mat-file name; structure will be saved as variable physio in there.'
-    };
-output_physio.strtype = 's';
-output_physio.num     = [1 Inf];
-output_physio.val     = {'physio.mat'};
-
-
-%--------------------------------------------------------------------------
-% input_other_multiple_regressors
-%--------------------------------------------------------------------------
-input_other_multiple_regressors         = cfg_files;
-input_other_multiple_regressors.tag     = 'input_other_multiple_regressors';
-input_other_multiple_regressors.name    = 'input_other_multiple_regressors';
-input_other_multiple_regressors.val     = {{''}};
-input_other_multiple_regressors.help    = {'...'};
-input_other_multiple_regressors.filter  = '.*';
-input_other_multiple_regressors.ufilter = '.mat$|.txt$';
-input_other_multiple_regressors.num     = [0 1];
-
-%--------------------------------------------------------------------------
-% model
-%--------------------------------------------------------------------------
-model      = cfg_branch;
-model.tag  = 'model';
-model.name = 'model';
-model.val  = {model_type, order, input_other_multiple_regressors, ...
-    output_multiple_regressors, output_physio};
-model.help = {['Physiological Model to be estimated and Included in GLM ' ... 
-    'multiple_regressors.txt']};
-
-
-
-
 % ==========================================================================
-%% Sub-structure thresh
-%==========================================================================
-
-
-% ==========================================================================
-%% Subsub-structure scan_timing
+%% Subsub-structure sync
 %==========================================================================
 
 
@@ -557,35 +391,35 @@ zero.val     = {1700};
 
 
 %--------------------------------------------------------------------------
-% scan_timing_method_gradient_log
+% sync_method_gradient_log
 %--------------------------------------------------------------------------
 
 
-scan_timing_method_gradient_log = cfg_branch;
-scan_timing_method_gradient_log.tag = 'gradient_log';
-scan_timing_method_gradient_log.name = 'gradient_log';
-scan_timing_method_gradient_log.val  = {
+sync_method_gradient_log = cfg_branch;
+sync_method_gradient_log.tag = 'gradient_log';
+sync_method_gradient_log.name = 'gradient_log';
+sync_method_gradient_log.val  = {
    grad_direction 
    zero 
    slice 
    vol 
    vol_spacing
 };
-scan_timing_method_gradient_log.help = { ...
+sync_method_gradient_log.help = { ...
     ' Derive scan-timing from logged gradient time courses'
     ' in SCANPHYSLOG-files (Philips only)'};
 
 
 %--------------------------------------------------------------------------
-% scan_timing_method_gradient_log_auto
+% sync_method_gradient_log_auto
 %--------------------------------------------------------------------------
 
 
-scan_timing_method_gradient_log_auto = cfg_branch;
-scan_timing_method_gradient_log_auto.tag = 'gradient_log_auto';
-scan_timing_method_gradient_log_auto.name = 'gradient_log_auto';
-scan_timing_method_gradient_log_auto.val  = {};
-scan_timing_method_gradient_log_auto.help = { ...
+sync_method_gradient_log_auto = cfg_branch;
+sync_method_gradient_log_auto.tag = 'gradient_log_auto';
+sync_method_gradient_log_auto.name = 'gradient_log_auto';
+sync_method_gradient_log_auto.val  = {};
+sync_method_gradient_log_auto.help = { ...
     ' Derive scan-timing from logged gradient time courses'
     ' in SCANPHYSLOG-files automatically (Philips only), '
     ' using prior information on TR and number of slices, '
@@ -594,26 +428,26 @@ scan_timing_method_gradient_log_auto.help = { ...
 
 
 %--------------------------------------------------------------------------
-% scan_timing_method_nominal
+% sync_method_nominal
 %--------------------------------------------------------------------------
 
-scan_timing_method_nominal = cfg_branch;
-scan_timing_method_nominal.tag = 'nominal';
-scan_timing_method_nominal.name = 'nominal';
-scan_timing_method_nominal.val  = {};
-scan_timing_method_nominal.help = { ...
+sync_method_nominal = cfg_branch;
+sync_method_nominal.tag = 'nominal';
+sync_method_nominal.name = 'nominal';
+sync_method_nominal.val  = {};
+sync_method_nominal.help = { ...
     ' Derive scan-timing for sqpar (nominal scan timing parameters)'};
 
 
 %--------------------------------------------------------------------------
-% scan_timing_method_scan_timing_log
+% sync_method_sync_log
 %--------------------------------------------------------------------------
 
-scan_timing_method_scan_timing_log = cfg_branch;
-scan_timing_method_scan_timing_log.tag = 'scan_timing_log';
-scan_timing_method_scan_timing_log.name = 'scan_timing_log';
-scan_timing_method_scan_timing_log.val  = {};
-scan_timing_method_scan_timing_log.help = { ...
+sync_method_scan_timing_log = cfg_branch;
+sync_method_scan_timing_log.tag = 'scan_timing_log';
+sync_method_scan_timing_log.name = 'scan_timing_log';
+sync_method_scan_timing_log.val  = {};
+sync_method_scan_timing_log.help = { ...
     ' Derive scan-timing from individual scan timing logfile with time '
     ' stamps ("tics") for each slice and volume (e.g. Siemens_Cologne)'};
 
@@ -621,17 +455,17 @@ scan_timing_method_scan_timing_log.help = { ...
  
 
 %--------------------------------------------------------------------------
-% scan_timing
+% sync
 %--------------------------------------------------------------------------
-scan_timing      = cfg_choice;
-scan_timing.tag  = 'scan_timing';
-scan_timing.name = 'Scan/Physlog Time Synchronization';
-scan_timing.values  = {scan_timing_method_nominal, ...
-    scan_timing_method_gradient_log, ...
-    scan_timing_method_gradient_log_auto, ...
-    scan_timing_method_scan_timing_log};
-scan_timing.val = {scan_timing_method_nominal};
-scan_timing.help = {'Determines scan timing from nominal scan parameters or logged gradient time courses'
+sync      = cfg_choice;
+sync.tag  = 'sync';
+sync.name = 'Scan/Physlog Time Synchronization';
+sync.values  = {sync_method_nominal, ...
+    sync_method_gradient_log, ...
+    sync_method_gradient_log_auto, ...
+    sync_method_scan_timing_log};
+sync.val = {sync_method_nominal};
+sync.help = {'Determines scan timing from nominal scan parameters or logged gradient time courses'
     ''
 ' Available methods to determine slice onset times'
 ' ''nominal''         - to derive slice acquisition timing from sqpar directly'
@@ -642,6 +476,24 @@ scan_timing.help = {'Determines scan timing from nominal scan parameters or logg
 ' ''scan_timing_log'' - individual scan timing logfile with time stamps ("tics") for each slice and volume (e.g. Siemens_Cologne)'
 };
 
+
+%--------------------------------------------------------------------------
+% scan_timing
+%--------------------------------------------------------------------------
+scan_timing      = cfg_branch;
+scan_timing.tag  = 'scan_timing';
+scan_timing.name = 'scan_timing ( Parameters for sequence timing & synchronization)';
+scan_timing.val  = {sqpar sync};
+scan_timing.help = {' Parameters for sequence timing & synchronization, i.e.'
+    'scan_tming.sqpar =  slice and volume acquisition starts, TR,'
+    '                    number of scans etc.'
+    'scan_timing.sync = synchronize phys logfile to scan acquisition via logged MR gradient time courses/time stamps'
+    };
+ 
+
+% ==========================================================================
+%% Sub-structure preproc
+%==========================================================================
 
 
 
@@ -913,7 +765,7 @@ posthoc_cpulse_select.help = {
     'manual selection after visual inspection is possible using the'
     'following parameters. The results are saved for reproducibility.'
     ''
-    'Refers to physio.thresh.cardiac.posthoc_cpulse_select.method in physio-structure'
+    'Refers to physio.preproc.cardiac.posthoc_cpulse_select.method in physio-structure'
     };
 
 
@@ -929,14 +781,174 @@ cardiac.help = {'...'};
 
 
 %--------------------------------------------------------------------------
-% thresh
+% preproc
 %--------------------------------------------------------------------------
-thresh      = cfg_branch;
-thresh.tag  = 'thresh';
-thresh.name = 'thresh (Thresholding parameters for de-noising and timing)';
-thresh.val  = {scan_timing cardiac};
-thresh.help = {'Thresholding parameters for de-noising of raw peripheral data'
+preproc      = cfg_branch;
+preproc.tag  = 'preproc';
+preproc.name = 'preproc (Thresholding parameters for de-noising and timing)';
+preproc.val  = {cardiac};
+preproc.help = {'Thresholding parameters for de-noising of raw peripheral data'
     'and determination of sequence timing from logged MR gradient time courses'};
+
+
+
+%==========================================================================
+%% Sub-structure model
+%==========================================================================
+
+
+%--------------------------------------------------------------------------
+% c
+%--------------------------------------------------------------------------
+c         = cfg_entry;
+c.tag     = 'c';
+c.name    = 'cardiac';
+c.help    = {'Order of Fourier expansion for cardiac phase'
+    ' - equals 1/2 number of cardiac regressors, since sine and cosine terms'
+    'are computed, i.e. sin(phi), cos(phi), sin(2*phi), cos(2*phi), ..., sin(c*phi), cos(c*phi)'
+    };
+c.strtype = 'e';
+c.num     = [1 1];
+c.val     = {3};
+
+%--------------------------------------------------------------------------
+% r
+%--------------------------------------------------------------------------
+r         = cfg_entry;
+r.tag     = 'r';
+r.name    = 'respiratory';
+r.help    = {
+    'Order of Fourier expansion for respiratory phase'
+    ' - equals 1/2 number of respiratory regressors, since sine and cosine terms'
+    'are computed, i.e. sin(phi), cos(phi), sin(2*phi), cos(2*phi), ..., sin(r*phi), cos(r*phi)'
+    };
+r.strtype = 'e';
+r.num     = [1 1];
+r.val     = {4};
+
+%--------------------------------------------------------------------------
+% cr
+%--------------------------------------------------------------------------
+cr         = cfg_entry;
+cr.tag     = 'cr';
+cr.name    = 'cardiac X respiratory';
+cr.help    = {
+    'Order of Fourier expansion for interaction of cardiac and respiratory phase'
+    ' - equals 1/4 number of interaction regressors, since sine and cosine terms'
+    'are computed and multiplied, i.e. sin(phi_c)*cos(phi_r), sin(phi_r)*cos(phi_c)'
+    };
+cr.strtype = 'e';
+cr.num     = [1 1];
+cr.val     = {1};
+
+%--------------------------------------------------------------------------
+% orthog
+%--------------------------------------------------------------------------
+orthog        = cfg_menu;
+orthog.tag    = 'orthogonalise';
+orthog.name   = 'orthogonalise';
+orthog.help   = {
+    'Orthogonalize physiological regressors with respect to each other.'
+    'Note: This is only recommended for triggered/gated acquisition sequences.'
+    };
+orthog.labels = {'none' 'cardiac' 'resp' 'mult' 'all'};
+orthog.values = {'none' 'cardiac' 'resp' 'mult' 'all'};
+orthog.val    = {'none'};
+
+%--------------------------------------------------------------------------
+% order
+%--------------------------------------------------------------------------
+order      = cfg_branch;
+order.tag  = 'order';
+order.name = 'order';
+order.val  = {c r cr orthog};
+order.help = {'...'};
+
+%--------------------------------------------------------------------------
+% model_type
+%--------------------------------------------------------------------------
+model_type        = cfg_menu;
+model_type.tag    = 'type';
+model_type.name   = 'type';
+model_type.help   = {'Physiological Model estimated'};
+model_type.labels = {
+    'none (only read-in of logfile data into physio.ons_secs)'
+    'RETROICOR (RETRO)'
+    'Heart Rate Variability (HRV)'
+    'Respiratory Volume per Time (RVT)'
+    'RETRO+HRV'
+    'RETRO+RVT'
+    'HRV+RVT'
+    'RETRO+HRV+RVT'
+    };
+model_type.values = {
+    'none'
+    'RETROICOR'
+    'HRV'
+    'RVT'
+    'RETROICOR_HRV'
+    'RETROICOR_RVT'
+    'HRV_RVT'
+    'RETROICOR_HRV_RVT'
+    };
+model_type.val    = {'RETROICOR'};
+
+%--------------------------------------------------------------------------
+% output_multiple_regressors
+%--------------------------------------------------------------------------
+output_multiple_regressors         = cfg_entry;
+output_multiple_regressors.tag     = 'output_multiple_regressors';
+output_multiple_regressors.name    = 'output_multiple_regressors';
+output_multiple_regressors.help    = {
+    'Output file for physiological regressors'
+    'Choose file name with extension:'
+    '.txt for ASCII files with 1 regressor per column'
+    '.mat for matlab variable file'
+    };
+output_multiple_regressors.strtype = 's';
+output_multiple_regressors.num     = [1 Inf];
+output_multiple_regressors.val     = {'multiple_regressors.txt'};
+
+%--------------------------------------------------------------------------
+% output_physio
+%--------------------------------------------------------------------------
+output_physio         = cfg_entry;
+output_physio.tag     = 'output_physio';
+output_physio.name    = 'output_physio';
+output_physio.help    = {
+    'Output file for physio-structure with extracted physiological time'
+    'series, detected peak and created regressors'
+    'Choose mat-file name; structure will be saved as variable physio in there.'
+    };
+output_physio.strtype = 's';
+output_physio.num     = [1 Inf];
+output_physio.val     = {'physio.mat'};
+
+
+%--------------------------------------------------------------------------
+% input_other_multiple_regressors
+%--------------------------------------------------------------------------
+input_other_multiple_regressors         = cfg_files;
+input_other_multiple_regressors.tag     = 'input_other_multiple_regressors';
+input_other_multiple_regressors.name    = 'input_other_multiple_regressors';
+input_other_multiple_regressors.val     = {{''}};
+input_other_multiple_regressors.help    = {'...'};
+input_other_multiple_regressors.filter  = '.*';
+input_other_multiple_regressors.ufilter = '.mat$|.txt$';
+input_other_multiple_regressors.num     = [0 1];
+
+%--------------------------------------------------------------------------
+% model
+%--------------------------------------------------------------------------
+model      = cfg_branch;
+model.tag  = 'model';
+model.name = 'model';
+model.val  = {model_type, order, input_other_multiple_regressors, ...
+    output_multiple_regressors, output_physio};
+model.help = {['Physiological Model to be estimated and Included in GLM ' ... 
+    'multiple_regressors.txt']};
+
+
 
 
 
@@ -1041,7 +1053,7 @@ verbose.val    = {level fig_output_file use_tabs};
 physio      = cfg_exbranch;
 physio.tag  = 'physio';
 physio.name = 'TAPAS PhysIO Toolbox';
-physio.val  = {save_dir files sqpar thresh model verbose};
+physio.val  = {save_dir files scan_timing preproc model verbose};
 physio.help = {'...'};
 physio.prog = @run_physio;
 physio.vout = @vout_physio;

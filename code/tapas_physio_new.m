@@ -67,7 +67,7 @@ end
 if nargin >= 2
     save_dir = physio_in.save_dir;
     log_files   = physio_in.log_files;
-    thresh  = physio_in.thresh;
+    preproc  = physio_in.preproc;
     sqpar   = physio_in.sqpar;
     model   = physio_in.model;
     verbose = physio_in.verbose;
@@ -157,7 +157,7 @@ else
     %       -20, if first scan started 20
     %       seconds BEFORE phys recording
     % NOTE: For Philips SCANPHYSLOG, this parameter is ignored, if
-    %       thresh.scan_timing is set
+    %       scan_timing.sync is set
     log_files.relative_start_acquisition = 0;
     
     % Determines which scan shall be aligned to which part of the logfile
@@ -174,45 +174,144 @@ else
 
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% sqpar - Parameters for sequence timing, i.e. slice and volume
-    %  acquisition starts, TR, number of scans etc.
+    %% scan_timing - Parameters for sequence timing & synchronization
+    % scan_tming.sqpar =    slice and volume acquisition starts, TR, 
+    %                       number of scans etc.
+    % scan_timing.sync =    synchronize phys logfile to scan acquisition
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    sqpar = [];
     
-    sqpar.Nslices           = [];   % number of slices per volume in fMRI scan
-    sqpar.NslicesPerBeat    = [];   % usually equals Nslices, unless you trigger with the heart beat
-    sqpar.TR                = [];   % volume repetition time in seconds
-    sqpar.Ndummies          = [];   % number of dummy volumes
+    scan_timing = struct('sqpar', [], 'sync', []);
+    
+    
+    scan_timing.sqpar.Nslices           = [];   % number of slices per volume in fMRI scan
+    scan_timing.sqpar.NslicesPerBeat    = [];   % usually equals Nslices, unless you trigger with the heart beat
+    scan_timing.sqpar.TR                = [];   % volume repetition time in seconds
+    scan_timing.sqpar.Ndummies          = [];   % number of dummy volumes
     
     % number of full volumes saved (volumes in nifti file,
     % usually rows in your design matrix)
-    sqpar.Nscans            = [];
+    scan_timing.sqpar.Nscans            = [];
         
     % Count of preparation pulses
     % BEFORE 1st dummy scan. 
     % Only important, if log_files.scan_align = 'first', since then
     % preparation pulses and dummiy triggers are counted and discarded 
     % as first scan onset
-    sqpar.Nprep             = [];
+    scan_timing.sqpar.Nprep             = [];
     
     % time between the acquisition of 2 subsequent
     % slices; typically TR/Nslices or minTR/Nslices,
     % if minimal temporal slice spacing was chosen
-    % NOTE: only necessary, if thresh.grad_direction
+    % NOTE: only necessary, if preproc.grad_direction
     % is empty and nominal scan timing is used
-    sqpar.time_slice_to_slice  = [];
+    scan_timing.sqpar.time_slice_to_slice  = [];
     
     % slice whose scan onset determines the adjustment of the
     % regressor timing to a particular slice for the whole volume
     % volumes from beginning of run, i.e. logfile,
     % includes counting of preparation gradients
-    sqpar.onset_slice       = [];
+    scan_timing.sqpar.onset_slice       = [];
     
+    
+    
+    % Method to determine slice acquisition onset times
+    % 'nominal'             derive slice acquisition timing from sqpar
+    %                       directly
+    % 'gradient'            derive from logged gradient time courses
+    %   or 'gradient_log'   in SCANPHYSLOG-files (Philips only)
+    % 'gradient_auto'       derive from logged gradient time courses
+    %   or 'gradient_log_auto'   in SCANPHYSLOG-files automatically, i.e.
+    %                       without defining thresholds (Philips only)
+    % s.a. log_files.scan_timing    
+    %                       individual scan timing logfile with time stamps
+    %                       ("tics") for each slice and volume
+    %                       (e.g. Siemens_Cologne)
+   
+    scan_timing.sync.method = 'gradient_log';
+    scan_timing.sync.grad_direction = ''; % 'x', 'y', or 'z';
+    
+    % if set, sequence timing is calculated
+    % from logged gradient timecourse along
+    % this coordinate axis;
+    
+    scan_timing.sync.zero     = [];   % gradient values below this value are set to zero;
+    
+    % should be those which are unrelated to slice acquisition start
+    
+    % minimum gradient amplitude to be exceeded when a slice scan starts
+    scan_timing.sync.slice    = [];
+    
+    % minimum gradient amplitude to be exceeded when a new volume starts;
+    % leave [], if volume events shall be determined as
+    % every Nslices-th scan event or via vol_spacing
+    scan_timing.sync.vol      = [];
+    
+    
+    % duration (in seconds) from last slice acq to
+    % first slice of next volume;
+    % leave [], if .vol-threshold shall be used
+    scan_timing.sync.vol_spacing          = [];
+
+    
+
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% preproc
+    % Determines preprocessing of physiological data,
+    % i.e. from peripheral measures (preproc.cardiac, preproc.respiration)
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    preproc = [];
+    
+    preproc.cardiac = [];
+    preproc.cardiac.modality = 'ecg_wifi'; % 'ECG','ECG_raw', or 'OXY'/'PPU' (for pulse oximetry), 'OXY_OLD', [deprecated]
+    
+    % The initial cardiac pulse selection structure: Determines how the
+    % majority of cardiac pulses is detected
+    % 'auto'    - auto generation of representative QRS-wave; detection via
+    %             maximising auto-correlation with it
+    % 'load_from_logfile' - from phys logfile, detected R-peaks of scanner
+    % 'manual'  - via manually selected QRS-wave for autocoreelations
+    % 'load'    - from previous manual/auto run
+    preproc.cardiac.initial_cpulse_select.method = 'load_from_logfile';
+    
+    % file containing reference ECG-peak (variable kRpeak)
+    % used for method 'manual' or 'load' [default: not set]
+    % if method == 'manual', this file is saved after picking the QRS-wave
+    % such that results are reproducible
+    preproc.cardiac.initial_cpulse_select.file = '';
+    
+    % threshold for correlation with QRS-wave to find cardiac pulses
+    preproc.cardiac.initial_cpulse_select.min = [];
+    
+    % variable saving an example cardiac QRS-wave to correlate with
+    % ECG time series
+    preproc.cardiac.initial_cpulse_select.kRpeak = [];
+    
+    % The posthoc cardiac pulse selection structure: If only few (<20)
+    % cardiac pulses are missing in a session due to bad signal quality, a
+    % manual selection after visual inspection is possible using the
+    % following parameters. The results are saved for reproducibility
+    %
+    % 'off'     - no manual selection of peaks
+    % 'manual'  - pick and save additional peaks manually
+    % 'load'    - load previously selected cardiac pulses
+    preproc.cardiac.posthoc_cpulse_select.method = 'off';
+    
+    % filename where cardiac pulses are saved after manual picking
+    preproc.cardiac.posthoc_cpulse_select.file = '';
+    
+    % Suspicious positions of missing or too many cardiac pulses are
+    % pre-selected by detecting outliers in histogram of
+    % heart-beat-2-beat-intervals
+    preproc.cardiac.posthoc_cpulse_select.percentile = 80; % percentile of beat-2-beat interval histogram that constitutes the "average heart beat duration" in the session
+    preproc.cardiac.posthoc_cpulse_select.upper_thresh = 60; % minimum exceedance (in %) from average heartbeat duration to be classified as missing heartbeat
+    preproc.cardiac.posthoc_cpulse_select.lower_thresh = 60; % minimum reduction (in %) from average heartbeat duration to be classified an abundant heartbeat
     
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% model
-    % Determines the physiological noise model derived from preprocessed physiological data
+    %% Model
+    % Determines the physiological noise model derived from preprocessed 
+    % physiological data
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     model = [];
     
@@ -261,96 +360,6 @@ else
     
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% thresh
-    % Determines thresholds used in preprocessing physiological logfiles,
-    % either their timing (thresh.scan_timing) or the peripheral measures
-    % itself (thresh.cardiac, thresh.respiration)
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    thresh = [];
-    
-    % Method to determine slice acquisition onset times
-    % 'scan_timing_log'     individual scan timing logfile with time stamps
-    %                       ("tics") for each slice and volume
-    %                       (e.g. Siemens_Cologne)
-    % 'nominal'             derive slice acquisition timing from sqpar
-    %                       directly
-    % 'gradient'            derive from logged gradient time courses
-    %   or 'gradient_log'   in SCANPHYSLOG-files (Philips only)
-    % 'gradient_auto'       derive from logged gradient time courses
-    %   or 'gradient_log_auto'   in SCANPHYSLOG-files automatically, i.e.
-    %                       without defining thresholds (Philips only)
-    thresh.scan_timing.method = 'gradient_log';
-    thresh.scan_timing.grad_direction = ''; % 'x', 'y', or 'z';
-    
-    % if set, sequence timing is calculated
-    % from logged gradient timecourse along
-    % this coordinate axis;
-    
-    thresh.scan_timing.zero     = [];   % gradient values below this value are set to zero;
-    
-    % should be those which are unrelated to slice acquisition start
-    
-    % minimum gradient amplitude to be exceeded when a slice scan starts
-    thresh.scan_timing.slice    = [];
-    
-    % minimum gradient amplitude to be exceeded when a new volume starts;
-    % leave [], if volume events shall be determined as
-    % every Nslices-th scan event or via vol_spacing
-    thresh.scan_timing.vol      = [];
-    
-    
-    % duration (in seconds) from last slice acq to
-    % first slice of next volume;
-    % leave [], if .vol-threshold shall be used
-    thresh.scan_timing.vol_spacing          = [];
-    
-    thresh.cardiac = [];
-    thresh.cardiac.modality = 'ecg_wifi'; % 'ECG','ECG_raw', or 'OXY'/'PPU' (for pulse oximetry), 'OXY_OLD', [deprecated]
-    
-    % The initial cardiac pulse selection structure: Determines how the
-    % majority of cardiac pulses is detected
-    % 'auto'    - auto generation of representative QRS-wave; detection via
-    %             maximising auto-correlation with it
-    % 'load_from_logfile' - from phys logfile, detected R-peaks of scanner
-    % 'manual'  - via manually selected QRS-wave for autocoreelations
-    % 'load'    - from previous manual/auto run
-    thresh.cardiac.initial_cpulse_select.method = 'load_from_logfile';
-    
-    % file containing reference ECG-peak (variable kRpeak)
-    % used for method 'manual' or 'load' [default: not set]
-    % if method == 'manual', this file is saved after picking the QRS-wave
-    % such that results are reproducible
-    thresh.cardiac.initial_cpulse_select.file = '';
-    
-    % threshold for correlation with QRS-wave to find cardiac pulses
-    thresh.cardiac.initial_cpulse_select.min = [];
-    
-    % variable saving an example cardiac QRS-wave to correlate with
-    % ECG time series
-    thresh.cardiac.initial_cpulse_select.kRpeak = [];
-    
-    % The posthoc cardiac pulse selection structure: If only few (<20)
-    % cardiac pulses are missing in a session due to bad signal quality, a
-    % manual selection after visual inspection is possible using the
-    % following parameters. The results are saved for reproducibility
-    %
-    % 'off'     - no manual selection of peaks
-    % 'manual'  - pick and save additional peaks manually
-    % 'load'    - load previously selected cardiac pulses
-    thresh.cardiac.posthoc_cpulse_select.method = 'off';
-    
-    % filename where cardiac pulses are saved after manual picking
-    thresh.cardiac.posthoc_cpulse_select.file = '';
-    
-    % Suspicious positions of missing or too many cardiac pulses are
-    % pre-selected by detecting outliers in histogram of
-    % heart-beat-2-beat-intervals
-    thresh.cardiac.posthoc_cpulse_select.percentile = 80; % percentile of beat-2-beat interval histogram that constitutes the "average heart beat duration" in the session
-    thresh.cardiac.posthoc_cpulse_select.upper_thresh = 60; % minimum exceedance (in %) from average heartbeat duration to be classified as missing heartbeat
-    thresh.cardiac.posthoc_cpulse_select.lower_thresh = 60; % minimum reduction (in %) from average heartbeat duration to be classified an abundant heartbeat
-    
-    
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% verbose
     % determines how many figures shall be generated to follow the workflow
     % of the toolbox and whether the graphical output shall be saved (to a
@@ -394,7 +403,7 @@ else
                                 % stores text outputs of PhysIO Toolbox
                                 % processing, e.g. warnings about missed
                                 % slice triggers, peak height etc.
-    verbose.fig_handles = [];     % [nFigs,1] vector; collecting of all generated figure handles during a run of tapas_physio_main_create_regressors
+    verbose.fig_handles = zeros(0,1);     % [nFigs,1] vector; collecting of all generated figure handles during a run of tapas_physio_main_create_regressors
     verbose.fig_output_file = ''; % file name (including extension) where to print all physIO output figures to,
     verbose.use_tabs = false;    % if true, plots are performed in tabs of SPM graphics window
     %                                   TODO: implement via
@@ -451,16 +460,16 @@ switch default_scheme
         model.type = 'RETROICOR';
         model.order = struct('c',3,'r',4,'cr',1, 'orthogonalise', 'none');
     case 'redetect_peaks_from_logfile'
-        thresh.cardiac.initial_cpulse_select.method = 'manual'; % 'load_from_logfile', 'manual', 'load'
-        thresh.cardiac.initial_cpulse_select.file = 'kRpeak.mat';
-        thresh.cardiac.initial_cpulse_select.min = 1;
-        thresh.cardiac.initial_cpulse_select.kRpeak = [];
+        preproc.cardiac.initial_cpulse_select.method = 'manual'; % 'load_from_logfile', 'manual', 'load'
+        preproc.cardiac.initial_cpulse_select.file = 'kRpeak.mat';
+        preproc.cardiac.initial_cpulse_select.min = 1;
+        preproc.cardiac.initial_cpulse_select.kRpeak = [];
     case 'manual_peak_select'
-        thresh.cardiac.posthoc_cpulse_select.method = 'manual'; % 'off', 'manual' or 'load',
-        thresh.cardiac.posthoc_cpulse_select.file = 'posthoc_cpulse.mat';
-        thresh.cardiac.posthoc_cpulse_select.percentile = 80;
-        thresh.cardiac.posthoc_cpulse_select.upperThresh = 60;
-        thresh.cardiac.posthoc_cpulse_select.lowerThresh = 30;
+        preproc.cardiac.posthoc_cpulse_select.method = 'manual'; % 'off', 'manual' or 'load',
+        preproc.cardiac.posthoc_cpulse_select.file = 'posthoc_cpulse.mat';
+        preproc.cardiac.posthoc_cpulse_select.percentile = 80;
+        preproc.cardiac.posthoc_cpulse_select.upperThresh = 60;
+        preproc.cardiac.posthoc_cpulse_select.lowerThresh = 30;
 end
 
 
@@ -469,13 +478,13 @@ end
 %% Assemble output
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-physio.save_dir = save_dir;
-physio.log_files   = log_files;
-physio.sqpar   = sqpar;
-physio.model   = model;
-physio.thresh  = thresh;
-physio.verbose = verbose;
-physio.ons_secs = ons_secs;
+physio.save_dir     = save_dir;
+physio.log_files    = log_files;
+physio.scan_timing  = scan_timing;
+physio.preproc      = preproc;
+physio.model        = model;
+physio.verbose      = verbose;
+physio.ons_secs     = ons_secs;
 
 %% call functions for specific initial value settings (e.g. 3T Philips system)
 switch default_scheme

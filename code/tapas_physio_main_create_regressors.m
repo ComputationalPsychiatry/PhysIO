@@ -6,7 +6,7 @@ function [physio, R, ons_secs] = tapas_physio_main_create_regressors(varargin)
 %   OR
 %
 % [physio_out, R, ons_secs] = tapas_physio_main_create_regressors(...
-%    log_files, sqpar, model, thresh, verbose, save_dir);
+%    log_files, scan_timing, preproc, model, verbose, save_dir);
 %
 % NOTE: All inputs in physio-structure have to be specified previous to
 %       running this function.
@@ -15,7 +15,7 @@ function [physio, R, ons_secs] = tapas_physio_main_create_regressors(varargin)
 %   physio      physio-structure, See also tapas_physio_new
 %               OR
 %               sub-structures of physio-structure, i.e.
-%               log_files, sqpar, thresh, model, verbose, save_dir
+%               log_files, sqpar, preproc, model, verbose, save_dir
 %
 % OUT
 %   physio_out  modified physio-structure, contains read or computed values
@@ -63,12 +63,12 @@ if nargin == 1 % assuming sole PhysIO-object as input
     physio      = varargin{1}; % first argument of function
 else % assemble physio-structure
     physio = tapas_physio_new();
-    physio.save_dir = varargin{6};
-    physio.log_files = varargin{1};
-    physio.thresh  = varargin{3};
-    physio.sqpar   = varargin{2};
-    physio.model   = varargin{4};
-    physio.verbose = varargin{5};
+    physio.log_files    = varargin{1};
+    physio.scan_timing  = varargin{2};
+    physio.preproc      = varargin{3};
+    physio.model        = varargin{4};
+    physio.verbose      = varargin{5};
+    physio.save_dir     = varargin{6};
 end
 
 % fill up empty parameters
@@ -85,11 +85,11 @@ physio = tapas_physio_prepend_absolute_paths(physio);
 ons_secs    = physio.ons_secs;
 save_dir    = physio.save_dir;
 log_files   = physio.log_files;
-thresh      = physio.thresh;
-sqpar       = physio.sqpar;
+preproc     = physio.preproc;
+scan_timing = physio.scan_timing;
 model       = physio.model;
 verbose     = physio.verbose;
-
+sqpar       = scan_timing.sqpar;
 
 hasPhaseLogfile = strcmpi(log_files.vendor, 'CustomPhase');
 
@@ -103,7 +103,7 @@ if ~hasPhaseLogfile
     
     [ons_secs.c, ons_secs.r, ons_secs.t, ons_secs.cpulse, ons_secs.acq_codes, ...
         verbose] = tapas_physio_read_physlogfiles(...
-        log_files, thresh.cardiac.modality, verbose);
+        log_files, preproc.cardiac.modality, verbose);
     
     % also: normalize cardiac/respiratory data, if wanted
     doNormalize = true;
@@ -137,29 +137,26 @@ if ~hasPhaseLogfile
     %% 2. Create scan timing nominally or from logfile
     % (Philips: via gradient time-course; Siemens (NEW): from tics)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    
-    useNominal = isempty(thresh.scan_timing) || ...
-        strcmpi(thresh.scan_timing.method, 'nominal');
-    if useNominal
-        [VOLLOCS, LOCS] = ...
-            tapas_physio_create_nominal_scan_timing(ons_secs.t, sqpar, ...
-            log_files.align_scan);
-    else
-        switch thresh.scan_timing.method
-            case {'gradient', 'gradient_log'}
-                [VOLLOCS, LOCS, verbose] = ...
-                    tapas_physio_create_scan_timing_from_gradients_philips( ...
-                    log_files, thresh.scan_timing, sqpar, verbose);
-            case {'gradient_auto', 'gradient_log_auto'}
-                [VOLLOCS, LOCS, verbose] = ...
-                    tapas_physio_create_scan_timing_from_gradients_auto_philips( ...
-                    log_files, thresh.scan_timing, sqpar, verbose);
-            case 'scan_timing_log'
-                [VOLLOCS, LOCS, verbose] = ...
-                    tapas_physio_create_scan_timing_from_tics_siemens( ...
-                    ons_secs.t, log_files, verbose);
-        end
+  
+    switch lower(scan_timing.sync.method)
+        case 'nominal'
+            [VOLLOCS, LOCS] = ...
+                tapas_physio_create_nominal_scan_timing(ons_secs.t, ...
+                sqpar, log_files.align_scan);
+        case {'gradient', 'gradient_log'}
+            [VOLLOCS, LOCS, verbose] = ...
+                tapas_physio_create_scan_timing_from_gradients_philips( ...
+                log_files, scan_timing, verbose);
+        case {'gradient_auto', 'gradient_log_auto'}
+            [VOLLOCS, LOCS, verbose] = ...
+                tapas_physio_create_scan_timing_from_gradients_auto_philips( ...
+                log_files, scan_timing, verbose);
+        case 'scan_timing_log'
+            [VOLLOCS, LOCS, verbose] = ...
+                tapas_physio_create_scan_timing_from_tics_siemens( ...
+                ons_secs.t, log_files, verbose);
     end
+    
     
     % remove arbitrary offset in time vector now, since all timings have now
     % been aligned to ons_secs.t
@@ -176,10 +173,10 @@ if ~hasPhaseLogfile
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     if hasCardiacData
-        % thresh.cardiac.modality = 'OXY'; % 'ECG' or 'OXY' (for pulse oximetry)
+        % preproc.cardiac.modality = 'OXY'; % 'ECG' or 'OXY' (for pulse oximetry)
         %% initial pulse select via load from logfile or autocorrelation with 1
         %% cardiac pulse
-        switch thresh.cardiac.initial_cpulse_select.method
+        switch preproc.cardiac.initial_cpulse_select.method
             case {'load_from_logfile', ''}
                 % do nothing
             otherwise
@@ -187,30 +184,30 @@ if ~hasPhaseLogfile
                 minCardiacCycleSamples = floor((1/(90/60)/dt));
                 [ons_secs.cpulse, verbose] = ...
                     tapas_physio_get_cardiac_pulses(ons_secs.t, ons_secs.c, ...
-                    thresh.cardiac.initial_cpulse_select, ...
-                    thresh.cardiac.modality, minCardiacCycleSamples, verbose);
+                    preproc.cardiac.initial_cpulse_select, ...
+                    preproc.cardiac.modality, minCardiacCycleSamples, verbose);
         end
         
         
         %% post-hoc: hand pick additional cardiac pulses or load from previous
         %% time
-        switch thresh.cardiac.posthoc_cpulse_select.method
+        switch preproc.cardiac.posthoc_cpulse_select.method
             case {'manual'}
                 % additional manual fill-in of more missed pulses
                 [ons_secs, outliersHigh, outliersLow, verbose] = ...
                     tapas_physio_correct_cardiac_pulses_manually(ons_secs, ...
-                    thresh.cardiac.posthoc_cpulse_select, verbose);
+                    preproc.cardiac.posthoc_cpulse_select, verbose);
             case {'load'}
-                hasPosthocLogFile = exist(thresh.cardiac.posthoc_cpulse_select.file, 'file') || ...
-                    exist([thresh.cardiac.posthoc_cpulse_select.file '.mat'], 'file');
+                hasPosthocLogFile = exist(preproc.cardiac.posthoc_cpulse_select.file, 'file') || ...
+                    exist([preproc.cardiac.posthoc_cpulse_select.file '.mat'], 'file');
                 
                 if hasPosthocLogFile % load or set selection to manual, if no file exists
-                    osload = load(thresh.cardiac.posthoc_cpulse_select.file, 'ons_secs');
+                    osload = load(preproc.cardiac.posthoc_cpulse_select.file, 'ons_secs');
                     ons_secs = osload.ons_secs;
                 else
                     [ons_secs, outliersHigh, outliersLow, verbose] = ...
                         tapas_physio_correct_cardiac_pulses_manually(ons_secs,...
-                        thresh.cardiac.posthoc_cpulse_select, verbose);
+                        preproc.cardiac.posthoc_cpulse_select, verbose);
                 end
             case {'off', ''}
         end
@@ -220,6 +217,7 @@ if ~hasPhaseLogfile
     
     [ons_secs, sqpar, verbose] = tapas_physio_crop_scanphysevents_to_acq_window(...
         ons_secs, sqpar, verbose);
+    scan_timing.sqpar = sqpar;
     
     if hasRespData
         % filter respiratory signal
@@ -233,7 +231,7 @@ if ~hasPhaseLogfile
     end
     
     verbose = tapas_physio_plot_raw_physdata_diagnostics(ons_secs.cpulse, ...
-        ons_secs.r, thresh.cardiac.posthoc_cpulse_select, verbose, ...
+        ons_secs.r, preproc.cardiac.posthoc_cpulse_select, verbose, ...
         ons_secs.t, ons_secs.c);
     
 else
@@ -316,8 +314,8 @@ model.R = R;
 
 physio.save_dir     = save_dir;
 physio.log_files    = log_files;
-physio.thresh       = thresh;
-physio.sqpar        = sqpar;
+physio.preproc      = preproc;
+physio.scan_timing  = scan_timing;
 physio.model        = model;
 physio.verbose      = verbose;
 physio.ons_secs     = ons_secs;

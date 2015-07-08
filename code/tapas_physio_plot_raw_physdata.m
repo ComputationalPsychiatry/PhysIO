@@ -75,6 +75,6 @@ if verbose.level >= 2
     title('Raw Physiological Logfile Data');
     xlabel('t (s)');
     
-    verbose.fig_handles(end_1) = fh;
+    verbose.fig_handles(end+1) = fh;
     
 end
