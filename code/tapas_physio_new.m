@@ -351,7 +351,8 @@ else
     
     % other nuisance regressors to be included in design matrix
     % either txt-file or mat-file with variable R
-    model.other.multiple_regressors = '';
+    model.other.include = 1;
+    model.other.input_multiple_regressors = '';
     
     % output file for usage in SPM multiple_regressors GLM-specification
     % either txt-file or mat-file with variable R
@@ -379,7 +380,7 @@ else
     
     % one or multiple delays (in seconds) can be specified to shift 
     % canonical RVT response function from Birn et al, 2006 paper
-    model.rvt.delays = 0; 
+    model.rvt.delays = 0; % (TODO)
  
     
     %% Heart Rate variability model (HRV), Chang et al, 2009
@@ -387,34 +388,36 @@ else
     
     % one or multiple delays (in seconds) can be specified to shift 
     % canonical HRV response function from Chang et al, 2009 paper
-    model.hrv.delays = 0; 
+    model.hrv.delays = 0;  % (TODO)
     
     
     %% movement regressor model 6/12/24, sudden movement exceedance regressors
     model.movement.include = 1;
-    model.movement.file_realignment_parameters;
+    model.movement.file_realignment_parameters = '';
     
     % 0 = no realignment parameters included
     % 6 = rotation/translation parameters
     % 12 = + derivatives
     % 24 = + squared parameters and derivatives, corresponding to a
     %        Volterra expansion V_t, V_t^2, V_(t-1), V_(t-1)^2
-    model.movement.order = 6;
+    model.movement.order = 6;  % (TODO)
     
     % threshold for large sudden translations; 1 stick regressor for each volume
     % exceeding the threshold will be created
-    model.movement.outlier_translation_mm = 1;
+    model.movement.outlier_translation_mm = 1;  % (TODO)
     % threshold for large sudden rotations; 1 stick regressor for each volume
     % exceeding the threshold will be created
-    model.movement.outlier_rotation_deg = 1;
+    model.movement.outlier_rotation_deg = 1;  % (TODO)
     
-    
+    % (TODO)
     %% 'noise_rois'  Principal Components of time series of all voxels in given
     %               regions of localized noise, e.g. CSF, vessels, white
     %               matter
     %               e.g. CompCor: Behzadi, Y., Restom, K., Liau, J., Liu, 
     %               T.T., 2007. A component based noise correction method (CompCor) for BOLD and perfusion based fMRI. NeuroImage 37, 90?101. doi:10.1016/j.neuroimage.2007.04.042
 
+     
+     
     model.noise_rois.include = 0;
     % cell of preprocessed fmri nifti/analyze files, from which time series
     % shall be extracted

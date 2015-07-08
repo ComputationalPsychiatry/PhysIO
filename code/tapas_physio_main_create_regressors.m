@@ -255,10 +255,10 @@ end
 %% 4. Create RETROICOR/response function regressors for GLM
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-if any(strfind(upper(model.type),'RETROICOR'))
+if model.retroicor.include
     [cardiac_sess, respire_sess, mult_sess, ons_secs, verbose] = ...
         tapas_physio_create_retroicor_regressors(ons_secs, sqpar, ...
-        model.order, verbose);
+        model.retroicor.order, verbose);
 else
     cardiac_sess = [];
     respire_sess = [];
@@ -269,7 +269,7 @@ end
 % Create a heart-rate variability regressor using the cardiac response
 % function
 
-if any(strfind(upper(model.type),'HRV'))
+if model.hrv.include
     [convHRV, ons_secs.hr, verbose] = tapas_physio_create_hrv_regressor(...
         ons_secs, sqpar, verbose);
 else
@@ -280,24 +280,32 @@ end
 % Create a respiratory volume/time regressor using the respiratory response
 % function
 
-if any(strfind(upper(model.type),'RVT'))
+if model.rvt.include
     [convRVT, ons_secs.rvt, verbose] = tapas_physio_create_rvt_regressor(...
         ons_secs, sqpar, verbose);
 else
     convRVT = [];
 end
 
-
-% 4.1 Load other confound regressors, e.g. realigment parameters
-
-if isfield(model, 'input_other_multiple_regressors') && ~isempty(model.input_other_multiple_regressors)
-    [input_R, verbose] = tapas_physio_load_other_multiple_regressors(...
-        model.input_other_multiple_regressors, verbose);
+% load and manipulate movement parameters as confound regressors
+if model.movement.include && ~isempty(model.movement.file_realignment_parameters)
+    [movement_R, verbose] = tapas_physio_load_other_multiple_regressors(...
+        model.movement.file_realignment_parameters, verbose);
 else
-    input_R = [];
+    movement_R = [];
 end
 
-input_R = [input_R, convHRV, convRVT];
+
+% 4.1 Load other confound regressors
+
+if model.other.include && ~isempty(model.other.input_multiple_regressors)
+    [other_R, verbose] = tapas_physio_load_other_multiple_regressors(...
+        model.input_other_multiple_regressors, verbose);
+else
+    other_R = [];
+end
+
+other_R = [convHRV, convRVT, other_R, movement_R];
 
 
 % 4.2   Orthogonalisation of regressors ensures numerical stability for
@@ -305,7 +313,7 @@ input_R = [input_R, convHRV, convRVT];
 
 [R, verbose] = tapas_physio_orthogonalise_physiological_regressors(...
     cardiac_sess, respire_sess, ...
-    mult_sess, input_R, model.order.orthogonalise, verbose);
+    mult_sess, other_R, model.order.orthogonalise, verbose);
 
 
 % 4.3   Save Multiple Regressors file for SPM
