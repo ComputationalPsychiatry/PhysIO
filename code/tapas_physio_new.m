@@ -310,43 +310,31 @@ else
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% Model
-    % Determines the physiological noise model derived from preprocessed 
+    % Determines the physiological noise models derived from preprocessed 
     % physiological data
+    % available models (that can be combined) are:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    model = [];
-    
     % 'none'        no physiological model is computed; only the read-out
     %               logfile data is read out and saved in physio.ons_secs
     % 'RETROICOR'   as in Glover el al, MRM 44, 2000l
     %               order of expansion:  See Harvey et al, JMRI 28, 2008
     % 'HRV'         heart rate variability, as in Chang et al, 2009
     % 'RVT'         respiratory volume time, as in Birn et al., 2006
-    %
-    % The above can be combined e.g. 'RETROICOR_HRV', 'RETROICOR_RVT',
-    % 'RETROICOR_HRV_RVT, 'HRV_RVT'
-    model.type = '';
+    % 'movement'    realignment parameters, derivatives, 
+    %               + squared (parameters+derivatives),
+    %               (Volterra expansion, see: Friston KJ, Williams S, Howard R, Frackowiak
+    %               RS, Turner R. Movement-related effects in fMRI 
+    %               time-series. Magn Reson Med. 1996;35:346?355.)
+    % 'noise_rois'  Principal Components of time series of all voxels in given
+    %               regions of localized noise, e.g. CSF, vessels, white
+    %               matter
+    %               e.g. CompCor: Behzadi, Y., Restom, K., Liau, J., Liu, 
+    %               T.T., 2007. A component based noise correction method (CompCor) for BOLD and perfusion based fMRI. NeuroImage 37, 90?101. doi:10.1016/j.neuroimage.2007.04.042
+
+   
+     model = [];
     
-    % other nuisance regressors to be included in design matrix
-    % either txt-file or mat-file with variable R
-    model.input_other_multiple_regressors = '';
-    
-    % output file for usage in SPM multiple_regressors GLM-specification
-    % either txt-file or mat-file with variable R
-    model.output_multiple_regressors = '';
-    
-    % mat-file where whole physio-structure is saved after finishing main.m
-    model.output_physio = '';
-    
-    % natural number, order of cardiac phase Fourier expansion
-    model.order.c = [];
-    
-    % natural number, order of respiratory phase Fourier expansion
-    model.order.r = [];
-    
-    % natural number, order of cardiac-respiratory-phase-interaction Fourier expansion
-    model.order.cr = [];
-    
-    model.order.orthogonalise = 'none';         % string indicating which regressors shall be orthogonalised;
+     model.orthogonalise = 'none';         % string indicating which regressors shall be orthogonalised;
     % mainly needed, if acquisition was triggered to heartbeat (set to 'cardiac') OR
     % if session mean shall be evaluated (e.g. SFNR-studies, set to 'all')
     % 'n' or 'none'     - no orthogonalisation is performed
@@ -355,8 +343,93 @@ else
     %   'r' or 'resp'     - only respiration regressors are orthogonalised
     %   'mult'            - only multiplicative regressors are orthogonalised
     %   'all'             - all physiological regressors are orthogonalised to each other
-    model.R = [];                               % output design matrix of confound regressors, saved in 'multiple_regressors.mat'
+    %   'RETROICOR'
+    %   'HRV'
+    %   'RVT'
+    %   'movement
+    %   noise_rois 
     
+    % other nuisance regressors to be included in design matrix
+    % either txt-file or mat-file with variable R
+    model.other.multiple_regressors = '';
+    
+    % output file for usage in SPM multiple_regressors GLM-specification
+    % either txt-file or mat-file with variable R
+    model.output_multiple_regressors = '';
+    
+    % mat-file where whole physio-structure is saved after finishing main.m
+    model.output_physio = '';
+    model.R = [];                               % output design matrix of confound regressors, saved in 'multiple_regressors.mat'
+  
+    %% RETROICOR model
+    
+    model.retroicor.include = 1; % 1 = included; 0 = not used
+    % natural number, order of cardiac phase Fourier expansion
+    model.retroicor.order.c = [];
+    
+    % natural number, order of respiratory phase Fourier expansion
+    model.retroicor.order.r = [];
+    
+    % natural number, order of cardiac-respiratory-phase-interaction Fourier expansion
+    model.retroicor.order.cr = [];
+   
+    
+    %% Respiratory Volume per time model (RVT), Birn et al, 2006
+    model.rvt.include = 0;
+    
+    % one or multiple delays (in seconds) can be specified to shift 
+    % canonical RVT response function from Birn et al, 2006 paper
+    model.rvt.delays = 0; 
+ 
+    
+    %% Heart Rate variability model (HRV), Chang et al, 2009
+    model.hrv.include = 0;
+    
+    % one or multiple delays (in seconds) can be specified to shift 
+    % canonical HRV response function from Chang et al, 2009 paper
+    model.hrv.delays = 0; 
+    
+    
+    %% movement regressor model 6/12/24, sudden movement exceedance regressors
+    model.movement.include = 1;
+    model.movement.file_realignment_parameters;
+    
+    % 0 = no realignment parameters included
+    % 6 = rotation/translation parameters
+    % 12 = + derivatives
+    % 24 = + squared parameters and derivatives, corresponding to a
+    %        Volterra expansion V_t, V_t^2, V_(t-1), V_(t-1)^2
+    model.movement.order = 6;
+    
+    % threshold for large sudden translations; 1 stick regressor for each volume
+    % exceeding the threshold will be created
+    model.movement.outlier_translation_mm = 1;
+    % threshold for large sudden rotations; 1 stick regressor for each volume
+    % exceeding the threshold will be created
+    model.movement.outlier_rotation_deg = 1;
+    
+    
+    %% 'noise_rois'  Principal Components of time series of all voxels in given
+    %               regions of localized noise, e.g. CSF, vessels, white
+    %               matter
+    %               e.g. CompCor: Behzadi, Y., Restom, K., Liau, J., Liu, 
+    %               T.T., 2007. A component based noise correction method (CompCor) for BOLD and perfusion based fMRI. NeuroImage 37, 90?101. doi:10.1016/j.neuroimage.2007.04.042
+
+    model.noise_rois.include = 0;
+    % cell of preprocessed fmri nifti/analyze files, from which time series
+    % shall be extracted
+    model.noise_rois.fmri_files = {}; 
+    % cell of masks/tissue probability maps
+    model.noise_rois.mask_files = {};
+    % vector [1, nRois] of thresholds to be applied to mask files to decide
+    % which voxels to include (e.g. a probability like 0.99, if mask_files
+    % are tissue probability maps)
+    model.noise_rois.thresholds = [];
+    % vector [1, nRois] of number of principal components to be extracted
+    % from all voxel time series within each ROI
+    model.noise_roise.n_components = 1;
+    
+  
     
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
