@@ -70,12 +70,12 @@ centreSampleEnd = cpulseSecondGuess(idxStartPeakSearch(2));
 
 similarityToTemplate = zeros(1, ceil(centreSampleEnd));
 for n=centreSampleStart:centreSampleEnd
-    startSignalIndex=n-halfTemplateWidthInSamples;
-    endSignalIndex=n+halfTemplateWidthInSamples;
+    startSignalIndex    = n - halfTemplateWidthInSamples;
+    endSignalIndex      = n + halfTemplateWidthInSamples;
     
     signalPart = c(startSignalIndex:endSignalIndex);
-    similarityToTemplate(n) = tapas_physio_corrcoef12(signalPart,zTransformedTemplate, ...
-        isZTransformed);
+    similarityToTemplate(n) = tapas_physio_corrcoef12(signalPart, ...
+        zTransformedTemplate, isZTransformed);
     
     %Debug
     if debug && ~mod(n, 100)
@@ -107,8 +107,8 @@ similarityToTemplate = zeros(nSamples,1);
 searchStepsTotal = round(0.5*averageHeartRateInSamples);
 while n > 1+searchStepsTotal+halfTemplateWidthInSamples
     for searchPosition = -searchStepsTotal:1:searchStepsTotal
-        startSignalIndex    = n-halfTemplateWidthInSamples+searchPosition;
-        endSignalIndex      = n+halfTemplateWidthInSamples+searchPosition;
+        startSignalIndex    = n - halfTemplateWidthInSamples+searchPosition;
+        endSignalIndex      = n + halfTemplateWidthInSamples+searchPosition;
         
         signalPart          = c(startSignalIndex:endSignalIndex);
         correlation = tapas_physio_corrcoef12(signalPart,zTransformedTemplate, ...

@@ -3,9 +3,11 @@ function [cpulse, verbose] = tapas_physio_get_cardiac_pulses_auto_matched(...
     methodPeakDetection)
 % Automated, iterative pulse detection from cardiac (ECG/OXY) data
 % (1) Creates a template of representative heartbeats automatically (as
-%     *_auto-function)
-% (2) Uses template for peak-detection via matched-filtering of time course
-%     with determined filter (as *_manual_template-function)
+%     deprecated *_auto-function)
+% (2) Uses template for peak-detection via 
+%       (a) cross-correlation peak detection (default) or
+%       (b) matched-filtering of time course with determined filter
+%           (as deprecated *_manual_template-function)
 %
 %   [cpulse, verbose] = tapas_physio_get_cardiac_pulses_auto(...
 %    c, t, thresh_min, minPulseDistanceSamples, verbose)
@@ -44,7 +46,7 @@ if nargin < 5
 end
 
 if nargin < 6
-    methodPeakDetection = 'correlation'; %'matched_filter' or 'correlation'
+    methodPeakDetection = 'correlation'; %'matched_filter', 'xcorr', or 'correlation'
 end
 
 c = c-mean(c); c = c./std(c); % normalize time series
@@ -60,6 +62,11 @@ c = c-mean(c); c = c./std(c); % normalize time series
 
 switch methodPeakDetection
    
+    case 'xcorr' % sped-up version of Steffen's correlation algorithm utilizing Matlab xcorr via FFT
+        [cpulse, verbose] = tapas_physio_findpeaks_template_xcorr(...
+            c, pulseCleanedTemplate, cpulseSecondGuess, averageHeartRateInSamples, ...
+            verbose);
+    
     case 'correlation' % Steffen's forward-backward-correlation
         [cpulse, verbose] = tapas_physio_findpeaks_template_correlation(...
             c, pulseCleanedTemplate, cpulseSecondGuess, averageHeartRateInSamples, ...
