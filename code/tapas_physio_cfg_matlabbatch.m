@@ -864,34 +864,6 @@ order.name = 'order';
 order.val  = {c r cr orthog};
 order.help = {'...'};
 
-%--------------------------------------------------------------------------
-% model_type
-%--------------------------------------------------------------------------
-model_type        = cfg_menu;
-model_type.tag    = 'type';
-model_type.name   = 'type';
-model_type.help   = {'Physiological Model estimated'};
-model_type.labels = {
-    'none (only read-in of logfile data into physio.ons_secs)'
-    'RETROICOR (RETRO)'
-    'Heart Rate Variability (HRV)'
-    'Respiratory Volume per Time (RVT)'
-    'RETRO+HRV'
-    'RETRO+RVT'
-    'HRV+RVT'
-    'RETRO+HRV+RVT'
-    };
-model_type.values = {
-    'none'
-    'RETROICOR'
-    'HRV'
-    'RVT'
-    'RETROICOR_HRV'
-    'RETROICOR_RVT'
-    'HRV_RVT'
-    'RETROICOR_HRV_RVT'
-    };
-model_type.val    = {'RETROICOR'};
 
 %--------------------------------------------------------------------------
 % output_multiple_regressors
@@ -938,16 +910,25 @@ input_other_multiple_regressors.ufilter = '.mat$|.txt$';
 input_other_multiple_regressors.num     = [0 1];
 
 %--------------------------------------------------------------------------
+% retroicor
+%--------------------------------------------------------------------------
+retroicor      = cfg_branch;
+retroicor.tag  = 'retroicor';
+retroicor.name = 'retroicor';
+retroicor.val  = {retroicor_include, order};
+retroicor.help = {['RETROICOR Model, as described in Glover et al., MRM 2000']};
+
+
+%--------------------------------------------------------------------------
 % model
 %--------------------------------------------------------------------------
 model      = cfg_branch;
 model.tag  = 'model';
 model.name = 'model';
-model.val  = {model_type, order, input_other_multiple_regressors, ...
-    output_multiple_regressors, output_physio};
-model.help = {['Physiological Model to be estimated and Included in GLM ' ... 
+model.val  = {output_multiple_regressors, output_physio, retroicor, ...
+    rvt, hrv, movement, noise_rois, other};
+model.help = {['Physiological Model to be estimated and Included in GLM as ' ... 
     'multiple_regressors.txt']};
-
 
 
 
