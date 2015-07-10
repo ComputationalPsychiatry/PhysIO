@@ -269,7 +269,7 @@ end
 % Create a heart-rate variability regressor using the cardiac response
 % function
 
-if model.hrv.include
+if model.hrv.include % TODO: include delays!
     [convHRV, ons_secs.hr, verbose] = tapas_physio_create_hrv_regressor(...
         ons_secs, sqpar, verbose);
 else
@@ -289,8 +289,8 @@ end
 
 % load and manipulate movement parameters as confound regressors
 if model.movement.include && ~isempty(model.movement.file_realignment_parameters)
-    [movement_R, verbose] = tapas_physio_load_other_multiple_regressors(...
-        model.movement.file_realignment_parameters, verbose);
+     [movement_R, verbose] = tapas_physio_get_movement_regressors(...
+         model.movement, verbose);
 else
     movement_R = [];
 end
@@ -300,7 +300,7 @@ end
 
 if model.other.include && ~isempty(model.other.input_multiple_regressors)
     [other_R, verbose] = tapas_physio_load_other_multiple_regressors(...
-        model.input_other_multiple_regressors, verbose);
+        model.other.input_multiple_regressors, verbose);
 else
     other_R = [];
 end
@@ -313,7 +313,7 @@ other_R = [convHRV, convRVT, other_R, movement_R];
 
 [R, verbose] = tapas_physio_orthogonalise_physiological_regressors(...
     cardiac_sess, respire_sess, ...
-    mult_sess, other_R, model.order.orthogonalise, verbose);
+    mult_sess, other_R, model.orthogonalise, verbose);
 
 
 % 4.3   Save Multiple Regressors file for SPM
