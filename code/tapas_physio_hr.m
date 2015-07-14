@@ -44,6 +44,6 @@ for i = 1:n
    iL = max(1, iL);
    iR = min(iR, length(cpulse));
    if ~isempty(iL) && ~isempty(iR)
-    hr(i) = mean(1./diff(cpulse(iL:iR)))*60;
+    hr(i) = 1./mean(diff(cpulse(iL:iR)))*60;
    end
 end

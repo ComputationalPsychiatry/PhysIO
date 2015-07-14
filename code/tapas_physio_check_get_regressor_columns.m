@@ -7,7 +7,7 @@ function [colAll, colCard, colResp, colMult, colHRV, colRVT, colMove] = ...
 % INPUT:
 %   SPM     SPM.mat
 %   model   physIO.model-structure
-%    
+%
 %
 % OUTPUT:
 %   colAll      - index vector of all physiological regressor columns in design matrix (from SPM.xX.names)
@@ -43,10 +43,29 @@ if nargin < 2
     
 else
     
-    nCard = model.retroicor.order.c*2;
-    nResp = model.retroicor.order.r*2;
-    nMult = model.retroicor.order.cr*4;
-    
+    if model.retroicor.include
+        
+        nCard = ~isempty(model.retroicor.order.c);
+        if nCard
+            nCard = model.retroicor.order.c*2;
+        end
+        
+        nResp = ~isempty(model.retroicor.order.r);
+        if nResp
+            nResp = model.retroicor.order.r*2;
+        end
+        
+        nMult = ~isempty(model.retroicor.order.cr);
+        if nMult
+            nMult = model.retroicor.order.cr*4;
+        end
+        
+        
+    else
+        nCard = 0;
+        nResp = 0;
+        nMult = 0;
+    end
     % only for models with HRV or RVT, add these regressors
     nMove = model.movement.include.*model.movement.order;
     nHRV  = model.hrv.include.*numel(model.hrv.delays);

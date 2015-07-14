@@ -5,6 +5,13 @@ function [rvt, timeRpulseMax, timeRpulseMin, verbose] = ...
 %    [rvt, rpulseMax, rpulseMin] = tapas_physio_rvt(fr, t)
 %
 %
+% NEW:
+% The respiratory volume/time is computed by interpolating max/min
+% breathing amplitudes between detected peaks and divide them by
+% interpolated durations (distances) between max. amplitude breathing
+% signals (i.e. max. inhalations)
+%
+% OLD:
 % The respiratory volume/time is computed for every time point by taking
 % the amplitude difference of the closest local maximum and minimum of the
 % breathing cycle and dividing by the distance between two subsequent
