@@ -43,19 +43,15 @@ if nargin < 2
     
 else
     
-    if ~isempty(model.input_other_multiple_regressors)
-        nMove = 6;
-    else
-        nMove = 0;
-    end
     
-    nCard = model.order.c*2;
-    nResp = model.order.r*2;
-    nMult = model.order.cr*4;
+    nCard = model.retroicor.order.c*2;
+    nResp = model.retroicor.order.r*2;
+    nMult = model.retroicor.order.cr*4;
     
     % only for models with HRV or RVT, add these regressors
-    nHRV  = any(strfind(upper(model.type), 'HRV'));
-    nRVT  = any(strfind(upper(model.type), 'RVT'));
+    nMove = model.movement.include.*model.movement.order;
+    nHRV  = model.hrv.include.*numel(model.hrv.delays);
+    nRVT  = model.rvt.include.*numel(model.rvt.delays);
     
 end
 
@@ -64,7 +60,6 @@ cnames = SPM.xX.name';
 colCard = [];
 colResp  = [];
 colMult = [];
-colAll  = [];
 colMove = [];
 colHRV  = [];
 colRVT  = [];
