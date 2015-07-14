@@ -43,7 +43,6 @@ if nargin < 2
     
 else
     
-    
     nCard = model.retroicor.order.c*2;
     nResp = model.retroicor.order.r*2;
     nMult = model.retroicor.order.cr*4;
