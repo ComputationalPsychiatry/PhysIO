@@ -31,7 +31,7 @@ function [c, r, t, cpulse, verbose] = tapas_physio_read_physlogfiles_siemens_tic
 %                       for GE: usually empty
 %   r                   respiratory time series
 %   t                   vector of time points (in seconds)
-%                       NOTE: This assumes the default sampling rate of 40
+%                       NOTE: This assumes the default sampling rate of 400
 %                       Hz
 %   c                   cardiac time series (ECG or pulse oximetry)
 %

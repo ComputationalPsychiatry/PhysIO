@@ -48,7 +48,9 @@ dtTicSeconds = 2.5e-3;
 
 idVolumes       = C{1};
 idSlices        = C{2};
-ticsAcq         = double(C{3});
+
+% HACK: take care of interleaved acquisition:
+ticsAcq         = sort(double(C{3}));
 tAcqSeconds     = ticsAcq*dtTicSeconds;
 
 % find time in physiological log time closest to time stamp of acquisition

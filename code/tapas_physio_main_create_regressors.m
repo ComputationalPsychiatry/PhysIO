@@ -167,7 +167,6 @@ if ~hasPhaseLogfile
         ons_secs.t, VOLLOCS, LOCS, sqpar, verbose);
     
     
-    
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% 3. Extract and preprocess physiological data, crop to scan aquisition
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -333,21 +332,19 @@ if ~isempty(model.output_physio)
     save(model.output_physio, 'physio');
 end
 
-switch lower(model.type)
-    case 'none'
-        disp(['No model estimated. Saving read log-files data into physio ' ...
-            'output-file instead: Check variable physio.ons_secs']);
-       
-        
-    otherwise
-        [fpfx, fn, fsfx] = fileparts(model.output_multiple_regressors);
-        
-        switch fsfx
-            case '.mat'
-                save(model.output_multiple_regressors, 'R');
-            otherwise
-                save(model.output_multiple_regressors, 'R', '-ascii', '-double', '-tabs');
-        end
+
+if isempty(R)
+    disp(['No model estimated. Saving read log-files data into physio ' ...
+        'output-file instead: Check variable physio.ons_secs']);
+else
+    [fpfx, fn, fsfx] = fileparts(model.output_multiple_regressors);
+    
+    switch fsfx
+        case '.mat'
+            save(model.output_multiple_regressors, 'R');
+        otherwise
+            save(model.output_multiple_regressors, 'R', '-ascii', '-double', '-tabs');
+    end
 end
 
 

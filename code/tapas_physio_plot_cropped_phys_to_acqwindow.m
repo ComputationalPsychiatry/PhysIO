@@ -98,9 +98,9 @@ if hasCardiacData
     hs(end+1) = stem(cpulse, ampc*ones(length(cpulse),1), 'm') ;
 end
 
-hs2 = plot(t(1:sampling:end), x, '-')';
-hs = [hs, hs2];
-
+for iLine = 1:size(x,2)
+    hs(end+1) = plot(t(1:sampling:end), x(:,iLine), '-')';
+end
 
 xlabel('t (s)'); ylabel('Amplitude (a. u.)');
 title('Cutout region for physiological regressors');
