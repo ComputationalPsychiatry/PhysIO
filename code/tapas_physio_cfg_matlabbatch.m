@@ -941,9 +941,9 @@ retroicor.help = {'RETROICOR Model, as described in Glover et al., MRM 2000'};
 %--------------------------------------------------------------------------
 rvt_delays         = cfg_entry;
 rvt_delays.tag     = 'delays';
-rvt_delays.name    = 'rvt_delays';
+rvt_delays.name    = 'Delays (seconds)';
 rvt_delays.help    = {
-    'Delay by which respiratory response function is '
+    'Delays (in seconds) by which respiratory response function is '
     'shifted with respect to RVT regressor before convolution'
     };
 rvt_delays.num     = [Inf Inf];
@@ -999,9 +999,9 @@ rvt.help = {
 %--------------------------------------------------------------------------
 hrv_delays         = cfg_entry;
 hrv_delays.tag     = 'delays';
-hrv_delays.name    = 'hrv_delays';
+hrv_delays.name    = 'Delays (seconds)';
 hrv_delays.help    = {
-    'Delay by which respiratory response function is '
+    'Delays (in seconds) by which respiratory response function is '
     'shifted with respect to HRV regressor before convolution'
     };
 hrv_delays.num     = [Inf Inf];
