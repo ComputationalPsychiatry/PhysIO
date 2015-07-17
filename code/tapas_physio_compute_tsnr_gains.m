@@ -1,9 +1,10 @@
-function [tSnrGainArray, tSnrImageArray] = tapas_physio_compute_tsnr_gains(physio, SPM)
+function [tSnrGainArray, tSnrImageArray] = ...
+    tapas_physio_compute_tsnr_gains(physio, SPM, doSave)
 % Computes tSNR gains through physiological noise correction for all
 % confound regressor sets modelled, after estimation of the SPM-GLM
 %
 %   [fileTsnrGainArray, fileTsnrArray] = ...
-%           tapas_physio_compute_tsnr_gains(physio, SPM);
+%           tapas_physio_compute_tsnr_gains(physio, SPM, doSave);
 %
 %   This function executes the following steps:
 %   1.  Compute F-Contrasts of the kind "All-but-physiological confounds"
@@ -24,19 +25,19 @@ function [tSnrGainArray, tSnrImageArray] = tapas_physio_compute_tsnr_gains(physi
 %   fileTsnrGainArray
 %               cell(nPhysioSets,1) of nii-filenames holding tSNR gain
 %               images for all physiological regressor sets (in percent?)
-%               
-%   fileTsnrArray   
+%
+%   fileTsnrArray
 %               cell(nPhysioSets+1,1) of nii-filenames for tSNR images of
-%               for all physiological regressor sets 
+%               for all physiological regressor sets
 %               and, as last element, raw tSNR (after preprocessing)
 % EXAMPLE
-%   tapas_physio_compute_tsnr_gains 
+%   tapas_physio_compute_tsnr_gains
 %
 %   See also tapas_physio_compute_tsnr_spm spm_write_residuals
 %
 % Author: Lars Kasper
 % Created: 2015-07-03
-% Copyright (C) 2015 TNU, Institute for Biomedical Engineering, 
+% Copyright (C) 2015 TNU, Institute for Biomedical Engineering,
 %                    University of Zurich and ETH Zurich.
 %
 % This file is part of the TAPAS PhysIO Toolbox, which is released under the terms of the GNU General Public
@@ -51,6 +52,21 @@ function [tSnrGainArray, tSnrImageArray] = tapas_physio_compute_tsnr_gains(physi
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %   0. Check variable structure, cast for convenience
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+if nargin < 3
+    doSave = true;
+end
+
+% load physio-variable, if filename given
+if ~isstruct(physio)
+    % load SPM variable from file
+    if iscell(physio)
+        filePhysio = physio{1};
+    else
+        filePhysio = SPM;
+    end
+    physio = load(filePhysio, 'physio');
+end
 
 % load SPM-variable, if filename given
 if ~isstruct(SPM)
@@ -105,7 +121,7 @@ nContrasts                      = numel(con);
 indInverseContrasts = zeros(nContrasts,1);
 for iC = 1:nContrasts
     Fc = spm_FcUtil('Set', ['All but: ' namesPhysContrasts{iC}], 'F', ...
-    'iX0', con{iC}, SPM.xX.xKXs);
+        'iX0', con{iC}, SPM.xX.xKXs);
     SPM.xCon(end+1) = Fc;
     SPM = spm_contrasts(SPM,length(SPM.xCon));
     
@@ -119,7 +135,7 @@ end
 %       highpass-filtering (i.e. K*W*Y), saved as nii-files
 %       using tapas_physio_compute_tsnr_spm(SPM, 0);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
- 
+
 tSnrImageRaw = tapas_physio_compute_tsnr_spm(SPM, 0);
 tSnrImageRaw.name = 'raw tSNR after preprocessing, pre-whitening, high-pass filtering';
 
@@ -139,10 +155,26 @@ for iC = 1:nContrasts
         indInverseContrasts(iC));
     tSnrImageArray{iC}.name = ['tSNR after correcting ' ...
         namesPhysContrasts{iC}];
+    tSnrImageArray{iC}.parameters.save.path = SPM.swd;
+    tSnrImageArray{iC}.parameters.save.name = ...
+        sprintf('tSnr_%s.nii', namesPhysContrasts{iC});
     tSnrGainArray{iC} = (tSnrImageArray{iC}./tSnrImageRaw - 1).*100;
     tSnrGainArray{iC}.name = ['tSNR gain after correcting ' ...
         namesPhysContrasts{iC}];
+    tSnrGainArray{iC}.parameters.save.path = SPM.swd;
+    tSnrGainArray{iC}.parameters.save.name = ...
+        sprintf('tSnrGain_%s.nii', namesPhysContrasts{iC});
 end
 
 tSnrImageArray{end} = tSnrImageRaw;
+tSnrImageArray{end}.parameters.save.path = SPM.swd;
+tSnrImageArray{end}.parameters.save.name = ...
+    sprintf('tSnr_Raw.nii');
 
+if doSave
+    for iC = 1:nContrasts
+        tSnrImageArray{iC}.save;
+        tSnrGainArray{iC}.save;
+    end
+    tSnrImageArray{end}.save;
+end
