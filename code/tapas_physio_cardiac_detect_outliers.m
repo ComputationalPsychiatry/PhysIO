@@ -55,10 +55,10 @@ if isVerbose
     
     
     
-    hp(1) = plot(tCardiac(2:end), dt);
+    hp(1) = plot(tCardiac(2:end), dt, 'Color', [0 0.5 0]);
     xlabel('t (seconds)');
     ylabel('lag between heartbeats (seconds)');
-    title('temporal lag between heartbeats');
+    title('Temporal lag between heartbeats');
     legend('Temporal lag between subsequent heartbeats');
     
 else
