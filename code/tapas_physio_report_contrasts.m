@@ -114,9 +114,10 @@ defaults.model                        = physio.model; % holding number of physio
 % END #MOD
 %% ========================================================================
 
-args = propval(varargin, defaults);
+args = tapas_physio_propval(varargin, defaults);
 tapas_physio_strip_fields(args);
 
+spm('defaults', 'FMRI');
 
 % make sure to use absolute paths from now on...
 if iscell(fileSpm)

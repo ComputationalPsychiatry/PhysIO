@@ -34,6 +34,9 @@ rpulset=rpulset-rpulset(1);
 
 % bandpass filter
 sampfreq    = 1/rsampint; % Hz
+
+% Vlad: 0.09 0.7, 4th order butterworth, filtfilt for phase mod?
+
 cutofflow   = 0.1; %10 seconds/rsampint units
 cutoffhigh  = 5; %Hz
 forder = 2;
