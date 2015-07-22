@@ -5,7 +5,10 @@ function [convHRVOut, hrOut, verbose] = tapas_physio_create_hrv_regressor(...
 %    [convHRV, hr] = tapas_physio_create_hrv_regressor(ons_secs, sqpar )
 %
 % Reference:
-%   Chang, Catie, John P. Cunningham, and Gary H. Glover. ???Influence of Heart Rate on the BOLD Signal: The Cardiac Response Function.??? NeuroImage 44, no. 3 (February 1, 2009): 857???869. doi:10.1016/j.neuroimage.2008.09.029.
+%   Chang, Catie, John P. Cunningham, and Gary H. Glover. 
+%   Influence of Heart Rate on the BOLD Signal: The Cardiac Response Function.
+%   NeuroImage 44, no. 3 (February 1, 2009): 857-869. 
+%   doi:10.1016/j.neuroimage.2008.09.029.
 %
 % IN
 %   ons_secs.
@@ -13,11 +16,13 @@ function [convHRVOut, hrOut, verbose] = tapas_physio_create_hrv_regressor(...
 %       spulse_per_vol  See also tapas_physio_get_sample_points
 %   sqpar.
 %       onset_slice
+%
 % OUT
 %   convHRV             cardiac response function regressor after convolution . See
 %                       also
 % EXAMPLE
-%   [convHRV, hr] = tapas_physio_create_hrv_regressor(physio_out.ons_secs, physio_out.sqpar);
+%   [convHRV, hr] = tapas_physio_create_hrv_regressor(physio_out.ons_secs, ...
+%                       physio_out.sqpar);
 %
 %   See also tapas_physio_hr tapas_physio_crf
 %

@@ -428,8 +428,13 @@ else
     % which voxels to include (e.g. a probability like 0.99, if mask_files
     % are tissue probability maps)
     model.noise_rois.thresholds = [];
-    % vector [1, nRois] of number of principal components to be extracted
-    % from all voxel time series within each ROI
+    
+    % vector [1, nRois] of numbers
+    % integer >=1:      number of principal components to be extracted
+    %                   from all voxel time series within each ROI
+    % float in [0,1[    choose as many components as needed to explain this
+    %                   relative share of total variance, e.g. 0.99 =
+    %                   add more components, until 99 % of variance explained
     model.noise_roise.n_components = 1;
     
   

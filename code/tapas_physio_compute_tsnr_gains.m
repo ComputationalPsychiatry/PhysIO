@@ -147,6 +147,8 @@ tSnrImageRaw.name = 'raw tSNR after preprocessing, pre-whitening, high-pass filt
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% TODO use spm_imcalc for calculation and spm_read_vols/spm_write_vol for
+% input/output of images
 % for all computed Ics...
 tSnrImageArray = cell(nContrasts+1,1);
 tSnrGainArray = cell(nContrasts,1);
