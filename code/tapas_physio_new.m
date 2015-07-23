@@ -360,8 +360,14 @@ else
     
     % mat-file where whole physio-structure is saved after finishing main.m
     model.output_physio = '';
-    model.R = [];                               % output design matrix of confound regressors, saved in 'multiple_regressors.mat'
-  
+    
+    % [nScans, nRegressors, nSlices]
+    %   output design matrix of confound regressors, 
+    %   saved in 'multiple_regressors.txt'
+    %   or, if multiple slices are specified as onset_slice, in multiple
+    %       multiple_regressors_001.txt files, one per specified slice
+    model.R = [];                               
+    
     %% RETROICOR model
     
     model.retroicor.include = 1; % 1 = included; 0 = not used

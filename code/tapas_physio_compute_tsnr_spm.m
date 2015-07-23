@@ -2,7 +2,7 @@ function tSnrImage = tapas_physio_compute_tsnr_spm(SPM, iC)
 % Computes temporal SNR image after correcting for a contrast 
 % from SPM general linear model
 %
-%   output = compute_tsnr_spm(input)
+%   tSnrImage = compute_tsnr_spm(input)
 %
 % IN
 %   SPM     SPM variable (in SPM.mat, or file name) after parameter and 
