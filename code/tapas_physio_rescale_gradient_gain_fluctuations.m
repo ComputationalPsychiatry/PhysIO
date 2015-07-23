@@ -59,10 +59,14 @@ mG  = tapas_physio_maxfilter(abs(G), n);
 dmG = diff(mG);
 
 % determine positive and negative steps
-[~, idxGainPlus] = findpeaks((dmG), 'minpeakDistance', n, ...
+warning off tapas_physio_findpeaks:largeMinPeakHeight
+
+[~, idxGainPlus] = tapas_physio_findpeaks((dmG), 'minpeakDistance', n, ...
     'minpeakheight', minPeakHeight);
-[~, idxGainMinus] = findpeaks(-(dmG), 'minpeakDistance', n, ...
+[~, idxGainMinus] = tapas_physio_findpeaks(-(dmG), 'minpeakDistance', n, ...
     'minpeakheight', minPeakHeight);
+
+warning on tapas_physio_findpeaks:largeMinPeakHeight
 
 % plus gains refer to max-changes in the future
 

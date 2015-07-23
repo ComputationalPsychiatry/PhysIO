@@ -1,7 +1,7 @@
-function [R, verbose] = tapas_physio_get_movement_regressors(movement, verbose)
+function [R, verbose] = tapas_physio_create_movement_regressors(movement, verbose)
 % Reads realignment parameters, creates derivative/squared & outlier regressor
 %
-% [R, verbose] = tapas_physio_get_movement_regressors(movement, verbose)
+% [R, verbose] = tapas_physio_create_movement_regressors(movement, verbose)
 %
 % The 6 realignment parameters can be augmented by their derivatives (in
 % total 12 parameters) + the squares of parameters and derivatives (in
@@ -18,7 +18,7 @@ function [R, verbose] = tapas_physio_get_movement_regressors(movement, verbose)
 %   R           [nScans, (6|12|24)+nOutliers] regressor matrix from movement 
 %               
 % EXAMPLE
-%   tapas_physio_get_movement_regressors
+%   tapas_physio_create_movement_regressors
 %
 %   See also tapas_physio_new tapas_physio_main_create_regressors
 %
@@ -87,6 +87,8 @@ if verbose.level > 2
    end
    legend('shift x (mm)', 'shift y (mm)', 'shift z (mm)', 'RMS diff translation (mm)', ...
        'excess translation volumes');
+   xlabel('scans');
+   ylabel('translation (mm)');
    
    subplot(2,1,2);
    plot(R(:,4:6)*180/pi,'-'); hold on
@@ -97,6 +99,9 @@ if verbose.level > 2
    end
    legend('pitch x (deg)', 'roll y (deg)', 'yaw z (deg)', 'RMS diff rotation (deg)', ...
        'excess rotation volumes');
+   
+   xlabel('scans');
+   ylabel('rotation (deg)');
 end
 
 iOutlierArray = unique([iOutlierTrans; iOutlierRot]);

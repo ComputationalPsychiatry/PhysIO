@@ -288,7 +288,7 @@ end
 
 % load and manipulate movement parameters as confound regressors
 if model.movement.include && ~isempty(model.movement.file_realignment_parameters)
-     [movement_R, verbose] = tapas_physio_get_movement_regressors(...
+     [movement_R, verbose] = tapas_physio_create_movement_regressors(...
          model.movement, verbose);
 else
     movement_R = [];
