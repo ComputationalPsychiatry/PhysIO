@@ -25,7 +25,7 @@ hasNamesContrasts = nargin >= 6;
 
 if ~exist('SPM', 'var'), load(fileSPM); end
 
-[colAll, colCard, colResp, colMult, colHRV, colRVT, colMove] = ...
+[colAll, colCard, colResp, colMult, colHRV, colRVT, colRois, colMove] = ...
     tapas_physio_check_get_regressor_columns(SPM, model);
 con{1} = colAll;
 con{2} = colCard;
@@ -33,7 +33,8 @@ con{3} = colResp;
 con{4} = colMult;
 con{5} = colHRV;
 con{6} = colRVT;
-con{7} = colMove;
+con{7} = colRois;
+con{8} = colMove;
 
 load(fullfile(dirCheckPhys,'tapas_physio_check_job_contrasts.mat'));
 matlabbatch{1}.spm.stats.con.spmmat{1} = fileSPM;

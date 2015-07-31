@@ -1049,6 +1049,127 @@ hrv.help = {
 
 
 %--------------------------------------------------------------------------
+%% Sub-substructure Noise_Rois Model
+%--------------------------------------------------------------------------
+
+%--------------------------------------------------------------------------
+% fmri_files
+%--------------------------------------------------------------------------
+
+fmri_files         = cfg_files;
+fmri_files.tag     = 'fmri_files';
+fmri_files.name    = 'FMRI Time Series File(s)';
+fmri_files.val     = {{''}};
+fmri_files.help    = {
+    'Preprocessed fmri nifti/analyze files, from which time series '
+    'shall be extracted'};
+fmri_files.filter  = '.*';
+fmri_files.ufilter = '.nii$|.img$';
+fmri_files.num     = [0 Inf];
+
+%--------------------------------------------------------------------------
+% roi_files
+%--------------------------------------------------------------------------
+
+roi_files         = cfg_files;
+roi_files.tag     = 'roi_files';
+roi_files.name    = 'Noise ROI Image File(s)';
+roi_files.val     = {{''}};
+roi_files.help    = {'Masks/tissue probability maps characterizing where noise resides'};
+roi_files.filter  = '.*';
+roi_files.ufilter = '.nii$|.img$';
+roi_files.num     = [0 Inf];
+
+
+%--------------------------------------------------------------------------
+% roi_thresholds
+%--------------------------------------------------------------------------
+
+roi_thresholds         = cfg_entry;
+roi_thresholds.tag     = 'thresholds';
+roi_thresholds.name    = 'ROI thresholds';
+roi_thresholds.help    = {
+    'Single threshold or vector [1, nRois] of thresholds to be applied to' 
+    'mask files to decide which voxels to include '
+    '(e.g. a probability like 0.99, if roi_files'
+    'are tissue probability maps'
+    };
+roi_thresholds.num     = [Inf Inf];
+roi_thresholds.val     = {0.9};
+
+
+%--------------------------------------------------------------------------
+% n_voxel_crop
+%--------------------------------------------------------------------------
+
+n_voxel_crop         = cfg_entry;
+n_voxel_crop.tag     = 'n_voxel_crop';
+n_voxel_crop.name    = 'Number of ROI pixels to be cropped';
+n_voxel_crop.help    = {
+       'Single number or vector [1, nRois] of number of voxels to crop per ROI'
+    };
+n_voxel_crop.num     = [Inf Inf];
+n_voxel_crop.val     = {0};
+
+
+%--------------------------------------------------------------------------
+% n_components
+%--------------------------------------------------------------------------
+
+n_components         = cfg_entry;
+n_components.tag     = 'n_components';
+n_components.name    = 'Number of principal components';
+n_components.help    = {
+ ' Single number or vector [1, nRois] of numbers'
+    ' integer >=1:      number of principal components to be extracted'
+    '                   from all voxel time series within each ROI'
+    ' float in [0,1[    choose as many components as needed to explain this'
+    '                   relative share of total variance, e.g. 0.99 ='
+    '                   add more components, until 99 % of variance explained'
+    ' NOTE: Additionally, the mean time series of the region is also'
+    ' extracted'    };
+n_components.num     = [Inf Inf];
+n_components.val     = {0};
+
+
+%--------------------------------------------------------------------------
+% noise_rois_no
+%--------------------------------------------------------------------------
+
+noise_rois_no         = cfg_branch;
+noise_rois_no.tag  = 'no';
+noise_rois_no.name = 'No';
+noise_rois_no.val  = {};
+noise_rois_no.help = {'Noise ROIs not used'};
+
+
+%--------------------------------------------------------------------------
+% noise_rois_yes
+%--------------------------------------------------------------------------
+
+noise_rois_yes      = cfg_branch;
+noise_rois_yes.tag  = 'yes';
+noise_rois_yes.name = 'Yes';
+noise_rois_yes.val  = {fmri_files, roi_files, roi_thresholds, n_voxel_crop, ...
+    n_components};
+noise_rois_yes.help = {'Include Noise ROIs model'};
+
+
+
+%--------------------------------------------------------------------------
+% noise_rois
+%--------------------------------------------------------------------------
+
+noise_rois      = cfg_choice;
+noise_rois.tag  = 'other';
+noise_rois.name = 'Noise ROIs model (Principal components of anatomical regions)';
+noise_rois.val  = {noise_rois_no};
+noise_rois.values  = {noise_rois_no, noise_rois_yes};
+noise_rois.help = {'Noise ROIs model (Principal components of anatomical regions), similar to aCompCor, Behzadi et al. 2007'};
+
+
+
+%--------------------------------------------------------------------------
 %% Sub-substructure Movement Model
 %--------------------------------------------------------------------------
 
@@ -1206,9 +1327,7 @@ model      = cfg_branch;
 model.tag  = 'model';
 model.name = 'model';
 model.val  = {output_multiple_regressors, output_physio, orthog, retroicor, ...
-    rvt, hrv, movement, other_model};
-%model.val  = {output_multiple_regressors, output_physio, orthog, retroicor, ...
-%    rvt, hrv, movement, noise_rois, other};
+    rvt, hrv, noise_rois, movement, other_model};
 model.help = {['Physiological Model to be estimated and Included in GLM as ' ... 
     'multiple_regressors.txt']};
 

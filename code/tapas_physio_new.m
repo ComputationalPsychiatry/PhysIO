@@ -406,6 +406,40 @@ else
     model.hrv.delays = 0;  % (TODO)
     
     
+    %% noise_rois (Model): Anatomical Component Correction, Behzadi et al, 2007
+    %   Principal Components of time series of all voxels in given regions 
+    %   of localized noise, e.g. CSF, vessels, white matter
+    %       e.g. CompCor: Behzadi, Y., Restom, K., Liau, J., Liu, 
+    %       T.T., 2007. A component based noise correction method (CompCor) 
+    %       for BOLD and perfusion based fMRI. NeuroImage 37, 90-101. 
+    %       doi:10.1016/j.neuroimage.2007.04.042
+     
+    model.noise_rois.include = 0;
+    % cell of preprocessed fmri nifti/analyze files, from which time series
+    % shall be extracted
+    model.noise_rois.fmri_files = {}; 
+    % cell of Masks/tissue probability maps characterizing where noise resides
+    model.noise_rois.roi_files = {};
+    % Single threshold or vector [1, nRois] of thresholds to be applied to mask files to decide
+    % which voxels to include (e.g. a probability like 0.99, if roi_files
+    % are tissue probability maps)
+    model.noise_rois.thresholds = 0.9;
+    
+    % Single number or vector [1, nRois] of number of voxels to crop per ROI
+    % default: 0
+    model.noise_rois.n_voxel_crop = 0;
+    
+    % Single number or vector [1, nRois] of numbers
+    % integer >=1:      number of principal components to be extracted
+    %                   from all voxel time series within each ROI
+    % float in [0,1[    choose as many components as needed to explain this
+    %                   relative share of total variance, e.g. 0.99 =
+    %                   add more components, until 99 % of variance explained
+    % NOTE: Additionally, the mean time series of the region is also
+    % extracted
+    model.noise_rois.n_components = 1;
+    
+    
     %% movement (Model): Regressor model 6/12/24, Friston et al. 1996
     % Also: sudden movement exceedance regressors
     
@@ -421,44 +455,18 @@ else
     
     % threshold for large sudden translations; 1 stick regressor for each volume
     % exceeding the threshold will be created
-    model.movement.outlier_translation_mm = 1;  % (TODO)
+    model.movement.outlier_translation_mm = 1;
     
     % threshold for large sudden rotations; 1 stick regressor for each volume
     % exceeding the threshold will be created
-    model.movement.outlier_rotation_deg = 1;  % (TODO)
+    model.movement.outlier_rotation_deg = 1;
     
 
-    %% noise_rois (Model): Anatomical Component Correction, Behzadi et al, 2007
-    %   Principal Components of time series of all voxels in given regions 
-    %   of localized noise, e.g. CSF, vessels, white matter
-    %       e.g. CompCor: Behzadi, Y., Restom, K., Liau, J., Liu, 
-    %       T.T., 2007. A component based noise correction method (CompCor) for BOLD and perfusion based fMRI. NeuroImage 37, 90?101. doi:10.1016/j.neuroimage.2007.04.042
-     
-    model.noise_rois.include = 0;
-    % cell of preprocessed fmri nifti/analyze files, from which time series
-    % shall be extracted
-    model.noise_rois.fmri_files = {}; 
-    % cell of masks/tissue probability maps
-    model.noise_rois.mask_files = {};
-    % vector [1, nRois] of thresholds to be applied to mask files to decide
-    % which voxels to include (e.g. a probability like 0.99, if mask_files
-    % are tissue probability maps)
-    model.noise_rois.thresholds = [];
-    
-    % vector [1, nRois] of numbers
-    % integer >=1:      number of principal components to be extracted
-    %                   from all voxel time series within each ROI
-    % float in [0,1[    choose as many components as needed to explain this
-    %                   relative share of total variance, e.g. 0.99 =
-    %                   add more components, until 99 % of variance explained
-    model.noise_roise.n_components = 1;
-    
-    
     %% other (Model): Additional, pre-computed nuisance regressors 
     %   to be included in design matrix as txt or mat-file (variable R)
     model.other.include = 1;
     model.other.input_multiple_regressors = '';
-    
+ 
     
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

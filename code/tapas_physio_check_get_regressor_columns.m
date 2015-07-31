@@ -1,4 +1,4 @@
-function [colAll, colCard, colResp, colMult, colHRV, colRVT, colMove] = ...
+function [colAll, colCard, colResp, colMult, colHRV, colRVT, colRois, colMove] = ...
     tapas_physio_check_get_regressor_columns(SPM, model)
 %
 % returns indices of physiological regressors in an SPM design-matrix,
@@ -16,6 +16,7 @@ function [colAll, colCard, colResp, colMult, colHRV, colRVT, colMove] = ...
 %   colMult     - index vector of interaction cardiac X respiration regressor columns in design matrix (from SPM.xX.names)
 %   colHRV      - index vector of heart rate variability column in design matrix (from SPM.xX.names)
 %   colRVT      - index vector of respiratory volume per time column in design matrix (from SPM.xX.names)
+%   colRois     - index vector of noise rois regressors (from SPM.xX.names)
 %   colMove     - index vector of movement regressor columns in design matrix (from SPM.xX.names)
 %
 % Author: Lars Kasper
@@ -40,7 +41,7 @@ if nargin < 2
     nMult = 4;
     nHRV  = 0;
     nRVT  = 0;
-    
+    nRois = 0;
 else
     
     if model.retroicor.include
@@ -66,7 +67,10 @@ else
         nResp = 0;
         nMult = 0;
     end
-    % only for models with HRV or RVT, add these regressors
+    
+    
+    % only if following models were calculated
+    nRois = model.noise_rois.include.*sum(model.noise_rois.n_components);
     nMove = model.movement.include.*model.movement.order;
     nHRV  = model.hrv.include.*numel(model.hrv.delays);
     nRVT  = model.rvt.include.*numel(model.rvt.delays);
@@ -78,6 +82,7 @@ cnames = SPM.xX.name';
 colCard = [];
 colResp  = [];
 colMult = [];
+colRois = [];
 colMove = [];
 colHRV  = [];
 colRVT  = [];
@@ -93,8 +98,10 @@ for s = 1:nSess
         (indC+nCard+nResp+nMult+nHRV-1)];
     colRVT  = [colRVT, (indC+nCard+nResp+nMult+nHRV):...
         (indC+nCard+nResp+nMult+nHRV+nRVT-1)];
-    colMove = [colMove, (indC+nCard+nResp+nMult+nHRV+nRVT):...
-        (indC+nCard+nResp+nMult+nHRV+nRVT+nMove-1)];
+    colRois = [colRois, (indC+nCard+nResp+nMult+nHRV+nRVT):...
+        (indC+nCard+nResp+nMult+nHRV+nRVT+nRois-1)];
+    colMove = [colMove, (indC+nCard+nResp+nMult+nHRV+nRVT+nRois):...
+        (indC+nCard+nResp+nMult+nHRV+nRVT+nRois+nMove-1)];
 end
 
-colAll = [colCard colResp colMult colHRV colRVT];
+colAll = [colCard colResp colMult colHRV colRVT colRois];

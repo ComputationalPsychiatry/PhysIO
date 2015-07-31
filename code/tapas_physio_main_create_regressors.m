@@ -253,7 +253,7 @@ end
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% 4. Create RETROICOR/response function regressors for GLM
+%% 4. Create physiological noise model regressors for GLM
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 if model.retroicor.include
@@ -288,6 +288,25 @@ else
     convRVT = [];
 end
 
+% Extract anatomical defined (ROI) principal component regressors
+
+if model.noise_rois.include
+    [noise_rois_R, model.noise_rois, verbose] = tapas_physio_create_noise_rois_regressors(...
+        model.noise_rois, verbose);
+else
+    noise_rois_R = [];
+end
+
+
+% Load other (physiological) confound regressors
+
+if model.other.include && ~isempty(model.other.input_multiple_regressors)
+    [other_R, verbose] = tapas_physio_load_other_multiple_regressors(...
+        model.other.input_multiple_regressors, verbose);
+else
+    other_R = [];
+end
+
 % load and manipulate movement parameters as confound regressors
 if model.movement.include && ~isempty(model.movement.file_realignment_parameters)
      [movement_R, verbose] = tapas_physio_create_movement_regressors(...
@@ -297,24 +316,17 @@ else
 end
 
 
-% 4.1 Load other confound regressors
-
-if model.other.include && ~isempty(model.other.input_multiple_regressors)
-    [other_R, verbose] = tapas_physio_load_other_multiple_regressors(...
-        model.other.input_multiple_regressors, verbose);
-else
-    other_R = [];
-end
-
-other_R = [convHRV, convRVT, other_R, movement_R];
 
 
-% 4.2   Orthogonalisation of regressors ensures numerical stability for
-%       otherwise correlated cardiac regressors
+R = [convHRV, convRVT, noise_rois_R, movement_R, other_R ];
+
+
+% Orthogonalisation of regressors ensures numerical stability for
+% otherwise correlated cardiac regressors
 
 [R, verbose] = tapas_physio_orthogonalise_physiological_regressors(...
     cardiac_sess, respire_sess, ...
-    mult_sess, other_R, model.orthogonalise, verbose);
+    mult_sess, R, model.orthogonalise, verbose);
 
 
 % 4.3   Save Multiple Regressors file for SPM

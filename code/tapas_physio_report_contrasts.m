@@ -11,9 +11,8 @@ function varargout = tapas_physio_report_contrasts(varargin)
 %   args = tapas_physio_report_contrasts(...
 %                   'fileReport', 'physio.ps', ...
 %                   'fileSpm', 'analysisFolder/SPM.mat'
-%                   'fileStructural', 'mean.nii', ...
-%                   'indReportPhysContrasts', [1:5] ...
-%                   )
+%                   'filePhysIO', 'analysisFolder/physio.mat', ...
+%                   'fileStructural', 'anatomyFolder/warpedAnatomy.nii')
 %
 % IN
 %
@@ -24,12 +23,12 @@ function varargout = tapas_physio_report_contrasts(varargin)
 %                              e.g. 'mean.nii'
 %                     fileSpm: SPM.mat holding physiological regressors,
 %                              e.g.'SPM.mat'
+%                  filePhysIO:  mat-file where PhysIO-object was saved
+%                               e.g. physio.mat
 %
 %   Optional Parameters:
 %
 %                  pathPhysIO:  path of physIO Toolbox code
-%               filePhysIO:     mat-file where PhysIO-object was saved
-%                               e.g. physio.mat
 %          namesPhysContrasts: cell Array of contrast names in design matrix
 %                              e.g. {'All Phys', 'Cardiac', 'Respiratory',
 %                               'Card X Resp Interation',
@@ -91,6 +90,7 @@ defaults.namesPhysContrasts = {
     'Card X Resp Interation'
     'HeartRateVariability'
     'RespiratoryVolumePerTime'
+    'Noise Rois'
     'Movement'
     };
 

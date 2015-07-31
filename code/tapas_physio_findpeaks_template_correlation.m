@@ -55,7 +55,7 @@ tapas_physio_strip_fields(args);
 
 halfTemplateWidthInSamples = floor(numel(pulseCleanedTemplate)/2);
 
-[~,zTransformedTemplate] = tapas_physio_corrcoef12(pulseCleanedTemplate,...
+[tmp,zTransformedTemplate] = tapas_physio_corrcoef12(pulseCleanedTemplate,...
     pulseCleanedTemplate);
 isZTransformed = [0 1];
 
