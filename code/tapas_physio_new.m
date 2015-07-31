@@ -1,5 +1,5 @@
 function physio = tapas_physio_new(default_scheme, physio_in)
-% creates complete PhysIO structure fed into tapas_physio_main_create_regressors
+% Creates complete PhysIO structure fed into tapas_physio_main_create_regressors
 %
 %    physio = tapas_physio_new(default_scheme, physio_in)
 %
@@ -62,32 +62,37 @@ if ~nargin
 end
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Modules (Overview)
+%   Overview over all sub-modules of the PhysIO Toolbox
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 if nargin >= 2
-    save_dir = physio_in.save_dir;
+    save_dir    = physio_in.save_dir;
     log_files   = physio_in.log_files;
-    preproc  = physio_in.preproc;
-    sqpar   = physio_in.sqpar;
-    model   = physio_in.model;
-    verbose = physio_in.verbose;
-    ons_secs = physio_in.ons_secs;
+    preproc     = physio_in.preproc;
+    sqpar       = physio_in.sqpar;
+    model       = physio_in.model;
+    verbose     = physio_in.verbose;
+    ons_secs    = physio_in.ons_secs;
 else
     
     
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% save_dir
-    % directory where output model and figure-files are saved to
+    %% save_dir (Module)
+    % Directory where output model, regressors and figure-files are saved to
     % leave empty to use current directory
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    save_dir = '';
+    save_dir = '';  % Overarching directory, relative to which output files are saved
     
     
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% log_files
-    % Structure containing general physiological log-file information
+    %% log_files (Module)
+    % General physiological log-file information, e.g. file names, sampling
+    % rates
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     log_files              = [];
     
@@ -123,7 +128,16 @@ else
     
     log_files.vendor       = 'Philips';
     
-    log_files.cardiac      = ''; % 'SCANPHYSLOG.log'; logfile with cardiac data
+    % Logfile with cardiac data, e.g. 
+    %   'SCANPHYSLOG<date>.log' (Philips)
+    %   '<id>_PAV.ecg'          (Siemens Trio etc. (VB))
+    %   '<date>_ECG1-4.log'     (Siemens Prisma etc (VD))
+    %   'ECGData_epiRT_<date>'  (GE)
+    log_files.cardiac      = ''; 
+  
+    % Logfile with respiratory data, e.g. 'SCANPHYSLOG.log';
+    % (same as .cardiac for Philips)
+    log_files.respiration  = '';
     
     % additional file for relative timing information between logfiles and
     % MRI scans.
@@ -134,11 +148,7 @@ else
     % Siemens_Tics: log-file which holds table conversion for tics axis to 
     %               time conversion 
     log_files.scan_timing  = ''; 
-    
-    % Logfile with respiratory data, e.g. 'SCANPHYSLOG.log';
-    % (same as .cardiac for Philips)
-    log_files.respiration  = '';
-    
+
     % Sampling interval in seconds (i.e. time between two rows in logfile
     % if empty, default value will be set: 2e-3 for Philips, variable for GE, e.g. 40e-3
     %         1 entry: sampling interval (seconds)
@@ -174,7 +184,8 @@ else
 
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% scan_timing - Parameters for sequence timing & synchronization
+    %% scan_timing (Module)
+    % Parameters for sequence timing & synchronization
     % scan_tming.sqpar =    slice and volume acquisition starts, TR, 
     %                       number of scans etc.
     % scan_timing.sync =    synchronize phys logfile to scan acquisition
@@ -256,9 +267,9 @@ else
 
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% preproc
-    % Determines preprocessing of physiological data,
-    % i.e. from peripheral measures (preproc.cardiac, preproc.respiration)
+    %% preproc (Module)
+    % Preprocessing strategy and parameters for physiological data,
+    % starting from raw peripheral measures (preproc.cardiac, preproc.respiration)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     preproc = [];
     
@@ -309,9 +320,8 @@ else
     
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% Model
-    % Determines the physiological noise models derived from preprocessed 
-    % physiological data
+    %% Model (Module)
+    % Physiological noise models derived from preprocessed physiological data
     % available models (that can be combined) are:
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % 'none'        no physiological model is computed; only the read-out
@@ -319,7 +329,7 @@ else
     % 'RETROICOR'   as in Glover el al, MRM 44, 2000l
     %               order of expansion:  See Harvey et al, JMRI 28, 2008
     % 'HRV'         heart rate variability, as in Chang et al, 2009
-    % 'RVT'         respiratory volume time, as in Birn et al., 2006
+    % 'RVT'         respiratory volume time, as in Birn et al., 2006/8
     % 'movement'    realignment parameters, derivatives, 
     %               + squared (parameters+derivatives),
     %               (Volterra expansion, see: Friston KJ, Williams S, Howard R, Frackowiak
@@ -349,11 +359,6 @@ else
     %   'movement
     %   noise_rois 
     
-    % other nuisance regressors to be included in design matrix
-    % either txt-file or mat-file with variable R
-    model.other.include = 1;
-    model.other.input_multiple_regressors = '';
-    
     % output file for usage in SPM multiple_regressors GLM-specification
     % either txt-file or mat-file with variable R
     model.output_multiple_regressors = '';
@@ -368,7 +373,10 @@ else
     %       multiple_regressors_001.txt files, one per specified slice
     model.R = [];                               
     
-    %% RETROICOR model
+    %% RETROICOR (Model): Glover et al. 2000
+    % Retrospective image correction method, based on Fourier expansion of
+    % cardiac and respiratory phase, plus multiplicative interaction terms
+    % (Harvey et al, 2008)
     
     model.retroicor.include = 1; % 1 = included; 0 = not used
     % natural number, order of cardiac phase Fourier expansion
@@ -381,7 +389,7 @@ else
     model.retroicor.order.cr = [];
    
     
-    %% Respiratory Volume per time model (RVT), Birn et al, 2006
+    %% RVT (Model): Respiratory Volume per time model , Birn et al, 2006/8
     model.rvt.include = 0;
     
     % one or multiple delays (in seconds) can be specified to shift 
@@ -389,7 +397,8 @@ else
     model.rvt.delays = 0; % (TODO)
  
     
-    %% Heart Rate variability model (HRV), Chang et al, 2009
+    %% HRV (Model): Heart Rate variability, Chang et al, 2009
+    
     model.hrv.include = 0;
     
     % one or multiple delays (in seconds) can be specified to shift 
@@ -397,7 +406,9 @@ else
     model.hrv.delays = 0;  % (TODO)
     
     
-    %% movement regressor model 6/12/24, sudden movement exceedance regressors
+    %% movement (Model): Regressor model 6/12/24, Friston et al. 1996
+    % Also: sudden movement exceedance regressors
+    
     model.movement.include = 1;
     model.movement.file_realignment_parameters = '';
     
@@ -406,23 +417,22 @@ else
     % 12 = + derivatives
     % 24 = + squared parameters and derivatives, corresponding to a
     %        Volterra expansion V_t, V_t^2, V_(t-1), V_(t-1)^2
-    model.movement.order = 6;  % (TODO)
+    model.movement.order = 6;
     
     % threshold for large sudden translations; 1 stick regressor for each volume
     % exceeding the threshold will be created
     model.movement.outlier_translation_mm = 1;  % (TODO)
+    
     % threshold for large sudden rotations; 1 stick regressor for each volume
     % exceeding the threshold will be created
     model.movement.outlier_rotation_deg = 1;  % (TODO)
     
-    % (TODO)
-    %% 'noise_rois'  Principal Components of time series of all voxels in given
-    %               regions of localized noise, e.g. CSF, vessels, white
-    %               matter
-    %               e.g. CompCor: Behzadi, Y., Restom, K., Liau, J., Liu, 
-    %               T.T., 2007. A component based noise correction method (CompCor) for BOLD and perfusion based fMRI. NeuroImage 37, 90?101. doi:10.1016/j.neuroimage.2007.04.042
 
-     
+    %% noise_rois (Model): Anatomical Component Correction, Behzadi et al, 2007
+    %   Principal Components of time series of all voxels in given regions 
+    %   of localized noise, e.g. CSF, vessels, white matter
+    %       e.g. CompCor: Behzadi, Y., Restom, K., Liau, J., Liu, 
+    %       T.T., 2007. A component based noise correction method (CompCor) for BOLD and perfusion based fMRI. NeuroImage 37, 90?101. doi:10.1016/j.neuroimage.2007.04.042
      
     model.noise_rois.include = 0;
     % cell of preprocessed fmri nifti/analyze files, from which time series
@@ -443,17 +453,22 @@ else
     %                   add more components, until 99 % of variance explained
     model.noise_roise.n_components = 1;
     
-  
+    
+    %% other (Model): Additional, pre-computed nuisance regressors 
+    %   to be included in design matrix as txt or mat-file (variable R)
+    model.other.include = 1;
+    model.other.input_multiple_regressors = '';
+    
     
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% verbose
-    % determines how many figures shall be generated to follow the workflow
-    % of the toolbox and whether the graphical output shall be saved (to a
-    % PostScript-file)
+    %% verbose (Module)
+    % Verbosity of Toolbox, i.e. how many figures shall be generated to 
+    % visualize the workflow and save it (to graphics file(s))
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     verbose = [];
     
+    % verbosity levels:
     %-1 = no text or graphics output (text saved in verbose.process_log)
     % 0 = no graphical output;
     % 1 = (default) main plots : Fig 1: gradient scan timing (if selected) ;
@@ -491,29 +506,33 @@ else
                                 % processing, e.g. warnings about missed
                                 % slice triggers, peak height etc.
     verbose.fig_handles = zeros(0,1);     % [nFigs,1] vector; collecting of all generated figure handles during a run of tapas_physio_main_create_regressors
-    verbose.fig_output_file = ''; % file name (including extension) where to print all physIO output figures to,
-    verbose.use_tabs = false;    % if true, plots are performed in tabs of SPM graphics window
-    %                                   TODO: implement via
-    %                               [handles] = spm_uitab(hparent,labels,callbacks,...
+    
+    % file name (including extension) where to print all physIO output 
+    % figures to.
+    % e.g. 'PhysIO_output.ps' or 'PhysIO_output.jpg'
+    %
+    % The specified extension determines how the figures will be saved
+    %     .ps - all figures are saved to the same, multi-page postscript-file
+    %     .fig, .tiff,  .jpg
+    %         - one file is created for each figure, appended by a figure
+    %         index, e.g. 'PhysIO_output_fig01.jpg'
+    verbose.fig_output_file = ''; 
+    
+    
+    % If true, plots are performed in tabs of SPM graphics window
+    %  TODO: implement via [handles] = spm_uitab(hparent,labels,callbacks,...
     %                                           tag,active,height,tab_height)
     %
-    % e.g. 'PhysIO_output.ps' or 'PhysIO_output.jpg'
-    % The specified extension determines how the
-    % figures will be saved
-    %     .ps - all figures are saved to the
-    %     same, multiple-page postscript-file
-    %     .fig, .tiff,  .jpg
-    %         - one file is created for each
-    %         figure, appended by its figure
-    %         index, e.g. 'PhysIO_output_fig01.jpg'
-    
+    verbose.use_tabs = false;  
+  
     
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% ons_secs
-    % output structure holding all time-dependent variables, i.e. onsets, specified in seconds
-    % all elements but .raw are cropped to the acquisition window of
-    % interest
+    %% ons_secs (Module, output only)
+    % Output structure for all read or computed  time-dependent variables, 
+    % i.e. onsets, specified in seconds
+    % NOTE: all elements but .raw are cropped to the acquisition window of 
+    % the session
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     ons_secs                     = [];
     
@@ -542,6 +561,13 @@ else
     ons_secs.raw            	 = [];  % raw read-in version of the whole structure, before any cropping
 end
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Pre-defined model configurations
+%  Certain modeling choices are very common, and the accompanying
+%  parameter settings can be generated by calling this constructor with a
+%  default scheme
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 switch default_scheme
     case 'RETROICOR'
         model.type = 'RETROICOR';
@@ -562,7 +588,7 @@ end
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Assemble output
+%% Assemble output (all PhysIO-modules)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 physio.save_dir     = save_dir;
@@ -573,7 +599,7 @@ physio.model        = model;
 physio.verbose      = verbose;
 physio.ons_secs     = ons_secs;
 
-%% call functions for specific initial value settings (e.g. 3T Philips system)
+% Call functions for specific initial value settings (e.g. 3T Philips system)
 switch default_scheme
     case 'Philips'
         physio = tapas_physio_init_philips(physio);

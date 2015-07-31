@@ -1,4 +1,4 @@
-function [tSnrGainArray, tSnrImageArray] = ...
+function varargout = ...
     tapas_physio_compute_tsnr_gains(physio, SPM, doSave)
 % Computes tSNR gains through physiological noise correction for all
 % confound regressor sets modelled, after estimation of the SPM-GLM
@@ -63,9 +63,9 @@ if ~isstruct(physio)
     if iscell(physio)
         filePhysio = physio{1};
     else
-        filePhysio = SPM;
+        filePhysio = physio;
     end
-    physio = load(filePhysio, 'physio');
+    load(filePhysio, 'physio');
 end
 
 % load SPM-variable, if filename given
@@ -76,7 +76,7 @@ if ~isstruct(SPM)
     else
         fileSpm = SPM;
     end
-    SPM = load(fileSpm, 'SPM');
+    load(fileSpm, 'SPM');
 end
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -158,19 +158,19 @@ for iC = 1:nContrasts
     tSnrImageArray{iC}.name = ['tSNR after correcting ' ...
         namesPhysContrasts{iC}];
     tSnrImageArray{iC}.parameters.save.path = SPM.swd;
-    tSnrImageArray{iC}.parameters.save.name = ...
+    tSnrImageArray{iC}.parameters.save.fileName = ...
         sprintf('tSnr_%s.nii', namesPhysContrasts{iC});
     tSnrGainArray{iC} = (tSnrImageArray{iC}./tSnrImageRaw - 1).*100;
     tSnrGainArray{iC}.name = ['tSNR gain after correcting ' ...
         namesPhysContrasts{iC}];
     tSnrGainArray{iC}.parameters.save.path = SPM.swd;
-    tSnrGainArray{iC}.parameters.save.name = ...
+    tSnrGainArray{iC}.parameters.save.fileName = ...
         sprintf('tSnrGain_%s.nii', namesPhysContrasts{iC});
 end
 
 tSnrImageArray{end} = tSnrImageRaw;
 tSnrImageArray{end}.parameters.save.path = SPM.swd;
-tSnrImageArray{end}.parameters.save.name = ...
+tSnrImageArray{end}.parameters.save.fileName = ...
     sprintf('tSnr_Raw.nii');
 
 if doSave
@@ -179,4 +179,17 @@ if doSave
         tSnrGainArray{iC}.save;
     end
     tSnrImageArray{end}.save;
+end
+
+doPlot = false;
+if doPlot
+   spm_check_registration(tSnrImageArray{end}.parameters.save.fileName);
+end
+
+if nargout
+    varargout{1} =  tSnrGainArray;
+    
+    if nargout > 1
+        varargout{2} = tSnrImageArray;
+    end
 end
