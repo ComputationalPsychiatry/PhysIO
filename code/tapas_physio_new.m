@@ -547,10 +547,16 @@ else
                                         
     % processed elements cardiac pulse detecion and phase estimations
     ons_secs.cpulse         	 = [];  % onset times of cardiac pulse events (e.g. R-peaks)
-    ons_secs.c_sample_phase      = [];  % phase in heart-cycle when each slice of each volume was acquired
     ons_secs.fr                  = [];  % filtered respiration amplitude time series
-    ons_secs.hr                  = [];  % [nScans,1] estimated heart rate at each scan
+    ons_secs.c_sample_phase      = [];  % phase in heart-cycle when each slice of each volume was acquired
     ons_secs.r_sample_phase      = [];  % phase in respiratory cycle when each slice of each volume was acquired
+    ons_secs.hr                  = [];  % [nScans,1] estimated heart rate at each scan
+    ons_secs.rvt                 = [];  % [nScans,1] estimated respiratory volume per time at each scan
+    
+    % statistical info about physiological data
+    ons_secs.c_outliers_high     = [];  % onset of too long heart beats
+    ons_secs.c_outliers_low      = [];  % onsets of too short heart beats 
+    ons_secs.r_hist              = [];  % histogram of breathing amplitudes
     
     % scan timing parameters
     ons_secs.svolpulse      	 = [];  % [Nscans x 1] onset times of volume scan events
