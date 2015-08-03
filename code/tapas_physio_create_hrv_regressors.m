@@ -1,8 +1,8 @@
-function [convHRVOut, hrOut, verbose] = tapas_physio_create_hrv_regressor(...
-    ons_secs, sqpar, verbose)
+function [convHRVOut, hrOut, verbose] = tapas_physio_create_hrv_regressors(...
+    ons_secs, sqpar, hrv, verbose)
 % computes cardiac response function regressor and heart rate
 %
-%    [convHRV, hr] = tapas_physio_create_hrv_regressor(ons_secs, sqpar )
+%    [convHRV, hr] = tapas_physio_create_hrv_regressors(ons_secs, sqpar )
 %
 % Reference:
 %   Chang, Catie, John P. Cunningham, and Gary H. Glover. 
@@ -21,7 +21,7 @@ function [convHRVOut, hrOut, verbose] = tapas_physio_create_hrv_regressor(...
 %   convHRV             cardiac response function regressor after convolution . See
 %                       also
 % EXAMPLE
-%   [convHRV, hr] = tapas_physio_create_hrv_regressor(physio_out.ons_secs, ...
+%   [convHRV, hr] = tapas_physio_create_hrv_regressors(physio_out.ons_secs, ...
 %                       physio_out.sqpar);
 %
 %   See also tapas_physio_hr tapas_physio_crf
@@ -37,6 +37,11 @@ function [convHRVOut, hrOut, verbose] = tapas_physio_create_hrv_regressor(...
 %
 % $Id$
 if nargin < 3
+    physio = tapas_physio_new;
+    hrv = physio.model.hrv;
+end
+
+if nargin < 4
     verbose.level = [];
     verbose.fig_handles = [];
 end

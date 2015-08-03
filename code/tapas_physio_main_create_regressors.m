@@ -271,8 +271,8 @@ end
 % function
 
 if model.hrv.include % TODO: include delays!
-    [convHRV, ons_secs.hr, verbose] = tapas_physio_create_hrv_regressor(...
-        ons_secs, sqpar, verbose);
+    [convHRV, ons_secs.hr, verbose] = tapas_physio_create_hrv_regressors(...
+        ons_secs, sqpar, model.hrv, verbose);
 else
     convHRV = [];
 end
@@ -282,8 +282,8 @@ end
 % function
 
 if model.rvt.include
-    [convRVT, ons_secs.rvt, verbose] = tapas_physio_create_rvt_regressor(...
-        ons_secs, sqpar, verbose);
+    [convRVT, ons_secs.rvt, verbose] = tapas_physio_create_rvt_regressors(...
+        ons_secs, sqpar, model.rvt, verbose);
 else
     convRVT = [];
 end

@@ -1,8 +1,8 @@
-function [convRVTOut, rvtOut, verbose] = tapas_physio_create_rvt_regressor(...
-    ons_secs, sqpar, verbose)
+function [convRVTOut, rvtOut, verbose] = tapas_physio_create_rvt_regressors(...
+    ons_secs, sqpar, rvt, verbose)
 % computes respiratory response function regressor and respiratory volume per time
 %
-%    [convHRV, hr] = tapas_physio_create_rvt_regressor(ons_secs, sqpar )
+%    [convHRV, hr] = tapas_physio_create_rvt_regressors(ons_secs, sqpar )
 %
 % Reference:
 %   Birn, R.M., Smith, M.A., Jones, T.B., Bandettini, P.A., 2008.
@@ -35,7 +35,12 @@ function [convRVTOut, rvtOut, verbose] = tapas_physio_create_rvt_regressor(...
 %
 % $Id$
 if nargin < 3
-    verbose.level = 0;
+    physio = tapas_physio_new;
+    rvt = physio.model.rvt;
+end
+
+if nargin < 4
+    verbose.level = [];
     verbose.fig_handles = [];
 end
 

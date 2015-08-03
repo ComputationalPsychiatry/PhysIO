@@ -18,7 +18,8 @@ function [fh, prop, MyColors] = tapas_physio_get_default_fig_params(...
 % $Id$
 %
 if nargin < 1
-   convfac = 2; % conversion factor
+%   convfac = 2; % conversion factor
+    convfac = 4;
 end
 
 if nargin < 2
