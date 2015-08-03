@@ -143,26 +143,9 @@ ons_secs.r_sample_phase =  tapas_physio_split_regressor_slices(...
 
 %% plot cardiac & resp. regressors
 if verbose.level >=2
-    verbose.fig_handles(end+1) = tapas_physio_get_default_fig_params();
+    R = [cardiac_sess, respire_sess, mult_sess];
     
-    set(gcf,'Name','RETROICOR timecourse physiological regressors');
-    if order.cr
-        Nsubs=3;
-        ax(3) = subplot(Nsubs,1,3);
-        plot([mult_sess+repmat(1:size(mult_sess,2),length(mult_sess),1)]);
-        xlabel('scan volumes');
-        title('RETROICOR multiplicative cardiac x respiratory regressors, vertical shift for visibility')
-    else
-        Nsubs=2;
-    end
-    ax(1) = subplot(Nsubs,1,1);
-    plot([cardiac_sess+repmat(1:size(cardiac_sess,2),length(cardiac_sess),1)]);
-    xlabel('scan volumes');
-    title('RETROICOR cardiac regressors, vertical shift for visibility')
+    verbose.fig_handles(end+1) = ...
+        tapas_physio_plot_retroicor_regressors(R, order);
     
-    ax(2) = subplot(Nsubs,1,2);
-    plot([respire_sess+repmat(1:size(respire_sess,2),length(respire_sess),1)]);
-    xlabel('scan volumes');
-    title('RETROICOR respiratory regressors, vertical shift for visibility')
-    if ~(isempty(cardiac_sess) || isempty(respire_sess)), linkaxes(ax,'x'); end
 end
