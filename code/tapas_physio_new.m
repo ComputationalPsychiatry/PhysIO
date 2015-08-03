@@ -64,7 +64,7 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Modules (Overview)
-%   Overview over all sub-modules of the PhysIO Toolbox
+% Overview over all sub-modules of the PhysIO Toolbox
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -72,7 +72,9 @@ if nargin >= 2
     save_dir    = physio_in.save_dir;
     log_files   = physio_in.log_files;
     preproc     = physio_in.preproc;
-    sqpar       = physio_in.sqpar;
+    scan_timing = physio_in.scan_timing;
+    sync        = scan_timing.sync;
+    sqpar       = scan_timing.sqpar;
     model       = physio_in.model;
     verbose     = physio_in.verbose;
     ons_secs    = physio_in.ons_secs;
@@ -82,11 +84,12 @@ else
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% save_dir (Module)
-    % Directory where output model, regressors and figure-files are saved to
-    % leave empty to use current directory
+    % Directory where output model, regressors and figure-files are saved
+    % to; leave empty to use current directory
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    save_dir = '';  % Overarching directory, relative to which output files are saved
     
+    % Overarching directory, relative to which output files are saved
+    save_dir = ''; 
     
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -407,12 +410,13 @@ else
     
     
     %% noise_rois (Model): Anatomical Component Correction, Behzadi et al, 2007
-    %   Principal Components of time series of all voxels in given regions 
-    %   of localized noise, e.g. CSF, vessels, white matter
-    %       e.g. CompCor: Behzadi, Y., Restom, K., Liau, J., Liu, 
-    %       T.T., 2007. A component based noise correction method (CompCor) 
-    %       for BOLD and perfusion based fMRI. NeuroImage 37, 90-101. 
-    %       doi:10.1016/j.neuroimage.2007.04.042
+    % Principal Components of time series of all voxels in given regions 
+    % of localized noise, e.g. CSF, vessels, white matter
+    %
+    % e.g. CompCor: Behzadi, Y., Restom, K., Liau, J., Liu, 
+    % T.T., 2007. A component based noise correction method (CompCor) 
+    % for BOLD and perfusion based fMRI. NeuroImage 37, 90-101. 
+    % doi:10.1016/j.neuroimage.2007.04.042
      
     model.noise_rois.include = 0;
     % cell of preprocessed fmri nifti/analyze files, from which time series
@@ -463,7 +467,7 @@ else
     
 
     %% other (Model): Additional, pre-computed nuisance regressors 
-    %   to be included in design matrix as txt or mat-file (variable R)
+    % To be included in design matrix as txt or mat-file (variable R)
     model.other.include = 1;
     model.other.input_multiple_regressors = '';
  
