@@ -353,6 +353,9 @@ if isempty(R)
 else
     [fpfx, fn, fsfx] = fileparts(model.output_multiple_regressors);
     
+    % TODO: slice-wise saving here...
+    % indSlice = physio.scan_timing.sqpar.onset_slice
+    
     switch fsfx
         case '.mat'
             save(model.output_multiple_regressors, 'R');

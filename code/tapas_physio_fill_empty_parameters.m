@@ -31,6 +31,10 @@ if isempty(physio.scan_timing.sqpar.NslicesPerBeat)
     physio.scan_timing.sqpar.NslicesPerBeat = physio.scan_timing.sqpar.Nslices;
 end
 
+if isempty(physio.scan_timing.sqpar.Ndummies)
+    physio.scan_timing.sqpar.Ndummies = 0;
+end
+
 if isempty(physio.scan_timing.sqpar.time_slice_to_slice)
     physio.scan_timing.sqpar.time_slice_to_slice = physio.scan_timing.sqpar.TR/physio.scan_timing.sqpar.Nslices;
 end

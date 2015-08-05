@@ -95,7 +95,8 @@ end
 sqpar.maxscan=length(sqpar.t); %counts each excitation
 
 % Counts only real repetitions of a slice
-sqpar.Nvols_paradigm   = (length(sqpar.t)-Ndummies*Nslices/NslicesPerBeat)/Nslices*NslicesPerBeat;
+sqpar.Nvols_paradigm   = (length(sqpar.t) - ...
+    Ndummies*Nslices / NslicesPerBeat)/Nslices*NslicesPerBeat;
 
 
 % Mean TR of time paradigm is running, excluding dummies

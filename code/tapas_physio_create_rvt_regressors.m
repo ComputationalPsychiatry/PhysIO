@@ -1,5 +1,5 @@
 function [convRVTOut, rvtOut, verbose] = tapas_physio_create_rvt_regressors(...
-    ons_secs, sqpar, rvt, verbose)
+    ons_secs, sqpar, model_rvt, verbose)
 % computes respiratory response function regressor and respiratory volume per time
 %
 %    [convHRV, hr] = tapas_physio_create_rvt_regressors(ons_secs, sqpar )
@@ -36,8 +36,11 @@ function [convRVTOut, rvtOut, verbose] = tapas_physio_create_rvt_regressors(...
 % $Id$
 if nargin < 3
     physio = tapas_physio_new;
-    rvt = physio.model.rvt;
+    model_rvt = physio.model.rvt;
 end
+
+delays = model_rvt.delays;
+
 
 if nargin < 4
     verbose.level = [];
@@ -63,6 +66,7 @@ t = 0:dt:50; % 50 seconds regressor
 rrf = tapas_physio_rrf(t);
 rrf = rrf/max(abs(rrf));
 % crf = spm_hrf(dt);
+
 if verbose.level >= 2
     subplot(2,2,2)
     plot(t, rrf,'g');xlabel('time (seconds)');ylabel('respiratory response function');
@@ -82,6 +86,20 @@ if verbose.level >= 2
     ylabel('resp vol time X resp response function');
 end
 
+% create shifted regressors convolved time series, which is equivalent to
+% delayed response functions according to Wikipedia (convoution)
+% 
+% "Translation invariance[edit]
+% The convolution commutes with translations, meaning that
+% 
+% \tau_x ({f}*g) = (\tau_x f)*g = {f}*(\tau_x g)\,
+% where \tau_x fis the translation of the function f by x defined by
+% (\tau_x f)(y) = f(y-x).\.
+
+% TODO: what happens at the end/beginning of shifted convolutions?
+nDelays = numel(delays);
+convRvtArray = zeros(nSamples, nDelays);
+nShiftSamples = ceil(delays/dt);
 
 % resample to slices needed
 nSampleSlices = numel(sqpar.onset_slice);

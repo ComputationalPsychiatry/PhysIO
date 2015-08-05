@@ -1,4 +1,5 @@
-function fh = tapas_physio_plot_retroicor_regressors(R, order)
+function fh = tapas_physio_plot_retroicor_regressors(R, order, ...
+    hasCardiacData, hasRespData)
 % Plots RETROICOR regressors split into cardiac/resp and interaction
 %
 %   fh = tapas_physio_plot_retroicor_regressors(R, order)
@@ -28,9 +29,33 @@ function fh = tapas_physio_plot_retroicor_regressors(R, order)
 %
 % $Id$
 
-cardiac_sess = R(:,1:(2*order.c));
-respire_sess = R(:,(2*order.c) + (1:(2*order.r)));
-mult_sess = R(:,2*(order.c+order.r) + (1:4*order.cr));
+if nargin < 3
+    hasCardiacData = 1;
+end
+
+if nargin < 4
+    hasRespData = 1;
+end
+
+if hasCardiacData
+    cardiac_sess    = R(:,1:(2*order.c));
+else
+    cardiac_sess = [];
+end
+
+if hasRespData
+    respire_sess    = R(:,(2*order.c) + (1:(2*order.r)));
+else
+    respire_sess = [];
+end
+
+
+if hasCardiacData && hasRespData
+    mult_sess       = R(:,2*(order.c+order.r) + (1:4*order.cr));
+else
+    mult_sess = [];
+end
+
 fh = tapas_physio_get_default_fig_params();
 set(gcf,'Name','RETROICOR timecourse physiological regressors');
 

@@ -145,7 +145,11 @@ ons_secs.r_sample_phase =  tapas_physio_split_regressor_slices(...
 if verbose.level >=2
     R = [cardiac_sess, respire_sess, mult_sess];
     
+    hasCardiacData = ~isempty(ons_secs.c);
+    hasRespData = ~isempty(ons_secs.r);
+    
     verbose.fig_handles(end+1) = ...
-        tapas_physio_plot_retroicor_regressors(R, order);
+        tapas_physio_plot_retroicor_regressors(R, order, hasCardiacData, ...
+        hasRespData);
     
 end
