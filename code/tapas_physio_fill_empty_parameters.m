@@ -39,6 +39,10 @@ if isempty(physio.scan_timing.sqpar.time_slice_to_slice)
     physio.scan_timing.sqpar.time_slice_to_slice = physio.scan_timing.sqpar.TR/physio.scan_timing.sqpar.Nslices;
 end
 
+if isempty(physio.log_files.scan_timing)
+    physio.log_files.scan_timing = {''};
+end
+
 if isempty(physio.log_files.sampling_interval)
     switch lower(physio.log_files.vendor)
         case 'philips'
