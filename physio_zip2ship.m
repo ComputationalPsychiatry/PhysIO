@@ -44,7 +44,11 @@ if nargin < 2
     zipWhat = 'withoutSiemensTics';
 end
 
+% delete created output files, e.g. physio.mat, multiple_regressors.txt
 physio_cleanup_example_output_files();
+
+% update job.mat and matlab_script from job.m, remove absolute paths
+physio_update_examples();
 currD = fileparts(mfilename('fullpath'));
 
 exportD = fullfile(currD, sprintf('PhysIO_r%s', srev));
@@ -54,10 +58,10 @@ mkdir(exportD);
 copyfile(fullfile(currD, 'README.txt'), exportD);
 
 dirExamples = {
-    'GE/Pulseoxy_15m4'
+    'GE/PPU3T'
     'Philips/ECG3T'
     'Philips/ECG7T'
-    'Philips/PPU'
+    'Philips/PPU3T'
     'Siemens/ECG3T'
     };
 

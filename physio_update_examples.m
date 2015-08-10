@@ -35,7 +35,7 @@ pfxExample = 'tapas_physio_example_';
 
 dirExamples = {
     'Philips/ECG3T'
- %   'Philips/ECT7T'
+    'Philips/ECG7T'
  %   'Philips/PPU3T'
  %   'Siemens/ECG3T'
  %   'GE/PPU3T'

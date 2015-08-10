@@ -36,6 +36,7 @@ for iPfx = 1:length(pfxD)
             d = fullfile(currD,pfxD{iPfx},ds(n).name);
             disp(['Deleting output files in ' d]);
             delete(fullfile(d, 'multiple_regressors.*'));
+            delete(fullfile(d, 'physio.mat'));
             delete(fullfile(d, 'PhysIO_output*'));
             delete(fullfile(d, '*.asv'));
             %     delete(fullfile(d, '*.ps'));
