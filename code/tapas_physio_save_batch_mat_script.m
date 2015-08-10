@@ -12,7 +12,7 @@ function physio = tapas_physio_save_batch_mat_script(fileBatchM)
 % SIDE EFFECTS
 %   <fileBatch>.mat         created, is .mat-job for spm_jobman, holding a
 %                           variable matlabbatch
-%   <fileBatch>_script.m    created, is standalone (w/o spm) matlab script version
+%   <fileBatch>_matlab_script.m    created, is standalone (w/o spm) matlab script version
 %
 % EXAMPLE
 %   tapas_physio_save_batch_mat_script('example_main_job_ECG7T.m');
@@ -45,7 +45,7 @@ else
 end
 
 fileBatchMat = regexprep(fileBatchM, '\.m', '\.mat');
-fileScript = regexprep(fileBatchM, {'spm_job', 'job'}, 'script');
+fileScript = regexprep(fileBatchM, {'spm_job', 'job'}, 'matlab_script');
 
 if ~exist('cfg_files', 'file')
     spm_jobman('initcfg');
@@ -70,7 +70,18 @@ run(fileTempJob);
 
 delete([fileTemp '.m'], fileTempJob);
 
-% save matlababach to mat-file
+
+% remove newly introduced absolute paths :-(
+pathJob = fileparts(fileBatchM);
+
+% pathNow, since cfg-stuff adds the paths of the directory it was executed
+% in :-(
+pathNow = pwd;
+matlabbatch{1}.spm.tools.physio = tapas_physio_replace_absolute_paths(...
+    matlabbatch{1}.spm.tools.physio, {pathJob, pathNow});
+
+
+% save matlabbatch to mat-file
 
 save(fileBatchMat, 'matlabbatch')
 
@@ -86,7 +97,7 @@ indLineRemove = tapas_physio_find_string(str, ...
 indLineRemove = cell2mat(indLineRemove);
 str(indLineRemove) = [];
 
-% add generating line for physio-structure, and save to _script-file
+% add generating line for physio-structure, and save to matlab_script-file
 str = [{'physio = tapas_physio_new();'}
     {''}
     str

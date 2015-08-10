@@ -477,9 +477,9 @@ sync.help = {'Determines scan timing from nominal scan parameters or logged grad
 %--------------------------------------------------------------------------
 scan_timing      = cfg_branch;
 scan_timing.tag  = 'scan_timing';
-scan_timing.name = 'scan_timing ( Parameters for sequence timing & synchronization)';
+scan_timing.name = 'scan_timing (Parameters for sequence timing & synchronization)';
 scan_timing.val  = {sqpar sync};
-scan_timing.help = {' Parameters for sequence timing & synchronization, i.e.'
+scan_timing.help = {'Parameters for sequence timing & synchronization, i.e.'
     'scan_tming.sqpar =  slice and volume acquisition starts, TR,'
     '                    number of scans etc.'
     'scan_timing.sync = synchronize phys logfile to scan acquisition via logged MR gradient time courses/time stamps'
