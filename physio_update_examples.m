@@ -1,9 +1,11 @@
-function output = physio_update_examples(input)
+function dirExamples = physio_update_examples()
 % Copies current tapas_physio_examples (_spm_job.m) to example folder, remove absolute
 % paths, create _spm_job.mat and _matlab_script from it
 %
-%   output = physio_update_examples(input)
+%   dirExamples = physio_update_examples()
 %
+% NOTE: The replacement of the folder names was only tested for Mac/Unix
+%       systems
 % IN
 %
 % OUT
@@ -26,23 +28,47 @@ function output = physio_update_examples(input)
 % $Id$
 
 pathRoot = fileparts(mfilename('fullpath'));
-pathExamples = fullfile(oathRoot, 'examples');
+pathExamples = fullfile(pathRoot, 'examples');
 pathCode = fullfile(pathRoot, 'code');
 
 pfxExample = 'tapas_physio_example_';
 
 dirExamples = {
     'Philips/ECG3T'
-    'Philips/ECT7T'
-    'Philips/PPU3T'
-    'Siemens/ECG3T'
-    'GE/PPU3T'
+ %   'Philips/ECT7T'
+ %   'Philips/PPU3T'
+ %   'Siemens/ECG3T'
+ %   'GE/PPU3T'
     };
 
+nExamples = numel(dirExamples);
 
-% copy file to example-folder, remove(?) tapas_physio
-
-% remove absolute folder definitions, also for SPM (?)
-
-% save accompanying .mat-spm job and matlab-script
-physio = tapas_physio_save_batch_mat_script(fileBatchM);
+for iExample = 1:nExamples
+    dirExample = dirExamples{iExample};
+    pathExample = fullfile(pathExamples, dirExample);
+    fileJobM = [regexprep(lower(dirExample), '/', '_') '_spm_job.m'];
+    fileJobSource = fullfile(pathCode, [pfxExample, fileJobM]);
+    fileJobTarget = fullfile(pathExample, fileJobM);
+    
+    % open new file to write in example-folder, remove tapas_physio from
+    % name
+    
+    % write file new, remove absolute folder definitions, also for SPM (?)
+    fidSource = fopen(fileJobSource, 'r');
+    fidTarget = fopen(fileJobTarget, 'w+');
+    while 1
+        tline = fgetl(fidSource);
+        if ischar(tline)
+            % replace absolute path
+            tline = regexprep(tline, [pathExample '[/]*'], '');
+            fprintf(fidTarget, '%s\n', tline);
+        else
+            break
+        end
+    end
+    fclose(fidTarget);
+    fclose(fidSource);
+    
+    % save accompanying .mat-spm job and matlab-script
+    physio = tapas_physio_save_batch_mat_script(fileJobTarget);
+end
