@@ -25,26 +25,29 @@ function physio_cleanup_example_output_files()
 % $Id$
 
 currD = fileparts(mfilename('fullpath'));
-pfxD = {'code'; 'manual';'examples/GE';'examples/Philips'; };
+pfxD = {'code'; 'manual';'examples/GE';'examples/Philips'; 'examples/Siemens'};
 
 for iPfx = 1:length(pfxD)
     ds = dir(fullfile(currD, pfxD{iPfx}));
     ds(2) = [];
     
+    warning('off', 'MATLAB:DELETE:FileNotFound');
+        
     for n = 1:length(ds);
         if ds(n).isdir
             d = fullfile(currD,pfxD{iPfx},ds(n).name);
             disp(['Deleting output files in ' d]);
             delete(fullfile(d, 'multiple_regressors.*'));
             delete(fullfile(d, 'physio.mat'));
-            delete(fullfile(d, 'PhysIO_output*'));
+            %delete(fullfile(d, 'PhysIO_output*'));
             delete(fullfile(d, '*.asv'));
-            %     delete(fullfile(d, '*.ps'));
-            %     delete(fullfile(d, '*.tif*'));
-            %     delete(fullfile(d, '*.jpg'));
-            %     delete(fullfile(d, '*.jpeg'));
-            %     delete(fullfile(d, '*.fig'));
-            %     delete(fullfile(d, '*.jpg'));
+            delete(fullfile(d, 'physio*.ps'));
+            delete(fullfile(d, 'physio*.tif*'));
+            delete(fullfile(d, 'physio*.jpg'));
+            delete(fullfile(d, 'physio*.jpeg'));
+            delete(fullfile(d, 'physio*.fig'));
         end
     end
+    warning('on', 'MATLAB:DELETE:FileNotFound');
+        
 end
