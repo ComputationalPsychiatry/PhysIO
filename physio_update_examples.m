@@ -36,9 +36,9 @@ pfxExample = 'tapas_physio_example_';
 dirExamples = {
     'Philips/ECG3T'
     'Philips/ECG7T'
+    'GE/PPU3T'
  %   'Philips/PPU3T'
  %   'Siemens/ECG3T'
- %   'GE/PPU3T'
     };
 
 nExamples = numel(dirExamples);
