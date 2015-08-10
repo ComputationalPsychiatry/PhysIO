@@ -37,8 +37,8 @@ dirExamples = {
     'Philips/ECG3T'
     'Philips/ECG7T'
     'GE/PPU3T'
+    'Siemens/ECG3T'
  %   'Philips/PPU3T'
- %   'Siemens/ECG3T'
     };
 
 nExamples = numel(dirExamples);
