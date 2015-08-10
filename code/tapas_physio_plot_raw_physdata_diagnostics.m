@@ -36,10 +36,11 @@ if isVerbose
         nPulses = numel(cpulse);
         timeCpulse = zeros(nPulses,1);
         for iPulse = 1:nPulses % find sample points in t/c of cpulse-onsets
-            [~,timeCpulse(iPulse)] = min(abs(t-cpulse(iPulse)));
+            [tmp, timeCpulse(iPulse)] = min(abs(t-cpulse(iPulse)));
         end
         plot(t, c, 'Color', [1 0.8, 0.8], 'LineWidth', 1) ; hold on;
         stem(cpulse, c(timeCpulse), 'r', 'LineWidth', 1);
+        title('Temporal lag between subsequent heartbeats (seconds)');
     end
 else 
     ah = [];
@@ -64,7 +65,6 @@ else
     c_outliers_high = [];
     c_outliers_low = [];
 end
-title('Temporal lag between subsequent heartbeats (seconds)');
 
 
 %% Histogram of breathing amplitudes
@@ -76,9 +76,9 @@ if hasRespData
     if isVerbose
         subplot(2,1,2);
         bar(bins, r_hist);
+        title('Histogram of breathing belt amplitudes');
     end
 else
     r_hist = [];
 end
-title('Histogram of breathing belt amplitudes');
 end

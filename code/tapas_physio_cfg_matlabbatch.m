@@ -121,6 +121,7 @@ log_scan_timing.help    = {
      };
 log_scan_timing.filter  = 'any';
 log_scan_timing.ufilter = '.*';
+log_scan_timing.val     = {{''}};
 log_scan_timing.num     = [0 1];
 
 %--------------------------------------------------------------------------
