@@ -8,7 +8,7 @@ function [convRVTOut, rvtOut, verbose] = tapas_physio_create_rvt_regressors(...
 %   Birn, R.M., Smith, M.A., Jones, T.B., Bandettini, P.A., 2008.
 %       The respiration response function: The temporal dynamics of
 %       fMRI signal fluctuations related to changes in respiration.
-%       NeuroImage 40, 644?654.
+%       NeuroImage 40, 644-654.
 %
 % IN
 %   ons_secs.
@@ -17,8 +17,10 @@ function [convRVTOut, rvtOut, verbose] = tapas_physio_create_rvt_regressors(...
 %   sqpar.
 %       onset_slice
 % OUT
-%   convRVT             respiratory response function regressor after convolution . See
-%                       also
+%   convRVTOut          [nScans, nDelays, nSampleSlices]
+%                       respiratory response function regressor after
+%                       convolution for specified delays and downsampled
+%                       to given slices.
 % EXAMPLE
 %   [convHRV, hr] = tapas_physio_create_hrv_regressor(physio_out.ons_secs, physio_out.sqpar);
 %
@@ -57,7 +59,9 @@ if verbose.level >=2
     verbose.fig_handles(end+1) = tapas_physio_get_default_fig_params();
     set(gcf, 'Name', 'Convolution Respiration RVT X RRF');
     subplot(2,2,1)
-    plot(sample_points,rvt, 'g');xlabel('time (seconds)');ylabel('respiratory volume per time (a. u.)');
+    plot(sample_points,rvt, 'g');xlabel('time (seconds)');
+    title('Respiratory volume per time');
+    ylabel('a.u.');
 end
 
 % create convolution for whole time series first...
@@ -69,7 +73,8 @@ rrf = rrf/max(abs(rrf));
 
 if verbose.level >= 2
     subplot(2,2,2)
-    plot(t, rrf,'g');xlabel('time (seconds)');ylabel('respiratory response function');
+    plot(t, rrf,'g');xlabel('time (seconds)');
+    title('Respiratory response function');
 end
 
 % NOTE: the removal of the mean was implemented to avoid over/undershoots
@@ -83,22 +88,26 @@ convRVT = convRVT./max(abs(convRVT));
 if verbose.level >= 2
     subplot(2,2,3)
     plot(sample_points, convRVT,'g');xlabel('time (seconds)');
-    ylabel('resp vol time X resp response function');
+    title('Resp vol time X resp response function');
 end
 
 % create shifted regressors convolved time series, which is equivalent to
 % delayed response functions according to Wikipedia (convoution)
-% 
+%
 % "Translation invariance[edit]
 % The convolution commutes with translations, meaning that
-% 
+%
 % \tau_x ({f}*g) = (\tau_x f)*g = {f}*(\tau_x g)\,
 % where \tau_x fis the translation of the function f by x defined by
 % (\tau_x f)(y) = f(y-x).\.
 
+% remove mean and linear trend to fulfill periodicity condition for
+% shifting
+convRVT = detrend(convRVT);
+
+
 % TODO: what happens at the end/beginning of shifted convolutions?
 nDelays = numel(delays);
-convRvtArray = zeros(nSamples, nDelays);
 nShiftSamples = ceil(delays/dt);
 
 % resample to slices needed
@@ -106,20 +115,26 @@ nSampleSlices = numel(sqpar.onset_slice);
 nScans = numel(sample_points(sqpar.onset_slice:sqpar.Nslices:end));
 
 rvtOut = zeros(nScans,nSampleSlices);
-convRVTOut = zeros(nScans,nSampleSlices);
+convRVTOut = zeros(nScans,nDelays,nSampleSlices);
 samplePointsOut = zeros(nScans,nSampleSlices);
-for iSlice = 1:nSampleSlices
-    onset_slice = sqpar.onset_slice(iSlice);
-    rvtOut(:,iSlice) = rvt(onset_slice:sqpar.Nslices:end)';
-    convRVTOut(:,iSlice) = convRVT(onset_slice:sqpar.Nslices:end);
-    samplePointsOut(:,iSlice) = sample_points(onset_slice:sqpar.Nslices:end);
+
+for iDelay = 1:nDelays
+    convRVTShifted = circshift(convRVT, nShiftSamples(iDelay));
+    for iSlice = 1:nSampleSlices
+        onset_slice = sqpar.onset_slice(iSlice);
+        rvtOut(:,iSlice) = rvt(onset_slice:sqpar.Nslices:end)';
+        convRVTOut(:,iDelay,iSlice) = convRVTShifted(onset_slice:sqpar.Nslices:end);
+        samplePointsOut(:,iSlice) = sample_points(onset_slice:sqpar.Nslices:end);
+    end
 end
 
 if verbose.level >= 2
     subplot(2,2,4)
+    [tmp, iShiftMin] = min(abs(delays));
     hp{1} = plot(samplePointsOut, rvtOut,'k--');hold all;
-    hp{2} = plot(samplePointsOut, convRVTOut,'g');
-    xlabel('time (seconds)');ylabel('regessor');
-    legend([hp{1}(1), hp{2}(1)], 'respiratory volume time (a. u.)', ...
+    hp{2} = plot(samplePointsOut, squeeze(convRVTOut(:,iShiftMin,:)),'g');
+    xlabel('time (seconds)');
+    title('RVT regessor');
+    legend([hp{1}(1), hp{2}(1)], 'respiratory volume / time (a. u.)', ...
         'respiratory response regressor');
 end

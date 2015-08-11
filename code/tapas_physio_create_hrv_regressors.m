@@ -1,13 +1,13 @@
 function [convHRVOut, hrOut, verbose] = tapas_physio_create_hrv_regressors(...
-    ons_secs, sqpar, hrv, verbose)
+    ons_secs, sqpar, model_hrv, verbose)
 % computes cardiac response function regressor and heart rate
 %
 %    [convHRV, hr] = tapas_physio_create_hrv_regressors(ons_secs, sqpar )
 %
 % Reference:
-%   Chang, Catie, John P. Cunningham, and Gary H. Glover. 
+%   Chang, Catie, John P. Cunningham, and Gary H. Glover.
 %   Influence of Heart Rate on the BOLD Signal: The Cardiac Response Function.
-%   NeuroImage 44, no. 3 (February 1, 2009): 857-869. 
+%   NeuroImage 44, no. 3 (February 1, 2009): 857-869.
 %   doi:10.1016/j.neuroimage.2008.09.029.
 %
 % IN
@@ -38,8 +38,10 @@ function [convHRVOut, hrOut, verbose] = tapas_physio_create_hrv_regressors(...
 % $Id$
 if nargin < 3
     physio = tapas_physio_new;
-    hrv = physio.model.hrv;
+    model_hrv = physio.model.hrv;
 end
+
+delays = model_hrv.delays;
 
 if nargin < 4
     verbose.level = [];
@@ -55,7 +57,9 @@ if verbose.level>=2
     verbose.fig_handles(end+1) = tapas_physio_get_default_fig_params();
     set(gcf, 'Name', 'Regressors Heart Rate: HRV X CRF');
     subplot(2,2,1)
-    plot(sample_points,hr,'r');xlabel('time (seconds)');ylabel('heart rate (bpm)');
+    plot(sample_points,hr,'r');xlabel('time (seconds)');
+    title('Heart Rate');
+    ylabel('beats per min (bpm)');
 end
 
 % create convolution for whole time series first...
@@ -66,7 +70,8 @@ crf = crf/max(abs(crf));
 % crf = spm_hrf(dt);
 if verbose.level>=2
     subplot(2,2,2)
-    plot(t, crf,'r');xlabel('time (seconds)');ylabel('cardiac response function');
+    plot(t, crf,'r');xlabel('time (seconds)');
+    title('Cardiac response function');
 end
 
 % NOTE: the removal of the mean was implemented to avoid over/undershoots
@@ -79,28 +84,53 @@ convHRV = convHRV./max(abs(convHRV));
 if verbose.level>=2
     subplot(2,2,3)
     plot(sample_points, convHRV,'r');xlabel('time (seconds)');
-    ylabel('heart rate X cardiac response function');
+    title('Heart rate X cardiac response function');
 end
 
+
+% create shifted regressors convolved time series, which is equivalent to
+% delayed response functions according to Wikipedia (convoution)
+%
+% "Translation invariance[edit]
+% The convolution commutes with translations, meaning that
+%
+% \tau_x ({f}*g) = (\tau_x f)*g = {f}*(\tau_x g)\,
+% where \tau_x fis the translation of the function f by x defined by
+% (\tau_x f)(y) = f(y-x).\.
+
+% remove mean and linear trend to fulfill periodicity condition for
+% shifting
+convHRV = detrend(convHRV);
+
+
+% TODO: what happens at the end/beginning of shifted convolutions?
+nDelays = numel(delays);
+nShiftSamples = ceil(delays/dt);
 
 % resample to slices needed
 nSampleSlices = numel(sqpar.onset_slice);
 nScans = numel(sample_points(sqpar.onset_slice:sqpar.Nslices:end));
 
 hrOut = zeros(nScans,nSampleSlices);
-convHRVOut = zeros(nScans,nSampleSlices);
+convHRVOut = zeros(nScans,nDelays,nSampleSlices);
 samplePointsOut = zeros(nScans,nSampleSlices);
-for iSlice = 1:nSampleSlices
-    onset_slice = sqpar.onset_slice(iSlice);
-    hrOut(:,iSlice) = hr(onset_slice:sqpar.Nslices:end)';
-    convHRVOut(:,iSlice) = convHRV(onset_slice:sqpar.Nslices:end);
-    samplePointsOut(:,iSlice) = sample_points(onset_slice:sqpar.Nslices:end);
+
+for iDelay = 1:nDelays
+    convHRVShifted = circshift(convHRV, nShiftSamples(iDelay));
+    for iSlice = 1:nSampleSlices
+        onset_slice = sqpar.onset_slice(iSlice);
+        hrOut(:,iSlice) = hr(onset_slice:sqpar.Nslices:end)';
+        convHRVOut(:,iDelay,iSlice) = convHRVShifted(onset_slice:sqpar.Nslices:end);
+        samplePointsOut(:,iSlice) = sample_points(onset_slice:sqpar.Nslices:end);
+    end
 end
 
 if verbose.level>=2
     subplot(2,2,4)
+    [tmp, iShiftMin] = min(abs(delays));
+    
     hp{1} = plot(samplePointsOut, hrOut,'k--'); hold all;
-    hp{2} = plot(samplePointsOut, convHRVOut,'r'); 
+    hp{2} = plot(samplePointsOut, squeeze(convHRVOut(:,iShiftMin,:)),'r');
     xlabel('time (seconds)');ylabel('regessor');
     legend([hp{1}(1), hp{2}(1)], 'heart rate (bpm)', 'cardiac response regressor');
 end
