@@ -1130,7 +1130,7 @@ n_components.help    = {
     ' NOTE: Additionally, the mean time series of the region is also'
     ' extracted'    };
 n_components.num     = [Inf Inf];
-n_components.val     = {0};
+n_components.val     = {1};
 
 
 %--------------------------------------------------------------------------
@@ -1162,7 +1162,7 @@ noise_rois_yes.help = {'Include Noise ROIs model'};
 %--------------------------------------------------------------------------
 
 noise_rois      = cfg_choice;
-noise_rois.tag  = 'other';
+noise_rois.tag  = 'noise_rois';
 noise_rois.name = 'Noise ROIs model (Principal components of anatomical regions)';
 noise_rois.val  = {noise_rois_no};
 noise_rois.values  = {noise_rois_no, noise_rois_yes};

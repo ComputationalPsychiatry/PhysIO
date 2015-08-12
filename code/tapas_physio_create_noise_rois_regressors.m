@@ -116,7 +116,7 @@ for r = 1:nRois
     end
     
     % save to return
-    noise_rois.n_components(r) = nComponents;
+    noise_rois.n_components(r) = nComponents + 1; % + 1 for mean
     
     % Take mean and some components into noise regressor
     R = MU';
