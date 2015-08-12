@@ -41,7 +41,7 @@ else
 end
 
 if nargin < 2
-    zipWhat = 'withoutSiemensTics';
+    zipWhat = 'all';
 end
 
 % delete created output files, e.g. physio.mat, multiple_regressors.txt
@@ -61,7 +61,7 @@ dirExamples = {
     'GE/PPU3T'
     'Philips/ECG3T'
     'Philips/ECG7T'
-    'Philips/PPU3T'
+  %  'Philips/PPU3T'
     'Siemens/ECG3T'
     };
 
@@ -94,6 +94,24 @@ switch zipWhat
             delete(fullfile(exportD, 'code', fileArraySiemensTics{iFile}));
         end
 end
+
+% delete large data files and save examples wo data
+threshSize = 1e6;
+
+for iExample = 1:nExamples
+    currDir = fullfile(exportD, 'examples', dirExamples{iExample});
+    fileList=dir(currDir);
+    nFiles = numel(fileList);
+    for iFile = 1:nFiles
+        if fileList(iFile).bytes > threshSize
+            delete(fullfile(currDir, fileList(iFile).name));
+        end
+    end
+end
+
+zipF = fullfile(currD, sprintf('PhysIOToolbox_r%s_code_examples_wo_data.zip', srev));
+zip(zipF, exportD);
+
 
 % copy and zip code and manual
 rmdir(fullfile(exportD, 'examples'),'s');
