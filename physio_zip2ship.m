@@ -105,6 +105,12 @@ for iExample = 1:nExamples
     for iFile = 1:nFiles
         if fileList(iFile).bytes > threshSize
             delete(fullfile(currDir, fileList(iFile).name));
+            
+            % create empty file with download note
+            fileDummy = fullfile(currDir, [fileList(iFile).name ...
+                '_DOWNLOAD_FROM_TNU-ZURICH.ORG_SOFTWARE_TAPAS-DATA']);
+            fclose(fopen(fileDummy, 'w'));
+            
         end
     end
 end
