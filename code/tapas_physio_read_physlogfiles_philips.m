@@ -106,6 +106,7 @@ if hasCardiac
     end
 else
     c = [];
+    cpulse = [];
 end
 
 end

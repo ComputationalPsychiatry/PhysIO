@@ -44,7 +44,11 @@ else
 end
 
 if hasRespData
-    respire_sess    = R(:,(2*order.c) + (1:(2*order.r)));
+    if hasCardiacData
+        respire_sess    = R(:,(2*order.c) + (1:(2*order.r)));
+    else
+        respire_sess    = R(:, 1:(2*order.r));
+    end
 else
     respire_sess = [];
 end

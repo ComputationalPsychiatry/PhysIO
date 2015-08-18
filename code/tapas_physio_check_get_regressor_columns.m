@@ -45,7 +45,7 @@ if nargin < 2
 else
     
     if model.retroicor.include
-        
+                
         nCard = ~isempty(model.retroicor.order.c);
         if nCard
             nCard = model.retroicor.order.c*2;
