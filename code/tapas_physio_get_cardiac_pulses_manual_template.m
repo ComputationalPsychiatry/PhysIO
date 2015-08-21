@@ -50,8 +50,9 @@ hasKrpeakLogfile = exist(thresh_cardiac_initial_cpulse_select.file,'file') || ..
     exist([thresh_cardiac_initial_cpulse_select.file '.mat'],'file');
 
 % if no file exists, also do manual peak-find
-doSelectTemplateManually = strcmpi(...
-    thresh_cardiac_initial_cpulse_select.method, 'manual') || ~hasKrpeakLogfile;
+doSelectTemplateManually = any(strcmpi(...
+    thresh_cardiac_initial_cpulse_select.method, ...
+    {'manual', 'manual_template'})) || ~hasKrpeakLogfile;
 
 if doSelectTemplateManually
     thresh_cardiac_initial_cpulse_select.kRpeak = [];
