@@ -118,7 +118,7 @@ DOWNLOADS & RELEASE INFORMATION
 - Current Release: 
 
 PhysIO_Toolbox_15 (Code | Examples)
-January 30th, 2015
+September 21st, 2015
 
 revision: $Rev$
 
