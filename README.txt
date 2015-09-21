@@ -122,6 +122,16 @@ January 30th, 2015
 
 revision: $Rev$
 
+Major Release Notes (r835):
+- Software version for Toolbox Paper submission
+- Noise ROIs modeling
+- Extended motion models (24 parameters, Volterra expansion)
+- HRV/RVT models with optional multiple delay regressors
+- Report_contrasts with automatic contrast generation for all regressor groups
+- compute_tsnr_gains for individual physiological regressor groups
+- consistent module naming (scan_timing, preproc)
+- Visualisation improvement (color schemes, legends)
+
 Minor Release Notes (r666):
 - Compatibility tested for SPM12, small bugfixes Batch Dependencies
 - Cleaner Batch Interface with grouped sub-menus (cfg_choice)
