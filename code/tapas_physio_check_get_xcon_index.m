@@ -21,7 +21,9 @@ function indC = tapas_physio_check_get_xcon_index(SPM, cname)
 % COPYING or <http://www.gnu.org/licenses/>.
 %
 % $Id$
-for c = 1:length(SPM.xCon)
+nContrasts = length(SPM.xCon);
+cnames = cell(nContrasts,1);
+for c = 1:nContrasts
     cnames{c} = SPM.xCon(c).name;
 end
 indC = find(cell2mat(cellfun(@(x) ~isempty(x), strfind(cnames, cname), 'UniformOutput', false)));
