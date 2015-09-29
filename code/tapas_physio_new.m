@@ -383,13 +383,13 @@ else
     
     model.retroicor.include = 1; % 1 = included; 0 = not used
     % natural number, order of cardiac phase Fourier expansion
-    model.retroicor.order.c = [];
+    model.retroicor.order.c = 3;
     
     % natural number, order of respiratory phase Fourier expansion
-    model.retroicor.order.r = [];
+    model.retroicor.order.r = 4;
     
     % natural number, order of cardiac-respiratory-phase-interaction Fourier expansion
-    model.retroicor.order.cr = [];
+    model.retroicor.order.cr = 1;
    
     
     %% RVT (Model): Respiratory Volume per time model , Birn et al, 2006/8
@@ -397,7 +397,7 @@ else
     
     % one or multiple delays (in seconds) can be specified to shift 
     % canonical RVT response function from Birn et al, 2006 paper
-    model.rvt.delays = 0; % (TODO)
+    model.rvt.delays = 0;
  
     
     %% HRV (Model): Heart Rate variability, Chang et al, 2009
@@ -406,7 +406,7 @@ else
     
     % one or multiple delays (in seconds) can be specified to shift 
     % canonical HRV response function from Chang et al, 2009 paper
-    model.hrv.delays = 0;  % (TODO)
+    model.hrv.delays = 0;
     
     
     %% noise_rois (Model): Anatomical Component Correction, Behzadi et al, 2007
@@ -459,16 +459,16 @@ else
     
     % threshold for large sudden translations; 1 stick regressor for each volume
     % exceeding the threshold will be created
-    model.movement.outlier_translation_mm = 1;
+    model.movement.outlier_translation_mm = Inf;
     
     % threshold for large sudden rotations; 1 stick regressor for each volume
     % exceeding the threshold will be created
-    model.movement.outlier_rotation_deg = 1;
+    model.movement.outlier_rotation_deg = Inf;
     
 
     %% other (Model): Additional, pre-computed nuisance regressors 
     % To be included in design matrix as txt or mat-file (variable R)
-    model.other.include = 1;
+    model.other.include = 0;
     model.other.input_multiple_regressors = '';
  
     
