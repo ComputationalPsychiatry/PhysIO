@@ -19,7 +19,7 @@ function [fh, prop, MyColors] = tapas_physio_get_default_fig_params(...
 %
 if nargin < 1
     convfac = 2; % conversion factor for figure scaling; for laptop display
-    convfac = 4; % for prints in paper
+    % convfac = 4; % for prints in paper
 end
 
 if nargin < 2

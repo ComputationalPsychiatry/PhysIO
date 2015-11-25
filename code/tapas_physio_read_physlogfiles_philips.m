@@ -97,10 +97,14 @@ end
 if hasCardiac
     
     switch lower(cardiac_modality)
-        case {'ecg', 'ecg_filtered'}
-            c = y(:,3);
-        case {'ecg_raw'}
+        case {'ecg_raw', 'ecg1_raw'}
             c = y(:,1);
+        case {'ecg2_raw'}
+            c = y(:,2);
+        case {'ecg', 'ecg1', 'ecg_filtered', 'ecg1_filtered'}
+            c = y(:,3);
+        case { 'ecg2', 'ecg2_filtered'}
+            c = y(:,4);
         case {'oxy','oxyge', 'ppu'}
             c = y(:,5);
     end
