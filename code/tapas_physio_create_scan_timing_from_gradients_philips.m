@@ -169,7 +169,7 @@ gradient_choice         = reshape(gradient_choice, [] ,1);
 % For new Ingenia log-files, recorded gradient strength may change after a
 % certain time and introduce steps that are bad for recording
 
-minStepDistanceSamples = 1.5*ceil(sqpar.TR/dt);
+minStepDistanceSamples = ceil(1.5*sqpar.TR/dt);
 
 % Normalize gradients, if thresholds are smaller than 1, i.e. relative
 doNormalize = max([sync.slice, sync.vol, sync.zero]) < 1;
