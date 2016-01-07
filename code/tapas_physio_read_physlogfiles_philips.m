@@ -96,17 +96,37 @@ end
 
 if hasCardiac
     
-    switch lower(cardiac_modality)
-        case {'ecg_raw', 'ecg1_raw'}
-            c = y(:,1);
-        case {'ecg2_raw'}
-            c = y(:,2);
-        case {'ecg', 'ecg1', 'ecg_filtered', 'ecg1_filtered'}
-            c = y(:,3);
-        case { 'ecg2', 'ecg2_filtered'}
-            c = y(:,4);
-        case {'oxy','oxyge', 'ppu'}
-            c = y(:,5);
+    useDefaultEcgModality = strcmpi(cardiac_modality, 'ecg');
+    
+    if useDefaultEcgModality
+        cardiacModalityArray = ...
+            {'ecg1_filtered', 'ecg2_filtered', 'ecg1_raw', 'ecg2_raw'};
+    else
+        cardiacModalityArray = {cardiac_modality};
+    end
+    
+    hasValidCardiacReadout = false;
+    iModality = 0;
+    
+    % cycle through modalities until non-zero cardiac column found
+    while ~hasValidCardiacReadout
+        iModality = iModality + 1;
+        cardiac_modality = cardiacModalityArray{iModality};
+        switch lower(cardiac_modality)
+            case {'ecg_raw', 'ecg1_raw'}
+                c = y(:,1);
+            case {'ecg2_raw'}
+                c = y(:,2);
+            case {'ecg1', 'ecg_filtered', 'ecg1_filtered'}
+                c = y(:,3);
+            case { 'ecg2', 'ecg2_filtered'}
+                c = y(:,4);
+            case {'oxy','oxyge', 'ppu'}
+                c = y(:,5);
+        end
+        
+        hasValidCardiacReadout = any(c);
+        
     end
 else
     c = [];
