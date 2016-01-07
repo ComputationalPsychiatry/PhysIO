@@ -93,7 +93,7 @@ if verbose.level > 2
    subplot(2,1,2);
    plot(R(:,4:6)*180/pi,'-'); hold on
    plot(sumRot*180/pi, '-');
-   if nOutlierTrans
+   if nOutlierRot
        stem(iOutlierRot,...
            movement.outlier_rotation_deg*ones(1,nOutlierRot))
    end
