@@ -159,6 +159,12 @@ end
 load(fileSpm);
 nContrasts = numel(indReportPhysContrasts);
 
+if ~exist(fileStructural, 'file')
+    % take standard structural from SPM, if overlay file does not exist
+    pathSpm = fileparts(which('spm'));
+    fileStructural = fullfile(pathSpm, 'canonical', 'avg305T1.nii');
+end
+
 % if input file given, load PhysIO-object
 if ~isempty(filePhysIO)
     load(filePhysIO, 'physio');
@@ -233,13 +239,13 @@ for c = 1:nContrasts
                 spm_mip_ui('FindMIPax')); % goto global max
         end
         
-        % to be able to turn off the blue Crosshir
-        if ~ drawCrosshair
+        % to be able to turn off the blue Crosshair
+        if ~drawCrosshair
             spm_orthviews('Xhairs','off');
             
         end
         
-        %         spm_orthviews - spm.st.blobs.cbar
+        % spm_orthviews - spm.st.blobs.cbar
         
         
         % spm_print always prepend current directory to print-file
