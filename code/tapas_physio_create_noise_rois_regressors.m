@@ -197,12 +197,14 @@ for r = 1:nRois
         ylabel('PCs, mean-centred and std-scaled');
     end
     
-    % write away extracted PC-loads
+    % write away extracted PC-loads & roi of extraction
     [tmp,fnRoi] = fileparts(Vroi(1).fname);
     fpFmri = fileparts(Vimg(1).fname);
     for c = 1:nComponents
         Vpc = Vroi;
         Vpc.fname = fullfile(fpFmri, sprintf('pc%02d_scores_%s.nii',c, fnRoi));
+        % saved as float, since was masked before
+        Vpc.dt = [spm_type('float32') 1]; 
         pcScores = zeros(Vpc.dim);
         pcScores(roi(:)==1) = SCORE(:, c);
         spm_write_vol(Vpc, pcScores);
