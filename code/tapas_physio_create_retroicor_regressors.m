@@ -126,6 +126,7 @@ if ~hasPhaseData
     end
     
 else % compute Fourier expansion directly from cardiac/respiratory phases
+    % select subset of slice-wise sampled phase for current onset_slice
     c_sample_phase = ons_secs.c_sample_phase;
     r_sample_phase = ons_secs.r_sample_phase;
     if (order.c || order.cr)
