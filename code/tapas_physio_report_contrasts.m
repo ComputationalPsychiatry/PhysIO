@@ -162,7 +162,7 @@ nContrasts = numel(indReportPhysContrasts);
 if ~exist(fileStructural, 'file')
     % take standard structural from SPM, if overlay file does not exist
     pathSpm = fileparts(which('spm'));
-    fileStructural = fullfile(pathSpm, 'canonical', 'avg305T1.nii');
+    fileStructural = fullfile(pathSpm, 'canonical', 'avg152T1.nii');
 end
 
 % if input file given, load PhysIO-object
