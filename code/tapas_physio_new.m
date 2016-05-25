@@ -397,6 +397,8 @@ else
     
     % one or multiple delays (in seconds) can be specified to shift 
     % canonical RVT response function from Birn et al, 2006 paper
+    % Delays e.g. 0, 5, 10, 15, and 20s (Jo et al., 2010 NeuroImage 52)
+    
     model.rvt.delays = 0;
  
     
@@ -406,6 +408,7 @@ else
     
     % one or multiple delays (in seconds) can be specified to shift 
     % canonical HRV response function from Chang et al, 2009 paper
+    % Delays e.g. 0:6:24s (Shmueli et al, 2007, NeuroImage 38)
     model.hrv.delays = 0;
     
     
