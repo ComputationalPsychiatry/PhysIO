@@ -47,6 +47,7 @@ vendor.help   = {' vendor                Name depending on your MR Scanner syste
     '                       (= steps of 2.5 ms since midnight) and'
     '                       extra acquisition (scan_timing) logfile with'
     '                       time stamps of all volumes and slices'
+    '                       ''Biopac_Mat'' - exported mat files from Biopac system'
     ' '
     '                       or'
     '                       ''Custom'''
@@ -68,8 +69,8 @@ vendor.help   = {' vendor                Name depending on your MR Scanner syste
     ' NOTE: the sampling interval has to be specified for these files as'
     ' well (s.b.)'
     };
-vendor.labels = {'Philips', 'GE', 'Siemens', 'Siemens_Tics', 'Custom'};
-vendor.values = {'Philips', 'GE', 'Siemens', 'Siemens_Tics', 'Custom'};
+vendor.labels = {'Philips', 'GE', 'Siemens', 'Siemens_Tics', 'Biopac_Mat', 'Custom'};
+vendor.values = {'Philips', 'GE', 'Siemens', 'Siemens_Tics', 'Biopac_Mat', 'Custom'};
 vendor.val    = {'Philips'};
 
 %--------------------------------------------------------------------------
@@ -133,6 +134,7 @@ sampling_interval.name    = 'sampling_interval';
 sampling_interval.help    = {
     'sampling interval of phys log files (in seconds)'
     ' If empty, default values are used: 2 ms for Philips, 25 ms for GE and others'
+    ' For Biopac, sampling rate is read directly from logfile'
     ' If cardiac and respiratory sampling rate differ, enter them as vector'
     ' [sampling_interval_cardiac, sampling_interval_respiratory]'
     ' '

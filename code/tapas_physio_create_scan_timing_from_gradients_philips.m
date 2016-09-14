@@ -184,7 +184,7 @@ doNormalize = max([sync.slice, sync.vol, sync.zero]) < 1;
 % if no gradient timecourse was recorded in the logfile (due to insufficient
 % Philips software keys), return nominal timing instead
 if ~any(gradient_choice) % all values zero
-    [VOLLOCS, LOCS] = tapas_physio_create_nominal_scan_timing(t, sqpar);
+    [VOLLOCS, LOCS] = tapas_physio_create_scan_timing_nominal(t, sqpar);
     verbose = tapas_physio_log('No gradient timecourse was logged in the logfile. Using nominal timing from sqpar instead', ...
         verbose, 1);
     return

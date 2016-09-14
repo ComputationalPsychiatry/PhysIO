@@ -4,7 +4,8 @@ function [c, r, t, cpulse, acq_codes, verbose] = tapas_physio_read_physlogfiles(
 % MR scanner vendor and the modality of peripheral cardiac monitoring (ECG
 % or pulse oximetry)
 %
-%   [cpulse, rpulse, t, c] = tapas_physio_read_physlogfiles(log_files, vendor, cardiac_modality)
+% [c, r, t, cpulse, acq_codes, verbose] = tapas_physio_read_physlogfiles(log_files, cardiac_modality, ...
+%    verbose)
 %
 % IN
 %   log_files   is a structure containing the following filenames (with full
@@ -63,13 +64,18 @@ switch lower(log_files.vendor)
             tapas_physio_read_physlogfiles_GE(log_files, verbose);
         acq_codes = [];
     case 'siemens'
-        [c, r, t, cpulse, verbose] = ...
+       [c, r, t, cpulse, verbose] = ...
             tapas_physio_read_physlogfiles_siemens(log_files, verbose);
+       % [c, r, t, cpulse, verbose] = ...
+       %     tapas_physio_read_physlogfiles_siemens_resp(log_files, verbose);
         acq_codes = [];
     case 'siemens_tics'
         [c, r, t, cpulse, verbose] = ...
             tapas_physio_read_physlogfiles_siemens_tics(log_files, verbose);
         acq_codes = [];
+    case 'biopac_mat'
+        [c, r, t, cpulse, acq_codes] = ...
+            tapas_physio_read_physlogfiles_biopac_mat(log_files, cardiac_modality, verbose);
     case 'custom'
         [c, r, t, cpulse] = ...
             tapas_physio_read_physlogfiles_custom(log_files, verbose);

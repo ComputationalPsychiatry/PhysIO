@@ -11,10 +11,20 @@ function [c, r, t, cpulse, acq_codes] = tapas_physio_read_physlogfiles_philips(l
 %           .cardiac
 %           .sampling_interval
 %           .relative_start_acquisition
-%   cardiac_modality    'ECG' for ECG, 'OXY'/'PPU' for pulse oximetry
-%                       Note: Append '_wifi'
+%   cardiac_modality    
+%                       'ecg1_filtered'     filtered 1st ECG channel signal
+%                                           (Default)
+%                       'ecg2_filtered'     filteered 2nd ECG channel
+%                                           (sometimes less gradient artifacts)
+%                       'ecg1_raw'          raw 1st ECG channel
+%                       'ecg2_raw'          raw 2nd ECG channel
+%                       'OXY'/'PPU'         pulse plethysmographic unit
+%                                           (PPU) signal
+%
+%                       Note: for ECG, append '_wifi'
 %                       for adjusted sampling rate in
 %                       wireless Ingenia Scanners
+%                       
 %
 % OUT
 %   c                   cardiac time series (ECG or pulse oximetry)

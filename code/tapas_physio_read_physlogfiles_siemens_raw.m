@@ -36,7 +36,7 @@ function [lineData, logFooter, linesFooter] = tapas_physio_read_physlogfiles_sie
 
 fid             = fopen(fileNameLog);
 
-if verLessThan('matlab', '8.6') % use buffer size for speed-up, as long as it exists
+if verLessThan('matlab', '8.5') % use buffer size for speed-up, as long as it exists
     C               = textscan(fid, '%s', 'Delimiter', '\n', 'bufsize', 1e9);
 else
     C               = textscan(fid, '%s', 'Delimiter', '\n');

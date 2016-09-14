@@ -57,82 +57,192 @@ args                = tapas_physio_propval(varargin, defaults);
 tapas_physio_strip_fields(args);
 
 cpulse              = [];
+
 dt                  = log_files.sampling_interval;
 
 
-if ~isempty(log_files.cardiac)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Determine relative start of acquisition from dicom headers and
+% logfile footers
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+hasScanTimingDicomImage = ~isempty(log_files.scan_timing);
+hasCardiacData = ~isempty(log_files.cardiac);
+hasRespData = ~isempty(log_files.respiration);
+
+if hasScanTimingDicomImage
+    dicomHeader             = spm_dicom_headers(...
+        fullfile(log_files.scan_timing));
+    
+    tStartScanDicom    = dicomHeader{1}.AcquisitionTime;
+    
+    % TODO: Include AcquisitionNumber? InstanceNumber?
+    tStopScanDicom     = dicomHeader{1}.AcquisitionTime + ...
+        dicomHeader{1}.RepetitionTime/1000;
+end
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Read in cardiac data
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+if hasCardiacData
     
     [lineData, logFooter] = tapas_physio_read_physlogfiles_siemens_raw(...
         log_files.cardiac);
+    tLogTotal = logFooter.LogStopTimeSeconds - logFooter.LogStartTimeSeconds;
     
-      
-    % Determine relative start of acquisition from dicom headers and
-    % logfile footers
-    hasScanTimingDicomImage = ~isempty(log_files.scan_timing);
     
     if hasScanTimingDicomImage
-          
-        % load dicom
-        useDicom = true;
-        if useDicom
-            dicomHeader             = spm_dicom_headers(...
-                fullfile(log_files.scan_timing));
-            
-            ScanStartTimeSeconds    = dicomHeader{1}.AcquisitionTime;
-            
-            % TODO: Include AcquisitionNumber? InstanceNumber?
-            ScanStopTimeSeconds     = dicomHeader{1}.AcquisitionTime + ...
-                dicomHeader{1}.RepetitionTime/1000;
-        else
-            ScanStartTimeSeconds = logFooter.ScanStartTimeSeconds;
-            ScanStopTimeSeconds = logFooter.ScanStopTimeSeconds;
-        end
-        
-        switch log_files.align_scan
-            case 'first'
-                relative_start_acquisition = ScanStartTimeSeconds - ...
-                    logFooter.LogStartTimeSeconds;
-            case 'last'
-                relative_start_acquisition = ScanStopTimeSeconds - ...
-                    logFooter.LogStopTimeSeconds;
-        end
+        tStartScan = tStartScanDicom;
+        tStopScan = tStopScanDicom;
     else
-        relative_start_acquisition = 0;
-    end           
-        
+        % Just different time scale, gives bad scaling in plots, and not
+        % needed...
+        %     tStartScan = logFooter.ScanStartTimeSeconds;
+        %     tStopScan = logFooter.ScanStopTimeSeconds;
+        tStartScan = logFooter.LogStartTimeSeconds;
+        tStopScan = logFooter.LogStopTimeSeconds;
+    end
+    
+    switch log_files.align_scan
+        case 'first'
+            relative_start_acquisition = tStartScan - ...
+                logFooter.LogStartTimeSeconds;
+        case 'last'
+            relative_start_acquisition = tStopScan - ...
+                logFooter.LogStopTimeSeconds;
+    end
+    
+    
     % add arbitrary offset specified by user
     relative_start_acquisition = relative_start_acquisition + ...
         log_files.relative_start_acquisition;
     
     data_table = tapas_physio_siemens_line2table(lineData);
-    dataCardiac = tapas_physio_siemens_table2cardiac(data_table, ecgChannel, dt, ...
+    
+    if isempty(dt)
+        nSamplesC = size(data_table,1);
+        dt_c = tLogTotal/(nSamplesC-1);
+    else
+        dt_c = dt(1);
+    end
+    
+    dataCardiac = tapas_physio_siemens_table2cardiac(data_table, ecgChannel, dt_c, ...
         relative_start_acquisition, endCropSeconds);
-     
+    
     if DEBUG
-       verbose.fig_handles(end+1) = ...
-           tapas_physio_plot_raw_physdata_siemens(dataCardiac);  
+        verbose.fig_handles(end+1) = ...
+            tapas_physio_plot_raw_physdata_siemens(dataCardiac);
     end
     
     
-    % crop end of log file
+    %% crop end of log file
     cpulse = dataCardiac.cpulse_on;
     c = dataCardiac.c;
-    t = dataCardiac.t;
+    t_c = dataCardiac.t;
     stopSample = dataCardiac.stopSample;
-    cpulse(cpulse > t(dataCardiac.stopSample)) = [];
-    t(stopSample+1:end) = [];
+    
+    cpulse(cpulse > t_c(dataCardiac.stopSample)) = [];
+    t_c(stopSample+1:end) = [];
     c(stopSample+1:end) = [];
+    
+    
     
 else
     c = [];
+    t_c = [];
 end
 
-if ~isempty(log_files.respiration)
-    r = load(log_files.respiration, 'ascii');
-    nSamples = size(r,1);
-    t = relative_start_acquisition + ((0:(nSamples-1))*dt)';
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Read in respiratory data
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+if hasRespData
+    [lineData, logFooter] = tapas_physio_read_physlogfiles_siemens_raw(...
+        log_files.respiration);
+    tLogTotal = logFooter.LogStopTimeSeconds - logFooter.LogStartTimeSeconds;
+    
+    if hasScanTimingDicomImage
+        tStartScan = tStartScanDicom;
+        tStopScan = tStopScanDicom;
+    else
+        % Just different time scale, gives bad scaling in plots, and not
+        % needed...
+        %     tStartScan = logFooter.ScanStartTimeSeconds;
+        %     tStopScan = logFooter.ScanStopTimeSeconds;
+        tStartScan = logFooter.LogStartTimeSeconds;
+        tStopScan = logFooter.LogStopTimeSeconds;
+      end
+    
+    switch log_files.align_scan
+        case 'first'
+            relative_start_acquisition = tStartScan - ...
+                logFooter.LogStartTimeSeconds;
+        case 'last'
+            relative_start_acquisition = tStopScan - ...
+                logFooter.LogStopTimeSeconds;
+    end
+    
+    
+    % add arbitrary offset specified by user
+    relative_start_acquisition = relative_start_acquisition + ...
+        log_files.relative_start_acquisition;
+    
+    data_table = tapas_physio_siemens_line2table(lineData);
+    
+    if isempty(dt)
+        nSamplesR = size(data_table,1);
+        dt_r = tLogTotal/(nSamplesR-1);
+    else
+        dt_r = dt(end);
+    end
+    
+    dataResp = tapas_physio_siemens_table2cardiac(data_table, ecgChannel, ...
+        dt_r, relative_start_acquisition, endCropSeconds);
+    
+    if DEBUG
+        verbose.fig_handles(end+1) = ...
+            tapas_physio_plot_raw_physdata_siemens(dataResp);
+    end
+    
+    
+    r = dataResp.c;
+    t_r = dataResp.t;
+    
+    %
+    %% crop end of log file???
+    % stopSample = dataResp.stopSample;
+    % t(stopSample+1:end) = [];
+    % c(stopSample+1:end) = [];
+    
+    
 else
     r = [];
+    t_r = [];
 end
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Adapt time scales resp/cardiac, i.e. zero fill c or r
+% to get equal length with max(c_t, r_t)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+nSamplesR = numel(r);
+nSamplesC = numel(c);
+
+if  nSamplesR > nSamplesC
+    t = t_r; % time scale defined by respiration now, since longer
+    if nSamplesC > 0 % zero-fill cardiac data
+        c(nSamplesC+1:nSamplesR) = 0;
+    end
+else
+    t = t_c;
+    if nSamplesR > 0
+        r(nSamplesR+1:nSamplesC) = 0;
+    end
+end
+
 
 end

@@ -1,8 +1,8 @@
-function [VOLLOCS, LOCS] = tapas_physio_create_nominal_scan_timing(t, ...
+function [VOLLOCS, LOCS] = tapas_physio_create_scan_timing_nominal(t, ...
     sqpar, align_scan)
 % Creates locations of scan volume and slice events in time vector of SCANPHYSLOG-files
 %
-%   [VOLLOCS, LOCS] = tapas_physio_create_nominal_scan_timing(t, sqpar);
+%   [VOLLOCS, LOCS] = tapas_physio_create_scan_timing_nominal(t, sqpar);
 %
 % In cases where the SCANPHYSLOG-file has no gradient entries (column
 % 7-9), the actual time-course of the sequence has to be inferred from the
@@ -41,7 +41,7 @@ function [VOLLOCS, LOCS] = tapas_physio_create_nominal_scan_timing(t, ...
 %           LOCS            - locations in time vector, when slice or volume scan
 %                             events started
 % EXAMPLE
-%   [VOLLOCS, LOCS] = tapas_physio_create_nominal_scan_timing(t, sqpar);
+%   [VOLLOCS, LOCS] = tapas_physio_create_scan_timing_nominal(t, sqpar);
 %
 %   See also
 %
@@ -62,18 +62,11 @@ end
 
 Nscans          = sqpar.Nscans;
 Ndummies        = sqpar.Ndummies;
-Nslices         = sqpar.Nslices;
 
 NallVols = (Ndummies+Nscans);
 VOLLOCS = NaN(NallVols,1);
-LOCS = NaN(NallVols*Nslices,1);
 TR = sqpar.TR;
 
-
-%default for equidistantly spaced slices
-if isempty(sqpar.time_slice_to_slice)
-    sqpar.time_slice_to_slice = TR/Nslices;
-end
 
 %% First, find volume starts either forward or backward through time series
 do_count_from_start = strcmpi(align_scan, 'first');
@@ -99,33 +92,7 @@ end
 
 %% Then, find slice starts between determined volume starts
 
-iFirstValidVolume = find(~isnan(VOLLOCS), 1);
-tRef = t(VOLLOCS(iFirstValidVolume));
+LOCS = tapas_physio_create_LOCS_from_VOLLOCS(VOLLOCS, t, sqpar);
 
-
-for n = iFirstValidVolume:NallVols
-    
-    % first, restrict search interval to within TR
-    LOCVOLSTART = VOLLOCS(n);
-    
-    if n == NallVols
-        LOCVOLEND = numel(t);
-    else
-        LOCVOLEND = VOLLOCS(n+1);
-    end
-    
-    % Then, find slice-by-slice nearest neighbour of actual and
-    % reference time
-    tSearchInterval = t(LOCVOLSTART:LOCVOLEND) - tRef - TR*(n-iFirstValidVolume);
-    
-    
-    for s = 1:Nslices
-        
-        [tmp, RELATIVELOC] = min(abs(tSearchInterval - ...
-            sqpar.time_slice_to_slice*(s-1)) );
-        
-        LOCS((n-1)*Nslices + s) = LOCVOLSTART + RELATIVELOC - 1;
-    end
-end
 
 end

@@ -89,7 +89,6 @@ preproc     = physio.preproc;
 scan_timing = physio.scan_timing;
 model       = physio.model;
 verbose     = physio.verbose;
-sqpar       = scan_timing.sqpar;
 
 hasPhaseLogfile = strcmpi(log_files.vendor, 'CustomPhase');
 
@@ -104,12 +103,13 @@ if ~hasPhaseLogfile
     [ons_secs.c, ons_secs.r, ons_secs.t, ons_secs.cpulse, ons_secs.acq_codes, ...
         verbose] = tapas_physio_read_physlogfiles(...
         log_files, preproc.cardiac.modality, verbose);
- 
+    
     % also: normalize cardiac/respiratory data, if wanted
     doNormalize = true;
     
     % Normalize and pad time series after read-In
-    ons_secs = tapas_physio_preprocess_phys_timeseries(ons_secs, sqpar, doNormalize);
+    ons_secs = tapas_physio_preprocess_phys_timeseries(ons_secs, ...
+        scan_timing.sqpar, doNormalize);
     
     
     hasCardiacData = ~isempty(ons_secs.c);
@@ -122,37 +122,16 @@ if ~hasPhaseLogfile
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% 2. Create scan timing nominally or from logfile
-    % (Philips: via gradient time-course; Siemens (NEW): from tics)
+    % nominal:  using entered sequence parameters (nSlices, nScans etc)
+    % Philips:  via gradient time-course or existing acq_codes in logfile 
+    % GE:       nominal
+    % Siemens:  from tics (Release D), from .resp/.ecg files (Release B)
+    % Biopac:   using triggers from Digital input (mat file)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
-    switch lower(scan_timing.sync.method)
-        case 'nominal'
-            [VOLLOCS, LOCS] = ...
-                tapas_physio_create_nominal_scan_timing(ons_secs.t, ...
-                sqpar, log_files.align_scan);
-        case {'gradient', 'gradient_log'}
-            [VOLLOCS, LOCS, verbose] = ...
-                tapas_physio_create_scan_timing_from_gradients_philips( ...
-                log_files, scan_timing, verbose);
-        case {'gradient_auto', 'gradient_log_auto'}
-            [VOLLOCS, LOCS, verbose] = ...
-                tapas_physio_create_scan_timing_from_gradients_auto_philips( ...
-                log_files, scan_timing, verbose);
-        case 'scan_timing_log'
-            [VOLLOCS, LOCS, verbose] = ...
-                tapas_physio_create_scan_timing_from_tics_siemens( ...
-                ons_secs.t, log_files, verbose);
-    end
-    
-    
-    % remove arbitrary offset in time vector now, since all timings have now
-    % been aligned to ons_secs.t
-    % ons_secs.t = ons_secs.t - ons_secs.t(1);
-    
-    [ons_secs.svolpulse, ons_secs.spulse, ons_secs.spulse_per_vol, verbose] = ...
-        tapas_physio_get_onsets_from_locs(...
-        ons_secs.t, VOLLOCS, LOCS, sqpar, verbose);
-    
+    [ons_secs, VOLLOCS, LOCS, verbose] = tapas_physio_create_scan_timing(...
+        log_files, scan_timing, ons_secs, verbose);
+        
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% 3. Extract and preprocess physiological data, crop to scan aquisition
@@ -201,9 +180,9 @@ if ~hasPhaseLogfile
     end
     
     
-    [ons_secs, sqpar, verbose] = tapas_physio_crop_scanphysevents_to_acq_window(...
-        ons_secs, sqpar, verbose);
-    scan_timing.sqpar = sqpar;
+    [ons_secs, scan_timging.sqpar, verbose] = tapas_physio_crop_scanphysevents_to_acq_window(...
+        ons_secs, scan_timing.sqpar, verbose);
+    sqpar = scan_timing.sqpar;
     
     if hasRespData
         % filter respiratory signal
@@ -261,10 +240,10 @@ for onset_slice = onset_slices
         ons_secs.c_sample_phase = [];
         ons_secs.r_sample_phase = [];
     end
-     
+    
     
     %% 4.2. Create RETROICOR regressors (Fourier expansion of cardiac/respiratory phase)
- 
+    
     if model.retroicor.include
         [cardiac_sess, respire_sess, mult_sess, ons_secs, ...
             model.retroicor.order, verbose] = ...

@@ -3,7 +3,8 @@ function [VOLLOCS, LOCS, verbose] = ...
 % Creates locations of scan volume and slice events in physiological time series vector from Siemens Tics-file
 % (<date>_<time>_AcquisitionInfo*.log)
 %
-%   [VOLLOCS, LOCS] = tapas_physio_create_nominal_scan_timing(t, log_files);
+% [VOLLOCS, LOCS, verbose] = ...
+%    tapas_physio_create_scan_timing_from_tics_siemens(t, log_files, verbose)
 %
 % IN
 %   t           - timing vector of physiological logfiles
