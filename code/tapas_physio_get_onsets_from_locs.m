@@ -118,6 +118,17 @@ else
     ons.acq_slice_per_vol_all = SLICELOCS(end-Nscans-Ndummies+1:end);
 end
 
-spulse     = t(ons.acq_slice_all);
-svolpulse  = t(ons.acq_vol_all);
+
+%% set scan time (in phys time scale) corresponding to index, where valid index exists 
+% (i.e. for scan events occuring during phys logfile
+
+spulse = NaN(size(ons.acq_slice_all));
+svolpulse = NaN(size(ons.acq_vol_all));
+
+iValidSlice = find(~isnan(ons.acq_slice_all));
+spulse(iValidSlice) = t(ons.acq_slice_all(iValidSlice));
+
+iValidVol = find(~isnan(ons.acq_vol_all));
+svolpulse(iValidVol) = t(ons.acq_vol_all(iValidVol));
+
 spulse_per_vol = cellfun(@(x) t(x), ons.acq_slice_per_vol_all, 'UniformOutput', false);
