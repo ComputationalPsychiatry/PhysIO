@@ -1,11 +1,11 @@
-function [cpulse, verbose] = tapas_physio_findpeaks_template_correlation(...
+function [cpulse, verbose, plotData] = tapas_physio_findpeaks_template_correlation(...
     c, pulseCleanedTemplate, cpulseSecondGuess, averageHeartRateInSamples, ...
     verbose, varargin)
 % Finds peaks of a time series via pre-determined template via maxima of
 % correlations via going backward from search starting point in time
 % series, and afterwards forward again
 %
-%   [cpulse, verbose] = tapas_physio_findpeaks_template_correlation(...
+%   [cpulse, verbose, plotData] = tapas_physio_findpeaks_template_correlation(...
 %       c, pulseCleanedTemplate, cpulseSecondGuess, averageHeartRateInSamples, verbose)
 %
 % IN
@@ -18,6 +18,11 @@ function [cpulse, verbose] = tapas_physio_findpeaks_template_correlation(...
 %                       determined via the pulseCleanedTemplate
 %
 % OUT
+%   cpulse
+%   verbose
+%   plotData        structure of plot-relevant data for algorithm depiction
+%                   fields: searchedAt, amplitudeWeight, locationWeight,
+%                   similarityToTemplate
 %
 % EXAMPLE
 %   tapas_physio_findpeaks_template_correlation
@@ -97,6 +102,10 @@ clear similarityToTemplate
 % go average heartbeat by heartbeat back and look (with
 % decreasing weighting for higher distance) for highest
 % correlation with template heartbeat
+
+plotData.searchedAt = zeros(size(c));
+plotData.locationWeight  = zeros(size(c));
+plotData.amplitudeWeight  = zeros(size(c));
 
 n = I_bestMatch;
 bestPosition = n; % to capture case where 1st R-peak is best
@@ -216,6 +225,13 @@ while n < nSamples % -searchStepsTotal - halfTemplateWidthInSamples
         correlationWeighted =  locationWeight .* amplitudeWeight .* correlation;
         similarityToTemplate(n+searchPosition) = correlationWeighted;
         
+        % collect plot Data
+        plotData.locationWeight(n+searchPosition) = locationWeight;
+        plotData.amplitudeWeight(n+searchPosition) = amplitudeWeight;
+        
+        if searchPosition==0
+            plotData.searchedAt(n+searchPosition) = 1;
+        end
         
     end
     
@@ -273,3 +289,5 @@ while n < nSamples % -searchStepsTotal - halfTemplateWidthInSamples
         n=bestPosition+averageHeartRateInSamples;
     end
 end
+
+plotData.similarityToTemplate = similarityToTemplate;
