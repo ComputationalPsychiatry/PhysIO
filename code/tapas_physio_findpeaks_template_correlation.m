@@ -64,6 +64,8 @@ halfTemplateWidthInSamples = floor(numel(pulseCleanedTemplate)/2);
     pulseCleanedTemplate);
 isZTransformed = [0 1];
 
+%% Find best (representative) R-peak within first 20(=idxStartPeakSearch) 
+% cycles to start backwards search
 % start and end point of search for representative start cycle
 centreSampleStart = round(2*halfTemplateWidthInSamples+1);
 
@@ -72,6 +74,7 @@ if idxStartPeakSearch(1) > 0
         cpulseSecondGuess(idxStartPeakSearch(1));
 end
 centreSampleEnd = cpulseSecondGuess(idxStartPeakSearch(2));
+
 
 similarityToTemplate = zeros(1, ceil(centreSampleEnd));
 for n=centreSampleStart:centreSampleEnd
@@ -114,12 +117,20 @@ peakNumber = 1;
 similarityToTemplate = zeros(nSamples,1);
 
 searchStepsTotal = round(0.5*averageHeartRateInSamples);
+
+% zero-pad phys time course to allow computing correlations for first heartbeat 
+cPadded = [zeros(halfTemplateWidthInSamples,1); c];
+bestPosition = bestPosition + halfTemplateWidthInSamples; % index update for padded c
+
+% Stepping backwards through heartbeat intervals
 while n > 1+searchStepsTotal+halfTemplateWidthInSamples
+    
+    % search samples within current heartbeat interval
     for searchPosition = -searchStepsTotal:1:searchStepsTotal
         startSignalIndex    = n - halfTemplateWidthInSamples+searchPosition;
         endSignalIndex      = n + halfTemplateWidthInSamples+searchPosition;
         
-        signalPart          = c(startSignalIndex:endSignalIndex);
+        signalPart          = cPadded(startSignalIndex:endSignalIndex);
         correlation = tapas_physio_corrcoef12(signalPart,zTransformedTemplate, ...
             isZTransformed);
         
@@ -144,7 +155,7 @@ while n > 1+searchStepsTotal+halfTemplateWidthInSamples
         correlationWeighted =  currentWeight .* correlation;
         similarityToTemplate(n+searchPosition) = correlationWeighted;
         
-    end
+    end % search within heartbeat
     
     %DEBUG
     if debug
@@ -164,17 +175,14 @@ while n > 1+searchStepsTotal+halfTemplateWidthInSamples
     indexSearchRange=indexSearchStart:indexSearchEnd;
     searchRangeValues=similarityToTemplate(indexSearchRange);
     [C_bestMatch,I_bestMatch] = max(searchRangeValues);
-    bestPosition = indexSearchRange(I_bestMatch);
-    
-    cpulse(peakNumber) = bestPosition;
-    peakNumber = peakNumber+1;
-    
+    bestPosition = indexSearchRange(I_bestMatch); 
     
     n=bestPosition-averageHeartRateInSamples;
 end % END: going backwards to beginning of time course
 
 %% Now go forward through the whole time series
-n           = bestPosition; % 1st R-peak
+% 1st R-peak, correct for index change with zero-padding
+n           = bestPosition - halfTemplateWidthInSamples; 
 peakNumber  = 1;
 clear cpulse;
 
