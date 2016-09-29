@@ -40,17 +40,15 @@ else
     switch sfx
         case '.ps'
             try %level 2 PS
-                print(verbose.fig_handles(1),'-dpsc2',verbose.fig_output_file);
-                for k=2:length(verbose.fig_handles)
-                    print(verbose.fig_handles(k),'-append',verbose.fig_output_file);
+                for k=1:length(verbose.fig_handles)
+                    print(verbose.fig_handles(k),'-dpsc2', '-append',verbose.fig_output_file);
                 end
             catch
                 delete(verbose.fig_output_file);
-                print(verbose.fig_handles(1),'-dpsc',verbose.fig_output_file);
-                for k=2:length(verbose.fig_handles)
-                    print(verbose.fig_handles(k),'-append',verbose.fig_output_file);
+                for k=1:length(verbose.fig_handles)
+                    print(verbose.fig_handles(k), '-dpsc', '-append', verbose.fig_output_file);
                 end
-            end
+             end
         case '.fig'
             for k=1:length(verbose.fig_handles)
                 saveas(verbose.fig_handles(k), fullfile(pfx,[fn sprintf('_%02d', k) sfx]));

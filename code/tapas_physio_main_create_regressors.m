@@ -55,6 +55,10 @@ function [physio, R, ons_secs] = tapas_physio_main_create_regressors(varargin)
 %% 0. Set Default parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% These parameters could become toolbox inputs...
+nDetectConstantSamples = 100;
+maxHeartRateBpm        = 90;
+               
 if ~nargin
     error('Please specify a PhysIO-object as input to this function. See tapas_physio_new');
 end
@@ -145,8 +149,9 @@ if ~hasPhaseLogfile
             case {'load_from_logfile', ''}
                 % do nothing
             otherwise
+                minCardiacCycleSamples = floor((1/(maxHeartRateBpm/60)/ons_secs.dt));
+
                 % run one of the various cardiac pulse detection algorithms
-                minCardiacCycleSamples = floor((1/(90/60)/ons_secs.dt));
                 [ons_secs.cpulse, verbose] = ...
                     tapas_physio_get_cardiac_pulses(ons_secs.t, ons_secs.c, ...
                     preproc.cardiac.initial_cpulse_select, ...
@@ -177,18 +182,25 @@ if ~hasPhaseLogfile
             case {'off', ''}
         end
         
+        % label constant samples as unreliable (clipping/detachment)
+        ons_secs.c_is_reliable = 1 - tapas_physio_detect_constants(ons_secs.c, ...
+            nDetectConstantSamples);
     end
-    
-    
-    [ons_secs, scan_timging.sqpar, verbose] = tapas_physio_crop_scanphysevents_to_acq_window(...
-        ons_secs, scan_timing.sqpar, verbose);
-    sqpar = scan_timing.sqpar;
     
     if hasRespData
         % filter respiratory signal
         ons_secs.fr = tapas_physio_filter_respiratory(ons_secs.r, ...
             ons_secs.dt, doNormalize);
+        
+        % label constant samples as unreliable (clipping/detachment)
+        ons_secs.r_is_reliable = 1 - tapas_physio_detect_constants(ons_secs.fr, ...
+            nDetectConstantSamples);
     end
+    
+    [ons_secs, scan_timging.sqpar, verbose] = tapas_physio_crop_scanphysevents_to_acq_window(...
+        ons_secs, scan_timing.sqpar, verbose);
+    sqpar = scan_timing.sqpar;
+    
     
     if verbose.level >= 2
         verbose.fig_handles(end+1) = ...
@@ -230,6 +242,7 @@ for onset_slice = onset_slices
     
     if hasPhaseLogfile
         % explicit down-sampling of pre-existing phases
+        % for Field Probe + Physiological Noise Paper
         ons_secs.c_sample_phase = ...
             c_phase_probe_regressors((140+sqpar.onset_slice):(sqpar.Nslices):end);
         ons_secs.r_sample_phase = ...
@@ -259,7 +272,7 @@ for onset_slice = onset_slices
     %% 4.3. Create a heart-rate variability regressor using the cardiac response
     % function
     
-    if model.hrv.include % TODO: include delays!
+    if model.hrv.include
         [convHRV, ons_secs.hr, verbose] = tapas_physio_create_hrv_regressors(...
             ons_secs, sqpar, model.hrv, verbose);
     else

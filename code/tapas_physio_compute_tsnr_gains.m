@@ -79,6 +79,7 @@ if ~isstruct(SPM)
     load(fileSpm, 'SPM');
 end
 
+
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %   1.  Compute F-Contrasts of the kind "All-but-physiological confounds"
 %       to estimate tSNR from spm-residuals
@@ -129,7 +130,6 @@ for iC = 1:nContrasts
 end
 
 
-
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %   2.  Compute tSNR of preprocessed time-series, after pre-whitening and
 %       highpass-filtering (i.e. K*W*Y), saved as nii-files
@@ -138,6 +138,7 @@ end
 
 tSnrImageRaw = tapas_physio_compute_tsnr_spm(SPM, 0);
 tSnrImageRaw.name = 'raw tSNR after preprocessing, pre-whitening, high-pass filtering';
+
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %   3.  Compute tSNR images of individual physiological regressors sets,
@@ -153,6 +154,8 @@ tSnrImageRaw.name = 'raw tSNR after preprocessing, pre-whitening, high-pass filt
 tSnrImageArray = cell(nContrasts+1,1);
 tSnrGainArray = cell(nContrasts,1);
 for iC = 1:nContrasts
+    
+    % compute and specify save location tSNR image for contrast
     tSnrImageArray{iC} = tapas_physio_compute_tsnr_spm(SPM, ...
         indInverseContrasts(iC));
     tSnrImageArray{iC}.name = ['tSNR after correcting ' ...
@@ -160,6 +163,9 @@ for iC = 1:nContrasts
     tSnrImageArray{iC}.parameters.save.path = SPM.swd;
     tSnrImageArray{iC}.parameters.save.fileName = ...
         sprintf('tSnr_%s.nii', namesPhysContrasts{iC});
+    
+    
+    % compute and specify save location tSNR gain image for contrast
     tSnrGainArray{iC} = (tSnrImageArray{iC}./tSnrImageRaw - 1).*100;
     tSnrGainArray{iC}.name = ['tSNR gain after correcting ' ...
         namesPhysContrasts{iC}];
@@ -173,6 +179,8 @@ tSnrImageArray{end}.parameters.save.path = SPM.swd;
 tSnrImageArray{end}.parameters.save.fileName = ...
     sprintf('tSnr_Raw.nii');
 
+
+%% Save calculated images
 if doSave
     for iC = 1:nContrasts
         tSnrImageArray{iC}.save;
@@ -181,6 +189,8 @@ if doSave
     tSnrImageArray{end}.save;
 end
 
+
+%% plot calculated raw tSNR image
 doPlot = false;
 if doPlot
    spm_check_registration(tSnrImageArray{end}.parameters.save.fileName);

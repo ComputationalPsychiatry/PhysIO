@@ -989,7 +989,7 @@ rvt.val  = {rvt_no};
 rvt.values  = {rvt_no, rvt_yes};
 rvt.help = {
     'Respiratory Volume per Time (RVT) Model, '
-    'as described in Birn, R.M., et al. NeuroImage 40, 644?654. doi:10.1016/j.neuroimage.2007.11.059'
+    'as described in Birn, R.M., et al. NeuroImage 40, 644-654. doi:10.1016/j.neuroimage.2007.11.059'
     };
 
 
@@ -1031,7 +1031,7 @@ hrv_yes.name = 'Yes';
 hrv_yes.val  = {hrv_delays};
 hrv_yes.help = {
     'Include Heart Rate Variability (HRV) Model, '
-    'as described in Birn, R.M., et al. NeuroImage 40, 644?654. doi:10.1016/j.neuroimage.2007.11.059'
+    'as described in Chang, C. et al., NeuroImage 44, 857-869. doi:10.1016/j.neuroimage.2008.09.029'
     };
 
 
@@ -1047,7 +1047,7 @@ hrv.val  = {hrv_no};
 hrv.values  = {hrv_no, hrv_yes};
 hrv.help = {
     'Heart Rate Variability (HRV) Model, as described in '
-    'Chang, C. et al., NeuroImage 44, 857?869. doi:10.1016/j.neuroimage.2008.09.029'
+    'Chang, C. et al., NeuroImage 44, 857-869. doi:10.1016/j.neuroimage.2008.09.029'
 };
 
 
@@ -1155,7 +1155,10 @@ noise_rois_yes.tag  = 'yes';
 noise_rois_yes.name = 'Yes';
 noise_rois_yes.val  = {fmri_files, roi_files, roi_thresholds, n_voxel_crop, ...
     n_components};
-noise_rois_yes.help = {'Include Noise ROIs model'};
+noise_rois_yes.help = {
+    'Include Noise ROIs model'
+    '(Principal components of anatomical regions), similar to aCompCor, Behzadi et al. 2007'
+    };
 
 
 

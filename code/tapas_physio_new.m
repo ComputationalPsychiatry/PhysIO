@@ -560,6 +560,10 @@ else
     ons_secs.r_scaling           = 1;   % stores scaling factor for respiratory data
                                         % after normalization
                                         
+    % flags for detected unreliable intervals of physiological recording
+    ons_secs.c_is_reliable       = [];  % 1 for all time points where cardiac recording is reliable, 0 elsewhere (e.g. high noise, too low/high heartrates)
+    ons_secs.r_is_reliable       = [];  % 1 for all time points, where respiratory recording is reliable; 0 elsewhere (e.g. constant amplitude through detachment/clipping)
+  
     % processed elements cardiac pulse detecion and phase estimations
     ons_secs.cpulse         	 = [];  % onset times of cardiac pulse events (e.g. R-peaks)
     ons_secs.fr                  = [];  % filtered respiration amplitude time series
