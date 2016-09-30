@@ -56,8 +56,8 @@ function [physio, R, ons_secs] = tapas_physio_main_create_regressors(varargin)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % These parameters could become toolbox inputs...
-nDetectConstantSamples = 100;
-maxHeartRateBpm        = 90;
+minConstantIntervalAlertSeconds     = 0.2;
+maxHeartRateBpm                     = 90;
                
 if ~nargin
     error('Please specify a PhysIO-object as input to this function. See tapas_physio_new');
@@ -135,7 +135,8 @@ if ~hasPhaseLogfile
     
     [ons_secs, VOLLOCS, LOCS, verbose] = tapas_physio_create_scan_timing(...
         log_files, scan_timing, ons_secs, verbose);
-        
+    minConstantIntervalAlertSamples = ceil(minConstantIntervalAlertSeconds/ons_secs.dt);
+
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% 3. Extract and preprocess physiological data, crop to scan aquisition
@@ -184,7 +185,7 @@ if ~hasPhaseLogfile
         
         % label constant samples as unreliable (clipping/detachment)
         ons_secs.c_is_reliable = 1 - tapas_physio_detect_constants(ons_secs.c, ...
-            nDetectConstantSamples);
+            minConstantIntervalAlertSamples);
     end
     
     if hasRespData
@@ -194,7 +195,7 @@ if ~hasPhaseLogfile
         
         % label constant samples as unreliable (clipping/detachment)
         ons_secs.r_is_reliable = 1 - tapas_physio_detect_constants(ons_secs.fr, ...
-            nDetectConstantSamples);
+            minConstantIntervalAlertSamples);
     end
     
     [ons_secs, scan_timging.sqpar, verbose] = tapas_physio_crop_scanphysevents_to_acq_window(...
