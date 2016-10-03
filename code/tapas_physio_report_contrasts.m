@@ -39,6 +39,10 @@ function varargout = tapas_physio_report_contrasts(varargin)
 %                               e.g. [1:7] for all physiological contrasts
 %     reportContrastThreshold: 0.001
 %    reportContrastCorrection: 'none' or 'FWE'
+%    reportContrastMax:        maximum value of contrast colormap 
+%                              to scale different contrasts with equal
+%                              F-values (default: Inf, scales to max F of
+%                              map)
 %      reportContrastPosition: 'max' or [1,3] vector of crosshair position
 %                               (in mm)
 %               fovMillimeter: field of view in mm; set to 0 for full FOV
@@ -92,14 +96,16 @@ defaults.namesPhysContrasts = {
     'RespiratoryVolumePerTime'
     'Noise Rois'
     'Movement'
+    'All Phys + Move'
     };
 
 % selection of physiological contrasts to be reported, corresponding to
 % namesPhysContrasts order
-defaults.indReportPhysContrasts = 1:7;
+defaults.indReportPhysContrasts = 1:9;
 
 defaults.reportContrastThreshold     = 0.001; % 0.05; 0.001;
 defaults.reportContrastCorrection    = 'none'; % 'FWE'; 'none';
+defaults.reportContrastMax           = Inf;   
 %reportContrastPosition      = [0 -15 -2*16]; 'max'; % 'max' to jump to max; or [x,y,z] in mm
 %fovMillimeter               = 50; %mm; choose 0 to plot whole FOV (bounding box)
 defaults.reportContrastPosition      = 'max'; % 'max' to jump to max; or [x,y,z] in mm
@@ -187,7 +193,7 @@ end
 %% Generate contrasts only if not already existing
 
 if ~isempty(model)
-    indContrastsCreate      = find(~indContrasts);
+    indContrastsCreate      = indReportPhysContrasts(find(~indContrasts));
     namesContrastsCreate    = namesPhysContrasts(indContrastsCreate);
     matlabbatch             = tapas_physio_check_prepare_job_contrasts(fileSpm, ...
         model, SPM, indContrastsCreate, pathPhysIO, ...
@@ -242,11 +248,12 @@ for c = 1:nContrasts
         % to be able to turn off the blue Crosshair
         if ~drawCrosshair
             spm_orthviews('Xhairs','off');
-            
         end
         
-        % spm_orthviews - spm.st.blobs.cbar
-        
+        % spm_orthviews - spm.st.blobs.cbar, changes colorbar
+        if ~isinf(reportContrastMax)
+            spm_orthviews('SetBlobsMax', 1, 1, reportContrastMax)
+        end
         
         % spm_print always prepend current directory to print-file
         % name :-(

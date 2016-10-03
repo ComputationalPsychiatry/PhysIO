@@ -1,4 +1,4 @@
-function [colAll, colCard, colResp, colMult, colHRV, colRVT, colRois, colMove] = ...
+function [colPhys, colCard, colResp, colMult, colHRV, colRVT, colRois, colMove, colAll] = ...
     tapas_physio_check_get_regressor_columns(SPM, model)
 %
 % returns indices of physiological regressors in an SPM design-matrix,
@@ -10,7 +10,7 @@ function [colAll, colCard, colResp, colMult, colHRV, colRVT, colRois, colMove] =
 %
 %
 % OUTPUT:
-%   colAll      - index vector of all physiological regressor columns in design matrix (from SPM.xX.names)
+%   colPhys      - index vector of all physiological regressor columns in design matrix (from SPM.xX.names)
 %   colCard     - index vector of cardiac regressor columns in design matrix (from SPM.xX.names)
 %   colResp     - index vector of respiratory regressor columns in design matrix (from SPM.xX.names)
 %   colMult     - index vector of interaction cardiac X respiration regressor columns in design matrix (from SPM.xX.names)
@@ -18,6 +18,7 @@ function [colAll, colCard, colResp, colMult, colHRV, colRVT, colRois, colMove] =
 %   colRVT      - index vector of respiratory volume per time column in design matrix (from SPM.xX.names)
 %   colRois     - index vector of noise rois regressors (from SPM.xX.names)
 %   colMove     - index vector of movement regressor columns in design matrix (from SPM.xX.names)
+%   colAll      - colPhys and colMove (all nuisance regressors!)
 %
 % Author: Lars Kasper
 % Created: 2014-01-21
@@ -104,4 +105,5 @@ for s = 1:nSess
         (indC+nCard+nResp+nMult+nHRV+nRVT+nRois+nMove-1)];
 end
 
-colAll = [colCard colResp colMult colHRV colRVT colRois];
+colPhys = [colCard colResp colMult colHRV colRVT colRois];
+colAll  = [colPhys colMove];

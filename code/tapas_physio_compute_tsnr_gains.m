@@ -89,16 +89,18 @@ end
 % Determine which physiological contrasts (should) exist and where the
 % corresponding columns in the design matrix are
 
-[colAll, colCard, colResp, colMult, colHRV, colRVT, colMove] = ...
+[colPhys, colCard, colResp, colMult, colHRV, colRVT, colRois, colMove, colAll] = ...
     tapas_physio_check_get_regressor_columns(SPM, physio.model);
 
-con{1} = colAll;
+con{1} = colPhys;
 con{2} = colCard;
 con{3} = colResp;
 con{4} = colMult;
 con{5} = colHRV;
 con{6} = colRVT;
-con{7} = colMove;
+con{7} = colRois;
+con{8} = colMove;
+con{9} = colAll;
 
 namesPhysContrasts = {
     'All Phys'
@@ -107,8 +109,12 @@ namesPhysContrasts = {
     'Card X Resp Interation'
     'HeartRateVariability'
     'RespiratoryVolumePerTime'
+    'Noise Rois'
     'Movement'
+    'All Phys + Move'
     };
+
+
 
 iEmptyCon                       = cellfun(@isempty, con);
 
