@@ -1,11 +1,19 @@
-function matlabbatch = tapas_physio_check_prepare_job_contrasts(fileSPM, ...
-    model, SPM, indReportPhysContrasts, dirCheckPhys, namesPhysContrasts)
+function [matlabbatch, indValidContrasts] = tapas_physio_check_prepare_job_contrasts(fileSPM, ...
+    model, SPM, indReportPhysContrasts, namesPhysContrasts)
 % adapts contrast generator for physiogical regressors to actual SPM-file
 % (directory & design matrix columns)
 %
 %   
 % IN
-%
+%   fileSpm
+%   model
+%   SPM
+%   indReportPhysContrasts  [1, nContrasts] vector of phys contrast ids to be
+%                           reported, in their default order
+%   indValidContrasts       contrasts ids that could be queried with existing
+%                           physIO model
+%   namesPhysContrasts      if contrasts shall be named differently,
+%                           entered here
 % Author: Lars Kasper
 % Created: 2014-01-21
 % Copyright (C) 2014 TNU, Institute for Biomedical Engineering, University of Zurich and ETH Zurich.
@@ -17,7 +25,9 @@ function matlabbatch = tapas_physio_check_prepare_job_contrasts(fileSPM, ...
 %
 % $Id$
 
-hasNamesContrasts = nargin >= 6;
+if nargin < 6
+    namesPhysContrasts = tapas_physio_get_contrast_names_default();
+end
 
 if ~exist('SPM', 'var'), load(fileSPM); end
 
@@ -33,23 +43,22 @@ con{7} = colRois;
 con{8} = colMove;
 con{9} = colAll;
 
-load(fullfile(dirCheckPhys,'tapas_physio_check_job_contrasts.mat'));
+pathCodePhysIO = fileparts(mfilename('fullpath'));
+load(fullfile(pathCodePhysIO,'tapas_physio_check_job_contrasts.mat'));
 matlabbatch{1}.spm.stats.con.spmmat{1} = fileSPM;
 
 % execute computation only for non-empty contrasts;
-indContrasts = intersect(indReportPhysContrasts, ...
+indValidContrasts = intersect(indReportPhysContrasts, ...
     find(~cellfun(@isempty, con)));
-nContrasts = numel(indContrasts);
+nContrasts = numel(indValidContrasts);
 for c = 1:nContrasts
-    iC = indContrasts(c);
+    iC = indValidContrasts(c);
     F{c} = zeros(max(con{iC}));
     F{c}(sub2ind(size(F{c}),con{iC}, con{iC})) = 1;
     matlabbatch{1}.spm.stats.con.consess{c}.fcon.convec{1} = F{c};
     
-    if hasNamesContrasts
-        matlabbatch{1}.spm.stats.con.consess{c}.fcon.name = ...
-            namesPhysContrasts{indContrasts(c)};
-    end
+    matlabbatch{1}.spm.stats.con.consess{c}.fcon.name = ...
+            namesPhysContrasts{indValidContrasts(c)};
 end
 
 % remove additional contrasts in matlabbatch

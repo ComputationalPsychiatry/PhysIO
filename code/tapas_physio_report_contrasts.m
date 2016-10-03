@@ -81,23 +81,13 @@ function varargout = tapas_physio_report_contrasts(varargin)
 defaults.titleGraphicsWindow = '';
 % PhysIO Toolbox code should be in same folder as this file
 defaults.pathPhysIO      = fileparts(mfilename('fullpath'));
-defaults.filePhysIO      = ''; 
+defaults.filePhysIO      = 'physio.mat'; 
 defaults.fileReport      = 'physio_report_contrasts.ps'; % where contrast maps are saved
 defaults.fileStructural  = 'mean.nii';
 defaults.fileSpm         = 'SPM.mat';
 defaults.drawCrosshair   = true;
 
-defaults.namesPhysContrasts = {
-    'All Phys'
-    'Cardiac'
-    'Respiratory'
-    'Card X Resp Interation'
-    'HeartRateVariability'
-    'RespiratoryVolumePerTime'
-    'Noise Rois'
-    'Movement'
-    'All Phys + Move'
-    };
+defaults.namesPhysContrasts = tapas_physio_get_contrast_names_default();
 
 % selection of physiological contrasts to be reported, corresponding to
 % namesPhysContrasts order
@@ -126,41 +116,10 @@ tapas_physio_strip_fields(args);
 spm('defaults', 'FMRI');
 
 % make sure to use absolute paths from now on...
-if iscell(fileSpm)
-    fileSpm = fileSpm{1};
-end
-
-if iscell(fileStructural)
-    fileStructural = fileStructural{1};
-end
-
-if iscell(fileReport)
-    fileReport = fileReport{1};
-end
-
-if iscell(filePhysIO)
-    filePhysIO = filePhysIO{1};
-end
-
-fp = fileparts(fileSpm);
-if isempty(fp) || (~ispc && fp(1) ~= '/') || (ispc && fp(2) ~= ':')
-    fileSpm = fullfile(pwd, fileSpm);
-end
-
-fp = fileparts(fileReport);
-if isempty(fp) || (~ispc && fp(1) ~= '/') || (ispc && fp(2) ~= ':')
-    fileReport = fullfile(pwd, fileReport);
-end
-
-fp = fileparts(fileStructural);
-if isempty(fp) || (~ispc && fp(1) ~= '/') || (ispc && fp(2) ~= ':')
-    fileStructural = fullfile(pwd, fileStructural);
-end
-
-fp = fileparts(filePhysIO);
-if isempty(fp) || (~ispc && fp(1) ~= '/') || (ispc && fp(2) ~= ':')
-    filePhysIO = fullfile(pwd, filePhysIO);
-end
+fileSpm = tapas_physio_filename2path(fileSpm);
+fileStructural = tapas_physio_filename2path(fileStructural);
+fileReport = tapas_physio_filename2path(fileReport);
+filePhysIO = tapas_physio_filename2path(filePhysIO);
 
 load(fileSpm);
 nContrasts = numel(indReportPhysContrasts);
@@ -172,7 +131,7 @@ if ~exist(fileStructural, 'file')
 end
 
 % if input file given, load PhysIO-object
-if ~isempty(filePhysIO)
+if exist(filePhysIO, 'file')
     load(filePhysIO, 'physio');
     model = physio.model;
 end
@@ -181,43 +140,23 @@ end
 tmpWindowStyle = get(0, 'DefaultFigureWindowStyle');
 set(0, 'DefaultFigureWindowStyle', 'normal');
 
-%% Check whether contrasts already exist in SPM.mat
-indContrasts = zeros(nContrasts,1);
-for c = 1:nContrasts
-    iC = indReportPhysContrasts(c);
-    indContrasts(c) = tapas_physio_check_get_xcon_index(SPM, ...
-        namesPhysContrasts{iC});
-end
-
-
-%% Generate contrasts only if not already existing
-
-if ~isempty(model)
-    indContrastsCreate      = indReportPhysContrasts(find(~indContrasts));
-    namesContrastsCreate    = namesPhysContrasts(indContrastsCreate);
-    matlabbatch             = tapas_physio_check_prepare_job_contrasts(fileSpm, ...
-        model, SPM, indContrastsCreate, pathPhysIO, ...
-        namesContrastsCreate);
-    if ~isempty(matlabbatch{1}.spm.stats.con.consess)
-        spm_jobman('run', matlabbatch);
-        load(fileSpm);
-    end
-    
-end
+% create physiological contrasts that don't exist so far and can be created
+% due to the model components included
+tapas_physio_create_missing_physio_contrasts(SPM, model, namesPhysContrasts)
 
 %% report contrasts
 pathBeforeReport = pwd;
 for c = 1:nContrasts
     iC = indReportPhysContrasts(c);
-    indContrasts(c) = tapas_physio_check_get_xcon_index(SPM, ...
+    idxContrast = tapas_physio_check_get_xcon_index(SPM, ...
         namesPhysContrasts{iC});
     
     % if contrast exists
-    if indContrasts(c) ~= 0
+    if idxContrast ~= 0
         load(fullfile(pathPhysIO, 'tapas_physio_check_job_report'));
         matlabbatch{1}.spm.stats.results.spmmat = cellstr(fileSpm);
         matlabbatch{1}.spm.stats.results.conspec.titlestr = [titleGraphicsWindow ' - ' namesPhysContrasts{iC}];
-        matlabbatch{1}.spm.stats.results.conspec.contrasts = indContrasts(c);
+        matlabbatch{1}.spm.stats.results.conspec.contrasts = idxContrast;
         
         % contrast report correction
         matlabbatch{1}.spm.stats.results.conspec.thresh = reportContrastThreshold;
