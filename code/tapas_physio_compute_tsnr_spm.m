@@ -1,4 +1,4 @@
-function [tSnrImage, fileTsnr] = tapas_physio_compute_tsnr_spm(SPM, iC, doSave)
+function [tSnrImage, fileTsnr, tSnrRatioImage, fileTsnrRatio] = tapas_physio_compute_tsnr_spm(SPM, iC, doInvert, iCForRatio, doSaveNewContrasts)
 % Computes temporal SNR image after correcting for a contrast 
 % from SPM general linear model
 %
@@ -21,13 +21,22 @@ function [tSnrImage, fileTsnr] = tapas_physio_compute_tsnr_spm(SPM, iC, doSave)
 %           the contrast of interest, i.e. eye(nRegressors) - xcon
 %           Thus, this function computes this contrast per default and goes
 %           from there determining residuals etc.
-%
-%   doSave  true (default) or false
-%           if true, a file tSNR_con<iC>.nii is created in the same folder as
-%           the SPM.mat
+%   iCForRatio
+%           For computation of relative tSNR.
+%           Contrast index whose tSNR image should be used as a
+%           denominator for tSnrRatioImage = tSNRiC./tSNRiCForRatio;
+%           tSNR is compared to the tSNR image of the specified contrast
+%           (0 for raw tSNR). The corresponding tSNR-image will be created
+%           default = 0 (raw tSNR); Leave [] to not compute ratio of tSNRs
+%           
+%   doSaveNewContrasts  
+%           true or false (default)
+%           if true, the temporary contrasts created by inversion of
+%           selected columns will be saved into the SPM structure.
+%           Otherwise, all temporary data will be removed.
 %   
 % OUT
-%   tSnrImage   MrImage holding tSNR when only including regressors in
+%   tSnrImage   [nX,nY,nZ] image matrix holding tSNR when only including regressors in
 %               contrast iC in design matrix;
 %               i.e. gives the effect of
 %                       mean(Xc*bc + e)/std(Xc*bc + e)
@@ -40,6 +49,8 @@ function [tSnrImage, fileTsnr] = tapas_physio_compute_tsnr_spm(SPM, iC, doSave)
 %               regressors of interest
 %   fileTsnr    tsnr_con<iC>.nii
 %               path and file name of tSNR image, if doSave was true
+%
+%   tSnrRatio   
 %
 % EXAMPLE
 %   compute_tsnr_spm
@@ -56,11 +67,17 @@ if nargin < 2
 end
 
 if nargin < 3
-    doSave = true;
+    doInvert = true;
 end
 
 if nargin < 4
-    doInvert = true;
+    iCForRatio = 0;
+end
+
+doComputeRatio = ~isempty(iCForRatio);
+
+if nargin < 5
+    doSaveNewContrasts = false;
 end
 
 % load SPM-variable, if filename given
@@ -73,13 +90,16 @@ if ~isstruct(SPM)
     end
     load(fileSpm, 'SPM');
     
-    % temporary changes to SPM structure saved in sub-dir
     oldDirSpm = SPM.swd;
-    newDirSpm = fullfile(SPM.swd, 'tmp'); 
-    mkdir(newDirSpm);
-    copyfile(fullfile(SPM.swd, '*.nii'), newDirSpm);
-    copyfile(fullfile(SPM.swd, 'SPM.mat'), newDirSpm);
-    SPM.swd = newDirSpm;
+    
+    if ~doSaveNewContrasts 
+    % temporary changes to SPM structure saved in sub-dir, removed later
+        newDirSpm = fullfile(SPM.swd, 'tmp');
+        mkdir(newDirSpm);
+        copyfile(fullfile(SPM.swd, '*.nii'), newDirSpm);
+        copyfile(fullfile(SPM.swd, 'SPM.mat'), newDirSpm);
+        SPM.swd = newDirSpm;
+    end
 end
 
  iCIn = iC;
@@ -102,6 +122,7 @@ end
      iC = numel(SPM.xCon);
  end
 
+ 
 %% Write residuals Y - Y0 = Yc + e;
 VRes        = spm_write_residuals(SPM, iC);
 nVolumes    = numel(VRes);
@@ -123,7 +144,7 @@ if useMrImage % use toolbox functionality
     
     % compute tSNR = mean(Xc*bc + e)/std(Xc*bc + e)
     tSnrImage = ResImage.mean./ResImage.std;
-    if doSave
+    if doSaveNewContrasts
         tSnrImage.save(fileTsnr);
     end
 else
@@ -136,7 +157,37 @@ else
     spm_write_vol(VTsnr, tSnrImage);
 end
 
-
+%%
+if doComputeRatio
+    fileTsnrCompare = fullfile(oldDirSpm, sprintf('tSNR_con%04d.nii', iCForRatio));
+    
+    % Load or compute tSNR image for comparison contrast
+    if ~exist(fileTsnrCompare, 'file');
+        % when computed, don't compute another ratio, and don't delete tmp
+        % here! (will be done at the end)
+        tSnrCompareImage = tapas_physio_compute_tsnr_spm(...
+            fullfile(oldDirSpm, 'SPM.mat'), ...
+            iCForRatio, doInvert, [], 1);
+    else
+        VCompare = spm_vol(fileTsnrCompare);
+        tSnrCompareImage = spm_read_vols(VCompare);
+    end
+    
+    % compute tSNR ratio and save
+    tSnrRatioImage = tSnrImage./tSnrCompareImage;
+    
+    fileTsnrRatio = fullfile(oldDirSpm, ...
+        sprintf('tSNRRatio_con%04dvs%04d.nii', iCIn, iCForRatio));
+    VRatio = spm_vol(fileTsnrCompare);
+    VRatio.fname = fileTsnrRatio;
+    spm_write_vol(VRatio, tSnrRatioImage);
+else
+    tSnrRatioImage = [];
+    fileTsnrRatio = [];
+end
+    
 %% clean up all created residual files and temporary SPM folder
-delete(fullfile(newDirSpm, '*'));
-rmdir(newDirSpm);
+if ~doSaveNewContrasts
+    delete(fullfile(newDirSpm, '*'));
+    rmdir(newDirSpm);
+end

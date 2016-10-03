@@ -80,6 +80,11 @@ if ~isstruct(SPM)
 end
 
 
+% 1. Determine which physiological contrasts could be created with existing
+% model
+
+% 2. Determine, which of those are not already created
+
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %   1.  Compute F-Contrasts of the kind "All-but-physiological confounds"
 %       to estimate tSNR from spm-residuals
