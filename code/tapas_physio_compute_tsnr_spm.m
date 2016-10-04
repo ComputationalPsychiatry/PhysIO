@@ -106,8 +106,6 @@ if ~isstruct(SPM)
         fileSpm = SPM;
     end
     load(fileSpm, 'SPM');
-    
-    
 end
 
 oldDirSpm = SPM.swd;
@@ -205,8 +203,12 @@ else
     fileTsnrRatio = [];
 end
 
+
 %% clean up all created residual files and temporary SPM folder
 if ~doSaveNewContrasts
     delete(fullfile(newDirSpm, '*'));
     rmdir(newDirSpm);
+else
+    % delete at least the Res-images
+    delete(fullfile(oldDirSpm, 'Res*.nii')); 
 end
