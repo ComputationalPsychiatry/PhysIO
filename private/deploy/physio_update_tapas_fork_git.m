@@ -48,10 +48,11 @@ relativePathTargetPhysIO = 'PhysIO'; % name of subdir of Tapas where Physio resi
 
 % different execution depending on whether this is the first time we try
 % it...
-isFirstDeployment = true;
+isFirstDeployment = true; % true only, if PhysIO Sub-directory does not exist
 doRemoveCommitHistory = false;
+useSubTree = true;
 
-%% Execution 
+%% Execution
 
 if doRemoveCommitHistory
     flagCommitHistory = '--squash';
@@ -64,25 +65,64 @@ pathTmp = pwd;
 cd(pathTargetLocalRepository);
 
 %% Do this the first time:
-if isFirstDeployment
-    unix(sprintf('git remote add -f -t master --no-tags %s %s', branchNameSource, urlSource));
-    unix(sprintf('git checkout %s/master', branchNameSource));
-    unix(sprintf('git subtree split -P %s -b temporary-split-branch', relativePathSourcePhysIO));
-    unix(sprintf('git checkout master'));
-    unix(sprintf(...
-        'git subtree add %s -P %s temporary-split-branch', ...
-        flagCommitHistory, relativePathTargetPhysIO));
-    unix(sprintf('git branch -D temporary-split-branch'))
+
+if useSubTree % does somehow not properly include history of all commits...
+    
+    if isFirstDeployment
+        unix(sprintf('git remote add -f -t master --no-tags %s %s', branchNameSource, urlSource));
+        unix(sprintf('git checkout %s/master', branchNameSource));
+        unix(sprintf('git subtree split -P %s -b temporary-split-branch', relativePathSourcePhysIO));
+        unix(sprintf('git checkout master'));
+        
+        if exist(relativePathTargetPhysIO, 'dir')
+            unix(sprintf('git rm -rf %s', relativePathTargetPhysIO));
+            unix(sprintf('git commit -m ''Deleted PhysIO folder for reinsertion with commit history'''));
+        end
+        
+        unix(sprintf(...
+            'git subtree add %s -P %s temporary-split-branch', ...
+            flagCommitHistory, relativePathTargetPhysIO));
+        
+        unix(sprintf('git branch -D temporary-split-branch'))
+        
+    else
+        %% In future, you can merge in additional changes as follows:
+        unix(sprintf('git checkout %s/master', branchNameSource));
+        unix(sprintf('git subtree split -P %s -b temporary-split-branch', relativePathSourcePhysIO));
+        unix(sprintf('git checkout master'));
+        
+        unix(sprintf('git subtree merge %s -P %s temporary-split-branch', ...
+            flagCommitHistory, relativePathTargetPhysIO));
+        % Now fix any conflicts if you'd modified third_party/git-completion.
+        % maybe needed for conflict resolution
+        % unix(sprintf('git checkout --theirs *'));
+        % unix(sprintf('git add -u'));
+        
+        unix(sprintf('git branch -D temporary-split-branch'));
+    end
     
 else
-    %% In future, you can merge in additional changes as follows:
-    unix(sprintf('git checkout %s/master', branchNameSource));
-    unix(sprintf('git subtree split -P %s -b temporary-split-branch', relativePathSourcePhysIO));
-    unix(sprintf('git checkout master'));
-    unix(sprintf('git subtree merge %s -P %s temporary-split-branch', ...
-        flagCommitHistory, relativePathTargetPhysIO));
-    % Now fix any conflicts if you'd modified third_party/git-completion.
-    unix(sprintf('git branch -D temporary-split-branch'));
+    
+    if isFirstDeployment
+        unix(sprintf('git remote add -f -t master --no-tags %s %s', branchNameSource, urlSource));
+        unix(sprintf('git merge -s ours --no-commit %s/master', branchNameSource));
+        
+        if exist(relativePathTargetPhysIO, 'dir')
+            unix(sprintf('git rm -rf %s', relativePathTargetPhysIO));
+        end
+        
+        unix(sprintf('git read-tree --prefix=%s -u %s/master:%s', ...
+            relativePathTargetPhysIO, branchNameSource, relativePathSourcePhysIO));
+        unix(sprintf('git commit -m ''Merged PhysIO changes into TAPAS'''));
+    else
+        % In future, you can *overwrite* with the latest changes as follows:
+        unix(sprintf('git merge -s ours --no-commit %s/master', branchNameSource));
+        unix(sprintf('git rm -rf %s', relativePathTargetPhysIO));
+        unix(sprintf('git read-tree --prefix=%s -u %s/master:%s', ...
+            relativePathTargetPhysIO, branchNameSource, relativePathSourcePhysIO));
+        unix(sprintf('git commit -m ''Merged PhysIO changes into TAPAS'''));
+    end
+    
+    
 end
-
 cd(pathTmp);
