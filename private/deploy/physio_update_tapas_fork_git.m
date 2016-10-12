@@ -120,13 +120,13 @@ else % don't use subtree
         unix(sprintf('git commit -m ''Merged PhysIO changes into TAPAS'''));
     else
         % In future, you can *overwrite* with the latest changes as follows:
-        %         unix(sprintf('git merge -s ours --no-commit %s/master', branchNameSource));
-        %         unix(sprintf('git rm -rf %s', relativePathTargetPhysIO));
-        %         unix(sprintf('git read-tree --prefix=%s -u %s/master:%s', ...
-        %             relativePathTargetPhysIO, branchNameSource, relativePathSourcePhysIO));
-        %         unix(sprintf('git commit -m ''Merged PhysIO changes into TAPAS'''));
-        %or, untested:
-        unix(sprintf('git pull -s subtree %s master', branchNameSource));
+                unix(sprintf('git merge -s ours --no-commit %s/master', branchNameSource));
+                unix(sprintf('git rm -rf %s', relativePathTargetPhysIO));
+                unix(sprintf('git read-tree --prefix=%s -u %s/master:%s', ...
+                    relativePathTargetPhysIO, branchNameSource, relativePathSourcePhysIO));
+                unix(sprintf('git commit -m ''Merged PhysIO changes into TAPAS'''));
+        %or, untested...does not seem to work with subdirectories:
+        %unix(sprintf('git pull -s subtree %s master', branchNameSource));
     end
     
     
