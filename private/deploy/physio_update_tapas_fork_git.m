@@ -6,6 +6,8 @@ function physio_update_tapas_fork_git(pathTargetLocalRepository, urlSource)
 %
 % Uses git subtree and a split, as specified in:
 %   http://stackoverflow.com/questions/23937436/add-subdirectory-of-remote-repo-with-git-subtree
+% updates of subtree as in
+%   https://www.kernel.org/pub/software/scm/git/docs/howto/using-merge-subtree.html
 %
 % IN
 %   pathTargetLocalRepository   local path of repository, whose remote is a
@@ -101,7 +103,9 @@ if useSubTree % does somehow not properly include history of all commits...
         unix(sprintf('git branch -D temporary-split-branch'));
     end
     
-else
+else % don't use subtree
+    %% TODO: third strategy: merge into a new branch physio
+    % git checkout -b physio master
     
     if isFirstDeployment
         unix(sprintf('git remote add -f -t master --no-tags %s %s', branchNameSource, urlSource));
@@ -116,11 +120,13 @@ else
         unix(sprintf('git commit -m ''Merged PhysIO changes into TAPAS'''));
     else
         % In future, you can *overwrite* with the latest changes as follows:
-        unix(sprintf('git merge -s ours --no-commit %s/master', branchNameSource));
-        unix(sprintf('git rm -rf %s', relativePathTargetPhysIO));
-        unix(sprintf('git read-tree --prefix=%s -u %s/master:%s', ...
-            relativePathTargetPhysIO, branchNameSource, relativePathSourcePhysIO));
-        unix(sprintf('git commit -m ''Merged PhysIO changes into TAPAS'''));
+        %         unix(sprintf('git merge -s ours --no-commit %s/master', branchNameSource));
+        %         unix(sprintf('git rm -rf %s', relativePathTargetPhysIO));
+        %         unix(sprintf('git read-tree --prefix=%s -u %s/master:%s', ...
+        %             relativePathTargetPhysIO, branchNameSource, relativePathSourcePhysIO));
+        %         unix(sprintf('git commit -m ''Merged PhysIO changes into TAPAS'''));
+        %or, untested:
+        unix(sprintf('git pull -s subtree %s master', branchNameSource));
     end
     
     
