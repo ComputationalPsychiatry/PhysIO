@@ -40,7 +40,7 @@ if nargin < 2
 end
 
 if nargin < 1
-    pathTargetLocalRepository = '/Users/kasperla/Documents/code/matlab/tapas';
+    pathTargetLocalRepository = '/Users/kasperla/Documents/code/matlab/tapas_test';
 end
 
 %% deployment options
@@ -60,6 +60,12 @@ if doRemoveCommitHistory
     flagCommitHistory = '--squash';
 else
     flagCommitHistory = '';
+end
+
+% check out tapas, if not existing
+if ~exist(pathTargetLocalRepository, 'dir')
+    unix(sprintf('git clone git@tnurepository.ethz.ch:lkasper/tapas.git %s', pathTargetLocalRepository));
+    isFirstDeployment = true;
 end
 
 % Go to local repository of Tapas
