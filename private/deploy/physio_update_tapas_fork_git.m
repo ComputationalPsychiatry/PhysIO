@@ -40,7 +40,7 @@ if nargin < 2
 end
 
 if nargin < 1
-    pathTargetLocalRepository = '/Users/kasperla/Documents/code/matlab/tapas_test';
+    pathTargetLocalRepository = '/Users/kasperla/Documents/code/matlab/tapas_test2';
 end
 
 %% deployment options
@@ -96,6 +96,7 @@ if useSubTree % does somehow not properly include history of all commits...
     else
         %% In future, you can merge in additional changes as follows:
         unix(sprintf('git checkout %s/master', branchNameSource));
+        
         unix(sprintf('git subtree split -P %s -b temporary-split-branch', relativePathSourcePhysIO));
         unix(sprintf('git checkout master'));
         
@@ -107,6 +108,9 @@ if useSubTree % does somehow not properly include history of all commits...
         % unix(sprintf('git add -u'));
         
         unix(sprintf('git branch -D temporary-split-branch'));
+        
+        % update remote
+        unix(sprintf('git push'));
     end
     
 else % don't use subtree
@@ -126,15 +130,19 @@ else % don't use subtree
         unix(sprintf('git commit -m ''Merged PhysIO changes into TAPAS'''));
     else
         % In future, you can *overwrite* with the latest changes as follows:
-                unix(sprintf('git merge -s ours --no-commit %s/master', branchNameSource));
-                unix(sprintf('git rm -rf %s', relativePathTargetPhysIO));
-                unix(sprintf('git read-tree --prefix=%s -u %s/master:%s', ...
-                    relativePathTargetPhysIO, branchNameSource, relativePathSourcePhysIO));
-                unix(sprintf('git commit -m ''Merged PhysIO changes into TAPAS'''));
-    %or, untested...does not seem to work with subdirectories:
+        unix(sprintf('git merge -s ours --no-commit %s/master', branchNameSource));
+        unix(sprintf('git rm -rf %s', relativePathTargetPhysIO));
+        unix(sprintf('git read-tree --prefix=%s -u %s/master:%s', ...
+            relativePathTargetPhysIO, branchNameSource, relativePathSourcePhysIO));
+        unix(sprintf('git commit -m ''Merged PhysIO changes into TAPAS'''));
+        %or, untested...does not seem to work with subdirectories:
         %unix(sprintf('git pull -s subtree %s master', branchNameSource));
     end
     
     
 end
 cd(pathTmp);
+
+%% UNDOING crap in git, reverting to older revision remotely:
+% $ git reset HEAD^ --hard
+% $ git push mathnet -f

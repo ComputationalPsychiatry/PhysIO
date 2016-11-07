@@ -27,9 +27,17 @@ function dirExamples = physio_update_examples()
 %
 % $Id$
 
-pathRoot = fileparts(mfilename('fullpath'));
-pathExamples = fullfile(pathRoot, 'examples');
-pathCode = fullfile(pathRoot, 'code');
+pathRoot = fullfile(fileparts(mfilename('fullpath')), '..', '..');
+pathExamples = fullfile(pathRoot, 'private', 'examples');
+pathCode = fullfile(pathRoot, 'public', 'code');
+pathSpm = fileparts(which('spm'));
+
+if isempty(pathSpm)
+    error('Add SPM to your path');
+else
+    %addpath(genpath(fullfile(pathSpm, 'matlabbatch')));
+    spm_jobman('initcfg');
+end
 
 pfxExample = 'tapas_physio_example_';
 
