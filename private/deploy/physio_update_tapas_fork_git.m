@@ -50,9 +50,9 @@ relativePathTargetPhysIO = 'PhysIO'; % name of subdir of Tapas where Physio resi
 
 % different execution depending on whether this is the first time we try
 % it...
-isFirstDeployment = true; % true only, if PhysIO Sub-directory does not exist
-doRemoveCommitHistory = false;
-useSubTree = true;
+isFirstDeployment       = false; % true only, if PhysIO Sub-directory does not exist
+doRemoveCommitHistory   = false;
+useSubTree              = true;
 
 %% Execution
 
