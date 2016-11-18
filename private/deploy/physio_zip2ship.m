@@ -61,7 +61,7 @@ dirExamples = {
     'GE/PPU3T'
     'Philips/ECG3T'
     'Philips/ECG7T'
-  %  'Philips/PPU3T'
+    'Philips/PPU3T'
     'Siemens/ECG3T'
     };
 
