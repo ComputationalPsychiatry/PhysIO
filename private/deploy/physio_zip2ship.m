@@ -82,7 +82,7 @@ end
 mkdir(exportD, 'manual');
 copyfile(fullfile(pathManual, '*.pdf'), fullfile(exportD, 'manual'));
 
-zipF = fullfile(currD, sprintf('PhysIOToolbox_r%s_examples.zip', srev));
+zipF = fullfile(currD, sprintf('PhysIOToolbox_%s_examples.zip', srev));
 zip(zipF, exportD);
 
 copyfile(pathCode, fullfile(exportD, 'code'));
