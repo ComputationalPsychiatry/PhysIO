@@ -37,7 +37,11 @@ function physio_zip2ship(rev, zipWhat)
 if ~nargin
     srev = datestr(now, 'yyyy_mm_dd_HHMMSS'); %TODO: somehow parse physio_new to get a better way to detect revision
 else
-    srev = sprintf('%d', rev');
+    if ~ischar(rev)
+        srev = sprintf('r%d', rev');
+    else
+        srev = rev;
+    end
 end
 
 if nargin < 2
@@ -50,12 +54,16 @@ physio_cleanup_example_output_files();
 % update job.mat and matlab_script from job.m, remove absolute paths
 physio_update_examples();
 currD = fileparts(mfilename('fullpath'));
+pathRepoRoot = fullfile(currD, '..', '..');
+pathExamples = fullfile(pathRepoRoot, 'private', 'examples');
+pathManual = fullfile(pathRepoRoot, 'public', 'manual');
+pathCode = fullfile(pathRepoRoot, 'public', 'code');
 
-exportD = fullfile(currD, sprintf('PhysIO_r%s', srev));
+exportD = fullfile(currD, sprintf('PhysIO_%s', srev));
 mkdir(exportD);
 
 % copy and zip examples with manual
-copyfile(fullfile(currD, 'README.txt'), exportD);
+copyfile(fullfile(pathRepoRoot, 'public', 'README.txt'), exportD);
 
 dirExamples = {
     'GE/PPU3T'
@@ -68,21 +76,21 @@ dirExamples = {
 nExamples = numel(dirExamples);
 for iExample = 1:nExamples
     mkdir(fullfile(exportD, 'examples', dirExamples{iExample}));
-    copyfile(fullfile(currD, 'examples', dirExamples{iExample}), ...
+    copyfile(fullfile(pathExamples, dirExamples{iExample}), ...
         fullfile(exportD, 'examples',dirExamples{iExample}));
 end
 mkdir(exportD, 'manual');
-copyfile(fullfile(currD, 'manual/*.pdf'), fullfile(exportD, 'manual'));
+copyfile(fullfile(pathManual, '*.pdf'), fullfile(exportD, 'manual'));
 
 zipF = fullfile(currD, sprintf('PhysIOToolbox_r%s_examples.zip', srev));
 zip(zipF, exportD);
 
-copyfile(fullfile(currD, 'code'), fullfile(exportD, 'code'));
+copyfile(pathCode, fullfile(exportD, 'code'));
 
 % copy and zip all
 switch zipWhat
     case 'all'
-        zipF = fullfile(currD, sprintf('PhysIOToolbox_r%s_all.zip', srev));
+        zipF = fullfile(currD, sprintf('PhysIOToolbox_%s_all.zip', srev));
         zip(zipF, exportD);
     case 'withoutSiemensTics'
         fileArraySiemensTics = {
@@ -115,7 +123,7 @@ for iExample = 1:nExamples
     end
 end
 
-zipF = fullfile(currD, sprintf('PhysIOToolbox_r%s_code_examples_wo_data.zip', srev));
+zipF = fullfile(currD, sprintf('PhysIOToolbox_%s_code_examples_wo_data.zip', srev));
 zip(zipF, exportD);
 
 
@@ -123,8 +131,8 @@ zip(zipF, exportD);
 rmdir(fullfile(exportD, 'examples'),'s');
 rmdir(fullfile(exportD, 'manual'),'s')
 mkdir(exportD, 'manual');
-copyfile(fullfile(currD, 'manual/QuickStart*.pdf'), fullfile(exportD, 'manual'));
+copyfile(fullfile(pathManual, 'QuickStart*.pdf'), fullfile(exportD, 'manual'));
 
-zipF = fullfile(currD, sprintf('PhysIOToolbox_r%s_code.zip', srev));
+zipF = fullfile(currD, sprintf('PhysIOToolbox_%s_code.zip', srev));
 zip(zipF, exportD);
 

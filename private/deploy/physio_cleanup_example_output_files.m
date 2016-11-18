@@ -25,21 +25,21 @@ function physio_cleanup_example_output_files()
 % $Id$
 
 currD = fileparts(mfilename('fullpath'));
-pfxD = {'code'; 'manual';'examples/GE';'examples/Philips'; 'examples/Siemens'};
+pathRepoRoot = fullfile(currD, '..','..');
+pfxD = {'public/code'; 'public/manual';'private/examples/GE';'private/examples/Philips'; 'private/examples/Siemens'};
 
 for iPfx = 1:length(pfxD)
-    ds = dir(fullfile(currD, pfxD{iPfx}));
+    ds = dir(fullfile(pathRepoRoot, pfxD{iPfx}));
     ds(2) = [];
     
     warning('off', 'MATLAB:DELETE:FileNotFound');
         
     for n = 1:length(ds);
         if ds(n).isdir
-            d = fullfile(currD,pfxD{iPfx},ds(n).name);
+            d = fullfile(pathRepoRoot,pfxD{iPfx},ds(n).name);
             disp(['Deleting output files in ' d]);
             delete(fullfile(d, 'multiple_regressors.*'));
             delete(fullfile(d, 'physio.mat'));
-            %delete(fullfile(d, 'PhysIO_output*'));
             delete(fullfile(d, '*.asv'));
             delete(fullfile(d, 'physio*.ps'));
             delete(fullfile(d, 'physio*.tif*'));
