@@ -94,5 +94,8 @@ if t(1) > 0
     if ~isempty(log_files.respiration)
         r = [zeros(nPrependSamples,1);r];
     end
+    if ~isempty(acq_codes)
+        acq_codes = [zeros(nPrependSamples,1);acq_codes];
+    end
 end
 end
