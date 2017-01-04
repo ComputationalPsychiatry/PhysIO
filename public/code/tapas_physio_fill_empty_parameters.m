@@ -46,7 +46,13 @@ end
 if isempty(physio.log_files.sampling_interval)
     switch lower(physio.log_files.vendor)
         case 'philips'
-            physio.log_files.sampling_interval = 2e-3;
+            isWifi      = regexpi(physio.preproc.cardiac.modality, '_wifi');
+            % different sampling interval for Wifi devices
+            if isWifi
+                physio.log_files.sampling_interval = 1/496;
+            else
+                physio.log_files.sampling_interval = 1/500;
+            end
         case 'ge'
             physio.log_files.sampling_interval = 25e-3;
         case {'biopac_mat', 'siemens'} % will be read from file later
