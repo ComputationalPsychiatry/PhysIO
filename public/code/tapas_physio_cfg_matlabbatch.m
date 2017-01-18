@@ -69,7 +69,7 @@ vendor.help   = {' vendor                Name depending on your MR Scanner syste
     ' NOTE: the sampling interval has to be specified for these files as'
     ' well (s.b.)'
     };
-vendor.labels = {'Philips', 'GE', 'Siemens', 'Siemens_Tics', 'Biopac_Mat', 'Custom'};
+vendor.labels = {'Philips', 'GE', 'Siemens (VB, *.puls/*.ecg/*.resp)', 'Siemens_Tics (VD: *_PULS.log/*_ECG1.log/*_RESP.log/*_AcquisitionInfo*.log)', 'Biopac_Mat', 'Custom'};
 vendor.values = {'Philips', 'GE', 'Siemens', 'Siemens_Tics', 'Biopac_Mat', 'Custom'};
 vendor.val    = {'Philips'};
 
