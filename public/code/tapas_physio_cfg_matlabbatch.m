@@ -1215,10 +1215,12 @@ movement_outlier_translation_mm.name    = 'Outlier Translation Threshold (mm)';
 movement_outlier_translation_mm.help    = {
    'Threshold, above which a stick regressor is created for ' 
    'corresponding volume of exceeding shift'
+   ''
+   'Set to Inf to switch off regressor creation'
    };
 movement_outlier_translation_mm.strtype = 'e';
 movement_outlier_translation_mm.num     = [1 1];
-movement_outlier_translation_mm.val     = {1};
+movement_outlier_translation_mm.val     = {Inf};
 
 
 %--------------------------------------------------------------------------
@@ -1231,10 +1233,12 @@ movement_outlier_rotation_deg.name    = 'Outlier Rotation Threshold (degrees)';
 movement_outlier_rotation_deg.help    = {
    'Threshold, above which a stick regressor is created for '
    'corresponding volume of exceeding rotational movement'
+   ''
+   'Set to Inf to switch off regressor creation'
    };
 movement_outlier_rotation_deg.strtype = 'e';
 movement_outlier_rotation_deg.num     = [1 1];
-movement_outlier_rotation_deg.val     = {1};
+movement_outlier_rotation_deg.val     = {Inf};
 
 
 %--------------------------------------------------------------------------
