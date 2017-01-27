@@ -9,9 +9,9 @@ function physio_zip2ship(rev, zipWhat)
 %   zipWhat  determines which part of the code will be zipped
 %           'withSiemensTics'       copy proprietary specs of Siemens Tics
 %                                   logfiles as well
-%           'withoutSiemensTics'    (default)
-%                                   do not copy Siemens tics code
+%           'withoutSiemensTics'    do not copy Siemens tics code                                  
 %           'all'                   one big file with code and examples
+%                                   (default)
 % OUT
 %   PhysIOToolbox_r<rev>_code.zip
 %   PhysIOToolbox_r<rev>_examples.zip
