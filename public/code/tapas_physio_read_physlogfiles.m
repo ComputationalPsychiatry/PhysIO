@@ -64,7 +64,7 @@ switch lower(log_files.vendor)
             tapas_physio_read_physlogfiles_GE(log_files, verbose);
         acq_codes = [];
     case 'siemens'
-       [c, r, t, cpulse, verbose] = ...
+        [c, r, t, cpulse, verbose] = ...
             tapas_physio_read_physlogfiles_siemens(log_files, verbose);
         acq_codes = [];
     case 'siemens_tics'
@@ -80,9 +80,12 @@ switch lower(log_files.vendor)
         acq_codes = [];
 end
 
+% Do not prepend for Siemens Tics, since can be as long as a day
+isSiemensTics = strcmpi(log_files.vendor, 'siemens_tics');
+
 % prepend all data with zeros for better processing, if scan starts before
 % physiological data
-if t(1) > 0
+if t(1) > 0 && ~isSiemensTics
     dt = t(2) - t(1);
     nPrependSamples = ceil(t(1)/dt);
     t = [(0:nPrependSamples-1)'*dt;t];
