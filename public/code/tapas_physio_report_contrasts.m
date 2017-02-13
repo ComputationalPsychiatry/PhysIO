@@ -18,7 +18,12 @@ function varargout = tapas_physio_report_contrasts(varargin)
 %
 %   Required parameters:
 %
-%                  fileReport: post-script file to print results to
+%                  fileReport: sets the path and file name for the postscript 
+%                              file your contrast report is printed to. 
+%                              A reasonable (and default) location is the 
+%                              single subject analysis folder so the file 
+%                              resides with the GLM (fileSPM)
+%                              default: 'pathSpm/physio_report_contrasts.ps';
 %              fileStructural: structural underlay for results,
 %                              e.g. 'mean.nii'
 %                     fileSpm: SPM.mat holding physiological regressors,
