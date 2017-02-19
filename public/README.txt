@@ -117,12 +117,18 @@ DOWNLOADS & RELEASE INFORMATION
 
 - Current Release: 
 
-PhysIO_Toolbox_16 (Code | Examples)
-November 07, 2016
+PhysIO_Toolbox_R2017.1
 
-revision: $Rev$
+February 19, 2017
 
-Major Release Notes (r904):
+Minor Release Notes (R2017.1)
+* Substantially improved Siemens interface, both for VB/VD and 3T/7T releases
+** several bugfixes
+** based on extensive user feedback from Berlin and Brisbane
+* New functionality tapas_physio_overlay_contrasts.m to display non-physio 
+  contrasts automatically as well
+
+Major Release Notes (r904 / R2016.1):
 - Software version for accepted PhysIO Toolbox Paper: doi:10.1016/j.jneumeth.2016.10.019
 - Tested and expanded versions of examples
 - Improved stability by bugfixes and compatibility to Matlab R2016
