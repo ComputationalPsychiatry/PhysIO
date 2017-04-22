@@ -69,9 +69,7 @@ warning off tapas_physio_findpeaks:largeMinPeakHeight
 warning on tapas_physio_findpeaks:largeMinPeakHeight
 
 % plus gains refer to max-changes in the future
-
-
-    idxGainPlus     = idxGainPlus + n;
+idxGainPlus     = idxGainPlus + n;
 % + 1 because of diff
 idxGainMinus    = idxGainMinus + 1;
 
