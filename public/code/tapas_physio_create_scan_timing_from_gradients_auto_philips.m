@@ -254,10 +254,10 @@ if verbose.level>=1
 end
 
 if debug
-    %     verbose.fig_handles(end+1) = plot_slice_events( LOCS, t, ...
-    %         gradient_choice, templateGradientSlice, secondGuessLOCS);
-    %
-    %     plot_diff_LOCS(t, LOCS, dt)
+    verbose.fig_handles(end+1) = plot_slice_events( LOCS, t, ...
+        gradient_choice, templateGradientSlice, secondGuessLOCS);
+    
+    plot_diff_LOCS(t, LOCS, dt)
 end
 
 
@@ -300,7 +300,8 @@ end
 % remove erroneous volume events, i.e. those due to slice gaps that are
 % assumed to be volume end gaps, and create new volumes with not enough
 % slices
-minVolumeDistanceSamplesError = ceil((1-1/sqpar.Nslices) * sqpar.TR/dt);
+nDeltaSlicesAllowed = 2;
+minVolumeDistanceSamplesError = ceil((1-nDeltaSlicesAllowed/sqpar.Nslices) * sqpar.TR/dt);
 idxVolError = find(diff(VOLLOCS) < minVolumeDistanceSamplesError);
 if ~isempty(idxVolError)
     VOLLOCS(idxVolError(2:2:end)) = [];
