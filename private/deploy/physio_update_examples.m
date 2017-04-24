@@ -1,6 +1,6 @@
 function dirExamples = physio_update_examples()
-% Copies current tapas_physio_examples (_spm_job.m) to example folder, remove absolute
-% paths, create _spm_job.mat and _matlab_script from it
+% Copies current tapas_physio_examples from code-folder (_spm_job.m) 
+% to example folder, remove absolute paths, create _spm_job.mat and _matlab_script from it
 %
 %   dirExamples = physio_update_examples()
 %
@@ -43,6 +43,7 @@ pfxExample = 'tapas_physio_example_';
 
 dirExamples = {
     'Philips/ECG3T'
+    'Philips/ECG3T_V2'
     'Philips/ECG7T'
     'GE/PPU3T'
     'Siemens/ECG3T'

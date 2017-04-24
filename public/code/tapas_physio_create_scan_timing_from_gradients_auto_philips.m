@@ -23,6 +23,7 @@ function [VOLLOCS, LOCS, verbose] = ...
 %   3. Determine slice events between all detected volumes
 %       (again, creating a slice template and matching it to time series
 %       between consecutive volumes...)
+%   4. Correction for incomplete volumes (not enough slices/volume)
 %
 % IN
 %   log_files   is a structure containing the following filenames (with full

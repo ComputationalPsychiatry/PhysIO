@@ -11,7 +11,7 @@ function physio_zip2ship(rev, zipWhat)
 %                                   logfiles as well
 %           'withoutSiemensTics'    do not copy Siemens tics code                                  
 %           'all'                   one big file with code and examples
-%                                   (default)
+%                                   
 % OUT
 %   PhysIOToolbox_r<rev>_code.zip
 %   PhysIOToolbox_r<rev>_examples.zip
@@ -35,7 +35,19 @@ function physio_zip2ship(rev, zipWhat)
 % $Id$
 
 if ~nargin
-    srev = datestr(now, 'yyyy_mm_dd_HHMMSS'); %TODO: somehow parse physio_new to get a better way to detect revision
+    srev = datestr(now, 'yyyy_mm_dd_HHMMSS');
+    
+    try %check out revision commit from git
+        pathNow = pwd;
+        pathRepo = fullfile(fileparts(mfilename('fullpath')), '..', '..');
+        cd(pathRepo);
+        
+        [~,stringCommit] = system(sprintf('git log| head -1'));
+        % have to shorten commit id so that dir name is not too long for
+        % matlab :-(
+        srev = [srev '_' regexprep(stringCommit(1:15), ' ', '_')];
+        cd(pathNow);
+    end
 else
     if ~ischar(rev)
         srev = sprintf('r%d', rev');
@@ -45,7 +57,7 @@ else
 end
 
 if nargin < 2
-    zipWhat = 'all';
+    zipWhat = 'code';
 end
 
 % delete created output files, e.g. physio.mat, multiple_regressors.txt
@@ -68,6 +80,7 @@ copyfile(fullfile(pathRepoRoot, 'public', 'README.txt'), exportD);
 dirExamples = {
     'GE/PPU3T'
     'Philips/ECG3T'
+    'Philips/ECG3T_V2'
     'Philips/ECG7T'
     'Philips/PPU3T'
     'Siemens/ECG3T'
