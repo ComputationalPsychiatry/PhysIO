@@ -1,4 +1,4 @@
-DOWNLOADS & RELEASE INFORMATION
+RELEASE INFORMATION
 ===============================
 
 Current Release
