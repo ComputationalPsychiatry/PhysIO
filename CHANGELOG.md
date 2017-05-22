@@ -9,12 +9,12 @@ PhysIO_Toolbox_R2017.1
 February 19, 2017
 
 Minor Release Notes (R2017.1)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-----------------------------
 
-* Substantially improved Siemens interface, both for VB/VD and 3T/7T releases
-** several bugfixes
-** based on extensive user feedback from Berlin and Brisbane
-* New functionality tapas_physio_overlay_contrasts.m to display non-physio 
+- Substantially improved Siemens interface, both for VB/VD and 3T/7T releases
+    - several bugfixes
+    - based on extensive user feedback from Berlin and Brisbane
+- New functionality tapas_physio_overlay_contrasts.m to display non-physio 
   contrasts automatically as well
 
 Major Release Notes (r904 / R2016.1)
@@ -42,7 +42,7 @@ Major Release Notes (r835)
 - Visualisation improvement (color schemes, legends)
 
 Minor Release Notes (r666)
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+--------------------------
 
 - Compatibility tested for SPM12, small bugfixes Batch Dependencies
 - Cleaner Batch Interface with grouped sub-menus (cfg_choice)
@@ -80,7 +80,7 @@ Major Release Notes (r429)
 - more informative plots and commenting (especially in tapas_physio_new).
 
 Minor Release Notes (r354)
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+--------------------------
 
 - computation of heart and breathing rate in Philips/PPU/main_PPU.m
 - prefix of functions with tapas_*
