@@ -1,3 +1,4 @@
 [submodule "wikidocs"]
 	path = wikidocs
 	url = ../physio-public.wiki.git
+	branch = master
