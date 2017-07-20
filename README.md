@@ -134,11 +134,16 @@ Features of this Toolbox
 The toolbox is dedicated to seamless integration into a clinical research s
 etting and therefore offers correction methods to recover physiological 
 data from imperfect peripheral measures.
-- General Electric logfiles
-- Siemens logfiles (synchronization via DICOM time stamp or tics time scale)
-- Philips SCANPHYSLOG-file handling, including automatic alignment of scan volume timing and physiological time series 
-  from logged gradient timecourses
-- BioPac .mat-files
+
+- General Electric
+- Philips SCANPHYSLOG files (all versions from release 2.6 to 5.3)
+- Siemens VB (files `.ecg`, `.resp`, `.puls`
+- Siemens VD (files (`*_ECG.log`, `*_RESP.log`, `*_PULS.log`)
+- Biopac .mat-export
+    - assuming the following variables (as columns): `data`, `isi`, `isi_units`, `labels`, `start_sample`, `units`
+    - See `tapas_physio_read_physlogfiles_biopac_mat.m` for details
+- Custom logfiles: should contain one amplitude value per line, one logfile per device. Sampling interval(s) are provided as a separate parameter to the toolbox.
+
 
 
 Compatibility and Support
