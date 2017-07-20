@@ -48,7 +48,7 @@ vendor.help   = {' vendor                Name depending on your MR Scanner syste
     '                       extra acquisition (scan_timing) logfile with'
     '                       time stamps of all volumes and slices'
     '                       ''Biopac_Mat'' - exported mat files from Biopac system'
-    '                       ''BrainProducts'' - .eeg files from Biopac system'
+    '                       ''BrainProducts'' - .eeg files from BrainProducts EEG system'
     ' '
     '                       or'
     '                       ''Custom'''
