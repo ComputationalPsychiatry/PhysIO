@@ -181,21 +181,19 @@ Send bug reports and suggestions to our mailing list: tapas@sympa.ethz.ch
 References
 ----------
 
-1. Glover, G.H., Li, T.Q. & Ress, D. Image-­‐based method for retrospective correction
-of PhysIOlogical motion effects in fMRI: RETROICOR. Magn Reson Med 44, 162-­‐
-7 (2000).
+### Main Toolbox Reference ###
+1. Kasper, L., Bollmann, S., Diaconescu, A.O., Hutton, C., Heinzle, J., Iglesias, S., Hauser, T.U., Sebold, M., Manjaly, Z.-M., Pruessmann, K.P., Stephan, K.E., 2017. The PhysIO Toolbox for Modeling Physiological Noise in fMRI Data. Journal of Neuroscience Methods 276, 56–72. doi:10.1016/j.jneumeth.2016.10.019
 
-2. Hutton, C. et al. The impact of PhysIOlogical noise correction on fMRI at 7 T.
-NeuroImage 57, 101-­‐112 (2011).
+### Related Papers (Implemented noise correction algorithms) ###
+2. Glover, G.H., Li, T.Q. & Ress, D. Image‐based method for retrospective correction
+of PhysIOlogical motion effects in fMRI: RETROICOR. Magn Reson Med 44, 162-7 (2000).
 
-3. Harvey, A.K. et al. Brainstem functional magnetic resonance imaging:
+3. Hutton, C. et al. The impact of PhysIOlogical noise correction on fMRI at 7 T.
+NeuroImage 57, 101‐112 (2011).
+
+4. Harvey, A.K. et al. Brainstem functional magnetic resonance imaging:
 Disentangling signal from PhysIOlogical noise. Journal of Magnetic Resonance
-Imaging 28, 1337-­‐1344 (2008).
-
-4. Kasper, L., Bollmann, S., Diaconescu, A.O., Hutton, C., Heinzle, J., Iglesias, S.,
-Hauser, T.U., Sebold, M., Manjaly, Z.-M., Pruessmann, K.P., Stephan, K.E., 2016.
-The PhysIO Toolbox for Modeling PhysIOlogical Noise in fMRI Data. Journal of
-Neuroscience Methods accepted. doi:10.1016/j.jneumeth.2016.10.019
+Imaging 28, 1337‐1344 (2008).
 
 5. Behzadi, Y., Restom, K., Liau, J., Liu, T.T., 2007. A component based noise
 correction method (CompCor) for BOLD and perfusion based fMRI. NeuroImage 37,
