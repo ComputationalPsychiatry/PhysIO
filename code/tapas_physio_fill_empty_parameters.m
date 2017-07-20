@@ -55,7 +55,7 @@ if isempty(physio.log_files.sampling_interval)
             end
         case 'ge'
             physio.log_files.sampling_interval = 25e-3;
-        case {'biopac_mat', 'siemens', 'siemens_tics'} % will be read from file later
+        case {'biopac_mat', 'siemens', 'siemens_tics', 'brainproducts'} % will be read from file later
             physio.log_files.sampling_interval = [];
         otherwise % e.g. custom
             error('Please specify sampling interval for custom text data');
