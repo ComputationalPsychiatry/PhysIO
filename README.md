@@ -89,7 +89,7 @@ and recover imperfect measures (e.g. distorted R-peaks of the ECG).
 
 Facts about physiological noise in fMRI:
 - Physiological noise can explain 20-60 % of variance in fMRI voxel time 
-  series (Birn2006, Hutton2011, Harvey2008.
+  series (Birn2006, Hutton2011, Harvey2008)
     - Physiological noise affects a lot of brain regions (s. figure, e.g. 
       brainstem or OFC), especially next to CSF, arteries (Hutton2011). 
     - If not accounted for, this is a key factor limiting sensitivity for effects of interest.
@@ -120,14 +120,20 @@ Features of this Toolbox
 
 - Modeling physiological noise regressors from peripheral data 
   (breathing belt, ECG, pulse oximeter) 
-- State of the art RETROICOR cardiac and respiratory phase expansion
-- Cardiac response function (Chang et al, 2009) and respiratory response 
-  function (Birn et al. 2006) modelling of heart-rate variability and 
-  respiratory volume  per time influence on physiological noise
-- Flexible expansion orders to model different contributions of cardiac, 
-  respiratory and interaction terms (see Harvey2008, Hutton2011)
+    - State of the art RETROICOR cardiac and respiratory phase expansion
+    - Cardiac response function (Chang et al, 2009) and respiratory response 
+      function (Birn et al. 2006) modelling of heart-rate variability and 
+      respiratory volume  per time influence on physiological noise
+    - Flexible expansion orders to model different contributions of cardiac, 
+      respiratory and interaction terms (see Harvey2008, Hutton2011)
+- Data-driven noise regressors
+    - PCA extraction from nuisance ROIs (CSF, white matter), similar to aCompCor (Behzadi2007)
+
+### Automatization and Performance Assessment ###
 - Automatic creation of nuisance regressors, full integration into standard 
   GLMs, tested for SPM8/12 ("multiple_regressors.mat")
+- Integration in SPM Batch Editor: GUI for parameter input, dependencies to integrate physiological noise correction in preprocessing pipeline
+- Performance Assessment: Automatic F-contrast and tSNR Map creation and display for groups of physiological noise regressors, using SPM GLM tools
 
 ### Flexible Read-in ###
 
@@ -160,22 +166,30 @@ Compatibility and Support
     - Nuisance regressors for mass-univariate statistical analysis with SPM5,8,12
       or as text file for export to any other package
     - raw and processed physiological logfile data
-- Part of the TNU Software Edition: long term support and ongoing development
+- Part of the TAPAS Software Collection of the Translational Neuromodeling Unit (TNU) Zurich:long term support and ongoing development
 
 
 Contributors
 ------------
 
-- Lead Programmer: Lars Kasper, TNU & MR-Technology Group, IBT, University & ETH Zurich
-- Project Team: Steffen Bollmann, Children's Hospital Zurich & ETH Zurich
+- Lead Programmer: 
+    - Lars Kasper, TNU & MR-Technology Group, IBT, University of Zurich & ETH Zurich
+- Project Team: 
+    - Steffen Bollmann, Centre for Advanced Imaging, University of Queensland, Australia
+    - Saskia Bollmann, Centre for Advanced Imaging, University of Queensland, Australia
 - Contributors:
-    - Jakob Heinzle, TNU Zurich
     - Eduardo Aponte, TNU Zurich
+    - Tobias U. Hauser, FIL London, UK
+    - Jakob Heinzle, TNU Zurich
+    - Chloe Hutton, FIL London, UK (previously)
+    - Miriam Sebold, Charite Berlin, Germany
 
 
 Contact
 -------
-Send bug reports and suggestions to our mailing list: tapas@sympa.ethz.ch
+Send bug reports and suggestions either to 
+1) our mailing list: tapas@sympa.ethz.ch, or
+2) as an issue on our TAPAS github account : https://github.com/translationalneuromodeling/tapas/issues
 
 
 References
