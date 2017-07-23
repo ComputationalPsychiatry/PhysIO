@@ -850,7 +850,7 @@ You can find them in <code>physio/docs</code>.</p>
 <p class="page" id="README"></p><h1>Readme</h1>
 <h1 id="tapas-physio-toolbox-version-2017">TAPAS PhysIO Toolbox Version 2017</h1>
 <blockquote>
-<p>Copyright (C) 2012-2017 Lars Kasper <a href="#x6d97105108x74111x3ax6bx61x73112101114x40x62105111x6dx65x64x2e101x6546x65116104x7a46x63104">&#x6b;&#x61;&#x73;&#112;&#101;&#114;&#x40;&#x62;&#105;&#111;&#x6d;&#x65;&#x64;&#x2e;&#101;&#x65;&#46;&#x65;&#116;&#104;&#x7a;&#46;&#x63;&#104;</a></p>
+<p>Copyright (C) 2012-2017 Lars Kasper <a href="#10997x69x6cx74111x3a10797115112x65114x4098x69111x6dx65100x2ex65x65x2ex65x74104x7a46x63x68">&#107;&#97;&#115;&#112;&#x65;&#114;&#x40;&#98;&#x69;&#111;&#x6d;&#x65;&#100;&#x2e;&#x65;&#x65;&#x2e;&#x65;&#x74;&#104;&#x7a;&#46;&#x63;&#x68;</a></p>
 <p>Translational Neuromodeling Unit (TNU)</p>
 <p>Institute for Biomedical Engineering</p>
 <p>University of Zurich and ETH Zurich</p>
@@ -890,11 +890,11 @@ and outputs nuisance regressor files directly suitable for SPM
 </ul>
 <h2 id="getting-started">Getting Started</h2>
 <p>Run <code>example_main_ECG3T.m</code> in subdirectory <code>Philips/ECG3T</code> of the toolbox example repository <code>physio-examples</code>.
-See subdirectory <code>physio/wikidocs</code> and next section of this document.</p>
+See subdirectory <code>physio/docs</code> and next section of this document.</p>
 <h2 id="getting-help-documentation">Getting Help/Documentation</h2>
 <p>Several documentation files are provided with this toolbox. They have the extension .md (markdown), i.e. are plain text files, but can be conveniently viewed online as the github/gitlab Wiki.
-You can find them in <code>physio/wikidocs</code>.</p>
-<p>Alternatively, a pdf converted version of the following files is found in <code>physio/wikidocs/pdf</code></p>
+You can find them in <code>physio/docs</code>.</p>
+<p>Alternatively, a pdf converted version of the following files is found in <code>physio/docs/pdf</code></p>
 <p>List of Documentation files:</p>
 <ul>
 <li>README.md: this file, purpose, installation, getting started, pointer to more help</li>
@@ -1145,7 +1145,7 @@ imaging analyses produced by censoring high-motion data points. Hum. Brain Mapp.
 </li>
 <li>Reference Manual (for developers)</li>
 </ul>
-<h2 id="5-i-am-using-fsl-afni-brainvoyager-etc-for-my-fmri-analyses-do-i-need-spm-for-physio-to-work-">5. I am using FSL, AFNI, BrainVoyager, etc., for my fMRI Analyses. Do I need SPM for PhysIO to work?</h2>
+<h2 id="5-i-am-using-fsl-afni-brainvoyager-etc-for-my-fmri-analyses-do-i-need-spm-for-physio-to-work-">5. I am using FSL, AFNI, BrainVoyager, etc., for my fMRI analyses. Do I need SPM for PhysIO to work?</h2>
 <p>No, the basic functionality of PhysIO, i.e. creating nuisance regressors for your GLM analysis, is available in plain Matlab. The following extra functionality related to automatizing and assessing noise correction, require the installation of SPM:</p>
 <ul>
 <li>GUI (SPM Batch Editor)</li>
@@ -1168,7 +1168,7 @@ imaging analyses produced by censoring high-motion data points. Hum. Brain Mapp.
 </ul>
 <p>Furthermore, physiological recordings can be entered via a <em>custom</em> data format, i.e., providing one text file per device. The files should contain one amplitude value per line. The corresponding sampling interval(s) are provided as a separate parameter in the toolbox.</p>
 <p>If your favourite logfile format is not supported, please contact the developers. We try everything to accomodate the read-in flexibility of the toolbox to your needs.</p>
-<h2 id="7-i-am-running-the-toolbox-for-a-lot-of-subject-on-a-remote-server-without-graphics-can-i-somehow-reproduce-the-output-figures-relevant-to-assess-the-data-quality-">7. I am running the toolbox for a lot of subject / on a remote server without graphics. Can I somehow reproduce the output figures relevant to assess the data quality?</h2>
+<h2 id="7-i-am-running-the-toolbox-for-a-lot-of-subjects-on-a-remote-server-without-graphics-can-i-somehow-reproduce-the-output-figures-relevant-to-assess-the-data-quality-">7. I am running the toolbox for a lot of subjects / on a remote server without graphics. Can I somehow reproduce the output figures relevant to assess the data quality?</h2>
 <p>Yes you can, using the toolbox function <code>tapas_physio_review</code>. This function takes the physio-structure as an input argument, which is per default saved as <code>physio.mat</code> in the specified output folder of your batch job.</p>
 <h2 id="8-how-do-i-interpret-the-various-output-plots-of-the-toolbox-">8. How do I interpret the various output plots of the toolbox?</h2>
 <p>Have a look at our publication: <em>The PhysIO Toolbox for Modeling Physiological Noise in fMRI Data</em> (<a href="http://dx.doi.org/10.1016/j.jneumeth.2016.10.019">http://dx.doi.org/10.1016/j.jneumeth.2016.10.019</a>)</p>
