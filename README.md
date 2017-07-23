@@ -55,16 +55,16 @@ Getting Started
 ---------------
 
 Run `example_main_ECG3T.m` in subdirectory `Philips/ECG3T` of the toolbox example repository `physio-examples`.
-See subdirectory `physio/wikidocs` and next section of this document.
+See subdirectory `physio/docs` and next section of this document.
 
 
 Getting Help/Documentation
 --------------------------
 
 Several documentation files are provided with this toolbox. They have the extension .md (markdown), i.e. are plain text files, but can be conveniently viewed online as the github/gitlab Wiki.
-You can find them in `physio/wikidocs`.
+You can find them in `physio/docs`.
 
-Alternatively, a pdf converted version of the following files is found in `physio/wikidocs/pdf`
+Alternatively, a pdf converted version of the following files is found in `physio/docs/pdf`
 
 List of Documentation files:
 - README.md: this file, purpose, installation, getting started, pointer to more help
