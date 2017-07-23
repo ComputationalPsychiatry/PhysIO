@@ -62,9 +62,9 @@ Getting Help/Documentation
 --------------------------
 
 Several documentation files are provided with this toolbox. They have the extension .md (markdown), i.e. are plain text files, but can be conveniently viewed online as the github/gitlab Wiki.
-You can find them in `physio/docs`.
+You can find them in `physio/wikidocs`.
 
-Alternatively, a pdf converted version of the following files is found in `physio/docs/pdf`
+Alternatively, a pdf converted version of the following files is found in `physio/docs/documentation.pdf`
 
 List of Documentation files:
 - README.md: this file, purpose, installation, getting started, pointer to more help
