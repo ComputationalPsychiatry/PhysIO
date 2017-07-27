@@ -43,6 +43,11 @@ if isempty(physio.log_files.scan_timing)
     physio.log_files.scan_timing = {''};
 end
 
+if strcmpi(physio.preproc.cardiac.initial_cpulse_select.method, 'auto_matched') && ...
+    isempty(physio.preproc.cardiac.initial_cpulse_select.min)
+    physio.preproc.cardiac.initial_cpulse_select.min = 0.4;
+end
+
 if isempty(physio.log_files.sampling_interval)
     switch lower(physio.log_files.vendor)
         case 'philips'
