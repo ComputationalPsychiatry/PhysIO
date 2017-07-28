@@ -64,14 +64,15 @@ Getting Help/Documentation
 Several documentation files are provided with this toolbox. They have the extension .md (markdown), i.e. are plain text files, but can be conveniently viewed online as the github/gitlab Wiki.
 You can find them in `physio/wikidocs`.
 
-Alternatively, a pdf converted version of the following files is found in `physio/docs/documentation.pdf`
+Alternatively, a pdf and html converted version of the following files is found in `physio/docs/documentation.pdf (or .html)`
 
 List of Documentation files:
 - README.md: this file, purpose, installation, getting started, pointer to more help
 - FAQ.md: Frequently asked questions (for users)
 - QUICKSTART.md: Example script and how to use on test data, Intro to Batch Editor GUI
 - MANUAL.md: Reference Manual (mostly for developers) listing all functions, and rationales of the toolbox, disecting its modular structure
-- WIKIMAIN.md: Landing Page of Wiki. Navigation to all other files and this explanation
+    - not provided yet; see the old version in `physio/docs/QuickStart_PhysIO_Toolbox.pdf` for source code documentation
+- HOME.md: Landing Page of Wiki. Navigation to all other files and this explanation
 - EXAMPLES.md: List and explanation of all examples
 - CHANGELOG.md: List of all toolbox versions and the respective release notes, i.e. major changes in functionality, bugfixes etc.
 
