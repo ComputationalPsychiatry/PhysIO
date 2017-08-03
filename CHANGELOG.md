@@ -4,9 +4,17 @@ RELEASE INFORMATION
 Current Release
 ---------------
 
-PhysIO_Toolbox_R2017.1
+PhysIO_Toolbox_R2017.2
 
-February 19, 2017
+August 03, 2017
+
+Minor Release Notes (R2017.2)
+-----------------------------
+
+- Included Markdown-based documentation via Wiki (also CITATION, LICENSE, CHANGELOG.md)
+- Included FAQ in Wiki
+- Bugfix and Typo correction
+- Philips SCANPYHSLOG for their software release 5.1.7.
 
 Minor Release Notes (R2017.1)
 -----------------------------
