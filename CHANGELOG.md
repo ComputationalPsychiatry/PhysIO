@@ -13,6 +13,7 @@ Minor Release Notes (R2017.2)
 
 - Included Markdown-based documentation via Wiki (also CITATION, LICENSE, CHANGELOG.md)
 - Included FAQ in Wiki
+- Split git repositories into public, dev, examples, and added wiki, to disentangle development from deployed toolbox code and data
 - Bugfix and Typo correction
 - Philips SCANPYHSLOG for their software release 5.1.7.
 
