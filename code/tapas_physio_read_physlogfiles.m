@@ -75,7 +75,8 @@ switch lower(log_files.vendor)
             tapas_physio_read_physlogfiles_philips(log_files, cardiac_modality);
     case 'siemens'
         [c, r, t, cpulse, verbose] = ...
-            tapas_physio_read_physlogfiles_siemens(log_files, verbose);
+            tapas_physio_read_physlogfiles_siemens(log_files, verbose,...
+            'cardiacModality', cardiac_modality);
         acq_codes = [];
     case 'siemens_tics'
         [c, r, t, cpulse, verbose] = ...

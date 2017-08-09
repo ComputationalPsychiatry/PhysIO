@@ -50,11 +50,19 @@ end
 DEBUG = verbose.level >=2;
 
 % process optional input parameters and overwrite defaults
-defaults.ecgChannel         = 'mean'; % 'mean'; 'v1'; 'v2'
 defaults.endCropSeconds     = 1;
+defaults.cardiacModality    = 'ECG';
 
 args                = tapas_physio_propval(varargin, defaults);
 tapas_physio_strip_fields(args);
+
+% used channel depends on cadiac modality
+switch cardiacModality
+    case 'PPU'
+        ecgChannel = 'v1'; %'mean'; 'v1'; 'v2'
+    case 'ECG'
+        ecgChannel = 'mean';
+end
 
 cpulse              = [];
 
@@ -119,7 +127,7 @@ if hasCardiacData
     relative_start_acquisition = relative_start_acquisition + ...
         log_files.relative_start_acquisition;
     
-    data_table = tapas_physio_siemens_line2table(lineData);
+    data_table = tapas_physio_siemens_line2table(lineData, cardiacModality);
     
     if isempty(dt)
         nSamplesC = size(data_table,1);
@@ -174,7 +182,7 @@ if hasRespData
         %     tStopScan = logFooter.ScanStopTimeSeconds;
         tStartScan = logFooter.LogStartTimeSeconds;
         tStopScan = logFooter.LogStopTimeSeconds;
-      end
+    end
     
     switch log_files.align_scan
         case 'first'
@@ -190,7 +198,7 @@ if hasRespData
     relative_start_acquisition = relative_start_acquisition + ...
         log_files.relative_start_acquisition;
     
-    data_table = tapas_physio_siemens_line2table(lineData);
+    data_table = tapas_physio_siemens_line2table(lineData, 'RESP');
     
     if isempty(dt)
         nSamplesR = size(data_table,1);
