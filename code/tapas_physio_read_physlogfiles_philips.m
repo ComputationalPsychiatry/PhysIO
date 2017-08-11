@@ -110,7 +110,7 @@ if hasCardiac
     
     if useDefaultEcgModality
         cardiacModalityArray = ...
-            {'ecg1_filtered', 'ecg2_filtered', 'ecg1_raw', 'ecg2_raw'};
+            {'ecg1_filtered', 'ecg2_filtered', 'ecg1_raw', 'ecg2_raw', 'ppu'};
     else
         cardiacModalityArray = {cardiac_modality};
     end
