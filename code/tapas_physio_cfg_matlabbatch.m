@@ -621,7 +621,7 @@ initial_cpulse_select_method_load_from_logfile.help = { ...
 initial_cpulse_select      = cfg_choice;
 initial_cpulse_select.tag  = 'initial_cpulse_select';
 initial_cpulse_select.name = 'Initial Detection of Heartbeats';
-initial_cpulse_select.val  = {initial_cpulse_select_method_load_from_logfile};
+initial_cpulse_select.val  = {initial_cpulse_select_method_auto_matched};
 initial_cpulse_select.values  = {
     initial_cpulse_select_method_auto_matched, ...
     initial_cpulse_select_method_auto_template, ...
@@ -1273,7 +1273,7 @@ movement_yes.help = {'Include Movement Model, as described in Friston et al., 19
 movement      = cfg_choice;
 movement.tag  = 'movement';
 movement.name = 'Movement';
-movement.val  = {movement_yes};
+movement.val  = {movement_no};
 movement.values  = {movement_no, movement_yes};
 movement.help = {'Movement Model, as described in Friston et al., 1996'};
 
