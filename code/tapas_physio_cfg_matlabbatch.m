@@ -353,7 +353,8 @@ vol_spacing.tag     = 'vol_spacing';
 vol_spacing.name    = 'vol_spacing';
 vol_spacing.help    = {'time (in seconds) between last slice of n-th volume'
     'and 1st slice of n+1-th volume(overrides .vol-threshold)'
-    'NOTE: Leave empty if .vol shall be used'};
+    'Optional parameter (leave empty if unused) - can be used if volume start indicated by longer delay between slices'
+    'Mutually exclusive with use of vol-parameter'};
 vol_spacing.strtype = 'e';
 vol_spacing.num     = [Inf Inf];
 vol_spacing.val     = {[]};
@@ -364,7 +365,9 @@ vol_spacing.val     = {[]};
 vol         = cfg_entry;
 vol.tag     = 'vol';
 vol.name    = 'vol';
-vol.help    = {'Gradient Amplitude Threshold for Start of new Volume'};
+vol.help    = {'Gradient Amplitude Threshold for Start of new Volume'
+    'Optional parameter (leave empty if unused) - can be used if volume start indicated by higher gradient amplitude'
+    'Mutually exclusive with use of vol_spacing-parameter'};
 vol.strtype = 'e';
 vol.num     = [Inf Inf];
 vol.val     = {[]};
@@ -378,7 +381,7 @@ slice.name    = 'slice';
 slice.help    = {'Gradient Amplitude Threshold for Start of new slice'};
 slice.strtype = 'e';
 slice.num     = [Inf Inf];
-slice.val     = {1800};
+slice.val     = {0.6};
 
 %--------------------------------------------------------------------------
 % zero
@@ -389,7 +392,7 @@ zero.name    = 'zero';
 zero.help    = {'Gradient Amplitude Threshold below which values will be set to 0.'};
 zero.strtype = 'e';
 zero.num     = [Inf Inf];
-zero.val     = {1700};
+zero.val     = {0.5};
 
 
 %--------------------------------------------------------------------------
