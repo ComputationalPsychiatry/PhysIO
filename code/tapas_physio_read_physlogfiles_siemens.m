@@ -1,5 +1,4 @@
-function [c, r, t, cpulse, verbose] = tapas_physio_read_physlogfiles_siemens(log_files, ...
-    verbose, varargin)
+function [c, r, t, cpulse, verbose] = tapas_physio_read_physlogfiles_siemens(log_files, cardiac_modality, verbose, varargin)
 % reads out physiological time series and timing vector for Siemens
 % logfiles of peripheral cardiac monitoring (ECG/Breathing Belt or
 % pulse oximetry)
@@ -44,25 +43,24 @@ function [c, r, t, cpulse, verbose] = tapas_physio_read_physlogfiles_siemens(log
 
 %% read out values
 
-if nargin < 2
+if nargin < 3
     verbose.level = 0;
 end
 DEBUG = verbose.level >=2;
 
 % process optional input parameters and overwrite defaults
 defaults.endCropSeconds     = 1;
-defaults.cardiacModality    = 'ECG';
+% used channel depends on cardiac modality
+switch cardiac_modality
+    case 'ECG'
+        defaults.ecgChannel = 'mean'; %'mean'; 'v1'; 'v2'
+    otherwise
+        defaults.ecgChannel = 'v1';
+end
 
-args                = tapas_physio_propval(varargin, defaults);
+args = tapas_physio_propval(varargin, defaults);
 tapas_physio_strip_fields(args);
 
-% used channel depends on cadiac modality
-switch cardiacModality
-    case 'PPU'
-        ecgChannel = 'v1'; %'mean'; 'v1'; 'v2'
-    case 'ECG'
-        ecgChannel = 'mean';
-end
 
 cpulse              = [];
 
@@ -127,7 +125,7 @@ if hasCardiacData
     relative_start_acquisition = relative_start_acquisition + ...
         log_files.relative_start_acquisition;
     
-    data_table = tapas_physio_siemens_line2table(lineData, cardiacModality);
+    data_table = tapas_physio_siemens_line2table(lineData, cardiac_modality);
     
     if isempty(dt)
         nSamplesC = size(data_table,1);
