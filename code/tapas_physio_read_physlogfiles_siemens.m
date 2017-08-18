@@ -52,10 +52,10 @@ DEBUG = verbose.level >=2;
 defaults.endCropSeconds     = 1;
 % used channel depends on cardiac modality
 switch cardiac_modality
-    case 'PPU'
-        defaults.ecgChannel = 'v1'; %'mean'; 'v1'; 'v2'
     case 'ECG'
         defaults.ecgChannel = 'mean'; %'mean'; 'v1'; 'v2'
+    otherwise
+        defaults.ecgChannel = 'v1';
 end
 
 args = tapas_physio_propval(varargin, defaults);
