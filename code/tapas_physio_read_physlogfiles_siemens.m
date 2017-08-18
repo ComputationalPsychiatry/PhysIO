@@ -50,16 +50,17 @@ DEBUG = verbose.level >=2;
 
 % process optional input parameters and overwrite defaults
 defaults.endCropSeconds     = 1;
-defaults.ecgChannel         = 'mean';
+% used channel depends on cardiac modality
+switch cardiac_modality
+    case 'PPU'
+        defaults.ecgChannel = 'v1'; %'mean'; 'v1'; 'v2'
+    case 'ECG'
+        defaults.ecgChannel = 'mean'; %'mean'; 'v1'; 'v2'
+end
 
 args = tapas_physio_propval(varargin, defaults);
 tapas_physio_strip_fields(args);
 
-% used channel depends on cadiac modality
-switch cardiac_modality
-    case 'PPU'
-        ecgChannel = 'v1'; %'mean'; 'v1'; 'v2'
-end
 
 cpulse              = [];
 
