@@ -50,7 +50,23 @@ idxIsConstant = find(abs(dy) < deltaMaxDiff);
 % flag other nMinConstantSamples - 1 samples after detected ones which
 % induced the detection of so many constants
 idxIsConstantFilled = reshape(idxIsConstant, 1, []);
-for n = 1:numel(idxIsConstant)
+
+nConstantValues = numel(idxIsConstant);
+
+hasManyConstants = nConstantValues > 1000;
+if hasManyConstants
+    warning('A lot of constant values in time series (%d). Labeling them will take time', ...
+        nConstantValues);
+end
+    
+    
+% TODO: Speed up the following loop!
+for n = 1:nConstantValues
+    
+    if hasManyConstants && mod(n,1000) == 1
+        fprintf('%d/%d constant values marked\n', n, nConstantValues);
+    end
+    
     idxIsConstantFilled = unique([idxIsConstantFilled, ...
         idxIsConstant(n) - (1:(nMinConstantSamples-1))]);
 end
