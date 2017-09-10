@@ -1,4 +1,4 @@
-function [c, r, t, cpulse, verbose] = tapas_physio_read_physlogfiles_siemens_tics(...
+function [c, r, t, cpulse, acq_codes, verbose] = tapas_physio_read_physlogfiles_siemens_tics(...
     log_files, verbose)
 % reads out physiological time series of Siemens logfiles with Tics
 % The latest implementation of physiological logging in Siemens uses Tics,
@@ -7,10 +7,8 @@ function [c, r, t, cpulse, verbose] = tapas_physio_read_physlogfiles_siemens_tic
 % even though individual sampling times may vary - including cardiac,
 % respiratory, pulse oximetry and acquisition time data itself
 %
-%   [cpulse, rpulse, t, c] = tapas_physio_read_physlogfiles_GE(logfiles, ...
-%                               verbose)
-%
-%   NOTE: if one
+% [c, r, t, cpulse, acq_codes, verbose] = tapas_physio_read_physlogfiles_siemens_tics(...
+%    log_files, verbose)
 %
 % IN    log_files
 %       .log_cardiac        contains ECG or pulse oximeter time course
@@ -34,6 +32,11 @@ function [c, r, t, cpulse, verbose] = tapas_physio_read_physlogfiles_siemens_tic
 %                       NOTE: This assumes the default sampling rate of 400
 %                       Hz
 %   c                   cardiac time series (ECG or pulse oximetry)
+%   acq_codes           slice/volume start events marked by number <> 0
+%                       for time points in t
+%                       10/20 = scan start/end;
+%                       1 = ECG pulse; 2 = OXY max; 3 = Resp trigger;
+%                       8 = scan volume trigger
 %
 % EXAMPLE
 %   [ons_secs.cpulse, ons_secs.rpulse, ons_secs.t, ons_secs.c] =
@@ -72,6 +75,7 @@ end
 dtCardiac = dtTics;
 dtRespiration = dtTics;
 
+acq_codes = [];
 
 if hasRespirationFile
     fid = fopen(log_files.respiration);
@@ -82,11 +86,14 @@ if hasRespirationFile
     if ~isempty(C{2})
         r           = double(C{2});
         rSignals    = double(C{3});
+        extTriggerSignals = [];
     else
-        C           = textscan(fid, '%d %s %d %s', 'HeaderLines', 8);
+        C           = textscan(fid, '%d %s %d %s %s', 'HeaderLines', 8);
         r           = double(C{3});
         rSignals    = ~cellfun(@isempty, C{4});
+        extTriggerSignals = ~cellfun(@isempty, C{5});
     end
+    
     
     rTics           = double(C{1});
     tRespiration    = rTics*dtRespiration ...
@@ -94,13 +101,26 @@ if hasRespirationFile
     
     rpulse          = find(rSignals);
     
+    nSamples        = numel(C{1});
+    racq_codes       = zeros(nSamples,1);
+    
     if ~isempty(rpulse)
+        racq_codes(rpulse) = racq_codes(rpulse) + 3;
         rpulse = tRespiration(rpulse);
     end
+    
+    acqpulse          = find(extTriggerSignals);
+    
+    if ~isempty(acqpulse)
+        racq_codes(acqpulse) = racq_codes(acqpulse) + 8;
+    end
+    
+    
 else
     rpulse          = [];
     r               = [];
     tRespiration    = [];
+    racq_codes      = [];
 end
 
 if hasCardiacFile
@@ -113,24 +133,39 @@ if hasCardiacFile
         c           = double(C{2});
         cSignals    = double(C{3});
     else
-        C           = textscan(fid, '%d %s %d %s', 'HeaderLines', 8);
+        C           = textscan(fid, '%d %s %d %s %s', 'HeaderLines', 8);
         c           = double(C{3});
         cSignals    = ~cellfun(@isempty, C{4});
+        extTriggerSignals = ~cellfun(@isempty, C{5});
     end
     cTics           = double(C{1});
     tCardiac        = cTics*dtCardiac ...
         - log_files.relative_start_acquisition;
     
+    nSamples        = numel(C{1});
+    cacq_codes       = zeros(nSamples,1);
+    
     cpulse          = find(cSignals);
     
     if ~isempty(cpulse)
+        isOxy = any(strfind(upper(log_files.cardiac), 'PULS')); % different codes for PPU
+        
+        cacq_codes(cpulse) = cacq_codes(cpulse) + 1 + isOxy; %+1 for ECG, +2 for PULS
         cpulse = tCardiac(cpulse);
     end
+    
+    acqpulse          = find(extTriggerSignals);
+    
+    if ~isempty(acqpulse)
+        cacq_codes(acqpulse) = cacq_codes(acqpulse) + 8;
+    end
+    
     
 else
     c               = [];
     tCardiac        = [];
     cpulse          = [];
+    cacq_codes      = [];
 end
 
 
@@ -147,6 +182,7 @@ end
 hasDifferentSampling = ~isequal(tCardiac, tRespiration);
 
 if hasDifferentSampling && hasCardiacFile && hasRespirationFile
+    %TODO: interpolate acq_codes
     
     nSamplesRespiration = size(r,1);
     nSamplesCardiac = size(c,1);
@@ -157,6 +193,8 @@ if hasDifferentSampling && hasCardiacFile && hasRespirationFile
     if isHigherSamplingCardiac
         t = tCardiac;
         rInterp = interp1(tRespiration, r, t);
+        racq_codesInterp = interp1(tRespiration, racq_codes, t, 'nearest');
+        acq_codes = cacq_codes + racq_codesInterp;
         
         if DEBUG
             fh = plot_interpolation(tRespiration, r, t, rInterp, ...
@@ -168,7 +206,9 @@ if hasDifferentSampling && hasCardiacFile && hasRespirationFile
     else
         t = tRespiration;
         cInterp = interp1(tCardiac, c, t);
-        
+        cacq_codesInterp = interp1(tCardiac, cacq_codes, t, 'nearest');
+        acq_codes = racq_codes + cacq_codesInterp;
+      
         if DEBUG
             fh = plot_interpolation(tCardiac, c, t, cInterp, ...
                 {'cardiac', 'respiratory'});
@@ -179,6 +219,18 @@ if hasDifferentSampling && hasCardiacFile && hasRespirationFile
     end
     
 else
+    
+    % merge acq codes
+    if hasCardiacFile
+        if hasRespirationFile
+            acq_codes = cacq_codes + racq_codes;
+        else
+            acq_codes = cacq_codes;
+        end
+    elseif hasRespirationFile
+        acq_codes = racq_codes;
+    end
+    
     nSamples = max(size(c,1), size(r,1));
     t = -log_files.relative_start_acquisition + ((0:(nSamples-1))*...
         min(dtCardiac, dtRespiration))';

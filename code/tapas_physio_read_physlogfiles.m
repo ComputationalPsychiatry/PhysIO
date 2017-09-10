@@ -29,6 +29,9 @@ function [c, r, t, cpulse, acq_codes, verbose] = tapas_physio_read_physlogfiles(
 %   cpulse              time events of R-wave peak in cardiac time series (seconds)
 %   acq_codes           slice/volume start events marked by number <> 0
 %                       for time points in t
+%                       10/20 = scan start/end; 
+%                       1 = ECG pulse; 2 = OXY max; 3 = Resp trigger; 
+%                       8 = scan volume trigger
 %
 % EXAMPLE
 %   [ons_secs.cpulse, ons_secs.rpulse, ons_secs.t, ons_secs.c] =
@@ -79,9 +82,8 @@ switch lower(log_files.vendor)
             'cardiacModality', cardiac_modality);
         acq_codes = [];
     case 'siemens_tics'
-        [c, r, t, cpulse, verbose] = ...
+        [c, r, t, cpulse, acq_codes, verbose] = ...
             tapas_physio_read_physlogfiles_siemens_tics(log_files, verbose);
-        acq_codes = [];
 end
 
 % Do not prepend for Siemens Tics, since can be as long as a day
