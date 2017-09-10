@@ -35,7 +35,7 @@ function [c, r, t, cpulse, acq_codes, verbose] = tapas_physio_read_physlogfiles_
 %   acq_codes           slice/volume start events marked by number <> 0
 %                       for time points in t
 %                       10/20 = scan start/end;
-%                       1 = ECG pulse; 2 = OXY max; 3 = Resp trigger;
+%                       1 = ECG pulse; 2 = OXY max; 4 = Resp trigger;
 %                       8 = scan volume trigger
 %
 % EXAMPLE
@@ -68,6 +68,8 @@ dt = log_files.sampling_interval;
 switch numel(dt)
     case 3
         dtTics = dt(3);
+    case 1
+         dtTics = dt;
     otherwise
         dtTics = 2.5e-3;
 end
@@ -105,7 +107,7 @@ if hasRespirationFile
     racq_codes       = zeros(nSamples,1);
     
     if ~isempty(rpulse)
-        racq_codes(rpulse) = racq_codes(rpulse) + 3;
+        racq_codes(rpulse) = racq_codes(rpulse) + 4;
         rpulse = tRespiration(rpulse);
     end
     
@@ -173,8 +175,9 @@ end
 %% interpolate to greater precision, if 2 different sampling rates are given
 
 if DEBUG
-    fh = plot_raw_physlogs(tCardiac, c, tRespiration, r, ...
-        hasCardiacFile, hasRespirationFile, cpulse, rpulse);
+    fh = tapas_physio_plot_raw_physdata_siemens_tics(tCardiac, c, tRespiration, r, ...
+        hasCardiacFile, hasRespirationFile, cpulse, rpulse, cacq_codes, ...
+        racq_codes);
     verbose.fig_handles(end+1) = fh;
 end
 
@@ -208,7 +211,7 @@ if hasDifferentSampling && hasCardiacFile && hasRespirationFile
         cInterp = interp1(tCardiac, c, t);
         cacq_codesInterp = interp1(tCardiac, cacq_codes, t, 'nearest');
         acq_codes = racq_codes + cacq_codesInterp;
-      
+        
         if DEBUG
             fh = plot_interpolation(tCardiac, c, t, cInterp, ...
                 {'cardiac', 'respiratory'});
@@ -238,42 +241,7 @@ end
 
 end
 
-% Local function to plot raw read-in data;
-function fh = plot_raw_physlogs(tCardiac, c, tRespiration, r, ...
-    hasCardiacFile, hasRespirationFile, cpulse, rpulse)
-fh = tapas_physio_get_default_fig_params();
-stringTitle = 'Siemens Tics - Read-in cardiac and respiratory logfiles';
-set(gcf, 'Name', stringTitle);
-stringLegend = {};
-tOffset = min([tRespiration; tCardiac]);
-if hasCardiacFile
-    plot(tCardiac-tOffset, c, 'r.-'); hold all;
-    stringLegend{1, end+1} =  ...
-        sprintf('Cardiac time course, start time %5.2e', tOffset);
-    
-    if ~isempty(cpulse)
-        stem(cpulse-tOffset, max(abs(c))*ones(size(cpulse)));
-        stringLegend{1, end+1} = 'Detected hearbeats';
-    end
-    
-end
 
-if hasRespirationFile
-    plot(tRespiration-tOffset, r, 'g.-'); hold all;
-    stringLegend{1, end+1} =  ...
-        sprintf('Respiratory time course, start time %5.2e', tOffset);
-    
-    if ~isempty(rpulse)
-        stem(rpulse-tOffset, max(abs(r))*ones(size(rpulse)));
-        stringLegend{1, end+1} = 'Detected Breath starts';
-    end
-    
-    
-end
-xlabel('t (seconds)');
-legend(stringLegend);
-title(stringTitle);
-end
 
 %% Local function to plot interpolation result
 function fh = plot_interpolation(tOrig, yOrig, tInterp, yInterp, ...

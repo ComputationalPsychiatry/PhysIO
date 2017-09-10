@@ -34,7 +34,7 @@ function [c, r, t, cpulse, acq_codes] = tapas_physio_read_physlogfiles_philips(l
 %   acq_codes           slice/volume start events marked by number <> 0
 %                       for time points in t
 %                       10/20 = scan start/end; 
-%                       1 = ECG pulse; 2 = OXY max; 3 = Resp trigger; 
+%                       1 = ECG pulse; 2 = OXY max; 4 = Resp trigger; 
 %                       8 = scan volume trigger
 %
 % EXAMPLE
