@@ -186,8 +186,9 @@ if ~hasPhaseLogfile
             end
             
             % label constant samples as unreliable (clipping/detachment)
-            ons_secs.c_is_reliable = 1 - tapas_physio_detect_constants(ons_secs.c, ...
-                minConstantIntervalAlertSamples);
+            [ons_secs.c_is_reliable, ~, verbose] = tapas_physio_detect_constants(ons_secs.c, ...
+                minConstantIntervalAlertSamples, [], verbose);
+            ons_secs.c_is_reliable = 1 - ons_secs.c_is_reliable;
         end
         
         if hasRespData
@@ -196,8 +197,9 @@ if ~hasPhaseLogfile
                 ons_secs.dt, doNormalize);
             
             % label constant samples as unreliable (clipping/detachment)
-            ons_secs.r_is_reliable = 1 - tapas_physio_detect_constants(ons_secs.fr, ...
-                minConstantIntervalAlertSamples);
+            [ons_secs.r_is_reliable, ~, verbose]  = tapas_physio_detect_constants(ons_secs.fr, ...
+                minConstantIntervalAlertSamples, [], verbose);
+            ons_secs.r_is_reliable = 1 - ons_secs.r_is_reliable;
         end
         
         [ons_secs, scan_timing.sqpar, verbose] = tapas_physio_crop_scanphysevents_to_acq_window(...
