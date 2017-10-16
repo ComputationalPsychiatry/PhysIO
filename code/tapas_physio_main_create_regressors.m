@@ -131,7 +131,7 @@ if ~hasPhaseLogfile
         % nominal:  using entered sequence parameters (nSlices, nScans etc)
         % Philips:  via gradient time-course or existing acq_codes in logfile
         % GE:       nominal
-        % Siemens:  from tics (Release D), from .resp/.ecg files (Release B)
+        % Siemens:  from tics (Release VD/E), from .resp/.ecg files (Release VB)
         % Biopac:   using triggers from Digital input (mat file)
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
