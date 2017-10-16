@@ -97,3 +97,9 @@ if durationPhysLog < durationScan
     end
 end
 
+
+%% Remove onset time of log file to simplify plotting
+tStartLog = t(1);
+ons_secs.t_start = tStartLog;
+
+ons_secs.t = ons_secs.t - tStartLog;

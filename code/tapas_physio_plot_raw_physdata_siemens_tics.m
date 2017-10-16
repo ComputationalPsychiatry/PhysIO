@@ -40,9 +40,19 @@ if hasCardiacFile
         % create different stem plots for different acq-codes => are summed
         % up, so look at binary, powers of 2
         acq_codes = num2str(dec2bin(acq_codes));
-        iSampleECGTrigger = find(acq_codes(:,end)=='1'); % 1
-        iSampleOxyTrigger = find(acq_codes(:,end-1)=='1'); % 2
-        iSampleExtTrigger = find(acq_codes(:,end-3)=='1'); % 8
+        
+        % add 4 letter 1st acq code to make access operations posssible
+        acq_codes = char('0000', acq_codes);
+        acq_codes(1,:) = [];
+        iSampleECGTrigger = [];
+        iSampleOxyTrigger = [];
+        iSampleExtTrigger = [];
+           
+        if ~isempty(acq_codes)
+            iSampleECGTrigger = find(acq_codes(:,end)=='1'); % 1
+            iSampleOxyTrigger = find(acq_codes(:,end-1)=='1'); % 2
+            iSampleExtTrigger = find(acq_codes(:,end-3)=='1'); % 8
+        end
         
         colors = {'r', 'm', 'k'};
         iSamples = {iSampleECGTrigger, iSampleOxyTrigger, iSampleExtTrigger};
@@ -90,8 +100,18 @@ if hasRespirationFile
         % create different stem plots for different acq-codes => are summed
         % up, so look at binary, powers of 2
         acq_codes = num2str(dec2bin(acq_codes));
-        iSampleRespTrigger = find(acq_codes(:,end-2)=='1'); % 4
-        iSampleExtTrigger = find(acq_codes(:,end-3)=='1'); % 8
+        
+       
+        % add 4 letter 1st acq code to make access operations posssible
+        acq_codes = char('0000', acq_codes);
+        acq_codes(1,:) = [];
+        iSampleRespTrigger = [];
+        iSampleExtTrigger = [];
+           
+        if ~isempty(acq_codes)
+            iSampleRespTrigger = find(acq_codes(:,end-2)=='1'); % 4
+            iSampleExtTrigger = find(acq_codes(:,end-3)=='1'); % 8
+        end
         
         colors = {'g', 'k'};
         iSamples = {iSampleRespTrigger, iSampleExtTrigger};

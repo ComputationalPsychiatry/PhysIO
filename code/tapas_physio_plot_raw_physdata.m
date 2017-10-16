@@ -83,7 +83,7 @@ end
     if ~isempty(lg), legend(lg); end;
     
     title('Raw Physiological Logfile Data');
-    xlabel('t (s)');
+    xlabel(sprintf('t (s) (relative to t_{start} = %.2f s)', ons_secs.t_start));
     
     verbose.fig_handles(end+1) = fh;
     
