@@ -26,7 +26,7 @@ function [VOLLOCS, LOCS, verbose] = ...
 %           LOCS            - locations in time vector, when slice or volume scan
 %                             events started
 % EXAMPLE
-%   [VOLLOCS, LOCS] = tapas_physio_create_nominal_scan_timing(t, sqpar);
+%   [VOLLOCS, LOCS] = tapas_physio_create_scan_timing_from_tics_siemens(t, sqpar);
 %
 %   See also
 %
