@@ -79,7 +79,7 @@ iDataStream(iNonEcgSignals) = [];
 
 nSamples = numel(data_stream);
 
-switch cardiacModality % ecg has two channels, resp and puls only one
+switch upper(cardiacModality) % ecg has two channels, resp and puls only one
     case 'ECG'
         nRows = ceil(nSamples/2);
         
@@ -147,4 +147,6 @@ switch cardiacModality % ecg has two channels, resp and puls only one
                 data_table(iRow,3) = codeNonEcgSignals(iTrigger);
             end
         end
+    otherwise
+        error('unknown cardiac/respiratory logging modality: %s', cardiacModality);
 end
