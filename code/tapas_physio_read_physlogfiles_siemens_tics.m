@@ -1,5 +1,5 @@
 function [c, r, t, cpulse, acq_codes, verbose] = tapas_physio_read_physlogfiles_siemens_tics(...
-    log_files, verbose)
+    log_files, cardiac_modality, verbose, varargin)
 % reads out physiological time series of Siemens logfiles with Tics
 % The latest implementation of physiological logging in Siemens uses Tics,
 % i.e. time stamps of 2.5 ms duration that are reset every day at midnight.
@@ -8,7 +8,7 @@ function [c, r, t, cpulse, acq_codes, verbose] = tapas_physio_read_physlogfiles_
 % respiratory, pulse oximetry and acquisition time data itself
 %
 % [c, r, t, cpulse, acq_codes, verbose] = tapas_physio_read_physlogfiles_siemens_tics(...
-%    log_files, verbose)
+%    log_files, cardiac_modality, verbose)
 %
 % IN    log_files
 %       .log_cardiac        contains ECG or pulse oximeter time course
@@ -20,10 +20,18 @@ function [c, r, t, cpulse, acq_codes, verbose] = tapas_physio_read_physlogfiles_
 %                           2 entries: 1st entry sampling interval (seconds)
 %                           for cardiac logfile, 2nd entry for respiratory
 %                           logfile
+%       cardiac_modality    'ECG' or 'PULS'/'PPU'/'OXY' to determine
+%                           which channel data to be returned
+%                           if not given, will be read out from file name
+%                           suffix
 %       verbose
 %       .level              debugging plots are created if level >=3
 %       .fig_handles        appended by handle to output figure
 %
+%       varargin            propertyName/value pairs, as folloes
+%           'ecgChannel'    'v1', 'v2', 'v3', 'v4', 'mean' (default)
+%                           determines which ECG channel to use as
+%                           output cardiac curve
 % OUT
 %   cpulse              time events of R-wave peak in cardiac time series (seconds)
 %                       for GE: usually empty
@@ -58,6 +66,19 @@ function [c, r, t, cpulse, acq_codes, verbose] = tapas_physio_read_physlogfiles_
 %% read out values
 DEBUG = verbose.level >= 3;
 
+% channel selection different in ECG data, multiple lines for multiple
+% channel, labeled in log file
+switch upper(cardiac_modality)
+    case 'ECG'
+        defaults.ecgChannel = 'v1'; % 'mean'; 'v1'; 'v2', 'v3', 'v4'
+    case {'PPU', 'OXY', 'PMU', 'PULS'}
+        defaults.ecgChannel = 'PULS';
+end
+
+args = tapas_physio_propval(varargin, defaults);
+tapas_physio_strip_fields(args);
+
+
 hasRespirationFile = ~isempty(log_files.respiration);
 hasCardiacFile = ~isempty(log_files.cardiac);
 
@@ -69,7 +90,7 @@ switch numel(dt)
     case 3
         dtTics = dt(3);
     case 1
-         dtTics = dt;
+        dtTics = dt;
     otherwise
         dtTics = 2.5e-3;
 end
@@ -80,22 +101,23 @@ dtRespiration = dtTics;
 acq_codes = [];
 
 if hasRespirationFile
-    fid = fopen(log_files.respiration);
-    C = textscan(fid, '%d %d %d', 'HeaderLines', 1);
     
-    % check whether textscan worked, otherwise try different format with 4
-    % columns
-    if ~isempty(C{2})
-        r           = double(C{2});
-        rSignals    = double(C{3});
-        extTriggerSignals = [];
-    else
-        C           = textscan(fid, '%d %s %d %s %s', 'HeaderLines', 8);
-        r           = double(C{3});
-        rSignals    = ~cellfun(@isempty, C{4});
-        extTriggerSignals = ~cellfun(@isempty, C{5});
+    C = tapas_physio_read_files_siemens_tics(log_files.respiration, 'RESP');
+    nColumns = numel(C); % different file formats indicated by diff number of columns
+    
+    extTriggerSignals = [];
+    switch nColumns
+        case 3 % Cologne format
+            r           = double(C{2});
+            rSignals    = double(C{3});
+        case {4,5}
+            r           = double(C{3});
+            rSignals    = ~cellfun(@isempty, C{4});
     end
     
+    if nColumns == 5
+        extTriggerSignals = ~cellfun(@isempty, C{5});
+    end
     
     rTics           = double(C{1});
     tRespiration    = rTics*dtRespiration ...
@@ -126,25 +148,30 @@ else
 end
 
 if hasCardiacFile
-    fid = fopen(log_files.cardiac);
-    C = textscan(fid, '%d %d %d', 'HeaderLines', 1);
     
-    % check whether textscan worked, otherwise try different format with 4
-    % columns
-    if ~isempty(C{2})
-        c           = double(C{2});
-        cSignals    = double(C{3});
-    else
-        C           = textscan(fid, '%d %s %d %s %s', 'HeaderLines', 8);
-        c           = double(C{3});
-        cSignals    = ~cellfun(@isempty, C{4});
-        extTriggerSignals = ~cellfun(@isempty, C{5});
+    C = tapas_physio_read_files_siemens_tics(log_files.cardiac);
+    
+    nColumns = numel(C);
+    
+    % different file formats indicated by diff number of columns
+    
+    extTriggerSignals = [];
+    switch nColumns
+        case 3 % Cologne format
+            c           = double(C{2});
+            cSignals    = double(C{3});
+            cTics           = double(C{1});
+            
+        case {4,5}
+            [cTics, c, cSignals, extTriggerSignals, stringChannels, verbose] = ...
+                tapas_physio_split_data_per_channel_siemens_tics(C, ecgChannel, verbose);
     end
-    cTics           = double(C{1});
+    
+    
     tCardiac        = cTics*dtCardiac ...
         - log_files.relative_start_acquisition;
     
-    nSamples        = numel(C{1});
+    nSamples         = numel(c);
     cacq_codes       = zeros(nSamples,1);
     
     cpulse          = find(cSignals);
@@ -246,7 +273,7 @@ end
 %% Local function to plot interpolation result
 function fh = plot_interpolation(tOrig, yOrig, tInterp, yInterp, ...
     stringOrigInterp)
-fh = tapas_physio_get_default_fig_params;
+fh = tapas_physio_get_default_fig_params();
 stringTitle = sprintf('Interpolation of %s signal', stringOrigInterp{1});
 set(fh, 'Name', stringTitle);
 plot(tOrig, yOrig, 'go--');  hold all;
