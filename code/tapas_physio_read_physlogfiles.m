@@ -82,7 +82,7 @@ switch lower(log_files.vendor)
         acq_codes = [];
     case 'siemens_tics'
         [c, r, t, cpulse, acq_codes, verbose] = ...
-            tapas_physio_read_physlogfiles_siemens_tics(log_files, verbose);
+            tapas_physio_read_physlogfiles_siemens_tics(log_files, cardiac_modality, verbose);
 end
 
 % Do not prepend for Siemens Tics, since can be as long as a day

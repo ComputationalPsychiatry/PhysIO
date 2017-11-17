@@ -34,7 +34,7 @@ end
 
 hasCardiacData = ~isempty(ons_secs.c);
 hasRespData = ~isempty(ons_secs.r);
-
+hasDetectedCardiacPulses = ~isempty(ons_secs.cpulse);
 
 %% Normalize cardiac/respiratory time series to max 1
 
@@ -103,3 +103,7 @@ tStartLog = t(1);
 ons_secs.t_start = tStartLog;
 
 ons_secs.t = ons_secs.t - tStartLog;
+
+if hasDetectedCardiacPulses
+    ons_secs.cpulse = ons_secs.cpulse - tStartLog;
+end

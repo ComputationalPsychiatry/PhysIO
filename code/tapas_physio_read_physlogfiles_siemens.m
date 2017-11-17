@@ -10,6 +10,18 @@ function [c, r, t, cpulse, verbose] = tapas_physio_read_physlogfiles_siemens(log
 %                           for GE: ECGData...
 %       .log_respiration    contains breathing belt amplitude time course
 %                           for GE: RespData...
+%       cardiac_modality    'ECG' or 'PULS'/'PPU'/'OXY' to determine
+%                           which channel data to be returned
+%                           if not given, will be read out from file name
+%                           suffix
+%       verbose
+%       .level              debugging plots are created if level >=3
+%       .fig_handles        appended by handle to output figure
+%
+%       varargin            propertyName/value pairs, as folloes
+%           'ecgChannel'    'v1', 'v2', 'mean' (default)
+%                           determines which ECG channel to use as
+%                           output cardiac curve
 %
 % OUT
 %   cpulse              time events of R-wave peak in cardiac time series (seconds)
