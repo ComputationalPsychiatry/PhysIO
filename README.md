@@ -174,7 +174,8 @@ Contributors
 ------------
 
 - Lead Programmer: 
-    - Lars Kasper, TNU & MR-Technology Group, IBT, University of Zurich & ETH Zurich
+    - [Lars Kasper](https://www.tnu.ethz.ch/en/team/faculty-and-scientific-staff/kasper.html),
+      TNU & MR-Technology Group, IBT, University of Zurich & ETH Zurich
 - Project Team: 
     - Steffen Bollmann, Centre for Advanced Imaging, University of Queensland, Australia
     - Saskia Bollmann, Centre for Advanced Imaging, University of Queensland, Australia
@@ -189,15 +190,16 @@ Contributors
 Contact
 -------
 Send bug reports and suggestions either to 
-1) our mailing list: tapas@sympa.ethz.ch, or
-2) as an issue on our TAPAS github account : https://github.com/translationalneuromodeling/tapas/issues
+1. our mailing list: [tapas@sympa.ethz.ch](https://sympa.ethz.ch/sympa/info/tapas), or
+2. as an issue on our TAPAS github account : https://github.com/translationalneuromodeling/tapas/issues
 
 
 References
 ----------
 
 ### Main Toolbox Reference ###
-1. Kasper, L., Bollmann, S., Diaconescu, A.O., Hutton, C., Heinzle, J., Iglesias, S., Hauser, T.U., Sebold, M., Manjaly, Z.-M., Pruessmann, K.P., Stephan, K.E., 2017. The PhysIO Toolbox for Modeling Physiological Noise in fMRI Data. Journal of Neuroscience Methods 276, 56–72. doi:10.1016/j.jneumeth.2016.10.019
+1. Kasper, L., Bollmann, S., Diaconescu, A.O., Hutton, C., Heinzle, J., Iglesias, S., Hauser, T.U., Sebold, M., Manjaly, Z.-M., Pruessmann, K.P., Stephan, K.E., 2017. The PhysIO Toolbox for Modeling Physiological Noise in fMRI Data. Journal of Neuroscience Methods 276, 56–72. 
+    - (doi:10.1016/j.jneumeth.2016.10.019])
 
 ### Related Papers (Implemented noise correction algorithms) ###
 2. Glover, G.H., Li, T.Q. & Ress, D. Image‐based method for retrospective correction
