@@ -61,7 +61,7 @@ as every researcher, we only have a limited amount of time. So please excuse, if
 we might not provide a detailed answer to your request, but just some general 
 pointers and templates. Before you contact us, please try the following:
 
-1. A first look at the [FAQ[(https://gitlab.ethz.ch/physio/physio-doc/wikis/FAQ) 
+1. A first look at the [FAQ](https://gitlab.ethz.ch/physio/physio-doc/wikis/FAQ) 
    (which is frequently extended) might already answer your questions.
 2. A lot of questions have also been discussed on our mailinglist 
    [tapas@sympa.ethz.ch](https://sympa.ethz.ch/sympa/info/tapas), 
