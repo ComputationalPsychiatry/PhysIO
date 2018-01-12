@@ -9,22 +9,17 @@ TAPAS PhysIO Toolbox Version 2017
 
 > University of Zurich and ETH Zurich
 
-Copying
--------
 
-The PhysIO Toolbox is free software: you can redistribute it and/or
-modify it under the terms of the GNU General Public License as
-published by the Free Software Foundation, either version 3 of the
-License, or (at your option) any later version.
+Download
+--------
 
-This program is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-General Public License for more details.
+Please download the latest stable version of the PhysIO Toolbox with the 
+[TAPAS software collection of the TNU](www.translationalneuromodeling.org/tapas). 
+Older or newer, bug-fixed versions are available on request to the authors. 
 
-You should have received a copy of the GNU General Public License
-along with this program (see the file COPYING).  If not, see
-<http://www.gnu.org/licenses/>.
+Changes between all versions are documented in the 
+[CHANGELOG](https://gitlab.ethz.ch/physio/physio-doc/blob/master/CHANGELOG.md)
+
 
 Purpose
 -------
@@ -58,22 +53,40 @@ Run `example_main_ECG3T.m` in subdirectory `Philips/ECG3T` of the toolbox exampl
 See subdirectory `physio/docs` and next section of this document.
 
 
-Getting Help/Documentation
---------------------------
+Contact/Support
+---------------
 
-Several documentation files are provided with this toolbox. They have the extension .md (markdown), i.e. are plain text files, but can be conveniently viewed online as the github/gitlab Wiki.
-You can find them in `physio/wikidocs`.
+We are very happy to provide support on how to use the PhysIO Toolbox. However, 
+as every researcher, we only have a limited amount of time. So please excuse, if 
+we might not provide a detailed answer to your request, but just some general 
+pointers and templates. Before you contact us, please try the following:
 
-Alternatively, a pdf and html converted version of the following files is found in `physio/docs/documentation.pdf (or .html)`
+1. A first look at the [FAQ[(https://gitlab.ethz.ch/physio/physio-doc/wikis/FAQ) 
+   (which is frequently extended) might already answer your questions.
+2. A lot of questions have also been discussed on our mailinglist 
+   [tapas@sympa.ethz.ch](https://sympa.ethz.ch/sympa/info/tapas), 
+   which has a searchable [archive](https://sympa.ethz.ch/sympa/arc/tapas).
+3. For new requests, we would like to ask you to submit them as 
+   [issues](https://github.com/translationalneuromodeling/tapas/issues) on our github release page for TAPAS.
 
-List of Documentation files:
+
+Documentation
+-------------
+
+Several documentation files are provided with this toolbox. You can find them 
+- in `physio/wikidocs` (plain text .md markdown files) or 
+- as a pdf and html converted version in `physio/docs/documentation.pdf (or .html)`
+- online at http://gitlab.ethz.ch/physio/physio-doc.
+
+List of included Documentation files:
 - README.md: this file, purpose, installation, getting started, pointer to more help
-- FAQ.md: Frequently asked questions (for users)
-- QUICKSTART.md: Example script and how to use on test data, Intro to Batch Editor GUI
-- MANUAL.md: Reference Manual (mostly for developers) listing all functions, and rationales of the toolbox, disecting its modular structure
-    - not provided yet; see the old version in `physio/docs/QuickStart_PhysIO_Toolbox.pdf` for source code documentation
-- HOME.md: Landing Page of Wiki. Navigation to all other files and this explanation
-- EXAMPLES.md: List and explanation of all examples
+- Wiki
+    - FAQ.md: Frequently asked questions (for users)
+    - QUICKSTART.md: Example script and how to use on test data, Intro to Batch Editor GUI
+    - EXAMPLES.md: List and explanation of all examples
+    - MANUAL.md: Reference Manual (mostly for developers) listing all functions, and rationales of the toolbox, disecting its modular structure
+        - not provided yet; see the old version in `physio/docs/QuickStart_PhysIO_Toolbox.pdf` for source code documentation
+    - HOME.md: Landing Page of Wiki. Navigation to all other files and this explanation
 - CHANGELOG.md: List of all toolbox versions and the respective release notes, i.e. major changes in functionality, bugfixes etc.
 
 
@@ -152,21 +165,23 @@ data from imperfect peripheral measures.
 - Custom logfiles: should contain one amplitude value per line, one logfile per device. Sampling interval(s) are provided as a separate parameter to the toolbox.
 
 
-
-Compatibility and Support
--------------------------
+Compatibility
+-------------
 
 - Matlab Toolbox
 - Input: 
     - Fully integrated to work with physiological logfiles for Philips MR systems (SCANPHYSLOG)
     - tested for General Electric (GE) log-files
-    - implementation for Siemens log-files
+    - implementation for Siemens log-files (both VB and VD/VE, CMRR multiband)
     - also: interface for 'Custom', i.e. general heart-beat time stamps 
       & breathing volume time courses from other log formats
+    - BioPac
+    - ... (other upcoming formats)
 - Output: 
     - Nuisance regressors for mass-univariate statistical analysis with SPM5,8,12
       or as text file for export to any other package
     - raw and processed physiological logfile data
+    - Graphical Batch Editor interface to SPM
 - Part of the TAPAS Software Collection of the Translational Neuromodeling Unit (TNU) Zurich:long term support and ongoing development
 
 
@@ -187,19 +202,11 @@ Contributors
     - Miriam Sebold, Charite Berlin, Germany
 
 
-Contact
--------
-Send bug reports and suggestions either to 
-1. our mailing list: [tapas@sympa.ethz.ch](https://sympa.ethz.ch/sympa/info/tapas), or
-2. as an issue on our TAPAS github account : https://github.com/translationalneuromodeling/tapas/issues
-
-
 References
 ----------
 
 ### Main Toolbox Reference ###
-1. Kasper, L., Bollmann, S., Diaconescu, A.O., Hutton, C., Heinzle, J., Iglesias, S., Hauser, T.U., Sebold, M., Manjaly, Z.-M., Pruessmann, K.P., Stephan, K.E., 2017. The PhysIO Toolbox for Modeling Physiological Noise in fMRI Data. Journal of Neuroscience Methods 276, 56–72. 
-    - (doi:10.1016/j.jneumeth.2016.10.019])
+1. Kasper, L., Bollmann, S., Diaconescu, A.O., Hutton, C., Heinzle, J., Iglesias, S., Hauser, T.U., Sebold, M., Manjaly, Z.-M., Pruessmann, K.P., Stephan, K.E., 2017. The PhysIO Toolbox for Modeling Physiological Noise in fMRI Data. Journal of Neuroscience Methods 276, 56–72. doi:10.1016/j.jneumeth.2016.10.019
 
 ### Related Papers (Implemented noise correction algorithms) ###
 2. Glover, G.H., Li, T.Q. & Ress, D. Image‐based method for retrospective correction
@@ -228,3 +235,21 @@ doi:10.1016/j.neuroimage.2008.09.029
 Petersen, S.E., 2014. Statistical improvements in functional magnetic resonance
 imaging analyses produced by censoring high-motion data points. Hum. Brain Mapp.
 35, 1981–1996. doi:10.1002/hbm.22307
+
+
+Copying/License
+---------------
+
+The PhysIO Toolbox is free software: you can redistribute it and/or
+modify it under the terms of the GNU General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program (see the file [LICENSE](LICENSE)).  If not, see
+<http://www.gnu.org/licenses/>.
