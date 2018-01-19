@@ -1,7 +1,9 @@
-TAPAS PhysIO Toolbox Version 2017
-=================================
+TAPAS PhysIO Toolbox 
+====================
 
-> Copyright (C) 2012-2017 Lars Kasper <kasper@biomed.ee.ethz.ch>
+*Current version: 2017.3*
+
+> Copyright (C) 2012-2018 Lars Kasper <kasper@biomed.ee.ethz.ch>
 
 > Translational Neuromodeling Unit (TNU)
 
