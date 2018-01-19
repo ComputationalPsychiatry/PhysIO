@@ -42,36 +42,8 @@ function [VOLLOCS, LOCS, verbose] = ...
 % $Id$
 DEBUG = verbose.level >=3;
 
-fid = fopen(log_files.scan_timing);
 
-% Determine number of header lines by searching for the column header line,
-% which has both Volume and Slice as a keyword in it
-haveFoundColumnHeader = false;
-nHeaderLines = 0;
-while ~haveFoundColumnHeader
-    nHeaderLines = nHeaderLines + 1;
-    strLine = fgets(fid);
-    haveFoundColumnHeader = any(regexp(upper(strLine), 'VOLUME.* *SLICE'));
-end
-fclose(fid);
-
-nColumns = numel(regexp(strLine, ' *')) + 1; % columns are separated by arbitrary number of spaces
-nHeaderLines = nHeaderLines + 1; % since empty line after header
-
-fid = fopen(log_files.scan_timing);
-switch nColumns
-    case 3
-        C = textscan(fid, '%d %d %d', 'HeaderLines', 1); % no empty line here...
-    case 4
-        % 4 columns variant: VOLUME   SLICE   ACQ_START_TICS  ACQ_FINISH_TICS
-        C           = textscan(fid, '%d %d %d %d', 'HeaderLines', nHeaderLines);
-    case 5
-        % NOTE: a Tic of 0 is extremely unlikely and indicates a missed header
-        % line, so go for the 5-columns variant:
-        % VOLUME   SLICE   ACQ_START_TICS  ACQ_FINISH_TICS  ECHO
-        C           = textscan(fid, '%d %d %d %d %d', 'HeaderLines', nHeaderLines);
-end
-
+C = tapas_physio_read_files_siemens_tics(log_files.scan_timing, 'INFO');
 
 dtTicSeconds = 2.5e-3;
 
