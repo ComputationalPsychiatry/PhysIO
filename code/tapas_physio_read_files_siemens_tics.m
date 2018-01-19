@@ -78,10 +78,11 @@ switch fileType
         %   ACQ_TIME_TICS  CHANNEL  VALUE  SIGNAL
         strColumnHeader = 'SIGNAL';
         parsePatternPerNColumns{3} = '%d %d %d';
-        parsePatternPerNColumns{4} = '%d %s %d %s';
-        parsePatternPerNColumns{5} = '%d %s %d %s %s';
+        parsePatternPerNColumns{4} = '%d %s %d %s %s'; % needs 5 columns to address simultaneous pulse/ext trigger entries
+        parsePatternPerNColumns{5} = '%d %s %d %s %s %s'; %  needs 6 columns to address simultaneous pulse/ext trigger entries
         nEmptyLinesAfterHeader(3) = 0;
         nEmptyLinesAfterHeader(4) = 1;
+        nEmptyLinesAfterHeader(5) = 1;
 end
 
 
