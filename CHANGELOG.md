@@ -10,15 +10,16 @@ January 19, 2018
 
 Minor Release Notes (R2017.3)
 -----------------------------
-- Included references to external [gitlab-wiki](gitlab.ethz.ch/physio/physio-doc)
+
+- Included references to external [ETH gitlab physio-doc repo and wiki](https://gitlab.ethz.ch/physio/physio-doc)
 - Updated Siemens Reader for Multiband patches(CMRR), versions EJA_1
     - including multi-echo data (4,5 columns)
     - multi-channel ECG data
     - significant speed up of read-in
     - generalized framework for later changes to format
     - interpolation of different sampling rates RESP/CARDIAC
+- updated README about new support policy and [TAPAS on GitHub](https://translationalneuromodeling.github.io/tapas)
 - extended FAQ
-
 
 Minor Release Notes (R2017.2)
 -----------------------------
