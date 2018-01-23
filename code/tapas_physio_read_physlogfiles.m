@@ -47,8 +47,6 @@ function [c, r, t, cpulse, acq_codes, verbose] = tapas_physio_read_physlogfiles(
 % Licence (GPL), version 3. You can redistribute it and/or modify it under the terms of the GPL
 % (either version 3 or, at your option, any later version). For further details, see the file
 % COPYING or <http://www.gnu.org/licenses/>.
-%
-% $Id$
 
 if nargin < 2
     cardiac_modality = 'ECG';
@@ -83,6 +81,9 @@ switch lower(log_files.vendor)
     case 'siemens_tics'
         [c, r, t, cpulse, acq_codes, verbose] = ...
             tapas_physio_read_physlogfiles_siemens_tics(log_files, cardiac_modality, verbose);
+    case 'siemens_hcp'
+        [c, r, t, cpulse, acq_codes, verbose] = ...
+            tapas_physio_read_physlogfiles_siemens_hcp(log_files, cardiac_modality, verbose);
 end
 
 % Do not prepend for Siemens Tics, since can be as long as a day

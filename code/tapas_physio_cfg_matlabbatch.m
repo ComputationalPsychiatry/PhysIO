@@ -7,8 +7,6 @@ function physio = tapas_physio_cfg_matlabbatch
 % Licence (GPL), version 3. You can redistribute it and/or modify it under the terms of the GPL
 % (either version 3 or, at your option, any later version). For further details, see the file
 % COPYING or <http://www.gnu.org/licenses/>.
-%
-% $Id$
 
 
 pathThis = fileparts(mfilename('fullpath')); % TODO: more elegant via SPM!
@@ -38,40 +36,42 @@ save_dir.num     = [0 1];
 vendor        = cfg_menu;
 vendor.tag    = 'vendor';
 vendor.name   = 'vendor';
-vendor.help   = {' vendor                Name depending on your MR Scanner system'
+vendor.help   = {' Vendor Name depending on your MR Scanner/Physiological recording system'
     '                       ''Philips'''
     '                       ''GE'''
     '                       ''Siemens'''
     '                       ''Siemens_Tics'' - new Siemens physiological'
-    '                       logging with time stamps in tics'
-    '                       (= steps of 2.5 ms since midnight) and'
-    '                       extra acquisition (scan_timing) logfile with'
-    '                       time stamps of all volumes and slices'
+    '                           Logging with time stamps in tics'
+    '                           (= steps of 2.5 ms since midnight) and'
+    '                           extra acquisition (scan_timing) logfile with'
+    '                           time stamps of all volumes and slices'
+    '                       ''Siemens_HCP'' - Human Connectome Project (HCP) Physiology Data' 
+    '                           HCP-downloaded files of  name format  *_Physio_log.txt '
+    '                           are already preprocessed into this simple 3-colum text format'
     '                       ''Biopac_Mat'' - exported mat files from Biopac system'
     '                       ''BrainProducts'' - .eeg files from BrainProducts EEG system'
-    ' '
-    '                       or'
     '                       ''Custom'''
-    ' '
-    '  ''Custom'' expects the logfiles (separate files for cardiac and respiratory)'
-    '  to be plain text, with one cardiac (or'
-    '  respiratory) sample per row;'
-    '  If heartbeat (R-wave peak) events are'
-    '  recorded as well, they have to be put'
-    '  as a 2nd column in the cardiac logfile'
-    '  by specifying a 1; 0 in all other rows'
-    '  e.g.:'
-    '      0.2  0'
-    '      0.4  1 <- cardiac pulse event'
-    '      0.2  0'
-    '      -0.3 0'
-    ' '
-    ' '
-    ' NOTE: the sampling interval has to be specified for these files as'
-    ' well (s.b.)'
+    '                           ''Custom'' expects the logfiles (separate files for cardiac and respiratory)'
+    '                           to be plain text, with one cardiac (or'
+    '                           respiratory) sample per row;'
+    '                           If heartbeat (R-wave peak) events are'
+    '                           recorded as well, they have to be put'
+    '                           as a 2nd column in the cardiac logfile'
+    '                           by specifying a 1; 0 in all other rows'
+    '                           e.g.:'
+    '                           0.2  0'
+    '                           0.4  1 <- cardiac pulse event'
+    '                           0.2  0'
+    '                           -0.3 0'
+    '                           NOTE: the sampling interval has to be specified for these files as'
+    '                           well (s.b.)'
     };
-vendor.labels = {'Philips', 'GE', 'Siemens (VB, *.puls/*.ecg/*.resp)', 'Siemens_Tics (VD: *_PULS.log/*_ECG1.log/*_RESP.log/*_AcquisitionInfo*.log)', 'Biopac_Mat', 'BrainProducts', 'Custom'};
-vendor.values = {'Philips', 'GE', 'Siemens', 'Siemens_Tics', 'Biopac_Mat', 'BrainProducts', 'Custom'};
+vendor.labels = {'Philips', 'GE', 'Siemens (VB, *.puls/*.ecg/*.resp)', ...
+    'Siemens_Tics (VD: *_PULS.log/*_ECG1.log/*_RESP.log/*_AcquisitionInfo*.log)', ...
+    'Siemens_HCP (Human Connectome Project, *Physio_log.txt, 3 column format', ...
+    'Biopac_Mat', 'BrainProducts', 'Custom'};
+vendor.values = {'Philips', 'GE', 'Siemens', 'Siemens_Tics', 'Siemens_HCP', ...
+    'Biopac_Mat', 'BrainProducts', 'Custom'};
 vendor.val    = {'Philips'};
 
 %--------------------------------------------------------------------------
@@ -134,8 +134,8 @@ sampling_interval.tag     = 'sampling_interval';
 sampling_interval.name    = 'sampling_interval';
 sampling_interval.help    = {
     'sampling interval of phys log files (in seconds)'
-    ' If empty, default values are used: 2 ms for Philips, 25 ms for GE and others'
-    ' For Biopac, sampling rate is read directly from logfile'
+    ' If empty, default values are used: 2 ms for Philips, 25 ms for GE, 2.5 ms for Siemens Tics and HCP'
+    ' For Biopac and Siemens, sampling rate is read directly from logfile'
     ' If cardiac and respiratory sampling rate differ, enter them as vector'
     ' [sampling_interval_cardiac, sampling_interval_respiratory]'
     ' '
