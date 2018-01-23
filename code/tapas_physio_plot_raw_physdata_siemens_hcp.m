@@ -36,11 +36,11 @@ set(gcf, 'Name', stringTitle);
 ampl = max(max(c), max(r));
 
 if doPlotItem(1)
-    stem(t(volpulse_on), ampl*ones(size(volpulse_on)), 'm'); hold all;
+    stem(t(volpulse_on), ampl*ones(size(volpulse_on)), 'c'); hold all;
 end
 
 if doPlotItem(2)
-    stem(t(volpulse_off), ampl*ones(size(volpulse_off)), 'k'); hold all;
+    stem(t(volpulse_off), ampl*ones(size(volpulse_off)), 'c--'); hold all;
 end
 
 if doPlotItem(3)

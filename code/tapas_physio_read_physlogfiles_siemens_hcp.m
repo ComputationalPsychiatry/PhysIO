@@ -47,7 +47,7 @@ function [c, r, t, cpulse, acq_codes, verbose] = tapas_physio_read_physlogfiles_
 %                       16 = scan volume trigger (off)
 %
 % EXAMPLE
-%   tapas_physio_read_physlogfiles_siemens_hcp 
+%   tapas_physio_read_physlogfiles_siemens_hcp
 %
 %   See also tapas_physio_read_physlogfiles_siemens tapas_physio_plot_raw_physdata_siemens_hcp
 %
@@ -62,7 +62,7 @@ function [c, r, t, cpulse, acq_codes, verbose] = tapas_physio_read_physlogfiles_
 % COPYING or <http://www.gnu.org/licenses/>.
 
 %% read out values
-DEBUG = verbose.level >= 3;
+DEBUG = verbose.level >= 2;
 
 hasRespirationFile = ~isempty(log_files.respiration);
 hasCardiacFile = ~isempty(log_files.cardiac);
@@ -95,8 +95,7 @@ end
 nSamples = max(numel(c), numel(r));
 t = -log_files.relative_start_acquisition + ((0:(nSamples-1))*dt)';
 
-%% cpulse not specified, recompute acq_codes as for Siemens (volume on/volume off)
-cpulse = [];
+%% Recompute acq_codes as for Siemens (volume on/volume off)
 acq_codes = [];
 
 iAcqOn = [];
@@ -114,15 +113,29 @@ if ~isempty(iAcqOn) % otherwise, nothing to read ...
     iAcqEnd     = find(iAcqOn, 1, 'last');
     d_iAcqOn    = diff(iAcqOn);
     
-    % index shift + 1, since diff vector has index of differences i_(n+1) - i_n, 
-    % and the latter of the two operands (i_(n+1)) has sought value +1 
-    iAcqStart   = [iAcqStart; find(d_iAcqOn == 1) + 1]; 
+    % index shift + 1, since diff vector has index of differences i_(n+1) - i_n,
+    % and the latter of the two operands (i_(n+1)) has sought value +1
+    iAcqStart   = [iAcqStart; find(d_iAcqOn == 1) + 1];
     % no index shift, for the same reason
     iAcqEnd     = [find(d_iAcqOn == -1); iAcqEnd];
     
     acq_codes = zeros(nSamples,1);
     acq_codes(iAcqStart) = 8; % to match Philips etc. format
     acq_codes(iAcqEnd) = 16; % don't know...
+    
+    % report estimated onset gap between last slice of volume_n and 1st slice of
+    % volume_(n+1)
+    nAcqStarts = numel(iAcqStart);
+    nAcqEnds = numel(iAcqEnd);
+    nAcqs = min(nAcqStarts, nAcqEnds);
+    
+    if nAcqs >= 1
+        % report time of acquisition, as defined in SPM
+        TA = mean(t(iAcqEnd(1:nAcqs)) - t(iAcqStart(1:nAcqs)));
+        verbose = tapas_physio_log(...
+            sprintf('TA = %.4f s (Estimated time of acquisition during one volume TR)', ...
+            TA), verbose, 0);
+    end
 end
 
 
@@ -132,3 +145,7 @@ if DEBUG
     verbose.fig_handles(end+1) = ...
         tapas_physio_plot_raw_physdata_siemens_hcp(t, c, r, acq_codes);
 end
+
+%% Undefined output parameters
+
+cpulse = [];
