@@ -16,11 +16,11 @@ Download
 --------
 
 - Please download the latest stable versions of the PhysIO Toolbox on GitHub as part of the 
-  [TAPAS software releases of the TNU](https://github.com/translationalneuromodeling/tapas/releases)
-- Older versions are available on the [TNU website](http://www.translationalneuromodeling.org/tapas) 
+  [TAPAS software releases of the TNU](https://github.com/translationalneuromodeling/tapas/releases).
+- Older versions are available on the [TNU website](http://www.translationalneuromodeling.org/tapas).
 - The latest bugfixes can be found in the [GitHub Issue Forum](https://github.com/translationalneuromodeling/tapas/issues) or by request to the authors. 
 - Changes between all versions are documented in the 
-  [CHANGELOG](https://gitlab.ethz.ch/physio/physio-doc/blob/master/CHANGELOG.md)
+  [CHANGELOG](https://gitlab.ethz.ch/physio/physio-doc/blob/master/CHANGELOG.md).
 
 
 Purpose
