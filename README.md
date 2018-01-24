@@ -15,26 +15,41 @@ TAPAS PhysIO Toolbox
 Download
 --------
 
-Please download the latest stable version of the PhysIO Toolbox with the 
-[TAPAS software collection of the TNU](www.translationalneuromodeling.org/tapas). 
-Older or newer, bug-fixed versions are available on request to the authors. 
-
-Changes between all versions are documented in the 
-[CHANGELOG](https://gitlab.ethz.ch/physio/physio-doc/blob/master/CHANGELOG.md)
+- Please download the latest stable versions of the PhysIO Toolbox on GitHub as part of the 
+  [TAPAS software releases of the TNU](https://github.com/translationalneuromodeling/tapas/releases)
+- Older versions are available on the [TNU website](http://www.translationalneuromodeling.org/tapas) 
+- The latest bugfixes can be found in the [GitHub Issue Forum](https://github.com/translationalneuromodeling/tapas/issues) or by request to the authors. 
+- Changes between all versions are documented in the 
+  [CHANGELOG](https://gitlab.ethz.ch/physio/physio-doc/blob/master/CHANGELOG.md)
 
 
 Purpose
 -------
 
-The PhysIO Toolbox provides model-based physiological noise correction of 
-fMRI data using peripheral measures of respiration and cardiac pulsation. 
-It incorporates noise models of cardiac/respiratory phase (RETROICOR, 
+The general purpose of this Matlab toolbox is the model-based physiological noise 
+correction of fMRI data using peripheral measures of respiration and cardiac 
+pulsation. It incorporates noise models of cardiac/respiratory phase (RETROICOR, 
 Glover et al. 2000), as well as heart rate variability and respiratory 
 volume per time (cardiac response function, Chang et. al, 2009, respiratory 
-response function, Birn et al. 2006). The toolbox is usable via the SPM 
-batch editor, performs automatic pre-processing of noisy peripheral data 
-and outputs nuisance regressor files directly suitable for SPM 
-(multiple_regressors.txt).
+response function, Birn et al. 2006), and extended motion models. 
+While the toolbox is particularly well integrated with SPM via the Batch Editor GUI, its 
+simple output nuisance regressor text files can be incorporated into any major 
+neuroimaging analysis package.
+
+Core design goals for the toolbox were: *flexibility*, *robustness*, and *quality assurance* 
+to enable physiological noise correction for large-scale and multi-center studies. 
+
+Some highlights:
+1. Robust automatic preprocessing of peripheral recordings via iterative peak 
+   detection, validated in noisy data and patients.
+2. Flexible support of peripheral data formats (Siemens, Philips, HCP, GE, Biopac, ...) 
+   and noise models (RETROICOR, RVHRCOR).
+3. Fully automated noise correction and performance assessment for group studies.
+4. Integration in fMRI pre-processing pipelines as SPM Toolbox (Batch Editor GUI).
+
+The accompanying technical paper about the toolbox concept and methodology 
+can be found at: https://doi.org/10.1016/j.jneumeth.2016.10.019
+
 
 Installation
 ------------
