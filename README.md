@@ -66,8 +66,9 @@ Installation
 Getting Started
 ---------------
 
-Run `example_main_ECG3T.m` in subdirectory `Philips/ECG3T` of the toolbox example repository `physio-examples`.
-See subdirectory `physio/docs` and next section of this document.
+1. Download the toolbox example repository `physio-examples` from our [website](https://www.tnu.ethz.ch/en/software/tapas/data.html)
+2. Run `example_main_ECG3T.m` in subdirectory `Philips/ECG3T`
+3. See subdirectory `physio/docs` and the next two section of this document for help.
 
 
 Contact/Support
