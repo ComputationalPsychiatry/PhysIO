@@ -102,6 +102,8 @@ if ~hasPhaseLogfile
     % read and preprocess logfiles only, if model-based physiological noise correction is needed
     if doesNeedPhyslogFiles
         
+        
+        
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         %% 1. Read in vendor-specific physiological log-files
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -320,6 +322,7 @@ for onset_slice = onset_slices
     
     
     %% 4.7. Load and manipulate movement parameters as confound regressors
+    
     if model.movement.include && ~isempty(model.movement.file_realignment_parameters)
         [movement_R, verbose] = tapas_physio_create_movement_regressors(...
             model.movement, verbose);
@@ -388,6 +391,7 @@ for onset_slice = onset_slices
     end
     
 end % onset_slices
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

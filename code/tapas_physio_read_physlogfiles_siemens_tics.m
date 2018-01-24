@@ -20,6 +20,7 @@ function [c, r, t, cpulse, acq_codes, verbose] = tapas_physio_read_physlogfiles_
 %                           2 entries: 1st entry sampling interval (seconds)
 %                           for cardiac logfile, 2nd entry for respiratory
 %                           logfile
+%                           default: 2.5 ms (1/400 Hz)
 %       cardiac_modality    'ECG' or 'PULS'/'PPU'/'OXY' to determine
 %                           which channel data to be returned
 %                           if not given, will be read out from file name
@@ -28,17 +29,14 @@ function [c, r, t, cpulse, acq_codes, verbose] = tapas_physio_read_physlogfiles_
 %       .level              debugging plots are created if level >=3
 %       .fig_handles        appended by handle to output figure
 %
-%       varargin            propertyName/value pairs, as folloes
+%       varargin            propertyName/value pairs, as follows
 %           'ecgChannel'    'v1', 'v2', 'v3', 'v4', 'mean' (default)
 %                           determines which ECG channel to use as
 %                           output cardiac curve
 % OUT
 %   cpulse              time events of R-wave peak in cardiac time series (seconds)
-%                       for GE: usually empty
 %   r                   respiratory time series
 %   t                   vector of time points (in seconds)
-%                       NOTE: This assumes the default sampling rate of 400
-%                       Hz
 %   c                   cardiac time series (ECG or pulse oximetry)
 %   acq_codes           slice/volume start events marked by number <> 0
 %                       for time points in t

@@ -75,22 +75,24 @@ pointers and templates. Before you contact us, please try the following:
 Documentation
 -------------
 
-Several documentation files are provided with this toolbox. You can find them 
-- in `physio/wikidocs` (plain text .md markdown files) or 
-- as a pdf and html converted version in `physio/docs/documentation.pdf (or .html)`
-- online at http://gitlab.ethz.ch/physio/physio-doc.
+Documentation for this toolbox is provided in the following forms
 
-List of included Documentation files:
-- README.md: this file, purpose, installation, getting started, pointer to more help
-- Wiki
-    - FAQ.md: Frequently asked questions (for users)
-    - QUICKSTART.md: Example script and how to use on test data, Intro to Batch Editor GUI
-    - EXAMPLES.md: List and explanation of all examples
-    - MANUAL.md: Reference Manual (mostly for developers) listing all functions, and rationales of the toolbox, disecting its modular structure
-        - not provided yet; see the old version in `physio/docs/QuickStart_PhysIO_Toolbox.pdf` for source code documentation
-    - HOME.md: Landing Page of Wiki. Navigation to all other files and this explanation
-- CHANGELOG.md: List of all toolbox versions and the respective release notes, i.e. major changes in functionality, bugfixes etc.
-
+1. Overview and guide to further documentation: README.md and CHANGELOG.md
+    - [README.md](README.md): this file, purpose, installation, getting started, pointer to more help
+    - [CHANGELOG.md](CHANGELOG.md): List of all toolbox versions and the respective release notes, 
+      i.e. major changes in functionality, bugfixes etc.
+2. User Guide: The markdown-based [GitLab Wiki](https://gitlab.ethz.ch/physio/physio-doc/wikis/home), including an FAQ
+    - online (and frequently updated) at http://gitlab.ethz.ch/physio/physio-doc/wikis/home.
+    - offline (with stables releases) as part of the toolbox in folder `physio/wikidocs`: 
+        - plain text `.md` markdown files
+        - as single HTML and PDF  file: `documentation.{html,pdf}`
+3. Within SPM: All toolbox parameters and their settings are explained in the 
+   Help Window of the SPM Batch Editor
+4. Within Matlab: Extensive header at the start of each `tapas_physio_*` function and commenting
+    - accessible via `help` and `doc` commands from Matlab command line
+    - starting point for all parameters (comments within file): `edit tapas_physio_new` 
+    - also useful for developers (technical documentation)
+    
 
 Background
 ----------
@@ -159,8 +161,9 @@ data from imperfect peripheral measures.
 
 - General Electric
 - Philips SCANPHYSLOG files (all versions from release 2.6 to 5.3)
-- Siemens VB (files `.ecg`, `.resp`, `.puls`
-- Siemens VD (files (`*_ECG.log`, `*_RESP.log`, `*_PULS.log`)
+- Siemens VB (files `.ecg`, `.resp`, `.puls`)
+- Siemens VD (files `*_ECG.log`, `*_RESP.log`, `*_PULS.log`)
+- Siemens Human Connectome Project (preprocessed files `*Physio_log.txt`)
 - Biopac .mat-export
     - assuming the following variables (as columns): `data`, `isi`, `isi_units`, `labels`, `start_sample`, `units`
     - See `tapas_physio_read_physlogfiles_biopac_mat.m` for details
