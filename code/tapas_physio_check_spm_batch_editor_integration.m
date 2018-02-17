@@ -26,20 +26,19 @@ function [isPhysioVisibleForSpmBatchEditor, pathSpm, pathPhysIO] = ...
 % COPYING or <http://www.gnu.org/licenses/>.
 %
 
-if exist('spm') 
-    pathSpm = spm('Dir'); 
-else
-    warning('SPM is not on your Matlabpath. Please add it without its subfolders, e.g., via addpath');
-    pathSpm = '';
-end
+[isSpmOnPath, pathSpm] = tapas_physio_check_spm();
+
+isPhysioVisibleForSpmBatchEditor = isSpmOnPath; % minimum requirement for integration: SPM works!
 
 % check for config matlabbatch file
-filePhysioCfgMatlabbatch = ...
-    dir(fullfile(pathSpm, 'toolbox', '**/tapas_physio_cfg_matlabbatch.m'));
+if isSpmOnPath
+    filePhysioCfgMatlabbatch = ...
+        dir(fullfile(pathSpm, 'toolbox', '**/tapas_physio_cfg_matlabbatch.m'));
+    
+    isPhysioVisibleForSpmBatchEditor = ~isempty(filePhysioCfgMatlabbatch);
+end
 
-isPhysioVisibleForSpmBatchEditor = ~isempty(filePhysioCfgMatlabbatch);
-
-pathPhysIO = fileparts(mfilename('fullpath'));
+[isPhysioOnPath, pathPhysIO] = tapas_physio_check_path();
 
 if ~isPhysioVisibleForSpmBatchEditor
     warning(['\n The PhysIO Toolbox code folder has not been copied (or linked)' ...
