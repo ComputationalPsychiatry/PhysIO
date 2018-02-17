@@ -55,16 +55,27 @@ Installation
 ------------
 
 ### Matlab ###
-- Unzip the TAPAS archive
-- Add tapas/physio/code to your matlab path
+1. Unzip the TAPAS archive in your folder of choice
+2. Open Matlab
+3. Go to `/your/path/to/tapas/physio/code`
+4. Run `tapas_physio_init()` in Matlab
 
-### SPM ###
-- Certain functionality (Batch Editor GUI, pipeline dependencies, model assessment via F-contrasts) require the installation of SPM
-- Afterwards, the PhysIO Toolbox has to be registered as an SPM toolbox by copying the `physio/code` folder to `spm/toolbox/physio`
+
+*Note*: Step (4) executes the following steps, which you could do manually as well.
+- Adds the `physio/code/` folder to your Matlab path
+- Adds SPM to your Matlab path (you can enter it manually, if not found)
+- Links the folder `physio/code/` to `/your/path/to/SPM/toolbox/PhysIO`, 
+  if the PhysIO code is not already there.
+
+Only the first point is necessary for using PhysIO standalone with Matlab.
+The other two points enable PhysIO's SPM integration, i.e., certain functionality 
+(Batch Editor GUI, pipeline dependencies, model assessment via F-contrasts).
 
 
 Getting Started
 ---------------
+
+...following the installation, you can try out an example:
 
 1. Download the toolbox example repository `physio-examples` from our [website](https://www.tnu.ethz.ch/en/software/tapas/data.html)
 2. Run `example_main_ECG3T.m` in subdirectory `Philips/ECG3T`
