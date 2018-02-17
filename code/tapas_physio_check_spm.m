@@ -29,6 +29,8 @@ if isSpmOnPath
     pathSpm = spm('Dir'); 
     spm_check_installation();
 else
-    warning('SPM is not on your Matlabpath. Please add it without its subfolders, e.g., via addpath');
+    warning(sprintf(...
+        [' SPM is not on your Matlabpath. Please add it without its subfolders,', ...
+         '\n e.g., via addpath, if you want to use PhysIO with the SPM Batch Editor GUI']));
     pathSpm = '';
 end

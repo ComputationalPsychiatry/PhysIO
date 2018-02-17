@@ -1,12 +1,13 @@
-function tapas_physio_create_spm_toolbox_link()
+function cmdString = tapas_physio_create_spm_toolbox_link()
 % Creates a symbolik link of PhysIO/code folder to subfolder SPM/toolbox/PhysIO
 % to make toolbox visible to SPM Batch editor
 %
-%   output = tapas_physio_create_spm_toolbox_link(input)
+%   tapas_physio_create_spm_toolbox_link()
 %
 % IN
 %
 % OUT
+%   cmdString   string of executed command
 %
 % EXAMPLE
 %   tapas_physio_create_spm_toolbox_link
@@ -23,19 +24,24 @@ function tapas_physio_create_spm_toolbox_link()
 % (either version 3 or, at your option, any later version). For further details, see the file
 % COPYING or <http://www.gnu.org/licenses/>.
 %
+cmdString = '';
+
 pathPhysIO = fileparts(mfilename('fullpath'));
 
-pathSpm = which('spm');
+pathSpm = fileparts(which('spm'));
 
 if isempty(pathSpm)
     warning('SPM folder not found. Could not create symbolink link to PhysIO Toolbox');
 else
     pathLinkPhysIOSPM = fullfile(pathSpm, 'toolbox', 'PhysIO');
-    if ispc
-         % indeed the other way around than in Linux/Mac
-        cmdString = sprintf('mklink /D %s %s', pathLinkPhysIOSPM, pathPhysIO);
-    else %unix/Max
-        cmdString = sprintf('ln -s %s %s', pathPhysIO, pathLinkPhysIOSPM);
+    if ~exist(pathLinkPhysIOSPM, 'dir')
+        % Create Link, OS dependent
+        if ispc
+            % indeed the other way around than in Linux/Mac
+            cmdString = sprintf('mklink /D %s %s', pathLinkPhysIOSPM, pathPhysIO);
+        else %unix/Max
+            cmdString = sprintf('ln -s %s %s', pathPhysIO, pathLinkPhysIOSPM);
+        end
+        system(cmdString);
     end
-    system(cmdString);
 end

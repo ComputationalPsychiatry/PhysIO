@@ -22,19 +22,74 @@ function isPhysioCorrectlyInitialized = tapas_physio_init()
 % (either version 3 or, at your option, any later version). For further details, see the file
 % COPYING or <http://www.gnu.org/licenses/>.
 %
-disp(' ');
-disp(' ');
-disp('====================================================================')
-disp(' ');
-disp('          This is the TAPAS PhysIO Toolbox Version R2017.3');
-disp(' ');
-disp('====================================================================')
-disp(' ');
-disp('Checking Matlab and PhysIO paths now');
+
+tapas_physio_logo(); % print logo
+
+disp('Checking Matlab PhysIO paths, SPM paths and Batch Editor integration now...');
+
+%% Check and add physio paths
+fprintf('Checking Matlab PhysIO paths now...');
+[isPhysioOnPath, pathPhysIO] = tapas_physio_check_path();
+
+if ~isPhysioOnPath
+    addpath(pathPhysIO);
+    fprintf('added PhysIO path: %s\n', pathPhysIO);
+else
+    fprintf('OK.\n');
+end
+
+
+%% Check and add SPM path
+fprintf('Checking Matlab SPM path now...');
+[isSpmOnPath, pathSpm] = tapas_physio_check_spm();
+if ~isSpmOnPath
+    
+    if isempty(pathSpm) % we don't know where to look for, prompt user
+        fprintf('\n\t');
+        pathSpm = input('No SPM path found. If you want to add it, just enter it now [ENTER to continue]:', 's');
+    end
+    
+    if exist(pathSpm, 'dir')
+        addpath(pathSpm);
+        fprintf('added SPM path: %s\n', pathSpm);
+    else
+        fprintf('No SPM path found. Skipping Batch Editor GUI integration.\n');
+        fprintf('\nFinished!\n\n');
+        return 
+    end
+    
+else
+    fprintf('OK.\n');
+end
+
+
+%% Check PhysIO/Matlab Integration via Batch Editor
+fprintf('Checking whether PhysIO/code folder is a subfolder of SPM/toolbox (or a link within there)...');
 
 [isPhysioVisibleForSpmBatchEditor, pathSpm, pathPhysIO] = ...
     tapas_physio_check_spm_batch_editor_integration();
 
+if ~isPhysioVisibleForSpmBatchEditor
+    fprintf('No link found. Trying to create one...');
+    cmdString = tapas_physio_create_spm_toolbox_link();
+    
+    % try again...
+    [isPhysioVisibleForSpmBatchEditor, pathSpm, pathPhysIO] = ...
+        tapas_physio_check_spm_batch_editor_integration();
+    
+    if isPhysioVisibleForSpmBatchEditor
+        fprintf('OK.\n');
+    else
+        fprintf(['Failed to create link. You might need admin rights to run\n\t %s \n' ,...
+            ' in your command window (cmd (Windows) or bash/terminal/shell (Unix/Mac)]\n'], ...
+            cmdString);
+    end
+else
+    fprintf('OK.\n');
+end
+
+
+%% Summary of checks
 isPhysioCorrectlyInitialized = ~isempty(pathSpm) && ~isempty(pathPhysIO) && ...
     isPhysioVisibleForSpmBatchEditor;
 
@@ -43,14 +98,15 @@ if isPhysioCorrectlyInitialized
     fprintf('Updating SPM batch editor information...')
     spm_jobman('initcfg');
     fprintf('done.\n\n');
+    fprintf('Finished!\n\n');
 else
     if isempty(pathPhysIO)
         pathPhysIOHere = fileparts(mfilename('fullpath'));
-        warning(['\n PhysIO not setup correctly, add %s to the path, e.g., via ' ...
-            '\n         addpath %s'],  pathPhysIOHere)
+        warning(sprintf(['\n PhysIO not setup correctly, add %s to the path, e.g., via ' ...
+            '\n         addpath %s'],  pathPhysIOHere))
     else
-        warning(['\n PhysIO integration with SPM not setup. \n' ...
+        warning(sprintf(['\n PhysIO integration with SPM not setup. \n' ...
             ' PhysIO will run in Matlab, but not with SPM Batch Editor GUI. \n' ...
-            ' Follow instructions above to link the paths for batch editor use.'])
+            ' Follow instructions above to link the paths for batch editor use.']))
     end
 end
