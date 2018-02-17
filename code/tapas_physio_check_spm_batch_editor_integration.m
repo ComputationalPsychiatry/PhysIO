@@ -1,9 +1,9 @@
-function isPhysioVisibleForSpmBatchEditor = ...
+function [isPhysioVisibleForSpmBatchEditor, pathSpm, pathPhysIO] = ...
     tapas_physio_check_spm_batch_editor_integration()
 % Checks whether PhysIO-configuration file for matlabbatch is in subfolder
 % of SPM/toolbox and returns a warning, if not
 %
-%   isPhysioVisibleForSpmBatchEditor = ...
+%   [isPhysioVisibleForSpmBatchEditor, pathSpm, pathPhysIO] = ...
 %       tapas_physio_check_spm_batch_editor_integration()
 %
 % IN
@@ -30,6 +30,7 @@ if exist('spm')
     pathSpm = spm('Dir'); 
 else
     warning('SPM is not on your Matlabpath. Please add it without its subfolders, e.g., via addpath');
+    pathSpm = '';
 end
 
 % check for config matlabbatch file
