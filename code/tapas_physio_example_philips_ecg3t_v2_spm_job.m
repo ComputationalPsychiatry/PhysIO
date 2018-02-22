@@ -3,10 +3,10 @@
 % spm SPM - SPM12 (6906)
 % cfg_basicio BasicIO - Unknown
 %-----------------------------------------------------------------------
-matlabbatch{1}.spm.tools.physio.save_dir = {'/Users/kasperla/Documents/code/matlab/PhysIO/private/examples/Philips/ECG3T_V2'};
+matlabbatch{1}.spm.tools.physio.save_dir = {''};
 matlabbatch{1}.spm.tools.physio.log_files.vendor = 'Philips';
-matlabbatch{1}.spm.tools.physio.log_files.cardiac = {'/Users/kasperla/Documents/code/matlab/PhysIO/private/examples/Philips/ECG3T_V2/SCANPHYSLOG.log'};
-matlabbatch{1}.spm.tools.physio.log_files.respiration = {'/Users/kasperla/Documents/code/matlab/PhysIO/private/examples/Philips/ECG3T_V2/SCANPHYSLOG.log'};
+matlabbatch{1}.spm.tools.physio.log_files.cardiac = {'SCANPHYSLOG.log'};
+matlabbatch{1}.spm.tools.physio.log_files.respiration = {'SCANPHYSLOG.log'};
 matlabbatch{1}.spm.tools.physio.log_files.scan_timing = {''};
 matlabbatch{1}.spm.tools.physio.log_files.sampling_interval = [];
 matlabbatch{1}.spm.tools.physio.log_files.relative_start_acquisition = 0;
