@@ -1230,6 +1230,7 @@ movement_censoring_threshold.help    = {
    '                  recommended for subject rejection: 0.5 (Power et al., 2012)'
    '                  recommended for censoring: 0.2 ((Power et al., 2015)'              
    '   ''DVARS''    - in percent BOLD signal change'
+   '                  recommended for censoring: 1.4 % (Satterthwaite et al., 2013)'
    };
 movement_censoring_threshold.strtype = 'e';
 movement_censoring_threshold.num     = [1 Inf];
