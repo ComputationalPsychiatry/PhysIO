@@ -59,7 +59,8 @@ plot(quality_measures.absTransDisplacement, 'k'); hold all;
 plot(quality_measures.absRotDisplacement, 'k--');
 plot(quality_measures.FD, 'r', 'LineWidth', 4);
 plot(1:nVols, ones(nVols,1)*censoring_threshold, 'r-')
-legend('FD', 'Absolute Transl. Displacement', 'Absolute Rot. Displacement', 'Outlier Threshold')
+legend('Absolute Transl. Displacement', 'Absolute Rot. Displacement', ...
+    'FD', 'Outlier Threshold')
 
 ylabel('mm');
 set(gca,'Xticklabel',[]);
