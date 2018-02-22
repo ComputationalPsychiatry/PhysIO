@@ -1,7 +1,8 @@
-function [R, movement, verbose] = tapas_physio_create_movement_regressors(movement, verbose)
+function [R, movement, verbose] = tapas_physio_create_movement_regressors(...
+    movement, verbose)
 % Reads realignment parameters, creates derivative/squared & outlier regressor
 %
-% [R, quality_measures, censoring, verbose] = ...
+% [R, movement, verbose] = ...
 %       tapas_physio_create_movement_regressors(movement, verbose)
 %
 % The 6 realignment parameters can be augmented by their derivatives (in

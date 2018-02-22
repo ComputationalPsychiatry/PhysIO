@@ -3,7 +3,8 @@ function fh = tapas_physio_plot_movement_outliers_maxval(...
 % Plots output figure of motion censoring based on maximum value for
 % outliers of each
 %
-%   output = tapas_physio_plot_movement_outliers_maxval(input)
+%   fh = tapas_physio_plot_movement_outliers_maxval(...
+%       rp, quality_measures, censoring, censoring_threshold)
 %
 % IN
 %   rp              [nScans,6] realignment parameter matrix

@@ -1262,7 +1262,6 @@ movement_no.name = 'No';
 movement_no.val  = {};
 movement_no.help = {'Motion Assessment and Modeling not used.'};
 
-
 %--------------------------------------------------------------------------
 % movement_censoring_method
 %--------------------------------------------------------------------------

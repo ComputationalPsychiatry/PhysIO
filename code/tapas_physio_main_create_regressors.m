@@ -289,6 +289,7 @@ for onset_slice = onset_slices
                     tapas_physio_censor_unreliable_regressor_parts_retroicor(...
                     ons_secs, sqpar, cardiac_sess, respire_sess, mult_sess, verbose);
             end
+            
         else
             cardiac_sess = [];
             respire_sess = [];
