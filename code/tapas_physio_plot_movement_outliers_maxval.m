@@ -72,7 +72,7 @@ plot(rp(:,1:3),'-'); hold on
 plot(rmsdTrans, '-');
 if nOutlierTrans
     for d = 1:numel(outlier_translation_mm)
-        stem(iOutlierTrans, outlier_translation_mm(n)*ones(1,nOutlierTrans));
+        stem(iOutlierTrans, outlier_translation_mm(d)*ones(1,nOutlierTrans));
     end
 end
 legend('shift x (mm)', 'shift y (mm)', 'shift z (mm)', 'RMS diff translation (mm)', ...
