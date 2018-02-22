@@ -49,6 +49,7 @@ iOutlierTrans   = censoring.iOutlierTrans;
 iOutlierRot     = censoring.iOutlierRot;
 rmsdTrans       = quality_measures.rmsdTrans;
 rmsdRot         = quality_measures.rmsdRot;
+t               = 1:size(rp,1);
 
 switch censoring_threshold
     case {1,2}
@@ -69,26 +70,34 @@ set(fh, 'Name', stringTitle);
 
 subplot(2,1,1);
 plot(rp(:,1:3),'-'); hold on
-plot(rmsdTrans, '-');
-if nOutlierTrans
-    for d = 1:numel(outlier_translation_mm)
-        stem(iOutlierTrans, outlier_translation_mm(d)*ones(1,nOutlierTrans));
+plot(rmsdTrans, 'k-');
+for d = 1:numel(outlier_translation_mm)
+    plot(t, ones(size(t))*outlier_translation_mm(d), 'r--');
+    if nOutlierTrans
+        hl = stem(iOutlierTrans, outlier_translation_mm(d)*ones(1,nOutlierTrans));
+        set(hl, 'Color', [1 0 0], 'LineWidth', 3);
     end
 end
+
 legend('shift x (mm)', 'shift y (mm)', 'shift z (mm)', 'RMS diff translation (mm)', ...
+    sprintf('outlier threshold (%.1f mm)', outlier_translation_mm(1)), ...
     'excess translation volumes');
 xlabel('scans');
 ylabel('translation (mm)');
 
 subplot(2,1,2);
 plot(rp(:,4:6)*180/pi,'-'); hold on
-plot(rmsdRot*180/pi, '-');
-if nOutlierRot
-    for d = 1:numel(outlier_rotation_deg)
-        stem(iOutlierRot, outlier_rotation_deg(d)*ones(1,nOutlierRot));
+plot(rmsdRot*180/pi, 'k-');
+for d = 1:numel(outlier_rotation_deg)
+    plot(t, ones(size(t))*outlier_rotation_deg(d), 'r--');
+    if nOutlierRot
+        hl = stem(iOutlierRot, outlier_rotation_deg(d)*ones(1,iOutlierRot));
+        set(hl, 'Color', [1 0 0], 'LineWidth', 3);
     end
 end
+
 legend('pitch x (deg)', 'roll y (deg)', 'yaw z (deg)', 'RMS diff rotation (deg)', ...
+    sprintf('outlier threshold (%.1f deg)', outlier_rotation_deg(1)), ...
     'excess rotation volumes');
 
 xlabel('scans');
