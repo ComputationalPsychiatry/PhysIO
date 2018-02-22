@@ -45,6 +45,7 @@ for iDim = 1:3
     plot(quality_measures.rHead*rp(:,iDim+3), 'Color', colors(iDim,:), ...
         'LineStyle', ':');
 end
+legend('x','pitch','y','roll', 'z', 'yaw');
 ylabel('mm');
 set(gca,'Xticklabel',[]);
 title(sprintf('Realignment Parameter (mm), rotation scaled to rHead = %d mm', ...
@@ -53,11 +54,12 @@ title(sprintf('Realignment Parameter (mm), rotation scaled to rHead = %d mm', ..
 
 %% Framewise displacement and friends, subject measures
 hs(2) = subplot(3,1,2);
-
-plot(quality_measures.absTransDisplacement, 'r--'); hold all;
-plot(quality_measures.absRotDisplacement, 'r:');
+nVols = numel(quality_measures.FD);
+plot(quality_measures.absTransDisplacement, 'k'); hold all;
+plot(quality_measures.absRotDisplacement, 'k--');
 plot(quality_measures.FD, 'r', 'LineWidth', 4);
-hline(censoring_threshold, 'k-')
+plot(1:nVols, ones(nVols,1)*censoring_threshold, 'r-')
+legend('FD', 'Absolute Transl. Displacement', 'Absolute Rot. Displacement', 'Outlier Threshold')
 
 ylabel('mm');
 set(gca,'Xticklabel',[]);
