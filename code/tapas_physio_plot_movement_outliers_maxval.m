@@ -75,7 +75,11 @@ plot(rmsdTrans, 'k-');
 for d = 1:numel(outlier_translation_mm)
     plot(t, ones(size(t))*outlier_translation_mm(d), 'r--');
     if nOutlierTrans
+<<<<<<< df6b165aa8b6450bf653bdc45da9575421689fc1
         hl = stem(iOutlierTrans, outlier_translation_mm(d)*ones(1, nOutlierTrans));
+=======
+        hl = stem(iOutlierTrans, outlier_translation_mm(d)*ones(1,nOutlierTrans));
+>>>>>>> MAXVAL censoring plot; bugfix and nicer
         set(hl, 'Color', [1 0 0], 'LineWidth', 3);
     end
 end
