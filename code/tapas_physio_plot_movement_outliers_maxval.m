@@ -74,7 +74,7 @@ plot(rmsdTrans, 'k-');
 for d = 1:numel(outlier_translation_mm)
     plot(t, ones(size(t))*outlier_translation_mm(d), 'r--');
     if nOutlierTrans
-        hl = stem(iOutlierTrans, outlier_translation_mm(d)*ones(1,nOutlierTrans));
+        hl = stem(iOutlierTrans, outlier_translation_mm(d)*ones(1, nOutlierTrans));
         set(hl, 'Color', [1 0 0], 'LineWidth', 3);
     end
 end
@@ -91,7 +91,7 @@ plot(rmsdRot*180/pi, 'k-');
 for d = 1:numel(outlier_rotation_deg)
     plot(t, ones(size(t))*outlier_rotation_deg(d), 'r--');
     if nOutlierRot
-        hl = stem(iOutlierRot, outlier_rotation_deg(d)*ones(1,iOutlierRot));
+        hl = stem(iOutlierRot, outlier_rotation_deg(d)*ones(1, nOutlierRot));
         set(hl, 'Color', [1 0 0], 'LineWidth', 3);
     end
 end
