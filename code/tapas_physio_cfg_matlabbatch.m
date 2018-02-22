@@ -1205,44 +1205,35 @@ movement_order.tag    = 'order';
 movement_order.name   = 'order';
 movement_order.help   = {'Order of movement regressors 6/12/24, including derivatives and squared parameters/derivatives'};
 movement_order.labels = {'6' '12' '24'};
-movement_order.values = {6, 12 24};
+movement_order.values = {6, 12, 24};
 movement_order.val    = {6};
 
 
 %--------------------------------------------------------------------------
-% movement_outlier_translation_mm
+% movement_censoring_threshold
 %--------------------------------------------------------------------------
 
-movement_outlier_translation_mm         = cfg_entry;
-movement_outlier_translation_mm.tag     = 'outlier_translation_mm';
-movement_outlier_translation_mm.name    = 'Outlier Translation Threshold (mm)';
-movement_outlier_translation_mm.help    = {
-   'Threshold, above which a stick regressor is created for ' 
-   'corresponding volume of exceeding shift'
+movement_censoring_threshold         = cfg_entry;
+movement_censoring_threshold.tag     = 'censoring_threshold';
+movement_censoring_threshold.name    = 'Censoring Outlier Threshold';
+movement_censoring_threshold.help    = {
+   'Threshold, above which a stick (''spike'') regressor is created for ' 
+   'corresponding outlier volume exceeding threshold'
    ''
-   'Set to Inf to switch off regressor creation'
+   'The actual setting depends on the chosen thresholding method:'
+   '   ''MAXVAL''   - max translation (in mm) and rotation (in deg) threshold'
+   '                  recommended: 1/3 of voxel size (e.g., 1 mm)'
+   '                  1 value   -> used for translation and rotation'
+   '                  2 values  -> 1st = translation (mm), 2nd = rotation (deg)'
+   '                  6 values  -> individual threshold for each axis (x,y,z,pitch,roll,yaw)'
+   '   ''FD''       - framewise displacement (in mm)'
+   '                  recommended for subject rejection: 0.5 (Power et al., 2012)'
+   '                  recommended for censoring: 0.2 ((Power et al., 2015)'              
+   '   ''DVARS''    - in percent BOLD signal change'
    };
-movement_outlier_translation_mm.strtype = 'e';
-movement_outlier_translation_mm.num     = [1 1];
-movement_outlier_translation_mm.val     = {Inf};
-
-
-%--------------------------------------------------------------------------
-% movement_outlier_rotation_deg
-%--------------------------------------------------------------------------
-
-movement_outlier_rotation_deg         = cfg_entry;
-movement_outlier_rotation_deg.tag     = 'outlier_rotation_deg';
-movement_outlier_rotation_deg.name    = 'Outlier Rotation Threshold (degrees)';
-movement_outlier_rotation_deg.help    = {
-   'Threshold, above which a stick regressor is created for '
-   'corresponding volume of exceeding rotational movement'
-   ''
-   'Set to Inf to switch off regressor creation'
-   };
-movement_outlier_rotation_deg.strtype = 'e';
-movement_outlier_rotation_deg.num     = [1 1];
-movement_outlier_rotation_deg.val     = {Inf};
+movement_censoring_threshold.strtype = 'e';
+movement_censoring_threshold.num     = [1 Inf];
+movement_censoring_threshold.val     = {0.5};
 
 
 %--------------------------------------------------------------------------
@@ -1253,8 +1244,29 @@ movement_no         = cfg_branch;
 movement_no.tag  = 'no';
 movement_no.name = 'No';
 movement_no.val  = {};
-movement_no.help = {'Movement regressors not used.'};
+movement_no.help = {'Motion Assessment and Modeling not used.'};
 
+
+%--------------------------------------------------------------------------
+% movement_censoring_method
+%--------------------------------------------------------------------------
+movement_censoring_method        = cfg_menu;
+movement_censoring_method.tag    = 'censoring_method';
+movement_censoring_method.name   = 'Censoring Method for Thresholding';
+movement_censoring_method.help   = {'Censoring method used for thresholding'
+ '  ''None''    - no motion censoring performed'
+ '  ''MAXVAL''  - tresholding (max. translation/rotation)'
+ '  ''FD''      - framewise displacement (as defined by Power et al., 2012)'
+ '                i.e., |rp_x(n+1) - rp_x(n)| + |rp_y(n+1) - rp_y(n)| + |rp_z(n+1) - rp_z(n)|'
+ '                      + 50mm *(|rp_pitch(n+1) - rp_pitch(n)| + |rp_roll(n+1) - rp_roll(n)| + |rp_yaw(n+1) - rp_yaw(n)|'
+ '                      where 50mm is an average head radius mapping a rotation into a translation of head surface' 
+ '  ''DVARS''   - root mean square over brain voxels of '
+ '                difference in voxel intensity between consecutive volumes'
+ '                (Power et al., 2012))'
+};
+movement_censoring_method.labels = {'none' 'MAXVAL (Maximum translation/rotation)' 'FD (Framewise Displacement)', 'DVARS'};
+movement_censoring_method.values = {'none', 'MAXVAL', 'FD', 'DVARS'};
+movement_censoring_method.val    = {'FD'};
 
 %--------------------------------------------------------------------------
 % movement_yes
@@ -1264,9 +1276,15 @@ movement_yes      = cfg_branch;
 movement_yes.tag  = 'yes';
 movement_yes.name = 'Yes';
 movement_yes.val  = {movement_file_realignment_parameters, movement_order, ...
-    movement_outlier_translation_mm movement_outlier_rotation_deg};
-movement_yes.help = {'Include Movement Model, as described in Friston et al., 1996.'};
-
+movement_censoring_method, movement_censoring_threshold ...  
+};
+movement_yes.help = {'Motion Assessment and Regression Models used'
+    '- Motion 6/12/24, and as described in Friston et al., 1996'
+    '- Motion Censoring (''spike'' regressors for motion-corrupted volumes)'
+    '     - by different thresholding (max. translation/rotation, framewise '
+    '       displacement and DVARS (Power et al., 2012))'
+    '- Motion Scrubbing (linear interpolation of censored volumes by nearest neighbours)'
+    };
 
 
 %--------------------------------------------------------------------------
@@ -1278,7 +1296,13 @@ movement.tag  = 'movement';
 movement.name = 'Movement';
 movement.val  = {movement_no};
 movement.values  = {movement_no, movement_yes};
-movement.help = {'Movement Model, as described in Friston et al., 1996'};
+movement.help = {'Motion Assessment and Regression Models'
+    '- Motion 6/12/24 regressors from realignment as described in Friston et al., 1996'
+    '- Motion Censoring (''spike'' regressors for motion-corrupted volumes)'
+    '     - by different thresholding (max. translation/rotation, framewise '
+    '       displacement and DVARS (Power et al., 2012))'
+    '- Motion Scrubbing (linear interpolation of censored volumes by nearest neighbours)'
+    };
 
 
 %--------------------------------------------------------------------------
