@@ -343,11 +343,9 @@ else
     %               matter
     %               e.g. CompCor: Behzadi, Y., Restom, K., Liau, J., Liu, 
     %               T.T., 2007. A component based noise correction method (CompCor) for BOLD and perfusion based fMRI. NeuroImage 37, 90?101. doi:10.1016/j.neuroimage.2007.04.042
-
-   
-     model = [];
+    model = [];
     
-     model.orthogonalise = 'none';         % string indicating which regressors shall be orthogonalised;
+    % string indicating which regressors shall be orthogonalised;
     % mainly needed, if acquisition was triggered to heartbeat (set to 'cardiac') OR
     % if session mean shall be evaluated (e.g. SFNR-studies, set to 'all')
     % 'n' or 'none'     - no orthogonalisation is performed
@@ -361,6 +359,21 @@ else
     %   'RVT'
     %   'movement
     %   noise_rois 
+    model.orthogonalise = 'none';         
+    
+    % true or false (default)
+    % If true, values of the nuisance regressors (R-matrix) will be set to
+    % zero (=censored) for time points that are in intervals with 
+    % unreliable related recordings, i.e., 
+    % -  cardiac regressors, if ~c_is_reliable; 
+    % - respiratory regressors, if ~r_is_reliable
+    %
+    % NOTE: so far, this is only implemented for instantaneous effect of
+    % poor recordings, e.g., the phase estimates leading to RETROICOR
+    % regressors. 
+    % For the convolution models (HRV, RVT), no censoring is performed,
+    % since effects of unreliable recordings have long-term effects.
+    model.censor_unreliable_recording_intervals = true;
     
     % output file for usage in SPM multiple_regressors GLM-specification
     % either txt-file or mat-file with variable R
