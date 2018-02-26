@@ -792,6 +792,21 @@ preproc.help = {'Thresholding parameters for de-noising of raw peripheral data'
 %% Sub-structure model
 %==========================================================================
 
+%--------------------------------------------------------------------------
+% censor_phys
+%--------------------------------------------------------------------------
+
+censor_phys        = cfg_menu;
+censor_phys.tag    = 'censor_unreliable_recording_intervals';
+censor_phys.name   = 'Censor unreliable recording intervals';
+censor_phys.help   = {
+    'If parts of the physiological recordings are unreliable (e.g., constant due to belt detachment)' 
+    'the corresponding parts of recording-dependent RETROICOR regressors are set to 0'
+    'in the final multiple_regressors file'
+    };
+censor_phys.labels = {'no', 'yes'};
+censor_phys.values = {false, true};
+censor_phys.val    = {false};
 
 %--------------------------------------------------------------------------
 % orthog
@@ -1340,7 +1355,7 @@ other_model.help = {'Other multiple regressor file(s)'};
 model      = cfg_branch;
 model.tag  = 'model';
 model.name = 'model';
-model.val  = {output_multiple_regressors, output_physio, orthog, retroicor, ...
+model.val  = {output_multiple_regressors, output_physio, orthog, censor_phys, retroicor, ...
     rvt, hrv, noise_rois, movement, other_model};
 model.help = {['Physiological Model to be estimated and Included in GLM as ' ... 
     'multiple_regressors.txt']};
