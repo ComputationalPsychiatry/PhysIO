@@ -473,14 +473,43 @@ else
     %        Volterra expansion V_t, V_t^2, V_(t-1), V_(t-1)^2
     model.movement.order = 6;
     
-    % threshold for large sudden translations; 1 stick regressor for each volume
-    % exceeding the threshold will be created
-    model.movement.outlier_translation_mm = Inf;
+    % Censoring Outlier Threshold;
+    % Threshold, above which a stick (''spike'') regressor is created for 
+    % corresponding outlier volume exceeding threshold'
+   %
+   % The actual setting depends on the chosen thresholding method:'
+   % 'MAXVAL''   -  [1,1...6] max translation (in mm) and rotation (in deg) threshold'
+   %                recommended: 1/3 of voxel size (e.g., 1 mm)'
+   %                default: 1 (mm)
+   %                1 value   -> used for translation and rotation'
+   %                2 values  -> 1st = translation (mm), 2nd = rotation (deg)'
+   %                6 values  -> individual threshold for each axis (x,y,z,pitch,roll,yaw)'
+   % 'FD'       -   [1,1] framewise displacement (in mm)'
+   %                default: 0.5 (mm)
+   %                recommended for subject rejection: 0.5 (Power et al., 2012)'
+   %                recommended for censoring: 0.2 ((Power et al., 2015)'              
+   % 'DVARS'    -   [1,1] in percent BOLD signal change'
+   %                default: 2 (%) (Power et al., 2015, Fig. 7)
+   model.movement.censoring_threshold = 0.5;
     
-    % threshold for large sudden rotations; 1 stick regressor for each volume
-    % exceeding the threshold will be created
-    model.movement.outlier_rotation_deg = Inf;
+    % Censoring method used for thresholding
+    % Motion Censoring (''spike'' regressors for motion-corrupted volumes)
+    % 1 stick regressor for outlier volume with respect to a certain 
+    % quality criterion will be created, using one of these methods:
+    % 
+    %   'None'      - no motion censoring performed
+    %   'MAXVAL''   - tresholding (max. translation/rotation)
+    %   'FD''       - framewise displacement (as defined by Power et al., 2012)
+    %                 i.e., |rp_x(n+1) - rp_x(n)| + |rp_y(n+1) - rp_y(n)| + |rp_z(n+1) - rp_z(n)|
+    %                       + 50mm *(|rp_pitch(n+1) - rp_pitch(n)| + |rp_roll(n+1) - rp_roll(n)| + |rp_yaw(n+1) - rp_yaw(n)|
+    %                 where 50mm is an average head radius mapping a rotation into a translation of head surface
+    %   'DVARS''    - root mean square over brain voxels of
+    %                 difference in voxel intensity between consecutive volumes
+    %                 (Power et al., 2012))
+    model.movement.censoring_method = 'FD';
     
+    % output structure, if censoring is used
+    model.movement.censoring = [];
 
     %% other (Model): Additional, pre-computed nuisance regressors 
     % To be included in design matrix as txt or mat-file (variable R)
