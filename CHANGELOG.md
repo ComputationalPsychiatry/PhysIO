@@ -8,6 +8,16 @@ PhysIO_Toolbox_R2017.3
 
 January 24, 2018
 
+
+WIP Release Notes (R2018.1-**beta**)
+--------------------------------------
+*Status of the current master*
+
+- Censoring of intervals with bad physiological recordings in RETROICOR regressors (#36)
+- Extended motion diagnostics via Framewise displacement (Power et al., 2012)
+    - Outlier motion models generate 'spike' regressors from FD outliers
+
+
 Minor Release Notes (R2017.3)
 -----------------------------
 
