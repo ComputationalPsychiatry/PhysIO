@@ -92,6 +92,7 @@ else
     save_dir = ''; 
     
     
+    
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% log_files (Module)
     % General physiological log-file information, e.g. file names, sampling
@@ -186,6 +187,7 @@ else
     log_files.align_scan       = 'last'; 
 
     
+    
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% scan_timing (Module)
     % Parameters for sequence timing & synchronization
@@ -226,8 +228,7 @@ else
     % includes counting of preparation gradients
     scan_timing.sqpar.onset_slice       = [];
     
-    
-    
+
     % Method to determine slice acquisition onset times
     % 'nominal'             derive slice acquisition timing from sqpar
     %                       directly
@@ -240,7 +241,6 @@ else
     %                       individual scan timing logfile with time stamps
     %                       ("tics") for each slice and volume
     %                       (e.g. Siemens_Cologne)
-   
     scan_timing.sync.method = 'gradient_log';
     scan_timing.sync.grad_direction = ''; % 'x', 'y', or 'z';
     
@@ -268,7 +268,6 @@ else
 
     
 
-    
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% preproc (Module)
     % Preprocessing strategy and parameters for physiological data,
@@ -320,6 +319,7 @@ else
     preproc.cardiac.posthoc_cpulse_select.percentile = 80; % percentile of beat-2-beat interval histogram that constitutes the "average heart beat duration" in the session
     preproc.cardiac.posthoc_cpulse_select.upper_thresh = 60; % minimum exceedance (in %) from average heartbeat duration to be classified as missing heartbeat
     preproc.cardiac.posthoc_cpulse_select.lower_thresh = 60; % minimum reduction (in %) from average heartbeat duration to be classified an abundant heartbeat
+    
     
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -477,33 +477,33 @@ else
     % Threshold, above which a stick (''spike'') regressor is created for 
     % corresponding outlier volume exceeding threshold'
    %
-   % The actual setting depends on the chosen thresholding method:'
-   % 'MAXVAL''   -  [1,1...6] max translation (in mm) and rotation (in deg) threshold'
-   %                recommended: 1/3 of voxel size (e.g., 1 mm)'
+   % The actual setting depends on the chosen thresholding method:
+   % 'MAXVAL'   -  [1,1...6] max translation (in mm) and rotation (in deg) threshold
+   %                recommended: 1/3 of voxel size (e.g., 1 mm)
    %                default: 1 (mm)
-   %                1 value   -> used for translation and rotation'
-   %                2 values  -> 1st = translation (mm), 2nd = rotation (deg)'
-   %                6 values  -> individual threshold for each axis (x,y,z,pitch,roll,yaw)'
-   % 'FD'       -   [1,1] framewise displacement (in mm)'
+   %                1 value   -> used for translation and rotation
+   %                2 values  -> 1st = translation (mm), 2nd = rotation (deg)
+   %                6 values  -> individual threshold for each axis (x,y,z,pitch,roll,yaw)
+   % 'FD'       -   [1,1] framewise displacement (in mm)
    %                default: 0.5 (mm)
-   %                recommended for subject rejection: 0.5 (Power et al., 2012)'
-   %                recommended for censoring: 0.2 ((Power et al., 2015)'              
-   % 'DVARS'    -   [1,1] in percent BOLD signal change'
-   %                default: 2 (%) (Power et al., 2015, Fig. 7)
+   %                recommended for subject rejection: 0.5 (Power et al., 2012)
+   %                recommended for censoring: 0.2 (Power et al., 2015)          
+   % 'DVARS'    -   [1,1] in percent BOLD signal change
+   %                recommended for censoring: 1.4 % (Satterthwaite et al., 2013)
    model.movement.censoring_threshold = 0.5;
     
     % Censoring method used for thresholding
-    % Motion Censoring (''spike'' regressors for motion-corrupted volumes)
+    % Motion Censoring ('spike' regressors for motion-corrupted volumes)
     % 1 stick regressor for outlier volume with respect to a certain 
     % quality criterion will be created, using one of these methods:
     % 
     %   'None'      - no motion censoring performed
-    %   'MAXVAL''   - tresholding (max. translation/rotation)
+    %   'MAXVAL'    - tresholding (max. translation/rotation)
     %   'FD''       - framewise displacement (as defined by Power et al., 2012)
     %                 i.e., |rp_x(n+1) - rp_x(n)| + |rp_y(n+1) - rp_y(n)| + |rp_z(n+1) - rp_z(n)|
     %                       + 50mm *(|rp_pitch(n+1) - rp_pitch(n)| + |rp_roll(n+1) - rp_roll(n)| + |rp_yaw(n+1) - rp_yaw(n)|
     %                 where 50mm is an average head radius mapping a rotation into a translation of head surface
-    %   'DVARS''    - root mean square over brain voxels of
+    %   'DVARS'     - root mean square over brain voxels of
     %                 difference in voxel intensity between consecutive volumes
     %                 (Power et al., 2012))
     model.movement.censoring_method = 'FD';

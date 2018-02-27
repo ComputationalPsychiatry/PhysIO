@@ -1277,7 +1277,7 @@ movement_censoring_method.help   = {'Censoring method used for thresholding'
  '                      where 50mm is an average head radius mapping a rotation into a translation of head surface' 
  '  ''DVARS''   - root mean square over brain voxels of '
  '                difference in voxel intensity between consecutive volumes'
- '                (Power et al., 2012))'
+ '                (Power et al., 2012)'
 };
 movement_censoring_method.labels = {'none' 'MAXVAL (Maximum translation/rotation)' 'FD (Framewise Displacement)', 'DVARS'};
 movement_censoring_method.values = {'none', 'MAXVAL', 'FD', 'DVARS'};

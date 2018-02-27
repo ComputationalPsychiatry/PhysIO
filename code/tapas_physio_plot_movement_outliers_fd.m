@@ -32,9 +32,9 @@ stringTitle = 'Motion Quality Control - Framewise Displacement';
 set(fh, 'Name', stringTitle);
 
 colors = [
-    0 0 1
-    0 1 0
     1 0 0
+    0 1 0
+    0 0 1
     ];
 
 %% Realignment parameter
