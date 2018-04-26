@@ -252,6 +252,9 @@ end
 onset_slices = reshape(sqpar.onset_slice, 1, []);
 nOnsetSlices = numel(onset_slices);
 
+if nOnsetSlices < 1
+    error('Please specify an onset slice.');
+end
 
 for onset_slice = onset_slices
     

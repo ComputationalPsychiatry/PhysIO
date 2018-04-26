@@ -170,8 +170,14 @@ else
     %       recording
     %       -20, if first scan started 20
     %       seconds BEFORE phys recording
-    % NOTE: For Philips SCANPHYSLOG, this parameter is ignored, if
-    %       scan_timing.sync is set
+    % NOTE: 
+    %       1. For Philips SCANPHYSLOG, this parameter is ignored, if
+    %       scan_timing.sync is set.
+    %       2. If you specify an acquisition_info file, leave this parameter
+    %       at 0 (e.g., for Siemens_Tics) since physiological recordings
+    %       and acquisition timing are already synchronized by this
+    %       information, and you would introduce another shift.
+    %
     log_files.relative_start_acquisition = 0;
     
     % Determines which scan shall be aligned to which part of the logfile

@@ -158,8 +158,22 @@ relative_start_acquisition         = cfg_entry;
 relative_start_acquisition.tag     = 'relative_start_acquisition';
 relative_start_acquisition.name    = 'relative_start_acquisition';
 relative_start_acquisition.help    = {
-    'start time (ins seconds) of 1st scan (or dummy)'
-    'relative to start of physiological logfile'};
+    ' Time (in seconds) when the 1st scan (or, if existing, dummy) started,'
+    ' relative to the start of the logfile recording;'
+    ' e.g.  0 if simultaneous start'
+    '       10, if 1st scan starts 10'
+    '       seconds AFTER physiological'
+    '       recording'
+    '       -20, if first scan started 20'
+    '       seconds BEFORE phys recording'
+    ' NOTE: '
+    '       1. For Philips SCANPHYSLOG, this parameter is ignored, if'
+    '       scan_timing.sync is set.'
+    '       2. If you specify an acquisition_info file, leave this parameter'
+    '       at 0 (e.g., for Siemens_Tics) since physiological recordings'
+    '       and acquisition timing are already synchronized by this'
+    '       information, and you would introduce another shift.'
+  };
 relative_start_acquisition.strtype = 'e';
 relative_start_acquisition.num     = [Inf Inf];
 relative_start_acquisition.val     = {0};
