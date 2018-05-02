@@ -238,15 +238,20 @@ else
     % Method to determine slice acquisition onset times
     % 'nominal'             derive slice acquisition timing from sqpar
     %                       directly
-    % 'gradient'            derive from logged gradient time courses
-    %   or 'gradient_log'   in SCANPHYSLOG-files (Philips only)
-    % 'gradient_auto'       derive from logged gradient time courses
-    %   or 'gradient_log_auto'   in SCANPHYSLOG-files automatically, i.e.
-    %                       without defining thresholds (Philips only)
-    % s.a. log_files.scan_timing    
-    %                       individual scan timing logfile with time stamps
-    %                       ("tics") for each slice and volume
-    %                       (e.g. Siemens_Cologne)
+    % 'gradient_log'        derive from logged gradient time courses
+    %                       in SCANPHYSLOG-files (Philips only)
+    % 'gradient_log_auto'   !!! NOT FUNCTIONAL!!! 
+    %                       as 'gradient_log' but without defining height/
+    %                       spacing thresholds (Philips only)
+    % 'scan_timing_log'     uses individual scan timing logfile with time stamps
+    %                       specified in log_files.scan_timing    
+    %                       e.g., 
+    %                       *_INFO.log for 'Siemens_Tics' (time stamps for 
+    %                                       every slice and volume)
+    %                       *.dcm (DICOM) of first volume (non-dummy) used
+    %                                     in GLM analysis
+    %                       NOTE:   This setting needs a valid filename to
+    %                               entered in log_files.scan_timing
     scan_timing.sync.method = 'gradient_log';
     scan_timing.sync.grad_direction = ''; % 'x', 'y', or 'z';
     
