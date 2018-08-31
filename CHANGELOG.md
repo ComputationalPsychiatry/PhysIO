@@ -16,6 +16,7 @@ WIP Release Notes (R2018.1-**beta**)
 - Censoring of intervals with bad physiological recordings in RETROICOR regressors (#36)
 - Extended motion diagnostics via Framewise displacement (Power et al., 2012)
     - Outlier motion models generate 'spike' regressors from FD outliers
+- initialization function `tapas_physio_init()` to check Matlab paths, including SPM for batch processing
 
 
 Minor Release Notes (R2017.3)
