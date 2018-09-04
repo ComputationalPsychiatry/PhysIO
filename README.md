@@ -81,6 +81,8 @@ Getting Started
 2. Run `philips_ecg3t_matlab_script.m` in subdirectory `Philips/ECG3T`
 3. See subdirectory `physio/docs` and the next two section of this document for help.
 
+You may try any of the examples in the other vendor folders as well.
+
 
 Contact/Support
 ---------------
