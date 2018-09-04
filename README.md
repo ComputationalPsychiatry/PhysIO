@@ -64,8 +64,7 @@ Installation
 *Note*: Step (4) executes the following steps, which you could do manually as well.
 - Adds the `physio/code/` folder to your Matlab path
 - Adds SPM to your Matlab path (you can enter it manually, if not found)
-- Links the folder `physio/code/` to `/your/path/to/SPM/toolbox/PhysIO`, 
-  if the PhysIO code is not already there.
+- Links the folder (Linux/Max) or copies the folder (Windows) `physio/code/` to `/your/path/to/SPM/toolbox/PhysIO`, if the PhysIO code is not already found there  
 
 Only the first point is necessary for using PhysIO standalone with Matlab.
 The other two points enable PhysIO's SPM integration, i.e., certain functionality 
@@ -77,9 +76,9 @@ Getting Started
 
 ...following the installation, you can try out an example:
 
-1. Download the TAPAS examples via running `tapas_download_example_data()` (`misc`-subfolder of TAPAS)
+1. Download the TAPAS examples via running `tapas_download_example_data()` (found in `misc`-subfolder of TAPAS)
     - The PhysIO Example files will be downloaded to `tapas/examples/<tapas-version>/PhysIO`
-2. Run `example_main_ECG3T.m` in subdirectory `Philips/ECG3T`
+2. Run `philips_ecg3t_matlab_script.m` in subdirectory `Philips/ECG3T`
 3. See subdirectory `physio/docs` and the next two section of this document for help.
 
 
