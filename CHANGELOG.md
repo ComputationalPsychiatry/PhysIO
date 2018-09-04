@@ -6,7 +6,7 @@ Current Release
 
 PhysIO_Toolbox_R2018.1
 
-September 03, 2018
+September 04, 2018
 
 
 Major Release Notes (R2018.1)
@@ -20,6 +20,7 @@ Major Release Notes (R2018.1)
 
 ### Changed
 - Updated read-in examples of all vendors (Siemens, Philips, GE) to latest PhysIO Toolbox version.
+    - included examples of Siemens VD (Tics Format, Prisma) and Human Connectome Project (HCP) format
 - Updated `README.md` to reflect changes to example download, new references
 
 Minor Release Notes (R2017.3)
