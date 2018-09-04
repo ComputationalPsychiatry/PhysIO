@@ -6,7 +6,7 @@ Current Release
 
 PhysIO_Toolbox_R2018.1
 
-September 04, 2018
+September 05, 2018
 
 
 Major Release Notes (R2018.1)
@@ -17,11 +17,12 @@ Major Release Notes (R2018.1)
 - Extended motion diagnostics via Framewise displacement (Power et al., 2012)
     - Outlier motion models generate 'spike' regressors from FD outliers (gitlab issue  #)
 - Censoring of intervals with bad physiological recordings in RETROICOR regressors (github issue #11, gitlab #36)
+- Added examples of Siemens VD (Tics Format, Prisma) and Human Connectome Project (HCP) format
 
 ### Changed
 - Updated read-in examples of all vendors (Siemens, Philips, GE) to latest PhysIO Toolbox version.
-    - included examples of Siemens VD (Tics Format, Prisma) and Human Connectome Project (HCP) format
-- Updated `README.md` to reflect changes to example download, new references
+ - Updated `README.md` to reflect changes to example download, new references
+ - Extended Wiki documentation, in particular examples and read-in formats
 
 Minor Release Notes (R2017.3)
 -----------------------------
