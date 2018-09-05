@@ -10,7 +10,7 @@ September 05, 2018
 
 
 Major Release Notes (R2018.1)
---------------------------------------
+-----------------------------
 
 ### Added
 - initialization function `tapas_physio_init()` to check Matlab paths, including SPM for batch processing
