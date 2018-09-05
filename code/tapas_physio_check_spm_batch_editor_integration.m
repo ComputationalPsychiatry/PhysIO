@@ -1,5 +1,5 @@
 function [isPhysioVisibleForSpmBatchEditor, pathSpm, pathPhysIO] = ...
-    tapas_physio_check_spm_batch_editor_integration()
+    tapas_physio_check_spm_batch_editor_integration(isVerbose)
 % Checks whether PhysIO-configuration file for matlabbatch is in subfolder
 % of SPM/toolbox and returns a warning, if not
 %
@@ -7,7 +7,7 @@ function [isPhysioVisibleForSpmBatchEditor, pathSpm, pathPhysIO] = ...
 %       tapas_physio_check_spm_batch_editor_integration()
 %
 % IN
-%
+%   isVerbose   if true, warning is issued
 % OUT
 %
 % EXAMPLE
@@ -26,6 +26,10 @@ function [isPhysioVisibleForSpmBatchEditor, pathSpm, pathPhysIO] = ...
 % COPYING or <http://www.gnu.org/licenses/>.
 %
 
+if nargin < 1
+    isVerbose = true;
+end
+
 [isSpmOnPath, pathSpm] = tapas_physio_check_spm();
 
 isPhysioVisibleForSpmBatchEditor = isSpmOnPath; % minimum requirement for integration: SPM works!
@@ -40,7 +44,7 @@ end
 
 [isPhysioOnPath, pathPhysIO] = tapas_physio_check_path();
 
-if ~isPhysioVisibleForSpmBatchEditor
+if ~isPhysioVisibleForSpmBatchEditor && isVerbose
     warning(['\n The PhysIO Toolbox code folder has not been copied (or linked)' ...
         ' to a subfolder of the SPM/toolbox folder. \n The Batch Editor will' ...
         ' not show PhysIO. \n To make PhysIO visible there, link its path' ...

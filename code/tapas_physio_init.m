@@ -66,8 +66,9 @@ end
 %% Check PhysIO/Matlab Integration via Batch Editor
 fprintf('Checking whether PhysIO/code folder is a subfolder of SPM/toolbox (or a link within there)...');
 
+isVerbose = false; % we will try to create link, don't warn yet
 [isPhysioVisibleForSpmBatchEditor, pathSpm, pathPhysIO] = ...
-    tapas_physio_check_spm_batch_editor_integration();
+    tapas_physio_check_spm_batch_editor_integration(isVerbose);
 
 if ~isPhysioVisibleForSpmBatchEditor
     fprintf('No link found. Trying to create one...');
