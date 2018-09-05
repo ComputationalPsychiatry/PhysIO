@@ -21,8 +21,8 @@ Major Release Notes (R2018.1)
 
 ### Changed
 - Updated read-in examples of all vendors (Siemens, Philips, GE) to latest PhysIO Toolbox version.
- - Updated `README.md` to reflect changes to example download, new references
- - Extended Wiki documentation, in particular examples and read-in formats
+- Updated `README.md` to reflect changes to example download, new references
+- Extended Wiki documentation, in particular examples and read-in formats
 
 Minor Release Notes (R2017.3)
 -----------------------------
