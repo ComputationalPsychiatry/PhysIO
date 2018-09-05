@@ -52,7 +52,7 @@ rmsdTrans       = quality_measures.rmsdTrans;
 rmsdRot         = quality_measures.rmsdRot;
 t               = 1:size(rp,1);
 
-switch censoring_threshold
+switch numel(censoring_threshold)
     case {1,2}
         outlier_translation_mm = censoring_threshold(1);
         outlier_rotation_deg = censoring_threshold(end);

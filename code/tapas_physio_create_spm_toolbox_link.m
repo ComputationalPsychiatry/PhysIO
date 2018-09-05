@@ -35,13 +35,19 @@ if isempty(pathSpm)
 else
     pathLinkPhysIOSPM = fullfile(pathSpm, 'toolbox', 'PhysIO');
     if ~exist(pathLinkPhysIOSPM, 'dir')
-        % Create Link, OS dependent
+        % Create Link or hard-copy folder, OS dependent
         if ispc
-            % indeed the other way around than in Linux/Mac
-            cmdString = sprintf('mklink /D %s %s', pathLinkPhysIOSPM, pathPhysIO);
-        else %unix/Max
+            % unfortunately, system link does not work for SPM, has to be
+            % hard copy
+            fprintf('Copying %s to %s, because symlink not sufficient on Windows...\n', pathPhysIO, pathLinkPhysIOSPM);
+            cmdString = sprintf('xcopy /I /Y %s %s', pathPhysIO, pathLinkPhysIOSPM);
+            % linking indeed the other way around than in Linux/Mac
+            % cmdString = sprintf('mklink /D %s %s', pathLinkPhysIOSPM, pathPhysIO);
+        else %unix/Mac
             cmdString = sprintf('ln -s %s %s', pathPhysIO, pathLinkPhysIOSPM);
         end
         system(cmdString);
+    else
+        warning('Destination spm/toolbox folder %s already found. Will not overwrite or re-link', pathLinkPhysIOSPM);
     end
 end
