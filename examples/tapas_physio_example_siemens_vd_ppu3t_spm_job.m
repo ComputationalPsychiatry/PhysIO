@@ -5,9 +5,9 @@
 %-----------------------------------------------------------------------
 matlabbatch{1}.spm.tools.physio.save_dir = {''};
 matlabbatch{1}.spm.tools.physio.log_files.vendor = 'Siemens_Tics';
-matlabbatch{1}.spm.tools.physio.log_files.cardiac = {'C:\Users\kasperla\Documents\Code\PhysIO\examples\Siemens_VD\PPU3T\Physio_20180101_120001_pppppppp-hhhh-yyyy-ssss-ioioioioioio_PULS.log'};
-matlabbatch{1}.spm.tools.physio.log_files.respiration = {'C:\Users\kasperla\Documents\Code\PhysIO\examples\Siemens_VD\PPU3T\Physio_20180101_120001_pppppppp-hhhh-yyyy-ssss-ioioioioioio_RESP.log'};
-matlabbatch{1}.spm.tools.physio.log_files.scan_timing = {'C:\Users\kasperla\Documents\Code\PhysIO\examples\Siemens_VD\PPU3T\Physio_20180101_120001_pppppppp-hhhh-yyyy-ssss-ioioioioioio_Info.log'};
+matlabbatch{1}.spm.tools.physio.log_files.cardiac = {'Physio_20180101_120001_pppppppp-hhhh-yyyy-ssss-ioioioioioio_PULS.log'};
+matlabbatch{1}.spm.tools.physio.log_files.respiration = {'Physio_20180101_120001_pppppppp-hhhh-yyyy-ssss-ioioioioioio_RESP.log'};
+matlabbatch{1}.spm.tools.physio.log_files.scan_timing = {'Physio_20180101_120001_pppppppp-hhhh-yyyy-ssss-ioioioioioio_Info.log'};
 matlabbatch{1}.spm.tools.physio.log_files.sampling_interval = [];
 matlabbatch{1}.spm.tools.physio.log_files.relative_start_acquisition = 0;
 matlabbatch{1}.spm.tools.physio.log_files.align_scan = 'last';
