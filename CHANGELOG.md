@@ -8,6 +8,14 @@ PhysIO_Toolbox_R2018.1.1
 
 September 05, 2018
 
+
+WIP: Bugfix Release Notes (R2018.1.2)
+-------------------------------
+*not released yet*
+
+### Changed
+- fixed bug for 3D nifti array read-in in tapas_physio_create_noise_rois_regressors (github issue #24, gitlab #52)
+
 Bugfix Release Notes (R2018.1.1)
 -------------------------------
 
