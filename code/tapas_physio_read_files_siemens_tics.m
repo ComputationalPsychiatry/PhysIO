@@ -6,7 +6,7 @@ function [C, columnNames] = tapas_physio_read_files_siemens_tics(fileName, fileT
 %
 % IN
 %   fileName    *.log from Siemens VD/VE tics file format
-%   fileType    'ECG', 'PULS', 'RESP', 'Info'
+%   fileType    'ECG', 'PULS', 'RESP', 'Info', 'BIOPAC_TXT'
 %               If not specified, this is read from the last part of the
 %               filename after the last underscore, e.g.
 %               Physio_*_ECG.log -> log
@@ -55,7 +55,11 @@ if nargin < 2
 end
 
 
-switch fileType
+switch upper(fileType)
+    case 'BIOPAC_TXT'
+        strColumnHeader = '.*RESP.*';
+        parsePatternPerNColumns{4} = '%f %f %f %d';
+        nEmptyLinesAfterHeader(4) = 0;
     case 'INFO' % header is a subset of
         % Cologne:
         %   Volume_ID Slice_ID AcqTime_Tics
