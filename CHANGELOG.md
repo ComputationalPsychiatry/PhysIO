@@ -16,6 +16,9 @@ WIP: Bugfix Release Notes (R2018.1.2)
 ### Changed
 - fixed bug for 3D nifti array read-in in tapas_physio_create_noise_rois_regressors (github issue #24, gitlab #52)
 
+### Added
+- BioPac txt-file reader (for single file, resp/cardiac/trigger data in different columns)
+
 Bugfix Release Notes (R2018.1.1)
 -------------------------------
 
