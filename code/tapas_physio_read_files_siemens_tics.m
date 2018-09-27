@@ -103,19 +103,23 @@ while ~haveFoundColumnHeader
     haveFoundColumnHeader = any(regexp(upper(strLine), strColumnHeader));
 end
 
-columnNames = regexp(strLine, '([\w]*)', 'tokens'); 
-columnNames = [columnNames{:}]; % cell of cell into cell of strings
+switch upper(fileType)
+    case 'BIOPAC_TXT' % bad column names with spaces...e.g. 'RESP - RSP100C'
+        columnNames = regexp(strLine, '([\t])', 'split');
+        nColumns = numel(columnNames);
+    otherwise
+        columnNames = regexp(strLine, '([\w]*)', 'tokens');
+        columnNames = [columnNames{:}]; % cell of cell into cell of strings
+        nColumns = numel(regexp(strLine, ' *')) + 1; % columns are separated by arbitrary number of spaces
+end
 fclose(fid);
 
-nColumns = numel(regexp(strLine, ' *')) + 1; % columns are separated by arbitrary number of spaces
 nHeaderLines = nHeaderLines + nEmptyLinesAfterHeader(nColumns); % since empty line after header for CMRR files (not in Cologne!)
 
 fid = fopen(fileName);
 
-switch fileType
-    case 'INFO'
-        C = textscan(fid, parsePatternPerNColumns{nColumns}, 'HeaderLines', nHeaderLines);
-    case {'PULS', 'RESP'}
+switch upper(fileType)
+    case {'INFO', 'PULS', 'RESP', 'BIOPAC_TXT'}
         C = textscan(fid, parsePatternPerNColumns{nColumns}, 'HeaderLines', nHeaderLines);
     case {'ECG'}
         C = textscan(fid, parsePatternPerNColumns{nColumns}, 'HeaderLines', nHeaderLines);

@@ -66,9 +66,9 @@ hasRespirationFile = ~isempty(log_files.respiration);
 hasCardiacFile = ~isempty(log_files.cardiac);
 
 if hasCardiacFile
-    logfile = log_files.cardiac;
+    fileName = log_files.cardiac;
 elseif hasRespirationFile
-    logfile = log_files.respiration;
+    fileName = log_files.respiration;
 end
 
 
@@ -76,7 +76,7 @@ end
 c = double(C{3});
 r = double(C{1});
 gsr = double(C{2});
-iAcqOn = find(double(C{4})); % trigger has 11, rest is 0;
+iAcqOn = (double(C{4})~=0); % trigger has 11, rest is 0;
 
 %% Create timing vector from samples
 
@@ -129,8 +129,10 @@ end
 %% Plot, if wanted
 
 if DEBUG
+    stringTitle = 'Raw BioPac physlog data (TXT Export)'
     verbose.fig_handles(end+1) = ...
-        tapas_physio_plot_raw_physdata_siemens_hcp(t, c, r, acq_codes);
+        tapas_physio_plot_raw_physdata_siemens_hcp(t, c, r, acq_codes, ...
+        stringTitle);
 end
 
 %% Undefined output parameters
