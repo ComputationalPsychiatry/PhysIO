@@ -26,7 +26,7 @@ disp(' ');
 disp(' ');
 disp('====================================================================')
 disp(' ');
-disp('          This is the TAPAS PhysIO Toolbox Version R2017.3');
+fprintf('          This is the TAPAS PhysIO Toolbox Version %s \n', tapas_physio_version());
 disp(' ');
 disp('====================================================================')
 disp(' ');
