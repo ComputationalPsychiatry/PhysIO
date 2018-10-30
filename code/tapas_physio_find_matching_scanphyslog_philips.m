@@ -34,6 +34,7 @@ x = dir(fullfile(pathLogFiles, 'SCANPHYSLOG*'));
 nPhys = length(x);
 for i = 1:nPhys
     tPhys(i) = str2num(x(i).name(20:25));
+    datePhys(i) = str2num(x(i).name(12:19));
 end;
 
 isCellfnImage = iscell(fnImageArray);
@@ -52,10 +53,14 @@ for d = 1:nFiles
     
     % Philips par/rec files always have a ddmmyyyy_HHMMSST_ formatting part, from
     % which we extract the time
-    tFunString = regexp(fnImageArray{d}, '_\d{8}_(\d{6})\d_', 'tokens');
-    tFun(d) = str2num(tFunString{1}{1});
-    [tmp, iFun] = min(abs(tPhys-tFun(d)));
-    fnPhysLogArray{d} = x(iFun).name;
+    dateTimeFunString = regexp(fnImageArray{d}, '_(\d{8})_(\d{6})\d_', 'tokens');
+    tFun(d) = str2num(dateTimeFunString{1}{2});
+    dateFun(d) = str2num(dateTimeFunString{1}{1}([5:8, 3 4 1 2])); % 26082017 -> 20170826
+    
+    iDateMatching = find(datePhys == dateFun(d)); % consider only logfiles from same day
+    [tmp, iFun] = min(abs(tPhys(iDateMatching)-tFun(d)));
+   
+    fnPhysLogArray{d} = x(iDateMatching(iFun)).name;
     fprintf(1,'matched %s \n \t --> %s\n\n', fnImageArray{d}, ...
         fnPhysLogArray{d});
 end
