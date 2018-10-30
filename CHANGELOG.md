@@ -4,10 +4,17 @@ RELEASE INFORMATION
 Current Release
 ---------------
 
-PhysIO_Toolbox_R2018.1.2
+PhysIO_Toolbox_R2018.1.3
 
-October 16, 2018
+October 30, 2018
 
+
+Bugfix Release Notes (R2018.1.3)
+-------------------------------
+
+### Changed
+- fixed bug for matching of Philips SCANPHYSLOG-files (Gitlab #62), if 
+  physlogs were acquired on different days, but similar times
 
 Bugfix Release Notes (R2018.1.2)
 -------------------------------
