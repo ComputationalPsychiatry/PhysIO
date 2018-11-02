@@ -681,5 +681,5 @@ physio.ons_secs     = ons_secs;
 % Call functions for specific initial value settings (e.g. 3T Philips system)
 switch default_scheme
     case 'Philips'
-        physio = tapas_physio_init_philips(physio);
+        physio = tapas_physio_new_philips(physio);
 end
