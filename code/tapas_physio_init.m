@@ -72,7 +72,7 @@ isVerbose = false; % we will try to create link, don't warn yet
 
 if ~isPhysioVisibleForSpmBatchEditor
     fprintf('No link found. Trying to create one...');
-    cmdString = tapas_physio_create_spm_toolbox_link();
+    cmdString = tapas_physio_create_spm_toolbox_link(pathPhysIO);
     
     % try again...
     [isPhysioVisibleForSpmBatchEditor, pathSpm, pathPhysIO] = ...
