@@ -47,12 +47,12 @@ if verbose.level >=0 || warningLevel == 2
             try
                 save(filenameProcessLog, 'verbose');
             catch
-                warning(['Could not save verbose info in %s, ' ...
+                warning('tapas:physio', ['Could not save verbose info in %s, ' ...
                     'throwing original error now:'], filenameProcessLog);
             end
-            error(msg);
+            error('tapas:physio', msg);
         case 1
-            warning(msg);
+            warning('tapas:physio', msg);
         case 0
             fprintf('%s\n',msg);
     end
