@@ -103,6 +103,10 @@ switch lower(scan_timing.sync.method)
                     ons_secs.t, ons_secs.acq_codes, sqpar, ...
                     log_files.align_scan, verbose);
         end
+    otherwise
+        verbose = tapas_physio_log(...
+            sprintf('unknown scan_timing.sync.method: %s', ...
+            scan_timing.sync.method), verbose, 2);
 end
 
 
