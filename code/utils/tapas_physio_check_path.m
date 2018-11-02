@@ -11,7 +11,7 @@ function [isPhysioOnPath, pathPhysIO] = tapas_physio_check_path()
 %   tapas_physio_check_path
 %
 %   See also
-%
+
 % Author: Lars Kasper
 % Created: 2018-02-17
 % Copyright (C) 2018 TNU, Institute for Biomedical Engineering,
@@ -22,7 +22,9 @@ function [isPhysioOnPath, pathPhysIO] = tapas_physio_check_path()
 % (either version 3 or, at your option, any later version). For further details, see the file
 % COPYING or <http://www.gnu.org/licenses/>.
 %
-pathPhysIO = fileparts(mfilename('fullpath'));
+
+% 2x fileparts, since it is the parent folder of where check_path resides
+pathPhysIO = fileparts(fileparts(mfilename('fullpath')));
 
 pathCell = regexp(path, pathsep, 'split');
 if ispc || ismac % Windows/Mac is not case-sensitive
