@@ -1,4 +1,4 @@
-function cmdString = tapas_physio_create_spm_toolbox_link()
+function cmdString = tapas_physio_create_spm_toolbox_link(pathPhysIO)
 % Creates a symbolik link of PhysIO/code folder to subfolder SPM/toolbox/PhysIO
 % to make toolbox visible to SPM Batch editor
 %
@@ -26,12 +26,15 @@ function cmdString = tapas_physio_create_spm_toolbox_link()
 %
 cmdString = '';
 
-pathPhysIO = fileparts(mfilename('fullpath'));
+if nargin < 1
+    % 2x fileparts, because parent folder
+    pathPhysIO = fileparts(fileparts(mfilename('fullpath')));
+end
 
 pathSpm = fileparts(which('spm'));
 
 if isempty(pathSpm)
-    warning('SPM folder not found. Could not create symbolink link to PhysIO Toolbox');
+    warning('SPM folder not found. Could not create symbolic link to PhysIO Toolbox');
 else
     pathLinkPhysIOSPM = fullfile(pathSpm, 'toolbox', 'PhysIO');
     if ~exist(pathLinkPhysIOSPM, 'dir')
@@ -40,13 +43,14 @@ else
             % unfortunately, system link does not work for SPM, has to be
             % hard copy
             fprintf('Copying %s to %s, because symlink not sufficient on Windows...\n', pathPhysIO, pathLinkPhysIOSPM);
-            cmdString = sprintf('xcopy /I /Y %s %s', pathPhysIO, pathLinkPhysIOSPM);
+            cmdString = sprintf('copyfile(''%s'', ''%s'');',pathPhysIO, pathLinkPhysIOSPM);
+            eval(cmdString);
             % linking indeed the other way around than in Linux/Mac
             % cmdString = sprintf('mklink /D %s %s', pathLinkPhysIOSPM, pathPhysIO);
         else %unix/Mac
             cmdString = sprintf('ln -s %s %s', pathPhysIO, pathLinkPhysIOSPM);
+            system(cmdString);
         end
-        system(cmdString);
     else
         warning('Destination spm/toolbox folder %s already found. Will not overwrite or re-link', pathLinkPhysIOSPM);
     end

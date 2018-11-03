@@ -44,23 +44,24 @@ function physio = tapas_physio_new(default_scheme, physio_in)
 %   physio = tapas_physio_new('manual_peak_select', physio);
 %
 %   See also tapas_physio_main_create_regressors
-%
+
 % Author: Lars Kasper
 % Created: 2013-04-23
-% Copyright (C) 2013 TNU, Institute for Biomedical Engineering, University of Zurich and ETH Zurich.
+% Copyright (C) 2013-2018 TNU, Institute for Biomedical Engineering, University of Zurich and ETH Zurich.
 %
 % This file is part of the TAPAS PhysIO Toolbox, which is released under the terms of the GNU General Public
 % Licence (GPL), version 3. You can redistribute it and/or modify it under the terms of the GPL
 % (either version 3 or, at your option, any later version). For further details, see the file
 % COPYING or <http://www.gnu.org/licenses/>.
-%
-% $Id$
 
 % if not specified differently, create everything empty
 if ~nargin
     default_scheme = 'empty';
 end
 
+% include subfolders of code to path as well
+pathThis = fileparts(mfilename('fullpath'));
+addpath(genpath(pathThis)); 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Modules (Overview)
@@ -681,5 +682,5 @@ physio.ons_secs     = ons_secs;
 % Call functions for specific initial value settings (e.g. 3T Philips system)
 switch default_scheme
     case 'Philips'
-        physio = tapas_physio_init_philips(physio);
+        physio = tapas_physio_new_philips(physio);
 end

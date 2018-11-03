@@ -1,18 +1,18 @@
-function physio = tapas_physio_init_philips(physio)
+function physio = tapas_physio_new_philips(physio)
 % Initializes physio-properties for Philips 3T Achieva system with good
 % ECG-data
 %
-%   physio = tapas_physio_init_philips(physio)
+%   physio = tapas_physio_new_philips(physio)
 %
 % IN
 %
 % OUT
 %
 % EXAMPLE
-%   tapas_physio_init_philips
+%   tapas_physio_new_philips
 %
 %   See also
-%
+
 % Author: Lars Kasper
 % Created: 2014-10-09
 % Copyright (C) 2014 TNU, Institute for Biomedical Engineering, University of Zurich and ETH Zurich.
@@ -21,8 +21,6 @@ function physio = tapas_physio_init_philips(physio)
 % Licence (GPL), version 3. You can redistribute it and/or modify it under the terms of the GPL
 % (either version 3 or, at your option, any later version). For further details, see the file
 % COPYING or <http://www.gnu.org/licenses/>.
-%
-% $Id$
 
 log_files   = physio.log_files;
 scan_timing = physio.scan_timing;
