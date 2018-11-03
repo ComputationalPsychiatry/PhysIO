@@ -1,16 +1,18 @@
 function physio = tapas_physio_cfg_matlabbatch
-% Lars Kasper, March 2013
-%
-% Copyright (C) 2013, Institute for Biomedical Engineering, ETH/Uni Zurich.
+% This file needs to be in a subfolder of spm/toolbox in order for the
+% Batch Editor to recognize PhysIO as an SPM toolbox.
+
+% Author: Lars Kasper
+% Created: 2013-04-23
+% Copyright (C) 2013-2018 TNU, Institute for Biomedical Engineering, University of Zurich and ETH Zurich.
 %
 % This file is part of the TAPAS PhysIO Toolbox, which is released under the terms of the GNU General Public
 % Licence (GPL), version 3. You can redistribute it and/or modify it under the terms of the GPL
 % (either version 3 or, at your option, any later version). For further details, see the file
 % COPYING or <http://www.gnu.org/licenses/>.
 
-
 pathThis = fileparts(mfilename('fullpath')); % TODO: more elegant via SPM!
-addpath(pathThis);
+addpath(genpath(pathThis)); % to include subfolders of code as well
 
 
 %--------------------------------------------------------------------------
