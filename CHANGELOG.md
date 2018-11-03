@@ -8,6 +8,13 @@ PhysIO_Toolbox_R2018.1.3
 
 October 30, 2018
 
+WIP Release Notes (R2018.2.0)
+-------------------------------
+*not released yet*
+
+### CHANGED
+- put all functions in `code` into subfolders relating to different modules: `readin`, `sync`, `preproc`, `model`, `assess`, `utils` (gitlab-issue #58)
+    - updated deployment `tapas_physio_init` because of that
 
 Bugfix Release Notes (R2018.1.3)
 -------------------------------
