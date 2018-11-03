@@ -1,5 +1,5 @@
 function physio = tapas_physio_cfg_matlabbatch
-% This file needs to be in a subfolder of spm/toolbox in order for the
+% This file needs to be in a sub-folder of spm/toolbox in order for the
 % Batch Editor to recognize PhysIO as an SPM toolbox.
 
 % Author: Lars Kasper
@@ -12,7 +12,7 @@ function physio = tapas_physio_cfg_matlabbatch
 % COPYING or <http://www.gnu.org/licenses/>.
 
 pathThis = fileparts(mfilename('fullpath')); % TODO: more elegant via SPM!
-addpath(genpath(pathThis)); % to include subfolders of code as well
+addpath(genpath(pathThis)); % to include sub-folders of code as well
 
 
 %--------------------------------------------------------------------------
@@ -49,7 +49,7 @@ vendor.help   = {' Vendor Name depending on your MR Scanner/Physiological record
     '                           time stamps of all volumes and slices'
     '                       ''Siemens_HCP'' - Human Connectome Project (HCP) Physiology Data' 
     '                           HCP-downloaded files of  name format  *_Physio_log.txt '
-    '                           are already preprocessed into this simple 3-colum text format'
+    '                           are already preprocessed into this simple 3-column text format'
     '                       ''Biopac_Txt'' - exported txt files from Biopac system (4 columns, [Resp PPU GSR Trigger]'
     '                       ''Biopac_Mat'' - exported mat files from Biopac system'
     '                       ''BrainProducts'' - .eeg files from BrainProducts EEG system'
@@ -83,7 +83,6 @@ vendor.val    = {'Philips'};
 cardiac         = cfg_files;
 cardiac.tag     = 'cardiac';
 cardiac.name    = 'log_cardiac';
-%cardiac.val     = {{'/Users/kasperla/Documents/code/matlab/smoothing_trunk/tSNR_fMRI_SPM/CheckPhysRETROICOR/PhysIOToolbox/examples/Philips/ECG3T/SCANPHYSLOG.log'}};
 cardiac.help    = {'logfile with cardiac, i.e. ECG/PPU (pulse oximetry) data'
     'Select 0 files, if only respiratory data is available'
     'For Philips, same as respiratory logfile.'
@@ -98,7 +97,6 @@ cardiac.num     = [0 1];
 respiration         = cfg_files;
 respiration.tag     = 'respiration';
 respiration.name    = 'log_respiration';
-% respiration.val     = {{'/Users/kasperla/Documents/code/matlab/smoothing_trunk/tSNR_fMRI_SPM/CheckPhysRETROICOR/PhysIOToolbox/examples/Philips/ECG3T/SCANPHYSLOG.log'}};
 respiration.help    = {'logfile with respiratory, i.e. breathing belt amplitude data'
     'Select 0 files, if only cardiac data available'
     'For Philips, same as cardiac logfile.'
@@ -118,8 +116,8 @@ log_scan_timing.help    = {
     ' MRI scans.'
     ''
     ' Currently implemented for 2 cases:'
-    ' Siemens:      Enter the first or last Dicom volume of your session here,'
-    '               The time stamp in the dicom header is on the same time'
+    ' Siemens:      Enter the first or last DICOM volume of your session here,'
+    '               The time stamp in the DICOM header is on the same time'
     '               axis as the time stamp in the physiological log file'
     ' Siemens_Tics: log-file which holds table conversion for tics axis to' 
     '               time conversion' 
@@ -195,7 +193,7 @@ align_scan.help   = {
     ' to pre-scans'
     ''
     ' NOTE: In all cases, log_files.relative_start_acquisition is'
-    '       added to timing after the initial alignmnent to first/last scan'
+    '       added to timing after the initial alignment to first/last scan'
     ''
     ' ''first''   start of logfile will be aligned to first scan volume'
     ' ''last''    end of logfile will be aligned to last scan volume'
@@ -287,7 +285,6 @@ Nslices.name    = 'Nslices';
 Nslices.help    = {'Number of slices in one volume'};
 Nslices.strtype = 'e';
 Nslices.num     = [Inf Inf];
-%Nslices.val     = {37};
 
 
 
@@ -313,7 +310,7 @@ Nprep.name    = 'Nprep';
 Nprep.help    = {
    ' Count of preparation pulses BEFORE 1st dummy scan.' 
     ' Only important, if log_files.scan_align = ''first'', since then'
-    ' preparation pulses and dummiy triggers are counted and discarded '
+    ' preparation pulses and dummy triggers are counted and discarded '
     ' as first scan onset'
      };
 Nprep.strtype = 'e';
@@ -469,7 +466,7 @@ sync_method_scan_timing_log.name = 'scan_timing_log';
 sync_method_scan_timing_log.val  = {};
 sync_method_scan_timing_log.help = { ...
     ' Derive scan-timing from individual scan timing logfile with time '
-    ' stamps ("tics") for each slice and volume (e.g. Siemens_Cologne)'};
+    ' stamps ("tics") for each slice and volume (e.g., Siemens VD, CMRR sequence)'};
 
  
 %--------------------------------------------------------------------------
@@ -618,7 +615,7 @@ initial_cpulse_select_method_load_template.val  = {
     initial_cpulse_select_file    
 };
 initial_cpulse_select_method_load_template.help = { ...
-    'Load template from previous manual/auto run to perform autocorrelation detection of hearbeats'
+    'Load template from previous manual/auto run to perform autocorrelation detection of heartbeats'
     };
 
 
@@ -773,7 +770,7 @@ posthoc_cpulse_select.values = {posthoc_cpulse_select_method_off, ...
     
 
 posthoc_cpulse_select.help = {
-    'The posthoc cardiac pulse selection structure: If only few (<20)'
+    'The post-hoc cardiac pulse selection structure: If only few (<20)'
     'cardiac pulses are missing in a session due to bad signal quality, a'
     'manual selection after visual inspection is possible using the'
     'following parameters. The results are saved for reproducibility.'
@@ -833,7 +830,7 @@ orthog        = cfg_menu;
 orthog.tag    = 'orthogonalise';
 orthog.name   = 'orthogonalise';
 orthog.help   = {
-    'Orthogonalize physiological regressors with respect to each other.'
+    'Orthogonalise physiological regressors with respect to each other.'
     'Note: This is only recommended for triggered/gated acquisition sequences.'
     };
 orthog.labels = {'none' 'cardiac' 'resp' 'mult' 'RETROCOR', 'HRV', 'RVT', 'Noise_ROIs'};
@@ -852,7 +849,7 @@ output_multiple_regressors.help    = {
     'Output file for physiological regressors'
     'Choose file name with extension:'
     '.txt for ASCII files with 1 regressor per column'
-    '.mat for matlab variable file'
+    '.mat for Matlab variable file'
     };
 output_multiple_regressors.strtype = 's';
 output_multiple_regressors.num     = [1 Inf];
@@ -1009,7 +1006,7 @@ rvt_yes.name = 'Yes';
 rvt_yes.val  = {rvt_delays};
 rvt_yes.help = {
     'Include Respiratory Volume per Time (RVT) Model, '
-    'as described in Birn, R.M., et al. NeuroImage 40, 644?654. doi:10.1016/j.neuroimage.2007.11.059'
+    'as described in Birn et al. NeuroImage 40, 644?654. doi:10.1016/j.neuroimage.2007.11.059'
     };
 
 
@@ -1025,7 +1022,7 @@ rvt.val  = {rvt_no};
 rvt.values  = {rvt_no, rvt_yes};
 rvt.help = {
     'Respiratory Volume per Time (RVT) Model, '
-    'as described in Birn, R.M., et al. NeuroImage 40, 644-654. doi:10.1016/j.neuroimage.2007.11.059'
+    'as described in Birn et al. NeuroImage 40, 644-654. doi:10.1016/j.neuroimage.2007.11.059'
     };
 
 
@@ -1067,7 +1064,7 @@ hrv_yes.name = 'Yes';
 hrv_yes.val  = {hrv_delays};
 hrv_yes.help = {
     'Include Heart Rate Variability (HRV) Model, '
-    'as described in Chang, C. et al., NeuroImage 44, 857-869. doi:10.1016/j.neuroimage.2008.09.029'
+    'as described in Chang et al., NeuroImage 44, 857-869. doi:10.1016/j.neuroimage.2008.09.029'
     };
 
 
@@ -1083,7 +1080,7 @@ hrv.val  = {hrv_no};
 hrv.values  = {hrv_no, hrv_yes};
 hrv.help = {
     'Heart Rate Variability (HRV) Model, as described in '
-    'Chang, C. et al., NeuroImage 44, 857-869. doi:10.1016/j.neuroimage.2008.09.029'
+    'Chang et al., NeuroImage 44, 857-869. doi:10.1016/j.neuroimage.2008.09.029'
 };
 
 
@@ -1097,7 +1094,7 @@ hrv.help = {
 
 fmri_files         = cfg_files;
 fmri_files.tag     = 'fmri_files';
-fmri_files.name    = 'FMRI Time Series File(s)';
+fmri_files.name    = 'fMRI Time Series File(s)';
 fmri_files.val     = {{''}};
 fmri_files.help    = {
     'Preprocessed fmri nifti/analyze files, from which time series '
@@ -1258,7 +1255,7 @@ movement_censoring_threshold.help    = {
    '                  1 value   -> used for translation and rotation'
    '                  2 values  -> 1st = translation (mm), 2nd = rotation (deg)'
    '                  6 values  -> individual threshold for each axis (x,y,z,pitch,roll,yaw)'
-   '   ''FD''       - framewise displacement (in mm)'
+   '   ''FD''       - frame-wise displacement (in mm)'
    '                  recommended for subject rejection: 0.5 (Power et al., 2012)'
    '                  recommended for censoring: 0.2 ((Power et al., 2015)'              
    '   ''DVARS''    - in percent BOLD signal change'
@@ -1287,11 +1284,11 @@ movement_censoring_method.tag    = 'censoring_method';
 movement_censoring_method.name   = 'Censoring Method for Thresholding';
 movement_censoring_method.help   = {'Censoring method used for thresholding'
  '  ''None''    - no motion censoring performed'
- '  ''MAXVAL''  - tresholding (max. translation/rotation)'
- '  ''FD''      - framewise displacement (as defined by Power et al., 2012)'
+ '  ''MAXVAL''  - thresholding (max. translation/rotation)'
+ '  ''FD''      - frame-wise displacement (as defined by Power et al., 2012)'
  '                i.e., |rp_x(n+1) - rp_x(n)| + |rp_y(n+1) - rp_y(n)| + |rp_z(n+1) - rp_z(n)|'
- '                      + 50mm *(|rp_pitch(n+1) - rp_pitch(n)| + |rp_roll(n+1) - rp_roll(n)| + |rp_yaw(n+1) - rp_yaw(n)|'
- '                      where 50mm is an average head radius mapping a rotation into a translation of head surface' 
+ '                      + 50 mm *(|rp_pitch(n+1) - rp_pitch(n)| + |rp_roll(n+1) - rp_roll(n)| + |rp_yaw(n+1) - rp_yaw(n)|'
+ '                      where 50 mm is an average head radius mapping a rotation into a translation of head surface' 
  '  ''DVARS''   - root mean square over brain voxels of '
  '                difference in voxel intensity between consecutive volumes'
  '                (Power et al., 2012)'
@@ -1313,7 +1310,7 @@ movement_censoring_method, movement_censoring_threshold ...
 movement_yes.help = {'Motion Assessment and Regression Models used'
     '- Motion 6/12/24, and as described in Friston et al., 1996'
     '- Motion Censoring (''spike'' regressors for motion-corrupted volumes)'
-    '     - by different thresholding (max. translation/rotation, framewise '
+    '     - by different thresholding (max. translation/rotation, frame-wise '
     '       displacement and DVARS (Power et al., 2012))'
     '- Motion Scrubbing (linear interpolation of censored volumes by nearest neighbours)'
     };
@@ -1331,7 +1328,7 @@ movement.values  = {movement_no, movement_yes};
 movement.help = {'Motion Assessment and Regression Models'
     '- Motion 6/12/24 regressors from realignment as described in Friston et al., 1996'
     '- Motion Censoring (''spike'' regressors for motion-corrupted volumes)'
-    '     - by different thresholding (max. translation/rotation, framewise '
+    '     - by different thresholding (max. translation/rotation, frame-wise '
     '       displacement and DVARS (Power et al., 2012))'
     '- Motion Scrubbing (linear interpolation of censored volumes by nearest neighbours)'
     };
@@ -1532,7 +1529,7 @@ out.physiofile  = cellstr(physio.model.output_physio);
 %==========================================================================
 function dep = vout_physio(job)
 dep(1)            = cfg_dep;
-dep(1).sname      = 'physiological noise regressors file (Multiple Regresssors)';
+dep(1).sname      = 'physiological noise regressors file (Multiple Regressors)';
 dep(1).src_output = substruct('.','physnoisereg');
 dep(1).tgt_spec   = cfg_findspec({{'filter','mat','strtype','e'}});
 
