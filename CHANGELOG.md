@@ -9,7 +9,7 @@ PhysIO_Toolbox_R2018.1.3
 October 30, 2018
 
 WIP Release Notes (R2018.2.0)
--------------------------------
+-----------------------------
 *not released yet*
 
 ### CHANGED
@@ -17,14 +17,14 @@ WIP Release Notes (R2018.2.0)
     - updated deployment `tapas_physio_init` because of that
 
 Bugfix Release Notes (R2018.1.3)
--------------------------------
+--------------------------------
 
 ### Changed
 - fixed bug for matching of Philips SCANPHYSLOG-files (Gitlab #62), if 
   physlogs were acquired on different days, but similar times
 
 Bugfix Release Notes (R2018.1.2)
--------------------------------
+--------------------------------
 
 ### Changed
 - fixed bug for 3D nifti array read-in in tapas_physio_create_noise_rois_regressors (github issue #24, gitlab #52)
