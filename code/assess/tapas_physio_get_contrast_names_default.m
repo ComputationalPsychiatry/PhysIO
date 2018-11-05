@@ -11,7 +11,7 @@ function namesPhysContrasts = tapas_physio_get_contrast_names_default()
 %   tapas_physio_get_contrast_names_default
 %
 %   See also tapas_physio_report_contrasts tapas_physio_compute_tsnr_gains
-%
+
 % Author: Lars Kasper
 % Created: 2016-10-03
 % Copyright (C) 2016 TNU, Institute for Biomedical Engineering,

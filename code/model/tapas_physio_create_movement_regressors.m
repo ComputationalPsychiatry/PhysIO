@@ -68,7 +68,7 @@ function [R, movement, verbose] = tapas_physio_create_movement_regressors(...
 %   tapas_physio_create_movement_regressors
 %
 %   See also tapas_physio_new tapas_physio_main_create_regressors
-%
+
 % Author: Lars Kasper
 % Created: 2015-07-10
 % Copyright (C) 2015 TNU, Institute for Biomedical Engineering,

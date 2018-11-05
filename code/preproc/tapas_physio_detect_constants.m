@@ -23,7 +23,7 @@ function [isConstant, dy, verbose] = tapas_physio_detect_constants(y, ...
 %   tapas_physio_detect_constants
 %
 %   See also tapas_physio_new tapas_physio_main_create_regressors
-%
+
 % Author: Lars Kasper
 % Created: 2016-09-29
 % Copyright (C) 2016 TNU, Institute for Biomedical Engineering,

@@ -27,7 +27,7 @@ function LOCS = tapas_physio_create_LOCS_from_VOLLOCS(VOLLOCS, t, sqpar)
 %             events started
 %
 %   See also tapas_physio_new tapas_physio_main_create_regresssors
-%
+
 % Author: Lars Kasper
 % Created: 2013-08-23
 % Copyright (C) 2016 Institute for Biomedical Engineering, ETH/Uni Zurich.

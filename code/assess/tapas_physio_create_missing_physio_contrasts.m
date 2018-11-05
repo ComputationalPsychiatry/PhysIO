@@ -30,7 +30,7 @@ function [SPM, matlabbatch, indContrastsExisting, indContrastsCreate] = ...
 %
 %   See also tapas_physio_check_prepare_job_contrasts
 %   See also tapas_physio_report_contrasts
-%
+
 % Author: Lars Kasper
 % Created: 2016-10-03
 % Copyright (C) 2016 TNU, Institute for Biomedical Engineering,

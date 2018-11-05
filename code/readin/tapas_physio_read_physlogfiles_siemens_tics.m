@@ -49,7 +49,7 @@ function [c, r, t, cpulse, acq_codes, verbose] = tapas_physio_read_physlogfiles_
 %       tapas_physio_read_physlogfiles_siemens_tics(logfiles);
 %
 %   See also tapas_physio_main_create_regressors
-%
+
 % Author: Lars Kasper
 % Created: 2014-09-08
 % Copyright (C) 2014 Institute for Biomedical Engineering, ETH/Uni Zurich.

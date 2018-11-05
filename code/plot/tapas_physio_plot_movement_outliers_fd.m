@@ -15,7 +15,7 @@ function  fh = tapas_physio_plot_movement_outliers_fd(rp, quality_measures, ...
 %   tapas_physio_plot_movement_outliers_fd
 %
 %   See also tapas_physio_get_movement_quality_measures
-%
+
 % Author: Lars Kasper
 % Created: 2018-02-21
 % Copyright (C) 2018 TNU, Institute for Biomedical Engineering,

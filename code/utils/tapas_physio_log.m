@@ -19,7 +19,7 @@ function [verbose, msg] = tapas_physio_log(msg, verbose, warningLevel)
 %   tapas_physio_log
 %
 %   See also
-%
+
 % Author: Lars Kasper
 % Created: 2015-07-05
 % Copyright (C) 2015 TNU, Institute for Biomedical Engineering, University of Zurich and ETH Zurich.

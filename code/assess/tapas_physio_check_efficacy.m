@@ -1,6 +1,6 @@
 % This script reports all relevant F-contrast-maps for physIO-created regressors
 % for the specified subjects
-%
+
 % Author: Lars Kasper
 % Created: 2014-01-21
 % Copyright (C) 2014 TNU, Institute for Biomedical Engineering, University of Zurich and ETH Zurich.

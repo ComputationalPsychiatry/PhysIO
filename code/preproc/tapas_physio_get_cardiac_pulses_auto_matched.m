@@ -29,7 +29,7 @@ function [cpulse, verbose] = tapas_physio_get_cardiac_pulses_auto_matched(...
 %   tapas_physio_get_cardiac_pulses_auto_matched
 %
 %   See also
-%
+
 % Author: Steffen Bollmann, Kinderspital Zurich
 % Created: 2014-03-20
 % Copyright (C) 2014 TNU, Institute for Biomedical Engineering, University of Zurich and ETH Zurich.

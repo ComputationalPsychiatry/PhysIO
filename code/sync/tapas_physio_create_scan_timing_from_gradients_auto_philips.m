@@ -94,7 +94,7 @@ function [VOLLOCS, LOCS, verbose] = ...
 %   scan_timing, verbose);
 %
 %   See also tapas_physio_create_scan_timing_from_gradients_philips
-%
+
 % Author: Lars Kasper
 % Created: 2015-01-09
 % Copyright (C) 2013 Institute for Biomedical Engineering, ETH/Uni Zurich.

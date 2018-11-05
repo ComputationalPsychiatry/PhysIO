@@ -12,7 +12,7 @@ function physio = tapas_physio_prepend_absolute_paths(physio)
 %   tapas_physio_prepend_absolute_paths
 %
 %   See also
-%
+
 % Author: Lars Kasper
 % Created: 2014-05-03
 % Copyright (C) 2014 TNU, Institute for Biomedical Engineering, University of Zurich and ETH Zurich.

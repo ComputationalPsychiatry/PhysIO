@@ -9,7 +9,7 @@ function [rpulset, pulset] = tapas_physio_filter_respiratory(...
 %   rsamping
 %   doNormalize     default:false
 %                   Optionally, data is normalized to be in -1...+1 range
-%
+
 % Author: Lars Kasper, 2011; heavily based on an earlier implementation of
 % Chloe Hutton (FIL, UCL London)
 %

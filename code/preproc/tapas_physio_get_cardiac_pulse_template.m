@@ -16,7 +16,7 @@ function [pulseCleanedTemplate, cpulse2ndGuess, averageHeartRateInSamples] = ...
 %   tapas_physio_get_cardiac_pulse_template
 %
 %   See also
-%
+
 % Author: Lars Kasper
 % Created: 2014-08-05
 % Copyright (C) 2014 TNU, Institute for Biomedical Engineering, University of Zurich and ETH Zurich.

@@ -22,7 +22,7 @@ function [outliersHigh, outliersLow, verbose] = ...
 %   tapas_physio_cardiac_detect_outliers
 %
 %   See also tapas_physio_correct_cardiac_pulses_manually
-%
+
 % Author: Lars Kasper
 % Created: 2013-04-25
 % Copyright (C) 2013 TNU, Institute for Biomedical Engineering, University of Zurich and ETH Zurich.

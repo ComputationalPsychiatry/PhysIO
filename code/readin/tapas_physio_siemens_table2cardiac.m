@@ -35,7 +35,7 @@ function dataCardiac = tapas_physio_siemens_table2cardiac(data_table, ...
 %
 %   See also tapas_physio_siemens_line2table
 %   See also tapas_physio_read_physlogfiles_siemens
-%
+
 % Author: Lars Kasper
 % Created: 2016-02-29
 % Copyright (C) 2016 TNU, Institute for Biomedical Engineering,

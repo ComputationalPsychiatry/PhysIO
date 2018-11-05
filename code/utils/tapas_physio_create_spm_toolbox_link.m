@@ -13,7 +13,7 @@ function cmdString = tapas_physio_create_spm_toolbox_link(pathPhysIO)
 %   tapas_physio_create_spm_toolbox_link
 %
 %   See also
-%
+
 % Author: Lars Kasper
 % Created: 2018-02-17
 % Copyright (C) 2018 TNU, Institute for Biomedical Engineering,

@@ -22,7 +22,7 @@ function slice_regressors = tapas_physio_split_regressor_slices(...
 %   tapas_physio_split_regressor_slices
 %
 %   See also
-%
+
 % Author: Lars Kasper
 % Created: 2014-08-14
 % Copyright (C) 2014 TNU, Institute for Biomedical Engineering, University of Zurich and ETH Zurich.

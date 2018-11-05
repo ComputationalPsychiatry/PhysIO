@@ -19,7 +19,7 @@ function [cpulse, verbose] = tapas_physio_findpeaks_template_xcorr(...
 %   tapas_physio_findpeaks_template_correlation
 %
 %   See also
-%
+
 % Author: Steffen Bollmann, cleanup, xcorr: Lars Kasper
 % Created: 2014-08-05
 % Copyright (C) 2014 TNU, Institute for Biomedical Engineering, 

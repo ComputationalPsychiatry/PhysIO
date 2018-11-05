@@ -13,7 +13,7 @@ function verbose = tapas_physio_print_figs_to_file(verbose, save_dir)
 %   physio_print_figs_to_ps
 %
 %   See also
-%
+
 % Author: Lars Kasper
 %           based on code by Jakob Heinzle, TNU
 %

@@ -34,7 +34,7 @@ function [cTics, c, cSignals, extTriggerSignals, stringChannels, verbose, dtTics
 %   tapas_physio_split_data_per_channel_siemens_tics
 %
 %   See also
-%
+
 % Author: Lars Kasper
 % Created: 2017-11-17
 % Copyright (C) 2017 TNU, Institute for Biomedical Engineering,

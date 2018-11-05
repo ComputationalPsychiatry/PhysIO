@@ -77,7 +77,7 @@ function [VOLLOCS, LOCS, verbose] = ...
 %   scan_timing, verbose);
 %
 %   See also
-%
+
 % Author: Lars Kasper
 % Created: 2013-02-16
 % Copyright (C) 2013 Institute for Biomedical Engineering, ETH/Uni Zurich.

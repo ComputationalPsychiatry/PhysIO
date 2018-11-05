@@ -25,7 +25,7 @@ function [convHRVOut, hrOut, verbose] = tapas_physio_create_hrv_regressors(...
 %                       physio_out.sqpar);
 %
 %   See also tapas_physio_hr tapas_physio_crf
-%
+
 % Author: Lars Kasper
 % Created: 2013-07-26
 % Copyright (C) 2013 TNU, Institute for Biomedical Engineering, University of Zurich and ETH Zurich.

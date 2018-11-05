@@ -17,7 +17,7 @@ function verbose = tapas_physio_plot_raw_physdata(ons_secs, verbose)
 %   tapas_physio_plot_raw_physdata
 %
 %   See also
-%
+
 % Author: Lars Kasper
 % Created: 2013-02-21
 % Copyright (C) 2013, Institute for Biomedical Engineering, ETH/Uni Zurich.

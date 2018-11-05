@@ -13,7 +13,7 @@ function fh = tapas_physio_plot_raw_physdata_siemens_tics(tCardiac, c, tRespirat
 %   tapas_physio_plot_raw_physdata_siemens_tics
 %
 %   See also
-%
+
 % Author: Lars Kasper
 % Created: 2017-09-10
 % Copyright (C) 2017 TNU, Institute for Biomedical Engineering,

@@ -20,7 +20,7 @@ function data_table = tapas_physio_siemens_line2table(lineData, cardiacModality)
 %   tapas_physio_siemens_line2table
 %
 %   See also
-%
+
 % Author: Lars Kasper
 % Created: 2016-02-29
 % Copyright (C) 2016 TNU, Institute for Biomedical Engineering,

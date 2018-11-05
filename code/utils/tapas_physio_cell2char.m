@@ -12,7 +12,7 @@ function physio = tapas_physio_cell2char(physio)
 %   tapas_physio_cell2char
 %
 %   See also
-%
+
 % Author: Lars Kasper
 % Created: 2014-04-28
 % Copyright (C) 2014 TNU, Institute for Biomedical Engineering, University of Zurich and ETH Zurich.

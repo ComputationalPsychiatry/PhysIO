@@ -45,7 +45,7 @@ function [c, r, t, cpulse, acq_codes, verbose, gsr] = tapas_physio_read_physlogf
 %   tapas_physio_read_physlogfiles_biopac_txt
 %
 %   See also tapas_physio_read_physlogfiles_siemens tapas_physio_plot_raw_physdata_siemens_hcp
-%
+
 % Author: Lars Kasper
 % Created: 2018-09-27
 % Copyright (C) 2018 TNU, Institute for Biomedical Engineering,

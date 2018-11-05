@@ -37,7 +37,7 @@ function [c, r, t, cpulse, acq_codes] = tapas_physio_read_physlogfiles_brainprod
 %       tapas_physio_read_physlogfiles_GE(logfiles);
 %
 %   See also tapas_physio_main_create_regressors
-%
+
 % Author: Lars Kasper
 % Created: 2017-01-27
 % Copyright (C) 2017 Institute for Biomedical Engineering, ETH/Uni Zurich.

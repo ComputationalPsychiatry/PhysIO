@@ -46,7 +46,7 @@ function    [quality_measures, dRp] = ...
 %   tapas_physio_get_movement_quality_measures
 %
 %   See also
-%
+
 % Author: Lars Kasper
 % Created: 2018-02-21
 % Copyright (C) 2018 TNU, Institute for Biomedical Engineering,

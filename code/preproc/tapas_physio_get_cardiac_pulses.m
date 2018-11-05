@@ -50,7 +50,7 @@ function [cpulse, verbose] = tapas_physio_get_cardiac_pulses(t, c, ...
 %   thresh.cardiac, cardiac_modality, cardiac_peak_file);
 %
 %   See also tapas_physio_main_create_regressors
-%
+
 % Author: Lars Kasper
 % Created: 2013-02-16
 %

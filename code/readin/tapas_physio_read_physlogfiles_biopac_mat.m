@@ -41,7 +41,7 @@ function [c, r, t, cpulse, acq_codes] = tapas_physio_read_physlogfiles_biopac_ma
 %       tapas_physio_read_physlogfiles_GE(logfiles);
 %
 %   See also tapas_physio_main_create_regressors
-%
+
 % Author: Lars Kasper
 % Created: 2016-08-15
 % Copyright (C) 2016 Institute for Biomedical Engineering, ETH/Uni Zurich.

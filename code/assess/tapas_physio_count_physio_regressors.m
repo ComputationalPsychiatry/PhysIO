@@ -17,7 +17,7 @@ function nPhysioRegressors = tapas_physio_count_physio_regressors(physio)
 %   tapas_physio_report_contrasts
 %
 %   See also
-%
+
 % Author: Lars Kasper
 % Created: 2014-10-16
 % Copyright (C) 2014 TNU, Institute for Biomedical Engineering, University of Zurich and ETH Zurich.

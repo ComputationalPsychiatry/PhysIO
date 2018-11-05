@@ -11,7 +11,7 @@ function physio = tapas_physio_job2physio(job)
 %   physio = tapas_physio_job2physio(job)
 %
 %   See also spm_physio_cfg_matlabbatch
-%
+
 % Author: Lars Kasper
 % Created: 2015-01-05
 % Copyright (C) 2015 TNU, Institute for Biomedical Engineering, University of Zurich and ETH Zurich.

@@ -50,7 +50,7 @@ function [c, r, t, cpulse, acq_codes, verbose] = tapas_physio_read_physlogfiles_
 %   tapas_physio_read_physlogfiles_siemens_hcp
 %
 %   See also tapas_physio_read_physlogfiles_siemens tapas_physio_plot_raw_physdata_siemens_hcp
-%
+
 % Author: Lars Kasper
 % Created: 2018-01-23
 % Copyright (C) 2018 TNU, Institute for Biomedical Engineering,

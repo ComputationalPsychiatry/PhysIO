@@ -2,7 +2,7 @@ function [verbose, c_outliers_low, c_outliers_high, r_hist] = tapas_physio_plot_
     thresh_cardiac, verbose, t, c)
 % plots diagnostics for raw physiological time series as monitoried by the
 % MR scanner breathing belt/ECG
-%
+
 % Author: Lars Kasper
 %
 % Copyright (C) 2013, Institute for Biomedical Engineering, ETH/Uni Zurich.

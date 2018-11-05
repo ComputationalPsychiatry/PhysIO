@@ -10,7 +10,7 @@ function indC = tapas_physio_check_get_xcon_index(SPM, cname)
 % OUTPUT:
 %   indC    -  vector of contrast indices in SPM.xCon with matching name
 %              returns 0, if none found
-%
+
 % Author: Lars Kasper
 % Created: 2014-01-21
 % Copyright (C) 2014 TNU, Institute for Biomedical Engineering, University of Zurich and ETH Zurich.

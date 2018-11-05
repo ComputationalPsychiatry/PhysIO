@@ -22,7 +22,7 @@ function [lineData, logFooter, linesFooter] = tapas_physio_read_physlogfiles_sie
 %   tapas_physio_read_physlogfiles_siemens_raw
 %
 %   See also
-%
+
 % Author: Lars Kasper
 % Created: 2016-02-29
 % Copyright (C) 2016 TNU, Institute for Biomedical Engineering,

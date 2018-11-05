@@ -27,7 +27,7 @@ function [rphase, fh] = tapas_physio_get_respiratory_phase(pulset, rsampint,...
 % 4) Calculate the running integral of the histogram for the bin
 %    corresponding to each respiratory amplitude
 %_______________________________________________________________________
-%
+
 % Author: Lars Kasper
 %         Error handling for temporary breathing belt failures:
 %         Eduardo Aponte, TNU Zurich

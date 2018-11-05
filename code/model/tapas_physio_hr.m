@@ -21,7 +21,7 @@ function hr = tapas_physio_hr(cpulse, t)
 %   hr = tapas_physio_hr(physio_out.ons_secs.cpulse,physio_out.ons_secs.svolpulse)
 %
 %   See also tapas_physio_create_hrv_regressor
-%
+
 % Author: Lars Kasper
 % Created: 2013-07-26
 % Copyright (C) 2013 TNU, Institute for Biomedical Engineering, University of Zurich and ETH Zurich.

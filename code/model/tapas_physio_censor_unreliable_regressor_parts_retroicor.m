@@ -14,7 +14,7 @@ function [ons_secs, censored_cardiac_sess, censored_respire_sess, censored_mult_
 %   tapas_physio_censor_unreliable_regressor_parts_retroicor
 %
 %   See also
-%
+
 % Author:   Lars Kasper, after fruitful exchange with
 %           [Daniel Hoffmann Ayala](https://github.com/DanielHoffmannAyala)
 %

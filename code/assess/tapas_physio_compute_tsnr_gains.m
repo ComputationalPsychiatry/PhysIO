@@ -29,7 +29,7 @@ function [tSnrImageArray, fileTsnrArray, ...
 %   tapas_physio_compute_tsnr_gains
 %
 %   See also tapas_physio_compute_tsnr_spm spm_write_residuals
-%
+
 % Author: Lars Kasper
 % Created: 2015-07-03
 % Copyright (C) 2015 TNU, Institute for Biomedical Engineering,

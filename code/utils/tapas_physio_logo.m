@@ -11,7 +11,7 @@ function tapas_physio_logo()
 %   tapas_physio_logo
 %
 %   See also
-%
+
 % Author: Lars Kasper
 % Created: 2018-02-17
 % Copyright (C) 2018 TNU, Institute for Biomedical Engineering,

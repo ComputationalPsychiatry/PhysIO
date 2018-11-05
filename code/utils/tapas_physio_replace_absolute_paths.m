@@ -19,7 +19,7 @@ function job = tapas_physio_replace_absolute_paths(job, pathArray)
 %   tapas_physio_replace_absolute_paths
 %
 %   See also tapas_physio_fieldnamesr
-%
+
 % Author: Lars Kasper
 % Created: 2015-08-10
 % Copyright (C) 2015 TNU, Institute for Biomedical Engineering,

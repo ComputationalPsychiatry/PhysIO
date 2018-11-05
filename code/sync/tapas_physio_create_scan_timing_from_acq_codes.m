@@ -27,7 +27,7 @@ function [VOLLOCS, LOCS, verbose] = ...
 %                      events started
 %
 %   See also tapas_physio_create_scan_timing tapas_physio_read_physlogfiles
-%
+
 % Author: Lars Kasper
 % Created: 2016-08-20
 % Copyright (C) 2014 Institute for Biomedical Engineering, ETH/Uni Zurich.

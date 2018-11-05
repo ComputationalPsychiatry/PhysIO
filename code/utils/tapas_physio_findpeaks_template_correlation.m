@@ -28,7 +28,7 @@ function [cpulse, verbose, plotData] = tapas_physio_findpeaks_template_correlati
 %   tapas_physio_findpeaks_template_correlation
 %
 %   See also
-%
+
 % Author: Steffen Bollmann, merged in this function: Lars Kasper
 % Created: 2014-08-05
 % Copyright (C) 2014 TNU, Institute for Biomedical Engineering,

@@ -14,7 +14,7 @@ function y = tapas_physio_maxfilter(x, n)
 %   tapas_physio_maxfilter
 %
 %   See also
-%
+
 % Author: Lars Kasper
 % Created: 2015-01-11
 % Copyright (C) 2015 TNU, Institute for Biomedical Engineering, University of Zurich and ETH Zurich.

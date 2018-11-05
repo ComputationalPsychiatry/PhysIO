@@ -11,7 +11,7 @@ function isPhysioCorrectlyInitialized = tapas_physio_init()
 %   tapas_physio_init()
 %
 %   See also
-%
+
 % Author: Lars Kasper
 % Created: 2018-02-17
 % Copyright (C) 2018 TNU, Institute for Biomedical Engineering,

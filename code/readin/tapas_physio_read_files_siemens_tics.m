@@ -20,7 +20,7 @@ function [C, columnNames] = tapas_physio_read_files_siemens_tics(fileName, fileT
 %   tapas_physio_read_files_siemens_tics('Physio_RESP.log')
 %
 %   See also
-%
+
 % Author: Lars Kasper
 % Created: 2017-11-16
 % Copyright (C) 2017 TNU, Institute for Biomedical Engineering,

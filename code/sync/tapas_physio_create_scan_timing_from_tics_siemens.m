@@ -29,7 +29,7 @@ function [VOLLOCS, LOCS, verbose] = ...
 %   [VOLLOCS, LOCS] = tapas_physio_create_scan_timing_from_tics_siemens(t, sqpar);
 %
 %   See also
-%
+
 % Author: Lars Kasper
 % Created: 2014-09-08
 % Copyright (C) 2014 Institute for Biomedical Engineering, ETH/Uni Zurich.

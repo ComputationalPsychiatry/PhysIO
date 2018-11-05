@@ -17,7 +17,7 @@ function p = tapas_physio_prctile(x, percentile)
 %   figure;hist(x,100);yl = ylim;hold all;stem(p, yl(2));
 %
 %   See also prctile tapas_physio_plot_raw_physdata_diagnostics tapas_physio_create_scan_timing_from_gradients_philips
-%
+
 % Author: Lars Kasper
 % Created: 2013-03-13
 % Copyright (C) 2013 TNU, Institute for Biomedical Engineering, University of Zurich and ETH Zurich.

@@ -36,7 +36,7 @@ function [rvt, timeRpulseMax, timeRpulseMin, verbose] = ...
 %   [rvt, rpulse] = tapas_physio_rvt(fr, t)
 %
 %   See also tapas_physio_create_rvt_regressor
-%
+
 % Author: Lars Kasper
 % Created: 2014-01-20
 % Copyright (C) 2013 TNU, Institute for Biomedical Engineering, University of Zurich and ETH Zurich.

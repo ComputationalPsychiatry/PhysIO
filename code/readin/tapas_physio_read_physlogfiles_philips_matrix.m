@@ -21,7 +21,7 @@ function y = tapas_physio_read_physlogfiles_philips_matrix(fileNamePhyslog)
 %   See also tapas_physio_read_physlogfiles_philips
 %   See also tapas_physio_create_scan_timing_from_gradients_philips
 %   See also tapas_physio_create_scan_timing_from_gradients_auto_philips
-%
+
 % Author: Lars Kasper
 % Created: 2015-01-11
 % Copyright (C) 2015, Institute for Biomedical Engineering, ETH/Uni Zurich.

@@ -65,7 +65,7 @@ function [VOLLOCS, LOCS, verbose] = tapas_physio_create_scan_timing_from_end_mar
 %   thresh.scan_timing);
 %
 %   See also
-%
+
 % Author: Lars Kasper
 % Created: 2013-02-16
 % Copyright (C) 2013 Institute for Biomedical Engineering, ETH/Uni Zurich.

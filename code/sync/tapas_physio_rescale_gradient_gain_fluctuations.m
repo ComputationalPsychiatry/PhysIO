@@ -23,7 +23,7 @@ function [G, gainArray, normFactor] = tapas_physio_rescale_gradient_gain_fluctua
 %   tapas_physio_rescale_gradient_gain_fluctuations
 %
 %   See also
-%
+
 % Author: Lars Kasper
 % Created: 2015-01-11
 % Copyright (C) 2015 TNU, Institute for Biomedical Engineering, University of Zurich and ETH Zurich.

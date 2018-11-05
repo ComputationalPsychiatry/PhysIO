@@ -12,7 +12,7 @@ function [isSpmOnPath, pathSpm] = tapas_physio_check_spm();
 %   tapas_physio_check_spm
 %
 %   See also spm_check_installation tapas_physio_check_spm_batch_editor_integration
-%
+
 % Author: Lars Kasper
 % Created: 2018-02-17
 % Copyright (C) 2018 TNU, Institute for Biomedical Engineering,

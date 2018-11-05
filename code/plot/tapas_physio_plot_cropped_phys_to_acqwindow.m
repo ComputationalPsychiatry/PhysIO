@@ -10,7 +10,7 @@ function fh = tapas_physio_plot_cropped_phys_to_acqwindow(ons_secs, sqpar)
 %
 % OUTPUT
 %   fh          figure handle of output figure
-%
+
 % Author: Lars Kasper
 %
 % Copyright (C) 2013, Institute for Biomedical Engineering, ETH/Uni Zurich.

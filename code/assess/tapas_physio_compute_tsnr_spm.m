@@ -74,7 +74,7 @@ function [tSnrImage, fileTsnr, tSnrRatioImage, fileTsnrRatio] = ...
 %   compute_tsnr_spm
 %
 %   See also spm_write_residuals spm_FcUtil
-%
+
 % Author: Lars Kasper
 % Created: 2014-12-10
 % Copyright (C) 2014 Institute for Biomedical Engineering, ETH/Uni Zurich.

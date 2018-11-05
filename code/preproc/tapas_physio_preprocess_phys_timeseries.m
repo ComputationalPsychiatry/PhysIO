@@ -15,7 +15,7 @@ function ons_secs = tapas_physio_preprocess_phys_timeseries(ons_secs, sqpar, doN
 %   tapas_physio_preprocess_phys_timeseries
 %
 %   See also
-%
+
 % Author: Lars Kasper
 % Created: 2016-02-28
 % Copyright (C) 2016 TNU, Institute for Biomedical Engineering,

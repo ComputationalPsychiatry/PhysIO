@@ -25,7 +25,7 @@ function [convRVTOut, rvtOut, verbose] = tapas_physio_create_rvt_regressors(...
 %   [convHRV, hr] = tapas_physio_create_hrv_regressor(physio_out.ons_secs, physio_out.sqpar);
 %
 %   See also tapas_physio_rvt tapas_physio_rrf
-%
+
 % Author: Lars Kasper
 % Created: 2014-01-20
 % Copyright (C) 2014 TNU, Institute for Biomedical Engineering, University of Zurich and ETH Zurich.

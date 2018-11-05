@@ -24,7 +24,7 @@ function w = tapas_physio_gausswin(L, a)
 %   tapas_physio_gausswin
 %
 %   See also
-%
+
 % Author: Lars Kasper
 % Created: 2017-11-16
 % Copyright (C) 2017 TNU, Institute for Biomedical Engineering,

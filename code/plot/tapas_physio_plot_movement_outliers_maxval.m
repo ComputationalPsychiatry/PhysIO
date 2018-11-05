@@ -34,7 +34,7 @@ function fh = tapas_physio_plot_movement_outliers_maxval(...
 %   tapas_physio_plot_movement_outliers_maxval
 %
 %   See also
-%
+
 % Author: Lars Kasper
 % Created: 2018-02-21
 % Copyright (C) 2018 TNU, Institute for Biomedical Engineering,

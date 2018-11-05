@@ -14,7 +14,7 @@ function fh = tapas_physio_plot_raw_physdata_siemens_hcp(t, c, r, acq_codes, ...
 %   tapas_physio_plot_raw_physdata_siemens_hcp
 %
 %   See also tapas_physio_read_physlogfiles_siemens_hcp
-%
+
 % Author: Lars Kasper
 % Created: 2018-01-23
 % Copyright (C) 2018 TNU, Institute for Biomedical Engineering,

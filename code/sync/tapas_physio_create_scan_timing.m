@@ -58,7 +58,7 @@ function  [ons_secs, VOLLOCS, LOCS, verbose] = tapas_physio_create_scan_timing(.
 %                             events started
 %
 %   See also tapas_physio_new tapas_physio_main_create_regresssors
-%
+
 % Author: Lars Kasper
 % Created: 2013-08-23
 % Copyright (C) 2016 Institute for Biomedical Engineering, ETH/Uni Zurich.

@@ -44,7 +44,7 @@ function [VOLLOCS, LOCS] = tapas_physio_create_scan_timing_nominal(t, ...
 %   [VOLLOCS, LOCS] = tapas_physio_create_scan_timing_nominal(t, sqpar);
 %
 %   See also
-%
+
 % Author: Lars Kasper
 % Created: 2013-02-07
 % Copyright (C) 2013 Institute for Biomedical Engineering, ETH/Uni Zurich.

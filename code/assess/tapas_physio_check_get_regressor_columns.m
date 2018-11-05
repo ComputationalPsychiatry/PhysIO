@@ -19,7 +19,7 @@ function [colPhys, colCard, colResp, colMult, colHRV, colRVT, colRois, colMove, 
 %   colRois     - index vector of noise rois regressors (from SPM.xX.names)
 %   colMove     - index vector of movement regressor columns in design matrix (from SPM.xX.names)
 %   colAll      - colPhys and colMove (all nuisance regressors!)
-%
+
 % Author: Lars Kasper
 % Created: 2014-01-21
 % Copyright (C) 2014 TNU, Institute for Biomedical Engineering, University of Zurich and ETH Zurich.

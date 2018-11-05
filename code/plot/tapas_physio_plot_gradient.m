@@ -13,7 +13,7 @@ function fh = plot_gradient(G, t)
 %   plot_gradient
 %
 %   See also
-%
+
 % Author: Lars Kasper
 % Created: 2015-01-10
 % Copyright (C) 2015 TNU, Institute for Biomedical Engineering, University of Zurich and ETH Zurich.

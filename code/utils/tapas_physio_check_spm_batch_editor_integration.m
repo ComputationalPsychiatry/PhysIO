@@ -14,7 +14,7 @@ function [isPhysioVisibleForSpmBatchEditor, pathSpm, pathPhysIO] = ...
 %   tapas_physio_check_spm_batch_editor_integration
 %
 %   See also
-%
+
 % Author: Lars Kasper
 % Created: 2018-02-17
 % Copyright (C) 2018 TNU, Institute for Biomedical Engineering,

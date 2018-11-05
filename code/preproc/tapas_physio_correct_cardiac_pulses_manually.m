@@ -4,7 +4,7 @@ function [ons_secs, outliersHigh, outliersLow, verbose] = ...
 % this function takes the onsets from ECG measure and controls for
 % outliers (more or less than a threshold given by a percentile increased
 % or decreased by upperTresh or lowerThresh percent respectively.
-%
+
 % Author: Jakob Heinzle, TNU,
 %           adaptation: Lars Kasper
 %

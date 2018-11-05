@@ -15,7 +15,7 @@ function physio = tapas_physio_fill_empty_parameters(physio)
 %   tapas_physio_fill_empty_parameters
 %
 %   See also tapas_physio_new tapas_physio_main_create_regressors
-%
+
 % Author: Lars Kasper
 % Created: 2014-04-27
 % Copyright (C) 2014 TNU, Institute for Biomedical Engineering, University of Zurich and ETH Zurich.

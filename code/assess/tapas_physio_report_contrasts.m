@@ -70,7 +70,7 @@ function varargout = tapas_physio_report_contrasts(varargin)
 %   tapas_physio_report_contrasts
 %
 %   See also tapas_physio_overlay_contrasts
-%
+
 % Author: Lars Kasper
 % Created: 2014-10-16
 % Copyright (C) 2014 TNU, Institute for Biomedical Engineering, University of Zurich and ETH Zurich.

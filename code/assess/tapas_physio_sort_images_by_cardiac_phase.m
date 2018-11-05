@@ -61,7 +61,7 @@ function [tableVolSliPhase, indVolPerPhaseSlice, imgCardiacPhasesMeanVols, ...
 %   tapas_physio_sort_images_by_cardiac_phase
 %
 %   See also
-%
+
 % Author: Lars Kasper
 % Created: 2014-06-15
 % Copyright (C) 2014 TNU, Institute for Biomedical Engineering, University of Zurich and ETH Zurich.
@@ -260,7 +260,7 @@ function [T, Y, V] = spm_img_load(fn, verbose)
 %   spm_img_load
 %
 %   See also
-%
+
 % Author: Lars Kasper
 % Created: 2013-08-01
 % Copyright (C) 2013 Institute for Biomedical Engineering, ETH/Uni Zurich.
@@ -316,7 +316,7 @@ function V = reuse_nifti_hdr(fnIn, fnOut, Y, iVolArray)
 %   reuse_nifti_hdr
 %
 %   See also
-%
+
 % Author: Lars Kasper
 % Created: 2013-11-12
 % Copyright (C) 2013 Institute for Biomedical Engineering, ETH/Uni Zurich.

@@ -34,7 +34,7 @@ function [svolpulse, spulse, spulse_per_vol, verbose] = tapas_physio_get_onsets_
 %   [ons_secs.svolpulse, ons_secs.spulse] = tapas_physio_get_onsets_from_locs(ons_secs.t, VOLLOCS, LOCS);
 %
 %   See also tapas_physio_main_create_regressors tapas_physio_read_physlogfiles_philips
-%
+
 % Author: Lars Kasper
 % Created: 2013-02-16
 %

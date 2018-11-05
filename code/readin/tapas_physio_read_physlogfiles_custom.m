@@ -23,7 +23,7 @@ function [c, r, t, cpulse] = tapas_physio_read_physlogfiles_custom(log_files, ..
 %   tapas_physio_read_physlogfiles(logfile, vendor, cardiac_modality);
 %
 %   See also tapas_physio_main_create_regressors
-%
+
 % Author: Lars Kasper
 % Created: 2013-02-16
 % Copyright (C) 2013, Institute for Biomedical Engineering, ETH/Uni Zurich.

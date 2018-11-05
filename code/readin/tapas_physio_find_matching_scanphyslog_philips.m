@@ -19,7 +19,7 @@ function fnPhysLogArray = tapas_physio_find_matching_scanphyslog_philips(...
 %   tapas_physio_find_matching_scanphyslog_philips
 %
 %   See also tapas_physio_get_filename_from_id_philips
-%
+
 % Author: Lars Kasper
 % Created: 2014-06-19
 % Copyright (C) 2014 TNU, Institute for Biomedical Engineering, University of Zurich and ETH Zurich.

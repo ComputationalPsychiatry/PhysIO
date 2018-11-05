@@ -24,7 +24,7 @@ function tapas_physio_strip_fields(opts)
 %       coolArray   100x100 double
 %
 %   See also propval
-%
+
 % Author: Lars Kasper
 % Created: 2013-11-13
 %

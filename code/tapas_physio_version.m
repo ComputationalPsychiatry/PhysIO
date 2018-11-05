@@ -11,7 +11,7 @@ function versionPhysio = tapas_physio_version()
 %   tapas_physio_version
 %
 %   See also
-%
+
 % Author: Lars Kasper
 % Created: 2018-10-19
 % Copyright (C) 2018 TNU, Institute for Biomedical Engineering,

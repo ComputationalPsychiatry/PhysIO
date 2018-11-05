@@ -27,7 +27,7 @@ function [cpulse, verbose] = tapas_physio_get_cardiac_pulses_manual_template(...
 %   tapas_physio_get_cardiac_pulses_manual_template
 %
 %   See also tapa_physio_new
-%
+
 % Author: Lars Kasper
 % Created: 2012-02-20
 % Copyright (C) 2014 TNU, Institute for Biomedical Engineering, University of Zurich and ETH Zurich.

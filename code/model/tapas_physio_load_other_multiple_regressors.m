@@ -14,7 +14,7 @@ function [R, verbose] = tapas_physio_load_other_multiple_regressors(...
 %   tapas_physio_load_other_multiple_regressors
 %
 %   See also tapas_physio_orthogonalise_physiological_regressors tapas_physio_main_create_regressors
-%
+
 % Author: Lars Kasper
 % Created: 2013-02-21
 %
