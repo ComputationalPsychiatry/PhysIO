@@ -38,8 +38,8 @@ function verbose = tapas_physio_review(physio, newVerboseLevel)
 % License (GPL), version 3. You can redistribute it and/or modify it under the terms of the GPL
 % (either version 3 or, at your option, any later version). For further details, see the file
 % COPYING or <http://www.gnu.org/licenses/>.
-%
-% $Id: teditRETRO.m 775 2015-07-17 10:52:58Z kasperla $
+
+
 
 if ischar(physio) % file name
     load(physio);

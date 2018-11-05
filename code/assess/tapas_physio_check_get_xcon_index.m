@@ -19,8 +19,7 @@ function indC = tapas_physio_check_get_xcon_index(SPM, cname)
 % Licence (GPL), version 3. You can redistribute it and/or modify it under the terms of the GPL
 % (either version 3 or, at your option, any later version). For further details, see the file
 % COPYING or <http://www.gnu.org/licenses/>.
-%
-% $Id$
+
 nContrasts = length(SPM.xCon);
 cnames = cell(nContrasts,1);
 for c = 1:nContrasts

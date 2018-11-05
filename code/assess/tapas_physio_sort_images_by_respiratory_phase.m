@@ -56,8 +56,7 @@ function [tableVolSliPhase, indVolPerPhaseSlice, imgRespiratoryPhasesMeanVols, .
 % Licence (GPL), version 3. You can redistribute it and/or modify it under the terms of the GPL
 % (either version 3 or, at your option, any later version). For further details, see the file
 % COPYING or <http://www.gnu.org/licenses/>.
-%
-% $Id$
+
 if nargin < 5
     verbose = false;
 end
@@ -234,7 +233,7 @@ function [T, Y, V] = spm_img_load(fn, verbose)
 % Author: Lars Kasper
 % Created: 2013-08-01
 % Copyright (C) 2013 Institute for Biomedical Engineering, ETH/Uni Zurich.
-% $Id$
+
 if nargin < 2
     verbose = false;
 end
@@ -290,7 +289,7 @@ function V = reuse_nifti_hdr(fnIn, fnOut, Y, iVolArray)
 % Author: Lars Kasper
 % Created: 2013-11-12
 % Copyright (C) 2013 Institute for Biomedical Engineering, ETH/Uni Zurich.
-% $Id$
+
 W = spm_vol(fnIn);
 nVols = length(W);
 if nargin < 4

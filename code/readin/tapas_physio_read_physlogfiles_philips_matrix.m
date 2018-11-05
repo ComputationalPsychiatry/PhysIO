@@ -30,8 +30,8 @@ function y = tapas_physio_read_physlogfiles_philips_matrix(fileNamePhyslog)
 % Licence (GPL), version 3. You can redistribute it and/or modify it under the terms of the GPL
 % (either version 3 or, at your option, any later version). For further details, see the file
 % COPYING or <http://www.gnu.org/licenses/>.
-%
-% $Id: tapas_physio_read_physlogfiles_philips_matrix.m 632 2015-01-09 12:36:12Z kasperla $
+
+
 
 % use textread as long as it exists, for it is much faster (factor 4) than
 % textscan; TODO: use fread and sscanf to make it even faster...

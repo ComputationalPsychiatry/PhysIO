@@ -50,8 +50,7 @@ function [c, r, t, cpulse, acq_codes] = tapas_physio_read_physlogfiles_biopac_ma
 % Licence (GPL), version 3. You can redistribute it and/or modify it under the terms of the GPL
 % (either version 3 or, at your option, any later version). For further details, see the file
 % COPYING or <http://www.gnu.org/licenses/>.
-%
-% $Id$
+
 
 %% read out parameters
 DEBUG = verbose.level >= 3;

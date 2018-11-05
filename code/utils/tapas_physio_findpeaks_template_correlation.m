@@ -38,8 +38,8 @@ function [cpulse, verbose, plotData] = tapas_physio_findpeaks_template_correlati
 % Licence (GPL), version 3. You can redistribute it and/or modify it under the terms of the GPL
 % (either version 3 or, at your option, any later version). For further details, see the file
 % COPYING or <http://www.gnu.org/licenses/>.
-%
-% $Id: tapas_physio_findpeaks_template_correlation.m 787 2015-07-31 18:35:24Z kasperla $
+
+
 
 % Determine starting peak for the search:
 %   search for a representative R-peak a range of peaks

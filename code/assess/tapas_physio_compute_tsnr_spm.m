@@ -78,7 +78,7 @@ function [tSnrImage, fileTsnr, tSnrRatioImage, fileTsnrRatio] = ...
 % Author: Lars Kasper
 % Created: 2014-12-10
 % Copyright (C) 2014 Institute for Biomedical Engineering, ETH/Uni Zurich.
-% $Id$
+
 
 if nargin < 2
     iC = 0;

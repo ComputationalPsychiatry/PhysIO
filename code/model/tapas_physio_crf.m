@@ -32,6 +32,5 @@ function crf = tapas_physio_crf(t)
 % Licence (GPL), version 3. You can redistribute it and/or modify it under the terms of the GPL
 % (either version 3 or, at your option, any later version). For further details, see the file
 % COPYING or <http://www.gnu.org/licenses/>.
-%
-% $Id$
+
 crf = 0.6*t.^2.7.*exp(-t/1.6) - 16/sqrt(2*pi*9).*exp(-1/2.*(t-12).^2/9);

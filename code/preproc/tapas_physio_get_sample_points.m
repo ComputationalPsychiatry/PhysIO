@@ -23,8 +23,7 @@ function sample_points = tapas_physio_get_sample_points(ons_secs, sqpar, slicenu
 % Licence (GPL), version 3. You can redistribute it and/or modify it under the terms of the GPL
 % (either version 3 or, at your option, any later version). For further details, see the file
 % COPYING or <http://www.gnu.org/licenses/>.
-%
-% $Id$
+
 
 % slicenum should be field of onset_slice
 if nargin<3

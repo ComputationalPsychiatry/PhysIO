@@ -23,8 +23,7 @@ function fpFile = tapas_physio_filename2path(filename)
 % License (GPL), version 3. You can redistribute it and/or modify it under the terms of the GPL
 % (either version 3 or, at your option, any later version). For further details, see the file
 % COPYING or <http://www.gnu.org/licenses/>.
-%
-% $Id$
+
 
 % strip cell
 if iscell(filename)

@@ -17,7 +17,7 @@ function fn = tapas_physio_get_filename_from_id_philips(fileID, dirRaw, ext)
 % Author: Lars Kasper
 % Created: 2013-11-04
 % Copyright (C) 2013 Institute for Biomedical Engineering, ETH/Uni Zurich.
-% $Id: get_filename_from_id.m 320 2013-11-12 10:42:05Z kasperla $
+
 if nargin < 3
     ext = '.nii';
 end

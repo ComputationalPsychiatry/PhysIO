@@ -74,8 +74,7 @@ function [VOLLOCS, LOCS, verbose] = tapas_physio_create_scan_timing_from_end_mar
 % Licence (GPL), version 3. You can redistribute it and/or modify it under the terms of the GPL
 % (either version 3 or, at your option, any later version). For further details, see the file
 % COPYING or <http://www.gnu.org/licenses/>.
-%
-% $Id$
+
     
 % everything stored in 1 logfile
 if ~isfield(log_files, 'cardiac') || isempty(log_files.cardiac)

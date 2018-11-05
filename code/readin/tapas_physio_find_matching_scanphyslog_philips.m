@@ -28,8 +28,8 @@ function fnPhysLogArray = tapas_physio_find_matching_scanphyslog_philips(...
 % Licence (GPL), version 3. You can redistribute it and/or modify it under the terms of the GPL
 % (either version 3 or, at your option, any later version). For further details, see the file
 % COPYING or <http://www.gnu.org/licenses/>.
-%
-% $Id: teditRETRO.m 464 2014-04-27 11:58:09Z kasperla $
+
+
 x = dir(fullfile(pathLogFiles, 'SCANPHYSLOG*'));
 nPhys = length(x);
 for i = 1:nPhys

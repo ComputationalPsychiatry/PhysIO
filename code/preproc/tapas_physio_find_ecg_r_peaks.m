@@ -39,8 +39,7 @@ function [events, ECG_min, kRpeak] = tapas_physio_find_ecg_r_peaks(t,y, ECG_min,
 % Licence (GPL), version 3. You can redistribute it and/or modify it under the terms of the GPL
 % (either version 3 or, at your option, any later version). For further details, see the file
 % COPYING or <http://www.gnu.org/licenses/>.
-%
-% $Id$
+
 %
 manual_mode = ~exist('kRpeak', 'var') || isempty(kRpeak);
 

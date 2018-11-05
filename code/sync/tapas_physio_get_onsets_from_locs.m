@@ -44,8 +44,7 @@ function [svolpulse, spulse, spulse_per_vol, verbose] = tapas_physio_get_onsets_
 % Licence (GPL), version 3. You can redistribute it and/or modify it under the terms of the GPL
 % (either version 3 or, at your option, any later version). For further details, see the file
 % COPYING or <http://www.gnu.org/licenses/>.
-%
-% $Id$
+
 
 Nscans          = sqpar.Nscans;
 Ndummies        = sqpar.Ndummies;

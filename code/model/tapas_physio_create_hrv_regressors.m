@@ -34,8 +34,7 @@ function [convHRVOut, hrOut, verbose] = tapas_physio_create_hrv_regressors(...
 % Licence (GPL), version 3. You can redistribute it and/or modify it under the terms of the GPL
 % (either version 3 or, at your option, any later version). For further details, see the file
 % COPYING or <http://www.gnu.org/licenses/>.
-%
-% $Id$
+
 if nargin < 3
     physio = tapas_physio_new;
     model_hrv = physio.model.hrv;

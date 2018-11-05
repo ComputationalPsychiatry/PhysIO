@@ -24,8 +24,7 @@ function verbose = tapas_physio_print_figs_to_file(verbose, save_dir)
 % Licence (GPL), version 3. You can redistribute it and/or modify it under the terms of the GPL
 % (either version 3 or, at your option, any later version). For further details, see the file
 % COPYING or <http://www.gnu.org/licenses/>.
-%
-% $Id$
+
 if nargin > 1
     verbose.fig_output_file = fullfile(save_dir, verbose.fig_output_file);
 end

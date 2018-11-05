@@ -24,8 +24,7 @@ function [R, verbose] = tapas_physio_load_other_multiple_regressors(...
 % Licence (GPL), version 3. You can redistribute it and/or modify it under the terms of the GPL
 % (either version 3 or, at your option, any later version). For further details, see the file
 % COPYING or <http://www.gnu.org/licenses/>.
-%
-% $Id$
+
 [fp, fn, fs] = fileparts(filename_other_regressors);
 
 if ~exist(filename_other_regressors, 'file')

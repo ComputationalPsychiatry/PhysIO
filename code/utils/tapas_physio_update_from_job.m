@@ -56,8 +56,8 @@ function physio = tapas_physio_update_from_job(physio, job, ...
 % Licence (GPL), version 3. You can redistribute it and/or modify it under the terms of the GPL
 % (either version 3 or, at your option, any later version). For further details, see the file
 % COPYING or <http://www.gnu.org/licenses/>.
-%
-% $Id: teditRETRO.m 464 2014-04-27 11:58:09Z kasperla $
+
+
 
 jobPropertyArray    = cellstr(jobPropertyArray);
 physioPropertyArray = cellstr(physioPropertyArray);

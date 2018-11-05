@@ -19,8 +19,7 @@ function fh = tapas_physio_plot_cropped_phys_to_acqwindow(ons_secs, sqpar)
 % Licence (GPL), version 3. You can redistribute it and/or modify it under the terms of the GPL
 % (either version 3 or, at your option, any later version). For further details, see the file
 % COPYING or <http://www.gnu.org/licenses/>.
-%
-% $Id$
+
 fh = tapas_physio_get_default_fig_params();
 set(fh,'Name','Cutout actual scans - all events and gradients');
 

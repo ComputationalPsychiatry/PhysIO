@@ -34,8 +34,7 @@ function [correlation,x,y] = tapas_physio_corrcoef12(x,y, isZtransformed)
 % Licence (GPL), version 3. You can redistribute it and/or modify it under the terms of the GPL
 % (either version 3 or, at your option, any later version). For further details, see the file
 % COPYING or <http://www.gnu.org/licenses/>.
-%
-% $Id$
+
 if nargin < 3
     isZtransformed = [0 0];
 end

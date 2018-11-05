@@ -43,8 +43,7 @@ function [ons_secs, sqpar, verbose] = tapas_physio_crop_scanphysevents_to_acq_wi
 % Licence (GPL), version 3. You can redistribute it and/or modify it under the terms of the GPL
 % (either version 3 or, at your option, any later version). For further details, see the file
 % COPYING or <http://www.gnu.org/licenses/>.
-%
-% $Id$
+
 
 %% parameter settings
     Nscans          = sqpar.Nscans;

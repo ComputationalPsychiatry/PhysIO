@@ -45,8 +45,7 @@ function [R, verbose] = tapas_physio_orthogonalise_physiological_regressors(card
 % Licence (GPL), version 3. You can redistribute it and/or modify it under the terms of the GPL
 % (either version 3 or, at your option, any later version). For further details, see the file
 % COPYING or <http://www.gnu.org/licenses/>.
-%
-% $Id$
+
 R_non_orth = [cardiac_sess, respire_sess, mult_sess input_R];
 
 if isempty(R_non_orth)

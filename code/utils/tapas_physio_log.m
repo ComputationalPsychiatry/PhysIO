@@ -28,8 +28,8 @@ function [verbose, msg] = tapas_physio_log(msg, verbose, warningLevel)
 % License (GPL), version 3. You can redistribute it and/or modify it under the terms of the GPL
 % (either version 3 or, at your option, any later version). For further details, see the file
 % COPYING or <http://www.gnu.org/licenses/>.
-%
-% $Id: teditRETRO.m 672 2015-02-08 17:46:28Z kasperla $
+
+
 
 if nargin < 3
     warningLevel = 0;

@@ -40,8 +40,7 @@ function [any_scanevent_repaired, ons, dur, index] ...
 % Licence (GPL), version 3. You can redistribute it and/or modify it under the terms of the GPL
 % (either version 3 or, at your option, any later version). For further details, see the file
 % COPYING or <http://www.gnu.org/licenses/>.
-%
-% $Id$
+
 
 thrmin = 1.5; % gap between slices, if spacing >thrmin*min(slicegap)
 thrmax = 0.5; % gap is large, if gap > thrmax*max(slicegap)
