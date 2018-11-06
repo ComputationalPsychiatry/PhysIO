@@ -89,7 +89,7 @@ delete([fileTemp '.m'], fileTempJob);
 % remove newly introduced absolute paths :-(
 pathJob = fileparts(fileBatchM);
 
-% pathNow, since cfg-stuff adds the paths of the directory it was executed
+% also pathNow, since cfg-stuff adds the paths of the directory it was executed
 % in :-(
 pathNow = pwd;
 matlabbatch{1}.spm.tools.physio = tapas_physio_replace_absolute_paths(...
