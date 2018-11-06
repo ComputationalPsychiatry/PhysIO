@@ -103,7 +103,6 @@ save(fileBatchMat, 'matlabbatch')
 % convert to script variable and save to file
 physio = tapas_physio_job2physio(matlabbatch{1}.spm.tools.physio);
 
-
 % write out variable strings and remove lines that set empty values
 
 str = gencode(physio)';
@@ -112,14 +111,21 @@ indLineRemove = tapas_physio_find_string(str, ...
 indLineRemove = cell2mat(indLineRemove);
 str(indLineRemove) = [];
 
-% add generating line for physio-structure, and save to matlab_script-file
-str = [{'physio = tapas_physio_new();'}
+% add comments to write and generating line for physio-structure, 
+% and save to matlab_script-file
+str = [
+    {'%% Example script using PhysIO with Matlab only (no SPM needed)'}
+    {'%  For documentation of the parameters, see also tapas_physio_new (e.g., via edit tapas_physio_new)'}
     {''}
+    {'%% Create default parameter structure with all fields'}
+    {'physio = tapas_physio_new();'}
+    {''}
+    {'%% Individual Parameter settings. Modify to your need and remove default settings'}
     str
     {''};
+    {'%% Run physiological recording preprocessing and noise modeling'}
     {'physio = tapas_physio_main_create_regressors(physio);'}
     ];
-
 
 nLines = numel(str);
 fid = fopen(fileScript, 'w+');
