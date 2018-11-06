@@ -16,6 +16,11 @@ WIP Release Notes (R2018.2.0)
 - put all functions in `code` into subfolders relating to different modules: `readin`, `sync`, `preproc`, `model`, `assess`, `utils` (gitlab-issue #58)
     - updated deployment `tapas_physio_init` because of that
 
+### Added
+- Added BioPac txt-File read-in
+- matlab-script examples now contain some comment lines
+    - fixed internal bug that prepended absolute paths to input logfiles in automatic example generation
+
 Bugfix Release Notes (R2018.1.3)
 --------------------------------
 
