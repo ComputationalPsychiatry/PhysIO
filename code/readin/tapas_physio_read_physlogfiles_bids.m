@@ -60,7 +60,6 @@ function [c, r, t, cpulse, acq_codes, verbose, gsr] = tapas_physio_read_physlogf
 DEBUG = verbose.level >= 2;
 
 fileJson = regexprep(log_files.cardiac, '\.tsv$', '\.json$');
-fileJson = 'sub-s002_task-fnclearning_run-01_physio.json'
 val = jsondecode(fileread(fileJson));
 % Check val.Columns{i}
 
@@ -77,7 +76,7 @@ elseif hasRespirationFile
 end
 
 
-[C, columnNames] = tapas_physio_read_columnar_textfiles(fileName, 'BIOPAC_TXT');
+[C, columnNames] = tapas_physio_read_columnar_textfiles(fileName, 'BIDS');
 c = double(C{3});
 r = double(C{1});
 gsr = double(C{2});
