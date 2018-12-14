@@ -39,17 +39,7 @@ vendor        = cfg_menu;
 vendor.tag    = 'vendor';
 vendor.name   = 'vendor';
 vendor.help   = {' Vendor Name depending on your MR Scanner/Physiological recording system'
-    '                       ''Philips'''
-    '                       ''GE'''
-    '                       ''Siemens'''
-    '                       ''Siemens_Tics'' - new Siemens physiological'
-    '                           Logging with time stamps in tics'
-    '                           (= steps of 2.5 ms since midnight) and'
-    '                           extra acquisition (scan_timing) logfile with'
-    '                           time stamps of all volumes and slices'
-    '                       ''Siemens_HCP'' - Human Connectome Project (HCP) Physiology Data' 
-    '                           HCP-downloaded files of  name format  *_Physio_log.txt '
-    '                           are already preprocessed into this simple 3-column text format'
+    '                       ''BIDS'' - Brain Imaging Data Structure (http://bids.neuroimaging.io/bids_spec.pdf, section 8.6)'
     '                       ''Biopac_Txt'' - exported txt files from Biopac system (4 columns, [Resp PPU GSR Trigger]'
     '                       ''Biopac_Mat'' - exported mat files from Biopac system'
     '                       ''BrainProducts'' - .eeg files from BrainProducts EEG system'
@@ -68,13 +58,28 @@ vendor.help   = {' Vendor Name depending on your MR Scanner/Physiological record
     '                           -0.3 0'
     '                           NOTE: the sampling interval has to be specified for these files as'
     '                           well (s.b.)'
+    '                       ''GE'''
+    '                       ''Philips'''
+    '                       ''Siemens'''
+    '                       ''Siemens_Tics'' - new Siemens physiological'
+    '                           Logging with time stamps in tics'
+    '                           (= steps of 2.5 ms since midnight) and'
+    '                           extra acquisition (scan_timing) logfile with'
+    '                           time stamps of all volumes and slices'
+    '                       ''Siemens_HCP'' - Human Connectome Project (HCP) Physiology Data' 
+    '                           HCP-downloaded files of  name format  *_Physio_log.txt '
+    '                           are already preprocessed into this simple 3-column text format'
     };
-vendor.labels = {'Philips', 'GE', 'Siemens (VB, *.puls/*.ecg/*.resp)', ...
+vendor.labels = {'BIDS (Brain Imaging Data Structure)', 'Biopac_Txt', 'Biopac_Mat', ...
+'BrainProducts', 'Custom', ...
+'GE', 'Philips', ...
+ 'Siemens (VB, *.puls/*.ecg/*.resp)', ...
     'Siemens_Tics (VD: *_PULS.log/*_ECG1.log/*_RESP.log/*_AcquisitionInfo*.log)', ...
     'Siemens_HCP (Human Connectome Project, *Physio_log.txt, 3 column format', ...
-    'Biopac_Txt', 'Biopac_Mat', 'BrainProducts', 'Custom'};
-vendor.values = {'Philips', 'GE', 'Siemens', 'Siemens_Tics', 'Siemens_HCP', ...
-    'Biopac_Txt','Biopac_Mat', 'BrainProducts', 'Custom'};
+    };
+vendor.values = {'BIDS', 'Biopac_Txt','Biopac_Mat', 'BrainProducts', 'Custom', ...
+'GE', 'Philips', 'Siemens', 'Siemens_Tics', 'Siemens_HCP', ...
+    };
 vendor.val    = {'Philips'};
 
 %--------------------------------------------------------------------------
@@ -85,7 +90,7 @@ cardiac.tag     = 'cardiac';
 cardiac.name    = 'log_cardiac';
 cardiac.help    = {'logfile with cardiac, i.e. ECG/PPU (pulse oximetry) data'
     'Select 0 files, if only respiratory data is available'
-    'For Philips, same as respiratory logfile.'
+    'For Philips and BIDS, same as respiratory logfile.'
     };
 cardiac.filter  = 'any';
 cardiac.ufilter = '.*';
@@ -99,7 +104,7 @@ respiration.tag     = 'respiration';
 respiration.name    = 'log_respiration';
 respiration.help    = {'logfile with respiratory, i.e. breathing belt amplitude data'
     'Select 0 files, if only cardiac data available'
-    'For Philips, same as cardiac logfile.'
+    'For Philips and BIDS, same as cardiac logfile.'
     };
 respiration.filter  = 'any';
 respiration.ufilter = '.*';
@@ -137,6 +142,7 @@ sampling_interval.help    = {
     'sampling interval of phys log files (in seconds)'
     ' If empty, default values are used: 2 ms for Philips, 25 ms for GE, 2.5 ms for Siemens Tics and HCP'
     ' For Biopac and Siemens, sampling rate is read directly from logfile'
+    ' For BIDS, sampling interval is read from accompanying json-file, if existing'
     ' If cardiac and respiratory sampling rate differ, enter them as vector'
     ' [sampling_interval_cardiac, sampling_interval_respiratory]'
     ' '
@@ -174,6 +180,8 @@ relative_start_acquisition.help    = {
     '       at 0 (e.g., for Siemens_Tics) since physiological recordings'
     '       and acquisition timing are already synchronized by this'
     '       information, and you would introduce another shift.'
+    '       3. For BIDS, relative_start_acquisition is read as -StartTime from'
+    '       accompanying json-file, if existing'
   };
 relative_start_acquisition.strtype = 'e';
 relative_start_acquisition.num     = [Inf Inf];

@@ -99,7 +99,7 @@ acq_codes = [];
 
 if hasRespirationFile
     
-    C = tapas_physio_read_files_siemens_tics(log_files.respiration, 'RESP');
+    C = tapas_physio_read_columnar_textfiles(log_files.respiration, 'RESP');
     nColumns = numel(C); % different file formats indicated by diff number of columns
     
     extTriggerSignals = [];
@@ -146,7 +146,7 @@ end
 
 if hasCardiacFile
     
-    C = tapas_physio_read_files_siemens_tics(log_files.cardiac);
+    C = tapas_physio_read_columnar_textfiles(log_files.cardiac);
     
     nColumns = numel(C);
     

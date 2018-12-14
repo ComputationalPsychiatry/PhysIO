@@ -1,6 +1,6 @@
 function [c, r, t, cpulse, acq_codes, verbose, gsr] = tapas_physio_read_physlogfiles_biopac_txt(...
     log_files, cardiac_modality, verbose, varargin)
-% Reads in 4-column txt-export from BioPac Data (resp, ppu, gsr, trigger)
+% Reads in 3-column tsv-file from BIDS Data (cardiac, respiratory, trigger), assuming log_files-meta information to be in .json-file
 %
 % [c, r, t, cpulse, acq_codes, verbose] = tapas_physio_read_physlogfiles_biopac_txt(...
 %    log_files, cardiac_modality, verbose, varargin)
@@ -58,6 +58,11 @@ function [c, r, t, cpulse, acq_codes, verbose, gsr] = tapas_physio_read_physlogf
 
 %% read out values
 DEBUG = verbose.level >= 2;
+
+fileJson = regexprep(log_files.cardiac, '\.tsv$', '\.json$');
+fileJson = 'sub-s002_task-fnclearning_run-01_physio.json'
+val = jsondecode(fileread(fileJson));
+% Check val.Columns{i}
 
 hasRespirationFile = ~isempty(log_files.respiration);
 hasCardiacFile = ~isempty(log_files.cardiac);
