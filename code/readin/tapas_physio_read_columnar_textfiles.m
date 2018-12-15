@@ -99,7 +99,7 @@ fid = fopen(fileName);
 
 % Determine number of header lines by searching for the column header line,
 % which has both Volume and Slice as a keyword in it
-haveFoundColumnHeader = ~isempty(strColumnHeader); % for empty column header search string, don't search (e.g. BIDS no column header)
+haveFoundColumnHeader = isempty(strColumnHeader); % for empty column header search string, don't search (e.g. BIDS no column header)
 nHeaderLines = 0;
 while ~haveFoundColumnHeader
     nHeaderLines = nHeaderLines + 1;
