@@ -6,24 +6,27 @@ Current Release
 
 PhysIO_Toolbox_R2018.2.0
 
-December 18, 2018
+January 12, 2018
 
 WIP Release Notes (R2018.2.0)
 -----------------------------
 *not released yet*
 
+### TODO
+- removal of tapas_physio_findpeaks to use current Matlab implementation
+- start unit testing framework in folder `code/test` (for BIDS reader,
+and noise_rois model)
+
 ### Added
 - BIDS reader (Brain Imaging Data Structure.
 http://bids.neuroimaging.io/bids_spec.pdf) for `*_physio.tsv/json` files
-- unit testing framework started in folder `code/test` (for BIDS reader, and
- noise_rois model)
+- Added BioPac txt-File read-in
+- matlab-script examples now contain some comment lines
+    - fixed internal bug that prepended absolute paths to input logfiles in automatic example generation
 
 ### Changed
 - put all functions in `code` into subfolders relating to different modules: `readin`, `sync`, `preproc`, `model`, `assess`, `utils` (gitlab-issue #58)
     - updated deployment `tapas_physio_init` because of that
-
-### TODO
-- removal of tapas_physio_findpeaks to use current Matlab implementation
 
 Bugfix Release Notes (R2018.1.3)
 --------------------------------
@@ -42,10 +45,11 @@ Bugfix Release Notes (R2018.1.2)
 - fixed bug for 3D nifti array read-in in tapas_physio_create_noise_rois_regressors (github issue #24, gitlab #52)
 
 Bugfix Release Notes (R2018.1.1)
--------------------------------
+--------------------------------
 
 ### Changed
 - documentation.{html,pdf} export nicer with different FAQ numbering
+
 
 Major Release Notes (R2018.1)
 -----------------------------

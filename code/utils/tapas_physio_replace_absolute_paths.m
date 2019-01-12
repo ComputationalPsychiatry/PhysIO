@@ -40,11 +40,29 @@ end
 nFields = numel(jobFields);
 nPaths = numel(pathArray);
 
+% replace \ by / in search paths first (will be done in fields of job
+% later)
+for p = 1:nPaths
+    pathArray{p} = regexprep(pathArray{p}, '\\', '/');
+end
+
 for f = 1:nFields
     for p = 1:nPaths
         if ~isempty(pathArray{p})
             strField = ['job.' jobFields{f}];
-            % replace strings
+            
+            if ispc % replace \ by / first
+                % replace strings
+                if eval(['isstr(' strField ')'])
+                    % to lazy for not using eval :-(
+                    eval([ strField ' = regexprep(' strField ', ''\\'', ''/'');']);
+                    % replace cellstrings
+                elseif eval(['iscell(' strField ')']) && eval(['isstr(' strField '{1})'])
+                    eval([ strField '{1} = regexprep(' strField '{1}, ''\\'', ''/'');']);
+                end
+            end
+            
+            % remove all prepending */ (paths) before (filename) strings
             if eval(['isstr(' strField ')'])
                 % to lazy for not using eval :-(
                 eval([ strField ' = regexprep(' strField ', ''' pathArray{p} '[/]*'', '''');']);
