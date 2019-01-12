@@ -250,8 +250,10 @@ else
     %                       e.g., 
     %                       *_INFO.log for 'Siemens_Tics' (time stamps for 
     %                                       every slice and volume)
-    %                       *.dcm (DICOM) of first volume (non-dummy) used
+    %                       *.dcm (DICOM) for Siemens, is first volume (non-dummy) used
     %                                     in GLM analysis
+    %                       *.tsv (3rd column) for BIDS, using the scanner
+    %                                     volume trigger onset events
     %                       NOTE:   This setting needs a valid filename to
     %                               entered in log_files.scan_timing
     scan_timing.sync.method = 'gradient_log';

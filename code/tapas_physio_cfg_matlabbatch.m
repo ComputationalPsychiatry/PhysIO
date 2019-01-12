@@ -472,9 +472,16 @@ sync_method_scan_timing_log = cfg_branch;
 sync_method_scan_timing_log.tag = 'scan_timing_log';
 sync_method_scan_timing_log.name = 'scan_timing_log';
 sync_method_scan_timing_log.val  = {};
-sync_method_scan_timing_log.help = { ...
+sync_method_scan_timing_log.help = {
     ' Derive scan-timing from individual scan timing logfile with time '
-    ' stamps ("tics") for each slice and volume (e.g., Siemens VD, CMRR sequence)'};
+    ' stamps ("tics") or triggers for each slice and volume'
+    ' file types differ depending on the physlog file format:'
+    '   *_INFO.log          for ''Siemens_Tics'' (time stamps for'
+    '                       every slice and volume)  (e.g., Siemens VD, CMRR sequence)'
+    '   *.dcm (DICOM)       for Siemens, is first volume (non-dummy) used'
+    '                       in GLM analysis'
+    '   *.tsv (3rd column)  for BIDS, using the scanner volume trigger onset events'
+    };
 
  
 %--------------------------------------------------------------------------
