@@ -129,7 +129,7 @@ end
 C = tapas_physio_read_columnar_textfiles(fileName, 'BIDS');
 c = double(C{idxCol(1)});
 r = double(C{idxCol(2)});
-iAcqOn = (double(C{idxCol(3)})~=0); % trigger has 1, rest is 0;
+iAcqStart = (double(C{idxCol(3)})~=0); % trigger has 1, rest is 0;
 
 
 %% Create timing vector from samples
@@ -140,36 +140,21 @@ t = -tRelStartScan + ((0:(nSamples-1))*dt)';
 %% Recompute acq_codes as for Siemens (volume on/volume off)
 acq_codes = [];
 
-if ~isempty(iAcqOn) % otherwise, nothing to read ...
-    % iAcqOn is a column of 1s and 0s, 1 whenever scan acquisition is on
-    % Determine 1st start and last stop directly via first/last 1
-    % Determine everything else in between via difference (go 1->0 or 0->1)
-    iAcqStart   = find(iAcqOn, 1, 'first');
-    iAcqEnd     = find(iAcqOn, 1, 'last');
-    d_iAcqOn    = diff(iAcqOn);
-    
-    % index shift + 1, since diff vector has index of differences i_(n+1) - i_n,
-    % and the latter of the two operands (i_(n+1)) has sought value +1
-    iAcqStart   = [iAcqStart; find(d_iAcqOn == 1) + 1];
-    % no index shift, for the same reason
-    iAcqEnd     = [find(d_iAcqOn == -1); iAcqEnd];
-    
+if ~isempty(iAcqStart) % otherwise, nothing to read ...
+    % iAcqStart is a columns of 0 and 1, 1 for the trigger event of a new
+    % volume start
     acq_codes = zeros(nSamples,1);
     acq_codes(iAcqStart) = 8; % to match Philips etc. format
-    acq_codes(iAcqEnd) = 16; % don't know...
     
-    % report estimated onset gap between last slice of volume_n and 1st slice of
-    % volume_(n+1)
-    nAcqStarts = numel(iAcqStart);
-    nAcqEnds = numel(iAcqEnd);
-    nAcqs = min(nAcqStarts, nAcqEnds);
+    nAcqs = numel(iAcqStart);
     
     if nAcqs >= 1
         % report time of acquisition, as defined in SPM
-        TA = mean(t(iAcqEnd(1:nAcqs)) - t(iAcqStart(1:nAcqs)));
+        meanTR = mean(diff(t(iAcqStart)));
+        stdTR = std(diff(t(iAcqStart)));
         verbose = tapas_physio_log(...
-            sprintf('TA = %.4f s (Estimated time of acquisition during one volume TR)', ...
-            TA), verbose, 0);
+            sprintf('TR = %.3f +/- %.3f s (Estimated mean +/- std time of repetition for one volume)', ...
+            meanTR, stdTR), verbose, 0);
     end
 end
 
