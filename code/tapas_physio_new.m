@@ -102,35 +102,36 @@ else
     log_files              = [];
     
     % vendor                Name depending on your MR Scanner system
-    %                       'Philips' (default)
-    %                       'GE'
-    %                       'Siemens'
-    %                       'Siemens_Tics' - new Siemens physiological
-    %                       logging with time stamps in tics
-    %                       (= steps of 2.5 ms since midnight) and
-    %                       extra acquisition (scan_timing) logfile with
-    %                       time stamps of all volumes and slices
-    %
-    %                       or
+    %                       'BIDS' - Brain Imaging Data Structure (http://bids.neuroimaging.io/bids_spec.pdf, section 8.6)'
+    %                       'Biopac_Txt' - exported txt files from Biopac system (4 columns, [Resp PPU GSR Trigger]'
+    %                       'Biopac_Mat' - exported mat files from Biopac system'
+    %                       'BrainProducts' - .eeg files from BrainProducts EEG system'
     %                       'Custom'
-    %
-    %  'Custom' expects the logfiles (separate files for cardiac and respiratory)
-    %  to be plain text, with one cardiac (or
-    %  respiratory) sample per row;
-    %  If heartbeat (R-wave peak) events are
-    %  recorded as well, they have to be put
-    %  as a 2nd column in the cardiac logfile
-    %  by specifying a 1; 0 in all other rows
-    %  e.g.:
-    %      0.2  0
-    %      0.4  1 <- cardiac pulse event
-    %      0.2  0
-    %      -0.3 0
-    %
-    %
-    % NOTE: the sampling interval has to be specified for these files as
-    % well (s.b.)
-    
+    %                           'Custom' expects the logfiles (separate files for cardiac and respiratory)'
+    %                           to be plain text, with one cardiac (or'
+    %                           respiratory) sample per row;'
+    %                           If heartbeat (R-wave peak) events are'
+    %                           recorded as well, they have to be put'
+    %                           as a 2nd column in the cardiac logfile'
+    %                           by specifying a 1; 0 in all other rows'
+    %                           e.g.:'
+    %                           0.2  0'
+    %                           0.4  1 <- cardiac pulse event'
+    %                           0.2  0'
+    %                           -0.3 0'
+    %                           NOTE: the sampling interval has to be specified for these files as'
+    %                           well (s.b.)'
+    %                       'GE'
+    %                       'Philips'
+    %                       'Siemens'
+    %                       'Siemens_Tics' - new Siemens physiological'
+    %                           Logging with time stamps in tics'
+    %                           (= steps of 2.5 ms since midnight) and'
+    %                           extra acquisition (scan_timing) logfile with'
+    %                           time stamps of all volumes and slices'
+    %                       'Siemens_HCP' - Human Connectome Project (HCP) Physiology Data' 
+    %                           HCP-downloaded files of  name format  *_Physio_log.txt '
+    %                           are already preprocessed into this simple 3-column text format'
     log_files.vendor       = 'Philips';
     
     % Logfile with cardiac data, e.g. 
@@ -249,8 +250,10 @@ else
     %                       e.g., 
     %                       *_INFO.log for 'Siemens_Tics' (time stamps for 
     %                                       every slice and volume)
-    %                       *.dcm (DICOM) of first volume (non-dummy) used
+    %                       *.dcm (DICOM) for Siemens, is first volume (non-dummy) used
     %                                     in GLM analysis
+    %                       *.tsv (3rd column) for BIDS, using the scanner
+    %                                     volume trigger onset events
     %                       NOTE:   This setting needs a valid filename to
     %                               entered in log_files.scan_timing
     scan_timing.sync.method = 'gradient_log';

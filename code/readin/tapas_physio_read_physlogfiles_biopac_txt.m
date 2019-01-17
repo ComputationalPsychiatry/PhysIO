@@ -72,7 +72,7 @@ elseif hasRespirationFile
 end
 
 
-[C, columnNames] = tapas_physio_read_files_siemens_tics(fileName, 'BIOPAC_TXT');
+[C, columnNames] = tapas_physio_read_columnar_textfiles(fileName, 'BIOPAC_TXT');
 c = double(C{3});
 r = double(C{1});
 gsr = double(C{2});

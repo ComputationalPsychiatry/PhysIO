@@ -44,7 +44,7 @@ iSelectedEcho = 1; % extract data from first echo only
 
 %% Extract relevant columns slices/volumes/tic timing/echoes
 
-[C, columnNames] = tapas_physio_read_files_siemens_tics(log_files.scan_timing, 'INFO');
+[C, columnNames] = tapas_physio_read_columnar_textfiles(log_files.scan_timing, 'INFO');
 
 dtTicSeconds = 2.5e-3;
 

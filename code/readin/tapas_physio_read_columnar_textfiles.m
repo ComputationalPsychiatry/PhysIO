@@ -1,8 +1,8 @@
-function [C, columnNames] = tapas_physio_read_files_siemens_tics(fileName, fileType)
+function [C, columnNames] = tapas_physio_read_columnar_textfiles(fileName, fileType)
 % Reads _PULS, _RESP, _ECG, _Info-files from Siemens tics format with
 % multiple numbers of columns and different column headers
 %
-%   output = tapas_physio_read_files_siemens_tics(input)
+%   output = tapas_physio_read_columnar_textfiles(input)
 %
 % IN
 %   fileName    *.log from Siemens VD/VE tics file format
@@ -15,9 +15,9 @@ function [C, columnNames] = tapas_physio_read_files_siemens_tics(fileName, fileT
 %   columnNames cell(1, nColumns) of column names
 %
 % EXAMPLE
-%   tapas_physio_read_files_siemens_tics('Physio_RESP.log', 'RESP')
+%   tapas_physio_read_columnar_textfiles('Physio_RESP.log', 'RESP')
 %   % equivalent to (since file name unique!)
-%   tapas_physio_read_files_siemens_tics('Physio_RESP.log')
+%   tapas_physio_read_columnar_textfiles('Physio_RESP.log')
 %
 %   See also
 
@@ -56,6 +56,10 @@ end
 
 
 switch upper(fileType)
+    case 'BIDS'
+        strColumnHeader = '';
+        parsePatternPerNColumns{3} = '%f %f %f';
+        nEmptyLinesAfterHeader(3) = 0;
     case 'BIOPAC_TXT'
         strColumnHeader = '.*RESP.*';
         parsePatternPerNColumns{4} = '%f %f %f %d';
@@ -95,7 +99,7 @@ fid = fopen(fileName);
 
 % Determine number of header lines by searching for the column header line,
 % which has both Volume and Slice as a keyword in it
-haveFoundColumnHeader = false;
+haveFoundColumnHeader = isempty(strColumnHeader); % for empty column header search string, don't search (e.g. BIDS no column header)
 nHeaderLines = 0;
 while ~haveFoundColumnHeader
     nHeaderLines = nHeaderLines + 1;
@@ -104,6 +108,9 @@ while ~haveFoundColumnHeader
 end
 
 switch upper(fileType)
+    case 'BIDS' % will be in separate json-file
+        columnNames = {};
+        nColumns = 3;
     case 'BIOPAC_TXT' % bad column names with spaces...e.g. 'RESP - RSP100C'
         columnNames = regexp(strLine, '([\t])', 'split');
         nColumns = numel(columnNames);
@@ -119,7 +126,7 @@ nHeaderLines = nHeaderLines + nEmptyLinesAfterHeader(nColumns); % since empty li
 fid = fopen(fileName);
 
 switch upper(fileType)
-    case {'INFO', 'PULS', 'RESP', 'BIOPAC_TXT'}
+    case {'BIDS', 'BIOPAC_TXT', 'INFO', 'PULS', 'RESP'}
         C = textscan(fid, parsePatternPerNColumns{nColumns}, 'HeaderLines', nHeaderLines);
     case {'ECG'}
         C = textscan(fid, parsePatternPerNColumns{nColumns}, 'HeaderLines', nHeaderLines);

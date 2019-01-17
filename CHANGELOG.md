@@ -4,22 +4,29 @@ RELEASE INFORMATION
 Current Release
 ---------------
 
-PhysIO_Toolbox_R2018.1.3
+PhysIO_Toolbox_R2018.2.0
 
-October 30, 2018
+January 12, 2018
 
 WIP Release Notes (R2018.2.0)
 -----------------------------
 *not released yet*
 
-### CHANGED
-- put all functions in `code` into subfolders relating to different modules: `readin`, `sync`, `preproc`, `model`, `assess`, `utils` (gitlab-issue #58)
-    - updated deployment `tapas_physio_init` because of that
+### TODO
+- removal of tapas_physio_findpeaks to use current Matlab implementation
+- start unit testing framework in folder `code/test` (for BIDS reader,
+and noise_rois model)
 
 ### Added
+- BIDS reader (Brain Imaging Data Structure.
+http://bids.neuroimaging.io/bids_spec.pdf) for `*_physio.tsv/json` files
 - Added BioPac txt-File read-in
 - matlab-script examples now contain some comment lines
     - fixed internal bug that prepended absolute paths to input logfiles in automatic example generation
+
+### Changed
+- put all functions in `code` into subfolders relating to different modules: `readin`, `sync`, `preproc`, `model`, `assess`, `utils` (gitlab-issue #58)
+    - updated deployment `tapas_physio_init` because of that
 
 Bugfix Release Notes (R2018.1.3)
 --------------------------------
@@ -31,17 +38,18 @@ Bugfix Release Notes (R2018.1.3)
 Bugfix Release Notes (R2018.1.2)
 --------------------------------
 
-### Changed
-- fixed bug for 3D nifti array read-in in tapas_physio_create_noise_rois_regressors (github issue #24, gitlab #52)
-
 ### Added
 - BioPac txt-file reader (for single file, resp/cardiac/trigger data in different columns)
 
+### Changed
+- fixed bug for 3D nifti array read-in in tapas_physio_create_noise_rois_regressors (github issue #24, gitlab #52)
+
 Bugfix Release Notes (R2018.1.1)
--------------------------------
+--------------------------------
 
 ### Changed
 - documentation.{html,pdf} export nicer with different FAQ numbering
+
 
 Major Release Notes (R2018.1)
 -----------------------------
@@ -169,4 +177,3 @@ Major Release Notes (r241)
 - consistent function names (prefixed by "physio_")
 
 NOTE: Your main_ECG/PPU.m etc. scripts from previous versions (<=r159) will not work with this one any more. Please adapt one of the example scripts for your needs (~5 min of work). The main benefit of this version is a complete new variable structure that is more sustainable and makes the code more readable.
-

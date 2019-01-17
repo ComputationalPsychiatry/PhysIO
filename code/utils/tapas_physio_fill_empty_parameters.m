@@ -50,6 +50,12 @@ end
 
 if isempty(physio.log_files.sampling_interval)
     switch lower(physio.log_files.vendor)
+        case {'bids', 'biopac_mat', 'brainproducts', 'siemens'} % will be read from file later
+            physio.log_files.sampling_interval = [];
+        case 'biopac_txt'
+            physio.log_files.sampling_interval = 1/1000;
+        case 'ge'
+            physio.log_files.sampling_interval = 25e-3;
         case 'philips'
             isWifi      = regexpi(physio.preproc.cardiac.modality, '_wifi');
             % different sampling interval for Wifi devices
@@ -58,14 +64,8 @@ if isempty(physio.log_files.sampling_interval)
             else
                 physio.log_files.sampling_interval = 1/500;
             end
-        case 'biopac_txt'
-            physio.log_files.sampling_interval = 1/1000;
-        case 'ge'
-            physio.log_files.sampling_interval = 25e-3;
         case {'siemens_tics', 'siemens_hcp'}
              physio.log_files.sampling_interval = 2.5e-3;
-        case {'biopac_mat', 'siemens', 'brainproducts'} % will be read from file later
-            physio.log_files.sampling_interval = [];
         otherwise % e.g. custom
             error('Please specify sampling interval for custom text data');
     end
