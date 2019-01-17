@@ -1090,6 +1090,30 @@ hrv.help = {
 %--------------------------------------------------------------------------
 
 %--------------------------------------------------------------------------
+% force_coregister
+%--------------------------------------------------------------------------
+
+force_coregister        = cfg_menu;
+force_coregister.tag    = 'force_coregister';
+force_coregister.name   = 'Force Coregister : Estimate & Reslice of the noise ROIs';
+force_coregister.labels = {'Yes', 'No'};
+force_coregister.values = {'Yes', 'No'};
+force_coregister.val    = {'Yes'}; % default value, discussion in https://github.com/translationalneuromodeling/tapas/pull/34
+force_coregister.help   = {
+    'Noise ROIs volumes must have the same geometry as the functional time series.'
+    'It means same affine transformation(space) and same matrix(voxel size)'
+    ''
+    'Yes - Coregister : Estimate & Reslice will be performed on the noise NOIs,'
+    'so their geometry (space + voxel size) will match the fMRI volume.'
+    ''
+    'No - Geometry will be tested :'
+    '1) If they match, continue'
+    '2) If they don''t match, perform a Coregister : Estimate & Reslice as fallback'
+    ''
+    };
+
+
+%--------------------------------------------------------------------------
 % fmri_files
 %--------------------------------------------------------------------------
 
@@ -1112,7 +1136,11 @@ roi_files         = cfg_files;
 roi_files.tag     = 'roi_files';
 roi_files.name    = 'Noise ROI Image File(s)';
 roi_files.val     = {{''}};
-roi_files.help    = {'Masks/tissue probability maps characterizing where noise resides'};
+roi_files.help    = {
+    'Masks/tissue probability maps characterizing where noise resides'
+    'Theses volumes must be in the same space as the functional volume,'
+    'where the time series will be extracted.'
+    };
 roi_files.filter  = '.*';
 roi_files.ufilter = '.nii$|.img$';
 roi_files.num     = [0 Inf];
@@ -1187,11 +1215,12 @@ noise_rois_no.help = {'Noise ROIs not used'};
 noise_rois_yes      = cfg_branch;
 noise_rois_yes.tag  = 'yes';
 noise_rois_yes.name = 'Yes';
-noise_rois_yes.val  = {fmri_files, roi_files, roi_thresholds, n_voxel_crop, ...
-    n_components};
+noise_rois_yes.val  = {fmri_files, roi_files, force_coregister, roi_thresholds,...
+    n_voxel_crop, n_components};
 noise_rois_yes.help = {
     'Include Noise ROIs model'
     '(Principal components of anatomical regions), similar to aCompCor, Behzadi et al. 2007'
+    'Noise ROIs will be shown in SPM ''Graphics'' window'
     };
 
 
@@ -1470,6 +1499,8 @@ verbose.help   = {
     '                            Fig 5: time course of all sampled RETROICOR'
     '                                   regressors'
     '                            Fig 6: final multiple_regressors matrix'
+    '                            SPM Graphics : noise ROI before VS after'
+    '                                   (reslice) + threshold + erosion'
     ''
     ' 3 = all plots'
     '                            Fig 1: raw phys logfile data'
@@ -1485,6 +1516,8 @@ verbose.help   = {
     '                            Fig 8: time course of all sampled RETROICOR'
     '                                   regressors'
     '                            Fig 9: final multiple_regressors matrix'
+    '                            SPM Graphics : noise ROI before VS after'
+    '                                   (reslice) + threshold + erosion'
     
     };
 verbose.val    = {level fig_output_file use_tabs};

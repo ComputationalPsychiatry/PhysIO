@@ -36,7 +36,9 @@ function [R_noise_rois, noise_rois, verbose] = tapas_physio_create_noise_rois_re
 %
 % $Id$
 
-% TODO: visualization of Rois, components/mean and spatial loads in ROIs
+% TODO: components/mean and spatial loads in ROIs
+
+global st % to overlay the final ROIs, using spm_orthviews
 
 tapas_physio_strip_fields(noise_rois);
 
@@ -67,6 +69,11 @@ if numel(n_components) == 1
     n_components = repmat(n_components, 1, nRois);
 end
 
+% Show the noise ROIs before reslice, threshold and erosion
+if verbose.level >= 2
+    spm_check_registration( roi_files{:} )
+end
+
 Vimg = []; for iFile = 1:numel(fmri_files), Vimg = [Vimg; spm_vol(fmri_files{iFile})];end
 Yimg = spm_read_vols(Vimg);
 
@@ -80,17 +87,34 @@ for r = 1:nRois
     
     hasRoiDifferentGeometry = any(any(abs(Vroi.mat - Vimg(1).mat) > 1e-5)) | ...
         any(Vroi.dim-Vimg(1).dim(1:3));
-    hasRoiDifferentGeometry = true;
+    % hasRoiDifferentGeometry = true;
     
-    if hasRoiDifferentGeometry
+    % Force coregistration ?
+    if strcmp(force_coregister,'Yes')
+        perform_coreg = true;
+    elseif strcmp(force_coregister,'No')
+        if hasRoiDifferentGeometry % still check the geometry !! very important !!
+            perform_coreg = true;
+            warning(sprintf('fMRI volume and noise ROI have different orientation : \n %s \n %s \n', Vimg(1).fname, Vroi.fname)); %#ok<SPWRN>
+        else
+            perform_coreg = false;
+        end
+    end
+    
+    if perform_coreg
         
-        % reslice to same geometry
-        matlabbatch{1}.spm.spatial.coreg.write.ref = fmri_files(1);
-        matlabbatch{1}.spm.spatial.coreg.write.source = roi_files(r);
-        matlabbatch{1}.spm.spatial.coreg.write.roptions.interp = 4;
-        matlabbatch{1}.spm.spatial.coreg.write.roptions.wrap = [0 0 0];
-        matlabbatch{1}.spm.spatial.coreg.write.roptions.mask = 0;
-        matlabbatch{1}.spm.spatial.coreg.write.roptions.prefix = 'r';
+        % estimate & reslice to same geometry
+        matlabbatch{1}.spm.spatial.coreg.estwrite.ref = { sprintf('%s,1',fmri_files{1}) }; % select the first volume
+        matlabbatch{1}.spm.spatial.coreg.estwrite.source = roi_files(r);
+        matlabbatch{1}.spm.spatial.coreg.estwrite.other = {''};
+        matlabbatch{1}.spm.spatial.coreg.estwrite.eoptions.cost_fun = 'nmi';
+        matlabbatch{1}.spm.spatial.coreg.estwrite.eoptions.sep = [4 2];
+        matlabbatch{1}.spm.spatial.coreg.estwrite.eoptions.tol = [0.02 0.02 0.02 0.001 0.001 0.001 0.01 0.01 0.01 0.001 0.001 0.001];
+        matlabbatch{1}.spm.spatial.coreg.estwrite.eoptions.fwhm = [7 7];
+        matlabbatch{1}.spm.spatial.coreg.estwrite.roptions.interp = 4;
+        matlabbatch{1}.spm.spatial.coreg.estwrite.roptions.wrap = [0 0 0];
+        matlabbatch{1}.spm.spatial.coreg.estwrite.roptions.mask = 0;
+        matlabbatch{1}.spm.spatial.coreg.estwrite.roptions.prefix = 'r';
         
         spm_jobman('run', matlabbatch);
         
@@ -98,20 +122,35 @@ for r = 1:nRois
         Vroi = spm_vol(spm_file(roi_files{r}, 'prefix', 'r'));
     end
         
-        
-    roi = spm_read_vols(Vroi);
-    roi(roi < thresholds(r)) = 0;
+    roi = spm_read_vols(Vroi); % 3D matrix of the ROI
+    roi(roi <  thresholds(r)) = 0;
     roi(roi >= thresholds(r)) = 1;
     
     % crop pixel, if desired
-    if n_voxel_crop(r)
-        nSlices = size(roi,3);
-        for s = 1:nSlices
-            roi(:,:,s) = imerode(roi(:,:,s), strel('disk', n_voxel_crop(r)));
-        end
+    for iter = 1 : n_voxel_crop(r)
+        roi = spm_erode(roi);                    % using spm_erode, a compiled mex file
+        % roi= imerode(roi, strel('sphere', 1)); % using imerode (+ strel) from Image Processing Toolbox
+        % NB : the result is exactly the same with spm_erode or imerode
     end
-       
-    Yroi = Yimg(roi(:)==1, :);
+    
+    % Write the final noise ROIs in a volume, after relice, threshold and erosion
+    [fpRoi,fnRoi] = fileparts(Vroi.fname);
+    Vroi.fname = fullfile(fpRoi, sprintf('noiseROI_%s.nii', fnRoi));
+    spm_write_vol(Vroi,roi);
+    
+    % Overlay the final noise ROI (code from spm_orthviews:add_c_image)
+    if verbose.level >= 2
+        spm_orthviews('addcolouredimage',r,Vroi.fname ,[1 0 0])
+        hlabel = sprintf('%s (%s)',Vroi.fname ,'Red');
+        c_handle    = findobj(findobj(st.vols{r}.ax{1}.cm,'label','Overlay'),'Label','Remove coloured blobs');
+        ch_c_handle = get(c_handle,'Children');
+        set(c_handle,'Visible','on');
+        uimenu(ch_c_handle(2),'Label',hlabel,'ForegroundColor',[1 0 0],...
+            'Callback','c = get(gcbo,''UserData'');spm_orthviews(''context_menu'',''remove_c_blobs'',2,c);');
+        spm_orthviews('redraw')
+    end
+    
+    Yroi = Yimg(roi(:)==1, :); % Time series of the fMRI volume in the noise ROIs
     
     %% mean and linear trend removal according to CompCor pub
     % design matrix
@@ -196,7 +235,7 @@ for r = 1:nRois
     end
     
     % write away extracted PC-loads & roi of extraction
-    [tmp,fnRoi] = fileparts(Vroi(1).fname);
+    [fpRoi,fnRoi] = fileparts(Vroi(1).fname);
     fpFmri = fileparts(Vimg(1).fname);
     for c = 1:nComponents
         Vpc = Vroi;
