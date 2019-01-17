@@ -12,7 +12,8 @@ function [c, r, t, cpulse, acq_codes, verbose] = ...
 %    log_files, cardiac_modality, verbose, varargin)
 %
 % IN    log_files
-%       .log_cardiac        *.tsv file (tab separated file, contains 3 columns of the form
+%       .log_cardiac        *.tsv[.gz] file ([zipped] tab separated file, 
+%                           contains 3 columns of the form
 %                             cardiac   respiratory trigger
 %                             -0.949402	-0.00610382	0
 %                             -0.949402	-0.00610382	0
@@ -79,7 +80,20 @@ elseif hasRespirationFile
     fileName = log_files.respiration;
 end
 
-fileJson = regexprep(fileName, '\.tsv', '\.json');
+%% check for .gz files and unzip to temporary file
+[fp, fn, ext] = fileparts(fileName);
+
+isZipped = strcmpi(ext, '.gz');
+
+if isZipped
+    fileJson = regexprep(fileName, '\.tsv\.gz', '\.json');
+    fileName  = gunzip(fileName,tempname); % tempname is matlab inbuilt
+    fileName = fileName{1};
+else
+    fileJson = regexprep(fileName, '\.tsv', '\.json');
+end
+
+
 
 hasJsonFile = isfile(fileJson);
 
@@ -176,3 +190,7 @@ else
     cpulse = [];
 end
 
+%% delete temporary unzipped file
+if isZipped
+    rmdir(fileName, 's');
+end
