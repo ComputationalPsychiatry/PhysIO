@@ -23,7 +23,7 @@ function physio = tapas_physio_prepend_absolute_paths(physio)
 % COPYING or <http://www.gnu.org/licenses/>.
 
 
-[parentPath, currentFolder] = fileparts(physio.save_dir)
+[parentPath, currentFolder] = fileparts(physio.save_dir);
 
 % only relative folder specified, make absolute
 if isempty(parentPath) && ~isempty(currentFolder)
