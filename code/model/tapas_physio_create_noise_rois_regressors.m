@@ -86,18 +86,12 @@ for r = 1:nRois
     
     hasRoiDifferentGeometry = any(any(abs(Vroi.mat - Vimg(1).mat) > 1e-5)) | ...
         any(Vroi.dim-Vimg(1).dim(1:3));
-    % hasRoiDifferentGeometry = true;
+    perform_coreg = strcmpi(force_coregister,'Yes') || isequal(force_coregister, 1);
     
     % Force coregistration ?
-    if strcmp(force_coregister,'Yes')
+    if ~perform_coreg && hasRoiDifferentGeometry % still check the geometry !! very important !!
         perform_coreg = true;
-    elseif strcmp(force_coregister,'No')
-        if hasRoiDifferentGeometry % still check the geometry !! very important !!
-            perform_coreg = true;
-            warning(sprintf('fMRI volume and noise ROI have different orientation : \n %s \n %s \n', Vimg(1).fname, Vroi.fname)); %#ok<SPWRN>
-        else
-            perform_coreg = false;
-        end
+        warning(sprintf('fMRI volume and noise ROI have different orientation : \n %s \n %s \n', Vimg(1).fname, Vroi.fname)); %#ok<SPWRN>
     end
     
     if perform_coreg
@@ -139,7 +133,8 @@ for r = 1:nRois
     
     % Overlay the final noise ROI (code from spm_orthviews:add_c_image)
     if verbose.level >= 2
-        spm_orthviews('addcolouredimage',r,Vroi.fname ,[1 0 0])
+        spm_check_registration( roi_files{:} );
+        spm_orthviews('addcolouredimage',r,Vroi.fname ,[1 0 0]);
         hlabel = sprintf('%s (%s)',Vroi.fname ,'Red');
         c_handle    = findobj(findobj(st.vols{r}.ax{1}.cm,'label','Overlay'),'Label','Remove coloured blobs');
         ch_c_handle = get(c_handle,'Children');
