@@ -19,7 +19,7 @@ and noise_rois model)
 
 ### Added
 - BIDS reader (Brain Imaging Data Structure.
-http://bids.neuroimaging.io/bids_spec.pdf) for `*_physio.tsv/json` files
+http://bids.neuroimaging.io/bids_spec.pdf) for `*_physio.tsv[.gz]/.json` files
 - Added BioPac txt-File read-in
 - matlab-script examples now contain some comment lines
     - fixed internal bug that prepended absolute paths to input logfiles in automatic example generation
