@@ -474,6 +474,17 @@ else
     % extracted
     model.noise_rois.n_components = 1;
     
+    % Noise ROIs volumes must have the same geometry as the functional time series.
+    % It means same affine transformation(space) and same matrix(voxel size)
+    % Possible values:
+    % 'Yes' or 1/true (default)
+    %   Coregister : Estimate & Reslice will be performed on the noise NOIs,
+    %   so their geometry (space + voxel size) will match the fMRI volume.
+    % 'No' or 0 or false 
+    %   Geometry will be tested:
+    %   1) If they match, continue
+    %   2) If they don't match, perform a Coregister : Estimate & Reslice as fallback
+    model.noise_rois.force_coregister = 1;
     
     %% movement (Model): Regressor model 6/12/24, Friston et al. 1996
     % Also: sudden movement exceedance regressors
