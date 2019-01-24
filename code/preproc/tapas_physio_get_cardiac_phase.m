@@ -72,6 +72,7 @@ scannertafterpulse = scannertpriorpulse;
 for i=1:length(scannert)
     % check for prior heartbeat
     n = find(pulset < scannert(i), 1, 'last');
+    if isempty(n), n = 1; end; % exception if 1st sample has pulse peak
     scannertpriorpulse(i) = pulset(n);
     scannertafterpulse(i) = pulset(n+1);
 end
