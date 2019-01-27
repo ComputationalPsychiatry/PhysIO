@@ -32,7 +32,9 @@ function [pulseCleanedTemplate, cpulse2ndGuess, averageHeartRateInSamples] = ...
 defaults.shortenTemplateFactor = 0.5; 
 defaults.minCycleSamples = ceil(0.5/2e-3);
 defaults.thresh_min = 0.4;
-
+defaults.doNormalizeTemplate = true;
+% outliers below that correlation will be removed for averaging when retrieving final template
+defaults.thresholdHighQualityCorrelation = 0.95; 
 
 args = tapas_physio_propval(varargin, defaults);
 tapas_physio_strip_fields(args);
@@ -41,7 +43,7 @@ tapas_physio_strip_fields(args);
 debug = verbose.level >= 3;
 dt = t(2) - t(1);
 
-%% Guess peaks in two steps with updated avereage heartrate
+%% Guess peaks in two steps with updated average heartrate
 % First step
 
 [tmp, cpulse1stGuess] = tapas_physio_findpeaks( ...
@@ -130,7 +132,6 @@ halfTemplateWidthInSamples = round(shortenTemplateFactor * ...
 
 % z-transform to have all templates (for averaging) have
 % same norm & be mean-corrected
-doNormalizeTemplate = true;
 nSamplesTemplate = halfTemplateWidthInSamples * 2 + 1;
 nPulses = numel(cpulse2ndGuess);
 template = zeros(nPulses-3,nSamplesTemplate);
@@ -183,8 +184,6 @@ for n=1:nTemplates
 end
 
 %% Final template for peak search from best-matching templates
-
-thresholdHighQualityCorrelation = 0.95;
 
 % minimal number of high quality templates to be achieved, otherwise
 % enforced
