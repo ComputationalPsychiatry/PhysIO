@@ -1,7 +1,8 @@
 function [pulseCleanedTemplate, pulseTemplate] = tapas_physio_get_template_from_pulses(...
     c, cpulse, halfTemplateWidthInSamples, verbose, varargin)
 % Computes mean pulse template given time stamp of detected pulses and raw
-% time series
+% time series; removes outlier pulses with correlation to initial guess of 
+% mean template
 %
 %   [pulseCleanedTemplate, pulseTemplate] = tapas_physio_get_template_from_pulses(...
 %                c, cpulse2ndGuess, halfTemplateWidthInSamples, ...
