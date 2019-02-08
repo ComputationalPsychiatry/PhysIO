@@ -209,7 +209,9 @@ end
 hasDifferentSampling = ~isequal(tCardiac, tRespiration);
 
 if hasDifferentSampling && hasCardiacFile && hasRespirationFile
-    %TODO: interpolate acq_codes
+    
+    %interpolate acq_codes and trace with lower sampling rate to higher
+    %rate
     
     nSamplesRespiration = size(r,1);
     nSamplesCardiac = size(c,1);
@@ -246,7 +248,7 @@ if hasDifferentSampling && hasCardiacFile && hasRespirationFile
     end
     
 else
-    
+    % either cardiac or resp file exists or sampling rates are equal
     % merge acq codes
     if hasCardiacFile
         if hasRespirationFile
@@ -258,7 +260,12 @@ else
         acq_codes = racq_codes;
     end
     
+    % problem: t-vector might not have subsequent samples if stemming from
+    % tics, t(1)-t(1) could be multiple of dt, cf. SampleTime parameter in
+    % *.PULS/RESP
+
     nSamples = max(size(c,1), size(r,1));
+    
     t = -log_files.relative_start_acquisition + ((0:(nSamples-1))*...
         min(dtCardiac, dtRespiration))';
 end
