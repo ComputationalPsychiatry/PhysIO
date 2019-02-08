@@ -249,25 +249,43 @@ if hasDifferentSampling && hasCardiacFile && hasRespirationFile
     
 else
     % either cardiac or resp file exists or sampling rates are equal
-    % merge acq codes
+    % Then: merge acq codes, but also update sampling intervals, 
+    % since t-vector might not have subsequent samples if stemming from
+    % tics files, t(1)-t(1) could be multiple of dt, 
+    % cf. SampleTime parameter in *.PULS/RESP
     if hasCardiacFile
+        dtCardiac = tCardiac(2)-tCardiac(1);
+        
         if hasRespirationFile
             acq_codes = cacq_codes + racq_codes;
+            dtRespiration = tRespiration(2) - tRespiration(1);
         else
             acq_codes = cacq_codes;
+            dtRespiration = 0; % to minimize recording range below
         end
     elseif hasRespirationFile
         acq_codes = racq_codes;
+        dtRespiration = tRespiration(2) - tRespiration(1);
+        dtCardiac = 0; % to minimize recording range below
     end
     
-    % problem: t-vector might not have subsequent samples if stemming from
-    % tics, t(1)-t(1) could be multiple of dt, cf. SampleTime parameter in
-    % *.PULS/RESP
-
-    nSamples = max(size(c,1), size(r,1));
+    % decide which time vector to use depending on which recordings covers
+    % the larger time span
+    nSamplesCardiac = size(c,1);
+    nSamplesRespiration = size(r,1);
     
-    t = -log_files.relative_start_acquisition + ((0:(nSamples-1))*...
-        min(dtCardiac, dtRespiration))';
+    rangeCardiac = dtCardiac*nSamplesCardiac;
+    rangeRespiration = dtRespiration*nSamplesRespiration;
+    
+    if rangeCardiac >= rangeRespiration
+        dt = dtCardiac;
+        nSamples = nSamplesCardiac;
+    else
+        dt = dtRespiration;
+        nSamples = nSamplesRespiration;
+    end
+    
+    t = -log_files.relative_start_acquisition + ((0:(nSamples-1))*dt)';
 end
 
 end
