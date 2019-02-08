@@ -81,22 +81,29 @@ hasCardiacFile = ~isempty(log_files.cardiac);
 
 % Cardiac and respiratory sampling intervals are ignored, since Tics are
 % assumed to be counted in files
-dt = log_files.sampling_interval;
-
-switch numel(dt)
-    case 3
-        dtTics = dt(3);
-    case 1
-        dtTics = dt;
-    otherwise
-        dtTics = 2.5e-3;
+if ~isempty(log_files.sampling_interval)
+    verbose = tapas_physio_log( ...
+        'Ignoring given sampling intervals, using dt = 2.5 ms (tics) instead', ...
+        verbose, 1);
 end
 
+dtTics = 2.5e-3;
 dtCardiac = dtTics;
 dtRespiration = dtTics;
 
-acq_codes = [];
+%% Define outputs
+t           = [];
+acq_codes   = [];
+tCardiac    = [];
+cacq_codes  = [];
+c           = [];
+cpulse      = [];
+tRespiration = [];
+racq_codes  = [];
+r           = [];
+rpulse      = [];
 
+%% Read resp. file
 if hasRespirationFile
     
     C = tapas_physio_read_columnar_textfiles(log_files.respiration, 'RESP');
@@ -135,15 +142,9 @@ if hasRespirationFile
     if ~isempty(acqpulse)
         racq_codes(acqpulse) = racq_codes(acqpulse) + 8;
     end
-    
-    
-else
-    rpulse          = [];
-    r               = [];
-    tRespiration    = [];
-    racq_codes      = [];
 end
 
+%% Read cardiac file
 if hasCardiacFile
     
     C = tapas_physio_read_columnar_textfiles(log_files.cardiac);
@@ -185,19 +186,11 @@ if hasCardiacFile
     if ~isempty(acqpulse)
         cacq_codes(acqpulse) = cacq_codes(acqpulse) + 8;
     end
-    
-    
-else
-    c               = [];
-    tCardiac        = [];
-    cpulse          = [];
-    cacq_codes      = [];
 end
 
 
 
-%% interpolate to greater precision, if 2 different sampling rates are given
-
+%% plot raw data so far
 if DEBUG
     fh = tapas_physio_plot_raw_physdata_siemens_tics(tCardiac, c, tRespiration, r, ...
         hasCardiacFile, hasRespirationFile, cpulse, rpulse, cacq_codes, ...
@@ -206,91 +199,65 @@ if DEBUG
 end
 
 
-hasDifferentSampling = ~isequal(tCardiac, tRespiration);
+%% If only one file exists, take t and acq_codes from that accordingly
+hasOnlyCardiacFile = hasCardiacFile && ~hasRespirationFile;
+if hasOnlyCardiacFile
+    t = tCardiac;
+    acq_codes = cacq_codes;
+end
 
-if hasDifferentSampling && hasCardiacFile && hasRespirationFile
+hasOnlyRespirationFile = ~hasCardiacFile && hasRespirationFile;
+if hasOnlyRespirationFile
+    t = tRespiration;
+    acq_codes = racq_codes;
+end
+
+%% Merge acquisition codes, if both files exist, but on same sampling grid
+if hasCardiacFile && hasRespirationFile
     
-    %interpolate acq_codes and trace with lower sampling rate to higher
-    %rate
-    
-    nSamplesRespiration = size(r,1);
-    nSamplesCardiac = size(c,1);
-    dtCardiac = tCardiac(2)-tCardiac(1);
-    dtRespiration = tRespiration(2) - tRespiration(1);
-    
-    isHigherSamplingCardiac = dtCardiac < dtRespiration;
-    if isHigherSamplingCardiac
-        t = tCardiac;
-        rInterp = interp1(tRespiration, r, t);
-        racq_codesInterp = interp1(tRespiration, racq_codes, t, 'nearest');
-        acq_codes = cacq_codes + racq_codesInterp;
-        
-        if DEBUG
-            fh = plot_interpolation(tRespiration, r, t, rInterp, ...
-                {'respiratory', 'cardiac'});
-            verbose.fig_handles(end+1) = fh;
-        end
-        r = rInterp;
-        
+    haveSameSampling = isequal(tRespiration, tCardiac);
+    if haveSameSampling
+        acq_codes = cacq_codes + racq_codes;
     else
-        t = tRespiration;
-        cInterp = interp1(tCardiac, c, t);
-        cacq_codesInterp = interp1(tCardiac, cacq_codes, t, 'nearest');
-        acq_codes = racq_codes + cacq_codesInterp;
+        %% interpolate to greater precision, if both files exist and
+        % 2 different sampling rates are given
+        %interpolate acq_codes and trace with lower sampling rate to higher
+        %rate
         
-        if DEBUG
-            fh = plot_interpolation(tCardiac, c, t, cInterp, ...
-                {'cardiac', 'respiratory'});
-            verbose.fig_handles(end+1) = fh;
-        end
-        c = cInterp;
-        
-    end
-    
-else
-    % either cardiac or resp file exists or sampling rates are equal
-    % Then: merge acq codes, but also update sampling intervals, 
-    % since t-vector might not have subsequent samples if stemming from
-    % tics files, t(1)-t(1) could be multiple of dt, 
-    % cf. SampleTime parameter in *.PULS/RESP
-    if hasCardiacFile
         dtCardiac = tCardiac(2)-tCardiac(1);
-        
-        if hasRespirationFile
-            acq_codes = cacq_codes + racq_codes;
-            dtRespiration = tRespiration(2) - tRespiration(1);
-        else
-            acq_codes = cacq_codes;
-            dtRespiration = 0; % to minimize recording range below
-        end
-    elseif hasRespirationFile
-        acq_codes = racq_codes;
         dtRespiration = tRespiration(2) - tRespiration(1);
-        dtCardiac = 0; % to minimize recording range below
+        
+        isHigherSamplingCardiac = dtCardiac < dtRespiration;
+        if isHigherSamplingCardiac
+            t = tCardiac;
+            rInterp = interp1(tRespiration, r, t);
+            racq_codesInterp = interp1(tRespiration, racq_codes, t, 'nearest');
+            acq_codes = cacq_codes + racq_codesInterp;
+            
+            if DEBUG
+                fh = plot_interpolation(tRespiration, r, t, rInterp, ...
+                    {'respiratory', 'cardiac'});
+                verbose.fig_handles(end+1) = fh;
+            end
+            r = rInterp;
+            
+        else
+            t = tRespiration;
+            cInterp = interp1(tCardiac, c, t);
+            cacq_codesInterp = interp1(tCardiac, cacq_codes, t, 'nearest');
+            acq_codes = racq_codes + cacq_codesInterp;
+            
+            if DEBUG
+                fh = plot_interpolation(tCardiac, c, t, cInterp, ...
+                    {'cardiac', 'respiratory'});
+                verbose.fig_handles(end+1) = fh;
+            end
+            c = cInterp;
+            
+        end
     end
-    
-    % decide which time vector to use depending on which recordings covers
-    % the larger time span
-    nSamplesCardiac = size(c,1);
-    nSamplesRespiration = size(r,1);
-    
-    rangeCardiac = dtCardiac*nSamplesCardiac;
-    rangeRespiration = dtRespiration*nSamplesRespiration;
-    
-    if rangeCardiac >= rangeRespiration
-        dt = dtCardiac;
-        nSamples = nSamplesCardiac;
-    else
-        dt = dtRespiration;
-        nSamples = nSamplesRespiration;
-    end
-    
-    t = -log_files.relative_start_acquisition + ((0:(nSamples-1))*dt)';
 end
-
 end
-
-
 
 %% Local function to plot interpolation result
 function fh = plot_interpolation(tOrig, yOrig, tInterp, yInterp, ...
