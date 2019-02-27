@@ -119,15 +119,21 @@ for r = 1:nRois
     roi(roi <  thresholds(r)) = 0;
     roi(roi >= thresholds(r)) = 1;
     
+    if ~any(roi(:))
+        tapas_physio_log(sprintf(['No voxels in Noise ROI mask no. %d.\n' ...
+            'Please reduce threshold %f!'], ...
+            r, thresholds(r)), verbose, 2);
+    end
+    
     % crop pixel, if desired
     for iter = 1 : n_voxel_crop(r)
         roi = spm_erode(roi);                    % using spm_erode, a compiled mex file
         % roi= imerode(roi, strel('sphere', 1)); % using imerode (+ strel) from Image Processing Toolbox
         % NB : the result is exactly the same with spm_erode or imerode
         if ~any(roi(:))
-            tapas_physio_log(sprintf(['No voxels in Noise ROI mask ' ...
-                'after eroding %d pixel(s); Please reduce nVoxels for cropping'], ...
-                iter), verbose, 2);
+            tapas_physio_log(sprintf(['No voxels in Noise ROI mask no. %d\n' ...
+                'after eroding %d pixel(s); Please reduce nVoxels for cropping!'], ...
+                r, iter), verbose, 2);
         end
     end
     
