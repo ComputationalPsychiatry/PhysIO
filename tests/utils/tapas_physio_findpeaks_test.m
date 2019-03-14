@@ -80,11 +80,14 @@ end
 % removes signal processing findpeaks from path and checks whether
 % deprecated modified version from older Matlab release delivers same
 % results
+% Is also true, when no tapas_physio_findpeaks_compatible function exists
 function test_ge_ppu3t_findpeaks_compatible(testCase)
 
 pathSignalToolbox = fileparts(which('findpeaks'));
 
-if ~isempty(pathSignalToolbox)
+hasCompatibleFindPeaks = ~isempty(which('tapas_physio_findpeaks_compatible'));
+
+if ~isempty(pathSignalToolbox) && hasCompatibleFindPeaks
     rmpath(pathSignalToolbox);
     fprintf('\n\t!!! Temporarily removed %s from path to check performance vs legacy findpeaks\n', ...
         pathSignalToolbox);
