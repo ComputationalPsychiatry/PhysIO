@@ -17,7 +17,11 @@ Minor Release Notes (R2019a, v7.1.0)
 http://bids.neuroimaging.io/bids_spec.pdf) for `*_physio.tsv[.gz]/.json` files
 - Added BioPac txt-File read-in and example
 - Template example with all physio-fields for matlab script and settings as in default SPM batch
-- Started unit testing framework in folder `code/tests`
+- Started unit testing framework in folder `tests`
+    - example functions for findpeaks and BIDS readin
+    - reference data saved with example data in subfolder `TestReferenceResults`
+    - reference data reflects resulting physio structure for run of example
+    scripts with this release version of the toolbox
 
 ### Changed
 - put all functions in `code` into subfolders relating to different modules: `readin`, `sync`, `preproc`, `model`, `assess`, `utils` (gitlab-issue #58)
@@ -28,6 +32,8 @@ http://bids.neuroimaging.io/bids_spec.pdf) for `*_physio.tsv[.gz]/.json` files
 toolbox implementation
 - minimized Matlab toolbox dependencies by custom simplified functions (e.g.,
 `suptitle`)
+- introduced semantic version numbers for all previous releases, and changed
+Release numbering to R<YEAR><LETTER> style.
 
 
 Bugfix Release Notes (R2018.1.3, v7.0.3)
