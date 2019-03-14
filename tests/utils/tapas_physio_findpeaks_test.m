@@ -31,10 +31,18 @@ tests = functiontests(localfunctions);
 end
 
 function test_ge_ppu3t_peaks(testCase)
-% run GE example and extract physio
-pathExamples = 'C:\Users\kasperla\Documents\Code\PhysIO\examples';
+%% Compares previously saved cpulse (detected cardiac pulses) from 
+% physio-structure to same output when re-running current version of
+% GE PPU3T example
+% both SPM or matlab-script based execution is possible (check parameter
+% doUseSpm below!)
 
 doUseSpm = true;
+
+% run GE example and extract physio
+pathPhysioPublic = fullfile(fileparts(mfilename('fullpath')), '..', '..');
+% TODO: Make generic!
+pathExamples =  fullfile(pathPhysioPublic, '..', 'examples');
 
 if doUseSpm
     pathCurrentExample = fullfile(pathExamples, 'GE/PPU3T');
@@ -57,9 +65,9 @@ if doUseSpm
     load(matlabbatch{1}.spm.tools.physio.model.output_physio, 'physio');
     actPhysio = physio;
 else % has verbosity...cannot switch it off
-    %fileExample = fullfile(pathExamples, 'GE/PPU3T/ge_ppu3t_matlab_script.m');
-    %run(fileExample); % will output a PhysIO=struct
-    %actPhysio = physio;
+    fileExample = fullfile(pathExamples, 'GE/PPU3T/ge_ppu3t_matlab_script.m');
+    run(fileExample); % will output a PhysIO=struct
+    actPhysio = physio;
 end
 
 
@@ -77,11 +85,11 @@ verifyEqual(testCase, actSolution, expSolution);
 
 end
 
-% removes signal processing findpeaks from path and checks whether
+function test_ge_ppu3t_findpeaks_compatible(testCase)
+%% Removes signal processing findpeaks from path and checks whether
 % deprecated modified version from older Matlab release delivers same
 % results
 % Is also true, when no tapas_physio_findpeaks_compatible function exists
-function test_ge_ppu3t_findpeaks_compatible(testCase)
 
 pathSignalToolbox = fileparts(which('findpeaks'));
 
