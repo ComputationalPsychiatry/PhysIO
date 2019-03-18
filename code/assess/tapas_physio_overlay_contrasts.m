@@ -186,7 +186,7 @@ for idxContrast = idxContrasts
 end
 cd(pathBeforeReport);
 
-stringTitle = [titleGraphicsWindow, ' - SPM.xX.X'];
+stringTitle = ['Assess: ' titleGraphicsWindow, ' - SPM.xX.X'];
 title(regexprep(stringTitle,'_','\\_'));
 set(gcf,'Name', stringTitle);
 

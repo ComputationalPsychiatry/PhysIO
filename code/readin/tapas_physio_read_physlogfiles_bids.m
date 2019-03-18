@@ -198,7 +198,7 @@ end
 %% Plot, if wanted
 
 if DEBUG
-    stringTitle = 'Raw BIDS physlog data (TSV file)';
+    stringTitle = 'Read-In: Raw BIDS physlog data (TSV file)';
     verbose.fig_handles(end+1) = ...
         tapas_physio_plot_raw_physdata_siemens_hcp(t, c, r, acq_codes, ...
         stringTitle);

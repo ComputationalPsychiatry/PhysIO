@@ -165,7 +165,7 @@ for s = subjectIndices
                 cd(pathTmp);
             end
             
-            stringTitle = [dirSubject, ' - SPM.xX.X'];
+            stringTitle = ['Assess: ' dirSubject, ' - SPM.xX.X'];
             title(regexprep(stringTitle,'_','\\_'));
             set(gcf,'Name', stringTitle);
             fprintf('good SPM: %s\n', dirSubject);
