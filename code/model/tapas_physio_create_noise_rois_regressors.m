@@ -244,7 +244,7 @@ for r = 1:nRois
     end
     
     if verbose.level >=2
-        stringFig = sprintf('Noise\_rois: Extracted principal components for ROI %d', r);
+        stringFig = sprintf('Model: Noise\\_rois: Extracted principal components for ROI %d', r);
         verbose.fig_handles(end+1) = tapas_physio_get_default_fig_params();
         set(gcf, 'Name', stringFig);
         plot(R);
