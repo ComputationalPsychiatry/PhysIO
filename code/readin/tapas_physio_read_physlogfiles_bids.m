@@ -2,11 +2,17 @@ function [c, r, t, cpulse, acq_codes, verbose] = ...
     tapas_physio_read_physlogfiles_bids(log_files, cardiac_modality, ...
     verbose, varargin)
 % Reads in 3-column tsv-file from BIDS Data (cardiac, respiratory, trigger),
-% assuming log_files-meta information to be in .json-file
+% assuming log_files-meta information to be in an accompanying .json-file
 % Note: if a JSON file of the same file name exists (but .json instead of .tsv)
 % column order of physiological recordings will be read from there as well
 % as values for sampling_interval and relative_start_acquisition, if they were
 % empty before
+% 
+% Details of the Brain Imaging Data Structure (BIDS) standard for peripheral
+% physiological recordings can be found here: 
+%
+% https://bids-specification.readthedocs.io/en/stable/04-modality-specific-files/
+% 06-physiological-and-other-continous-recordings.html
 %
 % [c, r, t, cpulse, acq_codes, verbose] = tapas_physio_read_physlogfiles_biopac_txt(...
 %    log_files, cardiac_modality, verbose, varargin)

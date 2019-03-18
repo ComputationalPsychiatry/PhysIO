@@ -6,7 +6,7 @@ Current Release
 
 *Current version: PhysIO Toolbox Release R2019a, v7.1.0*
 
-March 14, 2019
+March 18, 2019
 
 
 Minor Release Notes (R2019a, v7.1.0)
@@ -33,7 +33,8 @@ toolbox implementation
 - minimized Matlab toolbox dependencies by custom simplified functions (e.g.,
 `suptitle`)
 - introduced semantic version numbers for all previous releases, and changed
-Release numbering to R<YEAR><LETTER> style.
+Release numbering to R<YEAR><LETTER> style
+- extended documentation (FAQ, new read-in BIDS)
 
 
 Bugfix Release Notes (R2018.1.3, v7.0.3)
