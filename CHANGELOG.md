@@ -6,7 +6,7 @@ Current Release
 
 *Current version: PhysIO Toolbox Release R2019a, v7.1.0*
 
-March 18, 2019
+March 19, 2019
 
 
 Minor Release Notes (R2019a, v7.1.0)
@@ -20,21 +20,24 @@ http://bids.neuroimaging.io/bids_spec.pdf) for `*_physio.tsv[.gz]/.json` files
 - Started unit testing framework in folder `tests`
     - example functions for findpeaks and BIDS readin
     - reference data saved with example data in subfolder `TestReferenceResults`
-    - reference data reflects resulting physio structure for run of example
-    scripts with this release version of the toolbox
+    - reference data reflects physio structure after running example scripts
+    with PhysIO R2019a
 
 ### Changed
 - put all functions in `code` into subfolders relating to different modules: `readin`, `sync`, `preproc`, `model`, `assess`, `utils` (gitlab-issue #58)
     - updated deployment `tapas_physio_init` because of that
+    - updated figure names to reflect respective code module
 - matlab-script examples now contain some comment lines
     - fixed internal bug that prepended absolute paths to input logfiles in automatic example generation
-- replaced of tapas_physio_findpeaks to use current Matlab signal processing
-toolbox implementation
-- minimized Matlab toolbox dependencies by custom simplified functions (e.g.,
-`suptitle`)
 - introduced semantic version numbers for all previous releases, and changed
 Release numbering to R<YEAR><LETTER> style
 - extended documentation (FAQ, new read-in BIDS)
+
+### Removed
+- `tapas_physio_findpeaks` now refers to current Matlab signal processing
+toolbox implementation, instead of copy of older version
+- some Matlab toolbox dependencies by custom simplified functions (e.g.,
+`suptitle`)
 
 
 Bugfix Release Notes (R2018.1.3, v7.0.3)
