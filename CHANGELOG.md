@@ -24,14 +24,20 @@ http://bids.neuroimaging.io/bids_spec.pdf) for `*_physio.tsv[.gz]/.json` files
     with PhysIO R2019a
 
 ### Changed
-- put all functions in `code` into subfolders relating to different modules: `readin`, `sync`, `preproc`, `model`, `assess`, `utils` (gitlab-issue #58)
+- put all functions in `code` into subfolders relating to different modules:
+  `readin`, `sync`, `preproc`, `model`, `assess`, `utils` (gitlab-issue #58)
     - updated deployment `tapas_physio_init` because of that
     - updated figure names to reflect respective code module
-- matlab-script examples now contain some comment lines
+- matlab-script examples now contain more comments
     - fixed internal bug that prepended absolute paths to input logfiles in automatic example generation
+- `tapas_physio_create_noise_rois_regressors` with more flexible ROI reslicing 
+  options (speed-up) and uses `spm_erode` (no Matlab image processing toolbox needed),
+  thanks to a [contribution by Benoît Béranger](https://github.com/translationalneuromodeling/tapas/pull/34)
 - introduced semantic version numbers for all previous releases, and changed
 Release numbering to R<YEAR><LETTER> style
 - extended documentation (FAQ, new read-in BIDS)
+- several bugfixes (Sep 18 - Mar 19), see 
+  [GitHub Issues](https://github.com/translationalneuromodeling/tapas/issues?q=label:physio)
 
 ### Removed
 - `tapas_physio_findpeaks` now refers to current Matlab signal processing
