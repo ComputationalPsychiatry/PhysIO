@@ -13,6 +13,7 @@ Unreleased
 
 ### Changed
 - Toned down and replaced irrelevant peak height and missing cardiac pulse warnings (github issue #51)
+- Added `requirements.txt`
 
 Minor Release Notes (R2019a, v7.1.0)
 ------------------------------------
