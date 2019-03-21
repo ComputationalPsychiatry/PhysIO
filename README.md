@@ -229,12 +229,26 @@ Contributors
 - Project Team: 
     - Steffen Bollmann, Centre for Advanced Imaging, University of Queensland, Australia
     - Saskia Bollmann, Centre for Advanced Imaging, University of Queensland, Australia
-- Contributors:
+- Contributors (Code):
     - Eduardo Aponte, TNU Zurich
     - Tobias U. Hauser, FIL London, UK
     - Jakob Heinzle, TNU Zurich
     - Chloe Hutton, FIL London, UK (previously)
     - Miriam Sebold, Charite Berlin, Germany
+    - TAPAS contributors listed in its [Contributor License Agreement](https://github.com/translationalneuromodeling/tapas/blob/master/Contributor-License-Agreement.md)
+- Contributors (Examples):
+    - listed in [EXAMPLES.md](https://gitlab.ethz.ch/physio/physio-doc/wikis/EXAMPLES)
+
+
+Requirements
+------------
+
+- All specific software requirements and their versions are in a separate file
+  in this folder, `requirements.txt`.
+- In brief:
+    - PhysIO needs Matlab to run, and some of its toolboxes.
+    - Some functionality requires SPM (GUI, nuisance regression, contrast reporting, 
+      writing residual and SNR images).
 
 
 References
