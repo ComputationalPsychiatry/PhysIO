@@ -307,13 +307,6 @@ imaging analyses produced by censoring high-motion data points. Hum. Brain Mapp.
 11. Power, J.D., Barnes, K.A., Snyder, A.Z., Schlaggar, B.L., Petersen, S.E., 2012. Spurious but systematic correlations in functional connectivity MRI networks arise from subject motion. NeuroImage 59, 2142–2154. https://doi.org/10.1016/j.neuroimage.2011.10.018
 
 
-Requirements
-------------
-
-- In general, the PhysIO Toolbox requires Matlab, and, in addition, SPM for some
-  extra functionality (GI)
-
-
 Copying/License
 ---------------
 
