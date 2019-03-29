@@ -14,6 +14,8 @@ Unreleased
 ### Changed
 - Toned down and replaced irrelevant peak height and missing cardiac pulse warnings (github issue #51)
 - Added `requirements.txt`
+- Updated README to include external contributors and recent findings about
+  impact of physiological noise for serial correlations (Bollmann2018)
 
 Minor Release Notes (R2019a, v7.1.0)
 ------------------------------------
