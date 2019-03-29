@@ -147,6 +147,11 @@ Facts about physiological noise in fMRI:
   become a particular concern at and above 3 Tesla (Kasper2009, Hutton2011).
 - In resting state fMRI, disregarding physiological noise leads to wrong 
   connectivity results (Birn2006).
+- Uncorrected physiological noise introduces serial correlations into the residual
+  voxel time series, that invalidate assumptions on noise correlations (e.g., AR(1)) 
+  used in data prewhitening by all major analysis packages. This issue is particularly
+  aggravated at short TR (<1s), and most of its effects can be suitably addressed
+  by physiological noise correction (Bollmann2018)
 
 Therefore, some kind of physiological noise correction is highly recommended for
 every statistical fMRI analysis.
@@ -271,57 +276,78 @@ References
 
 ### Main Toolbox Reference
 
+Please cite the following paper in all of your publications that utilized the 
+PhysIO Toolbox. 
+
 1. Kasper, L., Bollmann, S., Diaconescu, A.O., Hutton, C., Heinzle, J., Iglesias, 
 S., Hauser, T.U., Sebold, M., Manjaly, Z.-M., Pruessmann, K.P., Stephan, K.E., 2017. 
 The PhysIO Toolbox for Modeling Physiological Noise in fMRI Data. 
 Journal of Neuroscience Methods 276, 56–72. https://doi.org/10.1016/j.jneumeth.2016.10.019
 
+The [FAQ](https://gitlab.ethz.ch/physio/physio-doc/wikis/FAQ#3-how-do-i-cite-physio) 
+contains a complete suggestion for a snippet in your methods section.
+
 ### Related Papers (Implemented noise correction algorithms and optimal parameter choices)
+
+The following sections list papers that 
+- first implemented specific noise correction algorithms
+- determined optimal parameter choices for these algorithms, depending on the
+  targeted application
+- demonstrate the impact of physiological noise and the importance of its correction
+
+It is loosely ordered by the dominant physiological noise model used in the 
+paper. The list is by no means complete, and we are happy to add any relevant papers 
+suggested to us. 
 
 #### RETROICOR 
 2. Glover, G.H., Li, T.Q. & Ress, D. Image‐based method for retrospective correction
 of PhysIOlogical motion effects in fMRI: RETROICOR. Magn Reson Med 44, 162-7 (2000).
 
-3. Hutton, C. et al. The impact of PhysIOlogical noise correction on fMRI at 7 T.
+3. Hutton, C. et al. The impact of Physiological noise correction on fMRI at 7 T.
 NeuroImage 57, 101‐112 (2011).
 
 4. Harvey, A.K. et al. Brainstem functional magnetic resonance imaging:
 Disentangling signal from PhysIOlogical noise. Journal of Magnetic Resonance
 Imaging 28, 1337‐1344 (2008).
 
+5. Bollmann, S., Puckett, A.M., Cunnington, R., Barth, M., 2018. 
+Serial correlations in single-subject fMRI with sub-second TR. 
+NeuroImage 166, 152–166. https://doi.org/10.1016/j.neuroimage.2017.10.043
+
+
 #### aCompCor / Noise ROIs 
-5. Behzadi, Y., Restom, K., Liau, J., Liu, T.T., 2007. A component based noise
+6. Behzadi, Y., Restom, K., Liau, J., Liu, T.T., 2007. A component based noise
 correction method (CompCor) for BOLD and perfusion based fMRI. NeuroImage 37,
 90–101. https://doi.org/10.1016/j.neuroimage.2007.04.042
 
 #### RVT
-6. Birn, R.M., Smith, M.A., Jones, T.B., Bandettini, P.A., 2008. The respiration response
+7. Birn, R.M., Smith, M.A., Jones, T.B., Bandettini, P.A., 2008. The respiration response
 function: The temporal dynamics of fMRI s ignal fluctuations related to changes in
 respiration. NeuroImage 40, 644–654. doi:10.1016/j.neuroimage.2007.11.059
-7. Jo, H.J., Saad, Z.S., Simmons, W.K., Milbury, L.A., Cox, R.W., 2010. 
+8. Jo, H.J., Saad, Z.S., Simmons, W.K., Milbury, L.A., Cox, R.W., 2010. 
 Mapping sources of correlation in resting state FMRI, with artifact detection 
 and removal. NeuroImage 52, 571–582. https://doi.org/10.1016/j.neuroimage.2010.04.246  
-*regressor delay suggestions*
+    - *regressor delay suggestions*
 
 #### HRV
-8. Chang, C., Cunningham, J.P., Glover, G.H., 2009. Influence of heart rate on the
+9. Chang, C., Cunningham, J.P., Glover, G.H., 2009. Influence of heart rate on the
 BOLD signal: The cardiac response function. NeuroImage 44, 857–869.
 doi:10.1016/j.neuroimage.2008.09.029
-9. Shmueli, K., van Gelderen, P., de Zwart, J.A., Horovitz, S.G., Fukunaga, M., 
+10. Shmueli, K., van Gelderen, P., de Zwart, J.A., Horovitz, S.G., Fukunaga, M., 
 Jansma, J.M., Duyn, J.H., 2007. Low-frequency fluctuations in the cardiac rate 
 as a source of variance in the resting-state fMRI BOLD signal. 
 NeuroImage 38, 306–320. https://doi.org/10.1016/j.neuroimage.2007.07.037  
-*regressor delay suggestions*
+    - *regressor delay suggestions*
 
 #### Motion (Censoring, Framewise Displacement)
-10. Siegel, J.S., Power, J.D., Dubis, J.W., Vogel, A.C., Church, J.A., Schlaggar, B.L.,
+11. Siegel, J.S., Power, J.D., Dubis, J.W., Vogel, A.C., Church, J.A., Schlaggar, B.L.,
 Petersen, S.E., 2014. Statistical improvements in functional magnetic resonance
 imaging analyses produced by censoring high-motion data points. Hum. Brain Mapp.
 35, 1981–1996. https://doi.org/10.1002/hbm.22307
 
-11. Power, J.D., Barnes, K.A., Snyder, A.Z., Schlaggar, B.L., Petersen, S.E., 
-2012. Spurious but systematic correlations in functional connectivity MRI 
-networks arise from subject motion. NeuroImage 59, 2142–2154. 
+12. Power, J.D., Barnes, K.A., Snyder, A.Z., Schlaggar, B.L., Petersen, S.E., 2012. 
+Spurious but systematic correlations in functional connectivity MRI networks 
+arise from subject motion. NeuroImage 59, 2142–2154. 
 https://doi.org/10.1016/j.neuroimage.2011.10.018
 
 
