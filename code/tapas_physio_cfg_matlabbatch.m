@@ -555,6 +555,27 @@ initial_cpulse_select_file.strtype = 's';
 initial_cpulse_select_file.num     = [0 Inf];
 initial_cpulse_select_file.val     = {'initial_cpulse_kRpeakfile.mat'};
 
+%--------------------------------------------------------------------------
+% max_heart_rate_bpm
+%--------------------------------------------------------------------------
+min       = cfg_entry;
+min.tag     = 'max_heart_rate_bpm';
+min.name    = 'Maximum heart rate (BPM)';
+min.help    = {
+    'Maximum expected heart rate in beats per minute. (default: 90)'
+    'This only needs to be a rough guess and should be changed for specific'
+    'subject populations.'
+    ' - If set too low, the auto_mathed pulse detection might miss genuine'
+    '   cardiac pulses'
+    ' - If set too high, it might introduce artifactual pulse events, i.e.'
+    '   interpreting local maxima within a pulse as new pulse events'
+    ' Adjust this value, if you have a subject with very high heart rate' 
+    ' (increase!), or if you have very pronounced local maxima in your wave form'
+    ' (decrease!).'
+    };
+min.strtype = 'e';
+min.num     = [0 Inf];
+min.val     = {90};
 
 
 %--------------------------------------------------------------------------
@@ -578,7 +599,8 @@ initial_cpulse_select_method_auto_template.tag = 'auto_template';
 initial_cpulse_select_method_auto_template.name = 'auto_template';
 initial_cpulse_select_method_auto_template.val  = {
     min 
-    initial_cpulse_select_file    
+    initial_cpulse_select_file   
+    max_heart_rate_bpm
 };
 initial_cpulse_select_method_auto_template.help = { ...
     ' Auto generation of representative QRS-wave; detection via'
@@ -595,6 +617,7 @@ initial_cpulse_select_method_auto_matched.name = 'auto_matched';
 initial_cpulse_select_method_auto_matched.val  = {
     min 
     initial_cpulse_select_file    
+    max_heart_rate_bpm
 };
 initial_cpulse_select_method_auto_matched.help = { ...
     'Auto generation of template QRS wave, '
