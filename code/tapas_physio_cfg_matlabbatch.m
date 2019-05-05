@@ -558,20 +558,20 @@ initial_cpulse_select_file.val     = {'initial_cpulse_kRpeakfile.mat'};
 %--------------------------------------------------------------------------
 % max_heart_rate_bpm
 %--------------------------------------------------------------------------
-max_heart_rate_bpm       = cfg_entry;
+max_heart_rate_bpm         = cfg_entry;
 max_heart_rate_bpm.tag     = 'max_heart_rate_bpm';
 max_heart_rate_bpm.name    = 'Maximum heart rate (BPM)';
 max_heart_rate_bpm.help    = {
     'Maximum expected heart rate in beats per minute. (default: 90)'
     'This only needs to be a rough guess and should be changed for specific'
     'subject populations.'
-    ' - If set too low, the auto_mathed pulse detection might miss genuine'
+    ' - If set too low, the auto_matched pulse detection might miss genuine'
     '   cardiac pulses'
     ' - If set too high, it might introduce artifactual pulse events, i.e.'
     '   interpreting local maxima within a pulse as new pulse events'
-    ' Adjust this value, if you have a subject with very high heart rate' 
-    ' (increase!), or if you have very pronounced local maxima in your wave form'
-    ' (decrease!).'
+    ' You may need to increase this value if you have a subject with a very'
+    ' high heart rate, or decrease it if you have very pronounced local maxima'
+    ' in your wave form.'
     };
 max_heart_rate_bpm.strtype = 'e';
 max_heart_rate_bpm.num     = [0 Inf];

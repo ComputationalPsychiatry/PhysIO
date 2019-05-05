@@ -10,7 +10,7 @@ function [cpulse, verbose] = tapas_physio_get_cardiac_pulses(t, c, ...
 %   cpulse_detect_options      
 %                      is a structure with the following elements
 %           .method -  'auto_matched', 'manual_template', 'load_from_logfile',
-%                       'load_template
+%                       'load_template'
 %                      Specifies how to determine QRS-wave from noisy input
 %                      data
 %           .min -     - for modality 'ECG': [percent peak height of sample QRS wave]
@@ -29,7 +29,7 @@ function [cpulse, verbose] = tapas_physio_get_cardiac_pulses(t, c, ...
 %                      This file is saved after picking the QRS-wave
 %                      manually (i.e. if .ECG_min is set), so that
 %                      results are reproducible
-%           .maxHeartRateBpm  
+%           .max_heart_rate_bpm
 %                   maximum allowed physiological heart rate (in beats
 %                   per minute) for subject; default: 90 bpm
 %           .krPeak [false] or true; if true, a user input is
@@ -66,11 +66,12 @@ function [cpulse, verbose] = tapas_physio_get_cardiac_pulses(t, c, ...
 
 %% detection of cardiac R-peaks
 
-dt = t(2)-t(1);
-minPulseDistanceSamples = floor((1/(cpulse_detect_options.max_heart_rate_bpm/60)/dt));
+dt = t(2) - t(1);
+minPulseDistanceSamples = ...
+    floor((1 / (cpulse_detect_options.max_heart_rate_bpm / 60)) / dt);
 
 if isempty(minPulseDistanceSamples)
-    minPulseDistanceSamples = round(0.5/dt); % heart rate < 120 bpm
+    minPulseDistanceSamples = round(0.5 / dt); % heart rate < 120 bpm
 end
 
 switch lower(cardiac_modality)
