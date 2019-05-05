@@ -558,10 +558,10 @@ initial_cpulse_select_file.val     = {'initial_cpulse_kRpeakfile.mat'};
 %--------------------------------------------------------------------------
 % max_heart_rate_bpm
 %--------------------------------------------------------------------------
-min       = cfg_entry;
-min.tag     = 'max_heart_rate_bpm';
-min.name    = 'Maximum heart rate (BPM)';
-min.help    = {
+max_heart_rate_bpm       = cfg_entry;
+max_heart_rate_bpm.tag     = 'max_heart_rate_bpm';
+max_heart_rate_bpm.name    = 'Maximum heart rate (BPM)';
+max_heart_rate_bpm.help    = {
     'Maximum expected heart rate in beats per minute. (default: 90)'
     'This only needs to be a rough guess and should be changed for specific'
     'subject populations.'
@@ -573,9 +573,9 @@ min.help    = {
     ' (increase!), or if you have very pronounced local maxima in your wave form'
     ' (decrease!).'
     };
-min.strtype = 'e';
-min.num     = [0 Inf];
-min.val     = {90};
+max_heart_rate_bpm.strtype = 'e';
+max_heart_rate_bpm.num     = [0 Inf];
+max_heart_rate_bpm.val     = {90};
 
 
 %--------------------------------------------------------------------------
