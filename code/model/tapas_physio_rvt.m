@@ -52,7 +52,7 @@ function [rvt, timeRpulseMax, timeRpulseMin, verbose] = ...
 pulse_detect_options = [];
 pulse_detect_options.min = .1;
 pulse_detect_options.method = 'auto_matched';
-pulse_detect_options.maxHeartRateBpm = 30;% actually the breathing rate breaths/per minute
+pulse_detect_options.max_heart_rate_bpm = 30;% actually the breathing rate breaths/per minute
 
 if nargin < 4
     verbose.level = 0;

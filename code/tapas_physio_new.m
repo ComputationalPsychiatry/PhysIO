@@ -315,7 +315,7 @@ else
     % Adjust this value, if you have a subject with very high heart rate 
     % (increase!), or if you have very pronounced local maxima in your wave form
     % (decrease!).
-    preproc.cardiac.initial_cpulse_select.maxHeartRateBpm = 90;
+    preproc.cardiac.initial_cpulse_select.max_heart_rate_bpm = 90;
 
     % file containing reference ECG-peak (variable kRpeak)
     % used for method 'manual' or 'load' [default: not set]

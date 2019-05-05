@@ -67,7 +67,7 @@ function [cpulse, verbose] = tapas_physio_get_cardiac_pulses(t, c, ...
 %% detection of cardiac R-peaks
 
 dt = t(2)-t(1);
-minPulseDistanceSamples = floor((1/(cpulse_detect_options.maxHeartRateBpm/60)/ons_secs.dt));
+minPulseDistanceSamples = floor((1/(cpulse_detect_options.max_heart_rate_bpm/60)/ons_secs.dt));
 
 if isempty(minPulseDistanceSamples)
     minPulseDistanceSamples = round(0.5/dt); % heart rate < 120 bpm
