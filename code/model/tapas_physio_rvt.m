@@ -47,15 +47,12 @@ function [rvt, timeRpulseMax, timeRpulseMin, verbose] = ...
 % COPYING or <http://www.gnu.org/licenses/>.
 
 
-
-dt = t(2)-t(1);
-dtBreath = round(2/dt); %in seconds, minimum distance between two breaths
-
 % compute breathing "pulses" (occurence times "rpulse" of max inhalation
 % times)
-thresh_cardiac = [];
-thresh_cardiac.min = .1;
-thresh_cardiac.method = 'auto_matched';
+pulse_detect_options = [];
+pulse_detect_options.min = .1;
+pulse_detect_options.method = 'auto_matched';
+pulse_detect_options.max_heart_rate_bpm = 30;% actually the breathing rate breaths/per minute
 
 if nargin < 4
     verbose.level = 0;
@@ -65,9 +62,9 @@ end
 verbose_no = verbose;
 verbose_no.level = 0;
 timeRpulseMax = tapas_physio_get_cardiac_pulses(t, fr, ...
-    thresh_cardiac,'OXY', dtBreath, verbose);
+    pulse_detect_options, 'OXY', verbose);
 timeRpulseMin = tapas_physio_get_cardiac_pulses(t, -fr, ...
-    thresh_cardiac,'OXY', dtBreath, verbose);
+    pulse_detect_options, 'OXY', verbose);
 nMax = numel(timeRpulseMax);
 nMin = numel(timeRpulseMin);
 maxFr = max(abs(fr));

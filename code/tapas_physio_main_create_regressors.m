@@ -57,7 +57,6 @@ addpath(genpath(pathThis));
 
 % These parameters could become toolbox inputs...
 minConstantIntervalAlertSeconds     = 0.2;
-maxHeartRateBpm                     = 90;
 
 if ~nargin
     error('Please specify a PhysIO-object as input to this function. See tapas_physio_new');
@@ -162,13 +161,11 @@ if ~hasPhaseLogfile
                     case {'load_from_logfile', ''}
                         % do nothing
                     otherwise
-                        minCardiacCycleSamples = floor((1/(maxHeartRateBpm/60)/ons_secs.dt));
-                        
                         % run one of the various cardiac pulse detection algorithms
                         [ons_secs.cpulse, verbose] = ...
                             tapas_physio_get_cardiac_pulses(ons_secs.t, ons_secs.c, ...
                             preproc.cardiac.initial_cpulse_select, ...
-                            preproc.cardiac.modality, minCardiacCycleSamples, verbose);
+                            preproc.cardiac.modality, verbose);
                 end
                 
                 

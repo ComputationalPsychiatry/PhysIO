@@ -306,6 +306,17 @@ else
     % 'load'    - from previous manual/auto run
     preproc.cardiac.initial_cpulse_select.method = 'auto_matched';
     
+    % maximum allowed physiological heart rate (in beats per minute)
+    % for subject; default: 90 bpm
+    % - If set too low, the auto_mathed pulse detection might miss genuine
+    %   cardiac pulses
+    % - If set too high, it might introduce artifactual pulse events, i.e.
+    %   interpreting local maxima within a pulse as new pulse events
+    % Adjust this value, if you have a subject with very high heart rate 
+    % (increase!), or if you have very pronounced local maxima in your wave form
+    % (decrease!).
+    preproc.cardiac.initial_cpulse_select.max_heart_rate_bpm = 90;
+
     % file containing reference ECG-peak (variable kRpeak)
     % used for method 'manual' or 'load' [default: not set]
     % if method == 'manual', this file is saved after picking the QRS-wave

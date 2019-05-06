@@ -555,6 +555,27 @@ initial_cpulse_select_file.strtype = 's';
 initial_cpulse_select_file.num     = [0 Inf];
 initial_cpulse_select_file.val     = {'initial_cpulse_kRpeakfile.mat'};
 
+%--------------------------------------------------------------------------
+% max_heart_rate_bpm
+%--------------------------------------------------------------------------
+max_heart_rate_bpm         = cfg_entry;
+max_heart_rate_bpm.tag     = 'max_heart_rate_bpm';
+max_heart_rate_bpm.name    = 'Maximum heart rate (BPM)';
+max_heart_rate_bpm.help    = {
+    'Maximum expected heart rate in beats per minute. (default: 90)'
+    'This only needs to be a rough guess and should be changed for specific'
+    'subject populations.'
+    ' - If set too low, the auto_matched pulse detection might miss genuine'
+    '   cardiac pulses'
+    ' - If set too high, it might introduce artifactual pulse events, i.e.'
+    '   interpreting local maxima within a pulse as new pulse events'
+    ' You may need to increase this value if you have a subject with a very'
+    ' high heart rate, or decrease it if you have very pronounced local maxima'
+    ' in your wave form.'
+    };
+max_heart_rate_bpm.strtype = 'e';
+max_heart_rate_bpm.num     = [0 Inf];
+max_heart_rate_bpm.val     = {90};
 
 
 %--------------------------------------------------------------------------
@@ -578,7 +599,8 @@ initial_cpulse_select_method_auto_template.tag = 'auto_template';
 initial_cpulse_select_method_auto_template.name = 'auto_template';
 initial_cpulse_select_method_auto_template.val  = {
     min 
-    initial_cpulse_select_file    
+    initial_cpulse_select_file   
+    max_heart_rate_bpm
 };
 initial_cpulse_select_method_auto_template.help = { ...
     ' Auto generation of representative QRS-wave; detection via'
@@ -595,6 +617,7 @@ initial_cpulse_select_method_auto_matched.name = 'auto_matched';
 initial_cpulse_select_method_auto_matched.val  = {
     min 
     initial_cpulse_select_file    
+    max_heart_rate_bpm
 };
 initial_cpulse_select_method_auto_matched.help = { ...
     'Auto generation of template QRS wave, '
