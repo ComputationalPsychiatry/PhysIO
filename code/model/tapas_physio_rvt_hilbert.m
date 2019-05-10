@@ -42,31 +42,28 @@ if nargin < 4
 end
 
 f_sample = 1 / (t(2)-t(1));
+n_pad = ceil(10.0 * f_sample);
 
 %% Respiratory volume is amplitude envelope %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% figure; hold all;
-% plot(t, fr);
 
 % Mild low-pass filter to remove high-frequency noise
 d = designfilt( ...
     'lowpassiir', 'FilterOrder', 10, ...
     'HalfPowerFrequency', 2.0, 'SampleRate', f_sample);
-fr_lp = filtfilt(d, fr);
-% plot(t, fr_lp, 'LineWidth', 1.5);
+fr_lp = filtfilt(d, padarray(fr, n_pad, 'circular'));
+fr_lp = fr_lp(n_pad+1:end-n_pad);
 
 % Analytic signal -> magnitude
 fr_analytic = hilbert(fr_lp);
 fr_mag = abs(fr_analytic);
-% plot(t, fr_mag);
 
 % Low-pass filter envelope to retrieve change in respiratory volume
 d = designfilt( ...
     'lowpassiir', 'FilterOrder', 10, ...
     'HalfPowerFrequency', 0.2, 'SampleRate', f_sample);
-fr_rv = filtfilt(d, fr_mag);
+fr_rv = filtfilt(d, padarray(fr_mag, n_pad, 'circular'));
+fr_rv = fr_rv(n_pad+1:end-n_pad);
 fr_rv(fr_rv < 0.0) = 0.0;
-%plot(t, rv, 'k');
 
 if verbose.level>=2
     verbose.fig_handles(end+1) = tapas_physio_get_default_fig_params();
@@ -86,32 +83,20 @@ end
 
 %% Breathing rate is instantaneous frequency %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% figure; hold all;
-% plot(t, fr);
-
 % Low-pass filter at approximately breathing-rate
 d = designfilt( ...
     'lowpassiir', 'FilterOrder', 10, ...
-    'HalfPowerFrequency', 0.5, 'SampleRate', f_sample); % 2.0
-fr_lp = filtfilt(d, fr);
-%fr_lp(1:find(diff(sign(fr_lp)), 1)) = 0.0;
-%fr_lp(find(diff(sign(fr_lp)), 1, 'last'):end) = 0.0;
-% plot(t, fr_lp, 'LineWidth', 1.5);
-% d = designfilt( ...
-%     'bandpassiir', 'FilterOrder', 20, ...
-%     'HalfPowerFrequency1', 1 / 10.0, 'HalfPowerFrequency2', 1 / 1.0, ...
-%     'SampleRate', f_sample);
+    'HalfPowerFrequency', 0.5, 'SampleRate', f_sample);
+fr_lp = filtfilt(d, padarray(fr, n_pad, 'circular'));
+fr_lp = fr_lp(n_pad+1:end-n_pad);
 
 % Now iteratively refine instantaneous frequency estimate
+% Aim is to remove any high frequencies caused by funny shaped waveforms
 fr_filt = fr_lp;
 for n = 1:3
-    %n
-    
     % Analytic signal -> phase
     fr_analytic = hilbert(fr_filt);
     fr_phase = phase(fr_analytic);
-    %plot(t, abs(fr_analytic));
-    %plot(t, 0.2*cos(fr_phase));
     
     % Remove any phase decreases that may occur
     % Find places where the gradient changes sign
@@ -120,7 +105,7 @@ for n = 1:3
     increase_inds = [find(fr_phase_diff > 0); length(fr_phase)];
     for n_start = decrease_inds'
         %   /2\   /4
-        % 1/   \3/  
+        % 1/   \3/
         % Find value of `fr` at:
         %   [2]: start (i.e. peak)
         %   [3]: end (i.e. trough)
@@ -142,46 +127,18 @@ for n = 1:3
         % Finally, linearly interpolate from [1] to [4]
         fr_phase(n_min:n_max) = linspace(fr_end, fr_start, n_max-n_min+1);
     end
-    %plot(t, 0.2 * cos(fr_phase));
     
-    % Filter out any high frequencies from phase-only signal
-    % d = designfilt( ...
-    %     'lowpassiir', 'FilterOrder', 10, ...
-    %     'HalfPowerFrequency', 0.5, 'SampleRate', f_sample); % 0.25
-    % fr_phase = filtfilt(d, fr_phase);
-    %fr_filt = filtfilt(d, cos(fr_phase));
-    n_p = ceil(10.0 * f_sample);
-    fr_filt = filtfilt(d, padarray(cos(fr_phase), n_p, 'circular'));
-    fr_filt = fr_filt(n_p+1:end-n_p);
-%     fr_cos = cos(fr_phase);
-%     n_w = ceil(10.0 * f_sample);
-%     window = blackmanharris(2 * n_w + 1);
-%     fr_cos(1:n_w) = fr_cos(1:n_w) .* window(1:n_w);
-%     fr_cos(end-n_w:end) = fr_cos(end-n_w:end) .* window(n_w+1:end);
-%     fr_filt = filtfilt(d, fr_cos);
-%     plot(t, 0.2 * fr_filt);
+    % And filter out any high frequencies from phase-only signal
+    fr_filt = filtfilt(d, padarray(cos(fr_phase), n_pad, 'circular'));
+    fr_filt = fr_filt(n_pad+1:end-n_pad);
 end
 
 % Recalculate analytic signal -> phase
 fr_phase = phase(hilbert(fr_filt));
-% plot(t, 0.2*cos(fr_phase));
-% fr_if = f_sample * gradient(fr_phase);
 
 % Transform to instantaneous frequency
 fr_if = f_sample * gradient(fr_phase) / (2 * pi);
-fr_if(fr_if < 0.05) = 0.05;
-
-% plot(t, fr_if, 'k', 'LineWidth', 1.5)
-% plot(t, 1./interpDurationBreath, 'k+');
-
-% figure; histogram(fr_if, 100);
-% figure; histogram(1./fr_if, linspace(1.0, 10.0, 100));
-% figure; histogram(interpDurationBreath, linspace(1.0, 10.0, 100));
-
-% figure; hold all
-% plot(t, fr);
-% plot(t, 1./fr_if)
-% plot(t, interpDurationBreath);
+fr_if(fr_if < 0.05) = 0.05;  % Upper limit of 20s per breath
 
 if verbose.level>=2
     verbose.fig_handles(end+1) = tapas_physio_get_default_fig_params();
@@ -201,11 +158,6 @@ end
 
 %% And make RVT! %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% figure; hold all
-% plot(t, fr);
-% plot(t, zscore(fr_mag .* fr_if));
-% plot(sample_points, zscore(rvt), 'cd');
-
 % RVT = magnitude * breathing rate
 fr_rvt = fr_mag .* fr_if;
 
@@ -214,7 +166,7 @@ f_sample_out = 1 / mean(diff(sample_points));
 [re_rvt, t_re_rvt] = resample(fr_rvt, t, f_sample_out);
 % And now interpolate onto new timepoints
 rvt = interp1(t_re_rvt, re_rvt, sample_points, 'linear');
-% Nearest-neighbour interpolation for before/after last breath
+% Nearest-neighbour interpolation for outside recorded timepoints
 % Be more careful here as don't want RVT to go negative
 if sum(isnan(rvt)) > 0
     nan_inds = isnan(rvt);
@@ -222,10 +174,5 @@ if sum(isnan(rvt)) > 0
         t_re_rvt, re_rvt, sample_points(nan_inds), ...
         'nearest', 'extrap');
 end
-
-% figure; hold all;
-% plot(t, fr_rvt);
-% plot(t_re_rvt, re_rvt);
-% plot(sample_points, rvt);
 
 end
