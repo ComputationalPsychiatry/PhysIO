@@ -51,7 +51,8 @@ end
 slicenum = 1:sqpar.Nslices;
 
 sample_points  = tapas_physio_get_sample_points(ons_secs, sqpar, slicenum);
-rvt = tapas_physio_rvt(ons_secs.fr, ons_secs.t, sample_points, verbose);
+%rvt = tapas_physio_rvt(ons_secs.fr, ons_secs.t, sample_points, verbose);
+rvt = tapas_physio_rvt_hilbert(ons_secs.fr, ons_secs.t, sample_points, verbose);
 rvt = rvt/max(rvt); % normalize for reasonable range of regressor
 
 if verbose.level >=2
