@@ -159,7 +159,7 @@ end
 %% And make RVT! %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % RVT = magnitude * breathing rate
-fr_rvt = fr_mag .* fr_if;
+fr_rvt = fr_rv .* fr_if;
 
 % Need to downsample to `sample_points`, taking care to avoid aliasing
 f_sample_out = 1 / mean(diff(sample_points));
