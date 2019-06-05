@@ -291,7 +291,29 @@ else
     preproc = [];
     
     preproc.cardiac = [];
-    preproc.cardiac.modality = 'ecg_wifi'; % 'ECG','ECG_raw', or 'OXY'/'PPU' (for pulse oximetry), 'OXY_OLD', [deprecated]
+    
+    % Measurement modality of input cardiac signal 
+    % 'ECG','ECG_raw', or 'OXY'/'PPU' (for pulse oximetry), 'OXY_OLD', [deprecated]
+    preproc.cardiac.modality = 'ecg_wifi'; 
+    
+    % Filter properties for filtering of cardiac signal before peak
+    % detection, phase extraction, and other physiological traces
+    preproc.filter = [];
+    
+    %
+    % [f_min, f_max] frequency interval in Hz of all frequency that should
+    %                pass the passband filter
+    %                default: []
+    %                if empty, no filtering is performed
+    preproc.filter.passband = [];
+   
+    % [f_min, f_max] frequency interval in Hz of all frequencies that should
+    %                definitely *NOT* pass the filter
+    %                Default: [] 
+    %                if empty, and passband is empty, no filtering is performed
+    %                if empty, but passband exists, stopband interval is
+    %                10% increased passband interval
+    preproc.filter.stopband = [];
     
     % The initial cardiac pulse selection structure: Determines how the
     % majority of cardiac pulses is detected
