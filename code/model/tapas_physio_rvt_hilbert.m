@@ -86,14 +86,14 @@ end
 % Low-pass filter at approximately breathing-rate
 d = designfilt( ...
     'lowpassiir', 'FilterOrder', 10, ...
-    'HalfPowerFrequency', 0.5, 'SampleRate', f_sample);
+    'HalfPowerFrequency', 0.75, 'SampleRate', f_sample);
 fr_lp = filtfilt(d, padarray(fr, n_pad, 'circular'));
 fr_lp = fr_lp(n_pad+1:end-n_pad);
 
 % Now iteratively refine instantaneous frequency estimate
 % Aim is to remove any high frequencies caused by funny shaped waveforms
 fr_filt = fr_lp;
-for n = 1:3
+for n = 1:5
     % Analytic signal -> phase
     fr_analytic = hilbert(fr_filt);
     fr_phase = phase(fr_analytic);
@@ -138,7 +138,8 @@ fr_phase = phase(hilbert(fr_filt));
 
 % Transform to instantaneous frequency
 fr_if = f_sample * gradient(fr_phase) / (2 * pi);
-fr_if(fr_if < 0.05) = 0.05;  % Upper limit of 20s per breath
+fr_if(fr_if >  2.0) = 2.0;   % Lower limit of 2.0 breaths per second
+fr_if(fr_if < 0.05) = 0.05;  % Upper limit of 20.0 s per breath
 
 if verbose.level>=2
     verbose.fig_handles(end+1) = tapas_physio_get_default_fig_params();
@@ -155,6 +156,9 @@ if verbose.level>=2
         'Instantaneous breathing rate'};
     legend(hp, strLegend)
 end
+
+% figure; hold all; plot(t, fr); plot(t, fr_rv .* cos(fr_phase)); plot(t, fr_mag .* cos(fr_phase));
+% figure; hold all; plot(abs(fft(zscore(fr_rv)))); plot(abs(fft(zscore(fr_if))));
 
 %% And make RVT! %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -174,5 +178,7 @@ if sum(isnan(rvt)) > 0
         t_re_rvt, re_rvt, sample_points(nan_inds), ...
         'nearest', 'extrap');
 end
+
+% figure; hold all; plot(t, fr_rvt); plot(sample_points, rvt);
 
 end
