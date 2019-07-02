@@ -300,15 +300,22 @@ else
     % detection, phase extraction, and other physiological traces
     preproc.filter = [];
     
+    % filter type
+    %   'butter'    butterworth filter, standard filter with maximally flat
+    %               passband (Infinite impulse response)
+    %   'cheby2'    Chebychev Type II filter, use for steep transition from
+    %               start to stop band
+    preproc.filter.type = 'butter';
+    
     %
     % [f_min, f_max] frequency interval in Hz of all frequency that should
     %                pass the passband filter
     %                default: []
     %                if empty, no filtering is performed
-    preproc.filter.passband = [];
+    preproc.filter.passband = [0.3 9];
    
-    % [f_min, f_max] frequency interval in Hz of all frequencies that should
-    %                definitely *NOT* pass the filter
+    % [f_min, f_max] frequency interval in Hz of all frequencies, s.th. frequencies
+    %                outside this band should definitely *NOT* pass the filter
     %                Default: [] 
     %                if empty, and passband is empty, no filtering is performed
     %                if empty, but passband exists, stopband interval is
