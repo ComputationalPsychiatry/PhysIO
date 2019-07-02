@@ -312,7 +312,7 @@ else
     %                pass the passband filter
     %                default: []
     %                if empty, no filtering is performed
-    preproc.filter.passband = [0.3 9];
+    preproc.filter.passband = [0.1 8];
    
     % [f_min, f_max] frequency interval in Hz of all frequencies, s.th. frequencies
     %                outside this band should definitely *NOT* pass the filter
