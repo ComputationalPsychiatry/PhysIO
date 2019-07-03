@@ -51,7 +51,7 @@ else
     
     Fsp = 1/(t(2) - t(1)); % sampling rate
     deltaF = 1/(t(end)-t(1));
-
+    
     % filter boundaries check!
     options.passband(1) = max(2*deltaF, options.passband(1));
     options.passband(2) = min(Fsp-deltaF, options.passband(2));
@@ -68,12 +68,12 @@ else
             
             [z,p,k]=butter(8,Wp,'bandpass');
             [sos,g]=zp2sos(z,p,k);
-
-%             Rp=1;
-%             Rs=25;
-%             [n,Wn] = buttord(Wp,Ws,Rp,Rs);
-%             [b,a]=butter(n,Wn);
-%             [sos,g]=tf2sos(b,a);
+            
+            %             Rp=1;
+            %             Rs=25;
+            %             [n,Wn] = buttord(Wp,Ws,Rp,Rs);
+            %             [b,a]=butter(n,Wn);
+            %             [sos,g]=tf2sos(b,a);
         case {'cheby2', 'chebychev'}
             Rp=10;
             Rs=30;
@@ -95,10 +95,17 @@ if verbose.level >=2
     stringTitle = 'Preproc: Bandpass-filtered Filtered Cardiac time series';
     verbose.fig_handles(end+1) = tapas_physio_get_default_fig_params();
     set(gcf, 'Name', stringTitle);
-    plot(t, c, 'r:'); hold all;
-    plot(t, fc, 'r');
+    
+    % plot raw/filtered time series
+    subplot(2,1,1);
+    plot(t, c); hold all;
+    plot(t, fc);
     xlabel('t(s)');
     ylabel('Cardiac Wave Amplitude (a.u.)');
     legend('raw', sprintf('filtered (%s)', options.type));
     title(stringTitle);
+    
+    subplot(2,1,2);
+    tapas_physio_plot_spectrum(t,[c fc], gca);
+    legend('raw', sprintf('filtered (%s)', options.type));
 end

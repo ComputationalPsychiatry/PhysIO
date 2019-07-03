@@ -312,11 +312,12 @@ else
     %                pass the passband filter
     %                default: []
     %                if empty, no filtering is performed
-    preproc.filter.passband = [0.1 8];
+    preproc.filter.passband = [0.3 9];
    
     % [f_min, f_max] frequency interval in Hz of all frequencies, s.th. frequencies
     %                outside this band should definitely *NOT* pass the filter
     %                Default: [] 
+    %                NOTE: only relevant for 'cheby2' filter type
     %                if empty, and passband is empty, no filtering is performed
     %                if empty, but passband exists, stopband interval is
     %                10% increased passband interval
