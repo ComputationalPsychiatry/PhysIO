@@ -300,19 +300,19 @@ else
     % detection, phase extraction, and other physiological traces
     preproc.filter = [];
     
-    % filter type
+    % filter type   default: 'cheby2'
     %   'butter'    butterworth filter, standard filter with maximally flat
     %               passband (Infinite impulse response)
     %   'cheby2'    Chebychev Type II filter, use for steep transition from
     %               start to stop band
-    preproc.filter.type = 'butter';
+    preproc.filter.type = 'cheby2';
     
     %
     % [f_min, f_max] frequency interval in Hz of all frequency that should
     %                pass the passband filter
     %                default: []
     %                if empty, no filtering is performed
-    preproc.filter.passband = [0.3 9];
+    preproc.filter.passband = [0.6 3];
    
     % [f_min, f_max] frequency interval in Hz of all frequencies, s.th. frequencies
     %                outside this band should definitely *NOT* pass the filter
@@ -325,7 +325,7 @@ else
     
     % The initial cardiac pulse selection structure: Determines how the
     % majority of cardiac pulses is detected
-    % default: auto
+    % default: 'auto_matched'
     %
     % 'auto_matched'
     %           - auto generation of representative QRS-wave; detection via

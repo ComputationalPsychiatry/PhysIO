@@ -1,17 +1,17 @@
-function tests = tapas_physio_filter_cardiac_test.m()
+function tests = tapas_physio_filter_cardiac_test()
 % Tests whether bandpass filter on PPU example data works as expected
 %
-%   tests = tapas_physio_filter_cardiac_test.m()
+%   tests = tapas_physio_filter_cardiac_test()
 %
 % IN
 %
 % OUT
 %
 % EXAMPLE
-%   tapas_physio_filter_cardiac_test.m
+%   tapas_physio_filter_cardiac_test
 %
 %   See also
- 
+
 % Author:   Lars Kasper
 % Created:  2019-07-02
 % Copyright (C) 2019 TNU, Institute for Biomedical Engineering,
@@ -26,35 +26,81 @@ function tests = tapas_physio_filter_cardiac_test.m()
 tests = functiontests(localfunctions);
 end
 
-function test_ge_ppu3t_filter(testCase)
-%% Compares previously saved cpulse (detected cardiac pulses) from 
-% physio-structure to same output when re-running current version of
-% GE PPU3T example
-% both SPM or matlab-script based execution is possible (check parameter
-% doUseSpm below!)
+function test_philips_ppu7t_filter_cheby2(testCase)
+%% Compares previously saved Chebychev Type 2 IIR-filtered cropped cardiac 
+% time course with current re-run of same batch from Philips 7T PPU data
+% run GE example and extract physio
+
+pathPhysioPublic = fullfile(fileparts(mfilename('fullpath')), '..', '..');
+pathExamples =  fullfile(pathPhysioPublic, '..', 'examples');
+
+pathCurrentExample = fullfile(pathExamples, 'Philips/PPU7T');
+cd(pathCurrentExample); % for prepending absolute paths correctly
+fileExample = fullfile(pathCurrentExample, 'philips_ppu7t_spm_job.m');
+run(fileExample); % retrieve matlabbatch
+
+% remove unnecessary verbosity and processing of resp data
+matlabbatch{1}.spm.tools.physio.verbose.level = 0;
+matlabbatch{1}.spm.tools.physio.log_files.respiration = {''};
+
+physio = tapas_physio_job2physio(matlabbatch{1}.spm.tools.physio);
+
+%% Run and test for cheby2 filter
+physio.preproc.filter.type = 'cheby2';
+physio.preproc.filter.passband = [0.5 3];
+physio.preproc.filter.stopband = [0.4 3.9];
+actPhysio = tapas_physio_main_create_regressors(physio);
+
+% load physio from reference data
+fileReferenceData = fullfile(pathExamples, 'TestReferenceResults', 'preproc', ...
+    'physio_filter_cardiac_cheby2.mat');
+load(fileReferenceData, 'physio');
+expPhysio = physio;
+
+% extract cpulse from actual and expected solution and compare
+actSolution = actPhysio.ons_secs.c;
+expSolution = expPhysio.ons_secs.c;
+
+verifyEqual(testCase, actSolution, expSolution);
+end
+
+function test_philips_ppu7t_filter_butter(testCase)
+%% Compares previously saved butterworth-filtered cropped cardiac time course
+% with current re-run of same batch from Philips 7T PPU data
 
 % run GE example and extract physio
 pathPhysioPublic = fullfile(fileparts(mfilename('fullpath')), '..', '..');
 % TODO: Make generic!
 pathExamples =  fullfile(pathPhysioPublic, '..', 'examples');
 
-    pathCurrentExample = fullfile(pathExamples, 'Philips/PPU7T');
-    pathNow = pwd;
-    cd(pathCurrentExample); % for prepending absolute paths correctly
-    fileExample = fullfile(pathCurrentExample, 'philips_ppu7t_spm_job.m');
-    run(fileExample); % retrieve matlabbatch
-    
-    % remove unnecessary verbosity and processing of resp data
-    matlabbatch{1}.spm.tools.physio.verbose.level = 0;
-    matlabbatch{1}.spm.tools.physio.log_files.respiration = {''};
+pathCurrentExample = fullfile(pathExamples, 'Philips/PPU7T');
+cd(pathCurrentExample); % for prepending absolute paths correctly
+fileExample = fullfile(pathCurrentExample, 'philips_ppu7t_spm_job.m');
+run(fileExample); % retrieve matlabbatch
 
-    spm_jobman('run', matlabbatch);
-    cd(pathNow);
-    
-    % retrieve physio struct from saved file
-    matlabbatch{1}.spm.tools.physio.model.output_physio = fullfile(pathCurrentExample, ...
-        matlabbatch{1}.spm.tools.physio.save_dir{1}, ...
-        matlabbatch{1}.spm.tools.physio.model.output_physio);
-    load(matlabbatch{1}.spm.tools.physio.model.output_physio, 'physio');
-    actPhysio = physio;
+% remove unnecessary verbosity and processing of resp data
+matlabbatch{1}.spm.tools.physio.verbose.level = 0;
+matlabbatch{1}.spm.tools.physio.log_files.respiration = {''};
+
+physio = tapas_physio_job2physio(matlabbatch{1}.spm.tools.physio);
+
+
+%% run and test for butterworth filter
+
+physio.preproc.filter.type = 'butter';
+physio.preproc.filter.passband = [0.6 3];
+physio.preproc.filter.stopband = [];
+actPhysio = tapas_physio_main_create_regressors(physio);
+
+% load physio from reference data
+fileReferenceData = fullfile(pathExamples, 'TestReferenceResults', 'preproc', ...
+    'physio_filter_cardiac_butter.mat');
+load(fileReferenceData, 'physio');
+expPhysio = physio;
+
+% extract cpulse from actual and expected solution and compare
+actSolution = actPhysio.ons_secs.c;
+expSolution = expPhysio.ons_secs.c;
+
+verifyEqual(testCase, actSolution, expSolution);
 end
