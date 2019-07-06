@@ -6,11 +6,13 @@ function physio = tapas_physio_job2physio(job)
 % IN
 %
 % OUT
+%   physio  physio input structure, as use by
+%           tapas_physio_main_create_regressors
 %
 % EXAMPLE
 %   physio = tapas_physio_job2physio(job)
 %
-%   See also spm_physio_cfg_matlabbatch
+%   See also tapas_physio_cfg_matlabbatch tapas_physio_main_create_regressors
 
 % Author: Lars Kasper
 % Created: 2015-01-05
@@ -51,6 +53,21 @@ nModels = numel(modelArray);
 for iModel = 1:nModels
     physio.model.(modelArray{iModel}).include = strcmpi(...
         physio.model.(modelArray{iModel}).include, 'yes');
+end
+
+%% Take over yes/no substructs as is, yes/no will become 'include' property
+yesNoArray =  ...
+    {'preproc.filter'};
+
+physio = tapas_physio_update_from_job(physio, job, ...
+   yesNoArray, yesNoArray, ...
+   true, 'include');
+
+%% Convert yes => true (=1) and no => false (=0)
+nChoices = numel(yesNoArray);
+for iChoice = 1:nChoices
+    physio.(yesNoArray{iChoice}).include = strcmpi(...
+        physio.(yesNoArray{iChoice}).include, 'yes');
 end
 
 %% Use existing properties in job to overwrite properties of physio

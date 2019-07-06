@@ -296,23 +296,27 @@ else
     % 'ECG','ECG_raw', or 'OXY'/'PPU' (for pulse oximetry), 'OXY_OLD', [deprecated]
     preproc.cardiac.modality = 'ecg_wifi'; 
     
-    % Filter properties for filtering of cardiac signal before peak
+    % Filter properties for bandpass-filtering of cardiac signal before peak
     % detection, phase extraction, and other physiological traces
     preproc.filter = [];
     
+    preproc.filter.include = 0; % 1 = filter executed; 0 = not used
+    
     % filter type   default: 'cheby2'
-    %   'butter'    butterworth filter, standard filter with maximally flat
-    %               passband (Infinite impulse response)
     %   'cheby2'    Chebychev Type II filter, use for steep transition from
     %               start to stop band
-    preproc.filter.type = 'cheby2';
+    %   'butter'    butterworth filter, standard filter with maximally flat
+    %               passband (Infinite impulse response), but stronger
+    %               ripples in transition band
+    preproc.filter.type = 'butter';
     
     %
     % [f_min, f_max] frequency interval in Hz of all frequency that should
     %                pass the passband filter
-    %                default: []
+    %                default: [0.3 9] (to remove slow drifts, breathing
+    %                                   and slice sampling artifacts)
     %                if empty, no filtering is performed
-    preproc.filter.passband = [0.6 3];
+    preproc.filter.passband = [0.3 9];
    
     % [f_min, f_max] frequency interval in Hz of all frequencies, s.th. frequencies
     %                outside this band should definitely *NOT* pass the filter

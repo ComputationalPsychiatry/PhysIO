@@ -83,6 +83,8 @@ end
 
 
 for p = 1:nProperties
+    % TODO: can be concatenated property!
+    % if isfield(job, jobPropertyArray{p}) % check if field exists in job first!
     currentProperty = eval(sprintf('job.%s', jobPropertyArray{p}));
     
     % overwrite properties of physio with sub-properties of job, also
@@ -113,4 +115,8 @@ for p = 1:nProperties
                 physioPropertyArray{p},subPropArray{f}, subPropArray{f}));
         end
     end
+    %     else
+    %         tapas_physio_log(sprintf('No property %s defined in job', ...
+    %             jobPropertyArray{p}), [], 1);
+    %     end
 end

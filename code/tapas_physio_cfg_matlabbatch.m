@@ -817,6 +817,10 @@ posthoc_cpulse_select.help = {
     };
 
 
+%--------------------------------------------------------------------------
+% filter for cardiac time series
+%--------------------------------------------------------------------------
+filter = tapas_physio_gui_filter();
 
 %--------------------------------------------------------------------------
 % cardiac
@@ -824,7 +828,7 @@ posthoc_cpulse_select.help = {
 cardiac      = cfg_branch;
 cardiac.tag  = 'cardiac';
 cardiac.name = 'cardiac';
-cardiac.val  = {modality initial_cpulse_select posthoc_cpulse_select};
+cardiac.val  = {modality filter initial_cpulse_select posthoc_cpulse_select};
 cardiac.help = {'...'};
 
 

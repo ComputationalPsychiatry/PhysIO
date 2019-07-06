@@ -36,7 +36,7 @@ function [fc, verbose] = tapas_physio_filter_cardiac(t,c, options, verbose)
 % version 3 or, at your option, any later version). For further details,
 % see the file COPYING or <http://www.gnu.org/licenses/>.
 
-doFilter = ~isempty(options.passband);
+doFilter = options.include && ~isempty(options.passband);
 
 if ~doFilter
     fc = c;
