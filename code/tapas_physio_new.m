@@ -298,9 +298,9 @@ else
     
     % Filter properties for bandpass-filtering of cardiac signal before peak
     % detection, phase extraction, and other physiological traces
-    preproc.filter = [];
+    preproc.cardiac.filter = [];
     
-    preproc.filter.include = 0; % 1 = filter executed; 0 = not used
+    preproc.cardiac.filter.include = 0; % 1 = filter executed; 0 = not used
     
     % filter type   default: 'cheby2'
     %   'cheby2'    Chebychev Type II filter, use for steep transition from
@@ -308,7 +308,7 @@ else
     %   'butter'    butterworth filter, standard filter with maximally flat
     %               passband (Infinite impulse response), but stronger
     %               ripples in transition band
-    preproc.filter.type = 'butter';
+    preproc.cardiac.filter.type = 'butter';
     
     %
     % [f_min, f_max] frequency interval in Hz of all frequency that should
@@ -316,7 +316,7 @@ else
     %                default: [0.3 9] (to remove slow drifts, breathing
     %                                   and slice sampling artifacts)
     %                if empty, no filtering is performed
-    preproc.filter.passband = [0.3 9];
+    preproc.cardiac.filter.passband = [0.3 9];
    
     % [f_min, f_max] frequency interval in Hz of all frequencies, s.th. frequencies
     %                outside this band should definitely *NOT* pass the filter
@@ -325,7 +325,7 @@ else
     %                if empty, and passband is empty, no filtering is performed
     %                if empty, but passband exists, stopband interval is
     %                10% increased passband interval
-    preproc.filter.stopband = [];
+    preproc.cardiac.filter.stopband = [];
     
     % The initial cardiac pulse selection structure: Determines how the
     % majority of cardiac pulses is detected

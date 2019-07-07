@@ -161,7 +161,7 @@ if ~hasPhaseLogfile
                 %% cardiac pulse
                 
                 [ons_secs.c, verbose] = tapas_physio_filter_cardiac(...
-                    ons_secs.t, ons_secs.c, preproc.filter, verbose);
+                    ons_secs.t, ons_secs.c, preproc.cardiac.filter, verbose);
                 
                 switch preproc.cardiac.initial_cpulse_select.method
                     case {'load_from_logfile', ''}

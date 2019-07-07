@@ -46,10 +46,10 @@ matlabbatch{1}.spm.tools.physio.log_files.respiration = {''};
 physio = tapas_physio_job2physio(matlabbatch{1}.spm.tools.physio);
 
 %% Run and test for cheby2 filter
-physio.preproc.filter.type = 'cheby2';
-physio.preproc.filter.include = 0;
-physio.preproc.filter.passband = [0.5 3];
-physio.preproc.filter.stopband = [0.4 3.9];
+physio.preproc.cardiac.filter.type = 'cheby2';
+physio.preproc.cardiac.filter.include = 0;
+physio.preproc.cardiac.filter.passband = [0.5 3];
+physio.preproc.cardiac.filter.stopband = [0.4 3.9];
 actPhysio = tapas_physio_main_create_regressors(physio);
 
 % load physio from reference data
@@ -87,10 +87,10 @@ physio = tapas_physio_job2physio(matlabbatch{1}.spm.tools.physio);
 
 
 %% run and test for butterworth filter
-physio.preproc.filter.include = 1;
-physio.preproc.filter.type = 'butter';
-physio.preproc.filter.passband = [0.6 3];
-physio.preproc.filter.stopband = [];
+physio.preproc.cardiac.filter.include = 1;
+physio.preproc.cardiac.filter.type = 'butter';
+physio.preproc.cardiac.filter.passband = [0.6 3];
+physio.preproc.cardiac.filter.stopband = [];
 actPhysio = tapas_physio_main_create_regressors(physio);
 
 % load physio from reference data

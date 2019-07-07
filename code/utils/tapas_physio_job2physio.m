@@ -57,11 +57,10 @@ end
 
 %% Take over yes/no substructs as is, yes/no will become 'include' property
 yesNoArray =  ...
-    {'preproc.filter'};
+    {'preproc.cardiac.filter'};
 
 physio = tapas_physio_update_from_job(physio, job, ...
-    yesNoArray, yesNoArray, ...
-    true, 'include');
+    yesNoArray, yesNoArray,  true, 'include');
 
 %% Convert yes => true (=1) and no => false (=0)
 nChoices = numel(yesNoArray);
