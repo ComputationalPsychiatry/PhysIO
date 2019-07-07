@@ -40,13 +40,14 @@ fileExample = fullfile(pathCurrentExample, 'philips_ppu7t_spm_job.m');
 run(fileExample); % retrieve matlabbatch
 
 % remove unnecessary verbosity and processing of resp data
-matlabbatch{1}.spm.tools.physio.verbose.level = 0;
+matlabbatch{1}.spm.tools.physio.verbose.level = 2;
 matlabbatch{1}.spm.tools.physio.log_files.respiration = {''};
 
 physio = tapas_physio_job2physio(matlabbatch{1}.spm.tools.physio);
 
 %% Run and test for cheby2 filter
 physio.preproc.filter.type = 'cheby2';
+physio.preproc.filter.include = 0;
 physio.preproc.filter.passband = [0.5 3];
 physio.preproc.filter.stopband = [0.4 3.9];
 actPhysio = tapas_physio_main_create_regressors(physio);
@@ -86,7 +87,7 @@ physio = tapas_physio_job2physio(matlabbatch{1}.spm.tools.physio);
 
 
 %% run and test for butterworth filter
-
+physio.preproc.filter.include = 1;
 physio.preproc.filter.type = 'butter';
 physio.preproc.filter.passband = [0.6 3];
 physio.preproc.filter.stopband = [];
