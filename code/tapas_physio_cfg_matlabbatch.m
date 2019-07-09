@@ -1011,6 +1011,20 @@ retroicor.help = {'RETROICOR Model, as described in Glover et al., MRM 2000'};
 %--------------------------------------------------------------------------
 
 %--------------------------------------------------------------------------
+% rvt_method
+%--------------------------------------------------------------------------
+rvt_method        = cfg_menu;
+rvt_method.tag    = 'method';
+rvt_method.name   = 'RVT estimation method';
+rvt_method.labels = {'Hilbert', 'Peak detection'};
+rvt_method.values = {'hilbert', 'peaks'};
+rvt_method.val    = {'hilbert'};
+rvt_method.help   = {
+    'Whether to estimate RVT from the Hilbert transform or via '
+    'peak detection.'
+    };
+
+%--------------------------------------------------------------------------
 % rvt_delays
 %--------------------------------------------------------------------------
 rvt_delays         = cfg_entry;
@@ -1027,7 +1041,7 @@ rvt_delays.val     = {0};
 % rvt_no
 %--------------------------------------------------------------------------
 
-rvt_no         = cfg_branch;
+rvt_no      = cfg_branch;
 rvt_no.tag  = 'no';
 rvt_no.name = 'No';
 rvt_no.val  = {};
@@ -1041,7 +1055,7 @@ rvt_no.help = {'Respiratory Volume per Time Model not used'};
 rvt_yes      = cfg_branch;
 rvt_yes.tag  = 'yes';
 rvt_yes.name = 'Yes';
-rvt_yes.val  = {rvt_delays};
+rvt_yes.val  = {rvt_method, rvt_delays};
 rvt_yes.help = {
     'Include Respiratory Volume per Time (RVT) Model, '
     'as described in Birn et al. NeuroImage 40, 644?654. doi:10.1016/j.neuroimage.2007.11.059'

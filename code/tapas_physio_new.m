@@ -440,11 +440,15 @@ else
     %% RVT (Model): Respiratory Volume per time model , Birn et al., 2006/8
     model.rvt.include = 0;
     
+    % Whether to estimate RVT from the Hilbert transform ('hilbert') or via
+    % peak detection ('peaks').
+    model.rvt.method = 'hilbert';
+    
     % one or multiple delays (in seconds) can be specified to shift 
     % canonical RVT response function from Birn et al., 2006 paper
     % Delays e.g. 0, 5, 10, 15, and 20s (Jo et al., 2010 NeuroImage 52)
     model.rvt.delays = 0;
- 
+    
     
     %% HRV (Model): Heart Rate variability, Chang et al., 2009
     model.hrv.include = 0;
