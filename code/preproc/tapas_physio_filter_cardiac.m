@@ -86,12 +86,12 @@ end
 
 
 %% plot filter response
-if verbose.level >=3
+if doFilter && (verbose.level >=3)
     fvtool(sos,'Analysis','freq')
 end
 
 %% plot filtering results
-if verbose.level >=2
+if doFilter && (verbose.level >=2)
     stringTitle = 'Preproc: Bandpass-filtered Filtered Cardiac time series';
     verbose.fig_handles(end+1) = tapas_physio_get_default_fig_params();
     set(gcf, 'Name', stringTitle);
