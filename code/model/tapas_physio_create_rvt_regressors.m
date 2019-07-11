@@ -76,13 +76,10 @@ if verbose.level >= 2
     title('Respiratory response function');
 end
 
-% NOTE: the removal of the mean was implemented to avoid over/undershoots
-% at the 1st and last scans of the session due to convolution
-convRVT = conv(rvt-mean(rvt), rrf, 'same');
 
-% rescaling to -1...1 for display purposes
-convRVT = convRVT./max(abs(convRVT));
-
+% Convolve and rescale for display purposes
+convRVT = tapas_physio_conv(rvt, rrf);
+convRVT = convRVT / max(abs(convRVT));
 
 if verbose.level >= 2
     subplot(2,2,3)

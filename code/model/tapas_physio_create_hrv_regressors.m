@@ -73,12 +73,10 @@ if verbose.level>=2
     title('Cardiac response function');
 end
 
-% NOTE: the removal of the mean was implemented to avoid over/undershoots
-% at the 1st and last scans of the session due to convolution
-convHRV = conv(hr-mean(hr), crf, 'same');
 
-% rescaling to -1...1 for display purposes
-convHRV = convHRV./max(abs(convHRV));
+% Convolve and rescale for display purposes
+convHRV = tapas_physio_conv(hr, crf);
+convHRV = convHRV / max(abs(convHRV));
 
 if verbose.level>=2
     subplot(2,2,3)
