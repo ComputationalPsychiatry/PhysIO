@@ -82,30 +82,30 @@ else
             [sos,g] = zp2sos(z,p,k);
     end
     fc=filtfilt(sos,g,c);
-end
-
-
-%% plot filter response
-if doFilter && (verbose.level >=3)
-    fvtool(sos,'Analysis','freq')
-end
-
-%% plot filtering results
-if doFilter && (verbose.level >=2)
-    stringTitle = 'Preproc: Bandpass-filtered Filtered Cardiac time series';
-    verbose.fig_handles(end+1) = tapas_physio_get_default_fig_params();
-    set(gcf, 'Name', stringTitle);
     
-    % plot raw/filtered time series
-    subplot(2,1,1);
-    plot(t, c); hold all;
-    plot(t, fc);
-    xlabel('t(s)');
-    ylabel('Cardiac Wave Amplitude (a.u.)');
-    legend('raw', sprintf('filtered (%s)', options.type));
-    title(stringTitle);
     
-    subplot(2,1,2);
-    tapas_physio_plot_spectrum(t,[c fc], gca);
-    legend('raw', sprintf('filtered (%s)', options.type));
+    %% plot filter response
+    if verbose.level >=3
+        fvtool(sos,'Analysis','freq')
+    end
+    
+    %% plot filtering results
+    if verbose.level >=2
+        stringTitle = 'Preproc: Bandpass-filtered Filtered Cardiac time series';
+        verbose.fig_handles(end+1) = tapas_physio_get_default_fig_params();
+        set(gcf, 'Name', stringTitle);
+        
+        % plot raw/filtered time series
+        subplot(2,1,1);
+        plot(t, c); hold all;
+        plot(t, fc);
+        xlabel('t(s)');
+        ylabel('Cardiac Wave Amplitude (a.u.)');
+        legend('raw', sprintf('filtered (%s)', options.type));
+        title(stringTitle);
+        
+        subplot(2,1,2);
+        tapas_physio_plot_spectrum(t,[c fc], gca);
+        legend('raw', sprintf('filtered (%s)', options.type));
+    end
 end
