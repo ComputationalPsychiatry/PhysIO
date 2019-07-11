@@ -40,6 +40,7 @@ if nargin < 3
     model_hrv = physio.model.hrv;
 end
 
+
 delays = model_hrv.delays;
 
 if nargin < 4
@@ -49,6 +50,8 @@ end
 
 slicenum = 1:sqpar.Nslices;
 
+
+% Calculate HR
 sample_points  = tapas_physio_get_sample_points(ons_secs, sqpar, slicenum);
 hr = tapas_physio_hr(ons_secs.cpulse, sample_points);
 
@@ -61,12 +64,13 @@ if verbose.level>=2
     ylabel('beats per min (bpm)');
 end
 
-% create convolution for whole time series first...
+
+% Generate CRF
 dt = sqpar.TR/sqpar.Nslices;
-t = 0:dt:32; % 32 seconds regressor
+t = 0:dt:30;  % seconds
 crf = tapas_physio_crf(t);
-crf = crf/max(abs(crf));
-% crf = spm_hrf(dt);
+crf = crf / max(abs(crf));
+
 if verbose.level>=2
     subplot(2,2,2)
     plot(t, crf,'r');xlabel('time (seconds)');
@@ -85,20 +89,19 @@ if verbose.level>=2
 end
 
 
-% create shifted regressors convolved time series, which is equivalent to
-% delayed response functions according to Wikipedia (convoution)
+% Create shifted regressors convolved time series, which is equivalent to
+% delayed response functions according to Wikipedia (convolution)
 %
 % "Translation invariance[edit]
 % The convolution commutes with translations, meaning that
 %
 % \tau_x ({f}*g) = (\tau_x f)*g = {f}*(\tau_x g)\,
-% where \tau_x fis the translation of the function f by x defined by
-% (\tau_x f)(y) = f(y-x).\.
+% where \tau_x is the translation of the function f by x defined by
+% (\tau_x f)(y) = f(y-x).
 
 % remove mean and linear trend to fulfill periodicity condition for
 % shifting
 convHRV = detrend(convHRV);
-
 
 % TODO: what happens at the end/beginning of shifted convolutions?
 nDelays = numel(delays);
@@ -130,4 +133,6 @@ if verbose.level>=2
     hp{2} = plot(samplePointsOut, squeeze(convHRVOut(:,iShiftMin,:)),'r');
     xlabel('time (seconds)');ylabel('regessor');
     legend([hp{1}(1), hp{2}(1)], 'heart rate (bpm)', 'cardiac response regressor');
+end
+
 end
