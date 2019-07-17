@@ -35,7 +35,7 @@ if ~isvector(u) || ~isvector(v)
     error('tapas_physio_conv: Both inputs must be vectors')
 end
 % Padding: use data mean to reduce transients by default
-if nargin < 3
+if nargin < 4
     padding = 'mean';
 end
 
