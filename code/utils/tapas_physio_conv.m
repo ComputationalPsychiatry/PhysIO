@@ -46,5 +46,6 @@ u = [pad_val * ones(length(v)-1, 1); u(:)];
 
 % Apply convolution and select portion of interest
 w = conv(u, v, 'valid');
+w = reshape(w, size(u));
 
 end
