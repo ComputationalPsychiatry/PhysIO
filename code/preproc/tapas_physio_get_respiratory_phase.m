@@ -76,8 +76,7 @@ npulse = (pulset-minr)/(maxr-minr);
 % over 1 sec of data as described in Glover et al.
 ksize = round(0.5 * (1/rsampint));
 kernel = [ones(1, ksize)*-1 0 ones(1, ksize)];
-dpulse = -conv(pulset, kernel);
-dpulse = dpulse(ksize+1:end-ksize);
+dpulse = - tapas_physio_conv(pulset, kernel, 'symmetric');
 
 % Tolerance to the derivative
 dpulse(abs(dpulse) < 1e-4) = 0;
