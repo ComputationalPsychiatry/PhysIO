@@ -1,14 +1,19 @@
-function [w] = tapas_physio_conv(u, v, padding)
-% Wrapper around `conv()` for causal convolution
+function [w] = tapas_physio_conv(u, v, filter_type, padding)
+% Wrapper around `conv()` for convolution
 %   Deals with the padding and time offsets
 %
-%    [w] = tapas_physio_filter_cardiac(u, v)
+%    [w] = tapas_physio_filter_cardiac(u, v, filter_type)
 %
 % IN
 %   u           Data time series [1-D]
 %   v           Convolutional filter time series [1-D]
-%               Note this is defined for `t >= 0`, with the first element
+%   filter_type ['causal', 'symmetric'].
+%               If 'causal', the filter is taken to be defined for
+%               `t >= 0`, with the first element corresponding to `t=0`.
+%               If 'symmetric', the filter is taken to be defined for both
+%               positive and negative time, with the central element
 %               corresponding to `t=0`.
+%               N.B. 'symmetric' implies an *odd* filter length.
 %   padding     ['mean', 'zero']. Whether to pad with the mean of `u`, or
 %               with zeros.
 %
@@ -29,11 +34,12 @@ function [w] = tapas_physio_conv(u, v, padding)
 if ~isvector(u) || ~isvector(v)
     error('tapas_physio_conv: Both inputs must be vectors')
 end
+% Padding: use data mean to reduce transients by default
 if nargin < 3
     padding = 'mean';
 end
 
-% Padding: use data mean to reduce transients
+% Pad value
 switch lower(padding)
     case 'mean'
         pad_val = mean(u);
@@ -42,10 +48,24 @@ switch lower(padding)
     otherwise
         error('Unrecognised padding argument (%s)', padding)
 end
-u = [pad_val * ones(length(v)-1, 1); u(:)];
+
+% Pad shape
+switch lower(filter_type)
+    case 'causal'
+        u_pad = [pad_val * ones(length(v)-1, 1); u(:)];
+    case 'symmetric'
+        if mod(length(v), 2) == 1
+            pad_elem = (length(v) - 1) / 2;
+            u_pad = [pad_val * ones(pad_elem, 1); u(:); pad_val * ones(pad_elem, 1)];
+        else
+            error('Symmetric filter lengths must be odd!')
+        end
+    otherwise
+        error('Unrecognised padding argument (%s)', filter_type)
+end
 
 % Apply convolution and select portion of interest
-w = conv(u, v, 'valid');
+w = conv(u_pad, v, 'valid');
 w = reshape(w, size(u));
 
 end
