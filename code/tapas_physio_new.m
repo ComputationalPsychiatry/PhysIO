@@ -291,11 +291,45 @@ else
     preproc = [];
     
     preproc.cardiac = [];
-    preproc.cardiac.modality = 'ecg_wifi'; % 'ECG','ECG_raw', or 'OXY'/'PPU' (for pulse oximetry), 'OXY_OLD', [deprecated]
+    
+    % Measurement modality of input cardiac signal 
+    % 'ECG','ECG_raw', or 'OXY'/'PPU' (for pulse oximetry), 'OXY_OLD', [deprecated]
+    preproc.cardiac.modality = 'ecg_wifi'; 
+    
+    % Filter properties for bandpass-filtering of cardiac signal before peak
+    % detection, phase extraction, and other physiological traces
+    preproc.cardiac.filter = [];
+    
+    preproc.cardiac.filter.include = 0; % 1 = filter executed; 0 = not used
+    
+    % filter type   default: 'cheby2'
+    %   'cheby2'    Chebychev Type II filter, use for steep transition from
+    %               start to stop band
+    %   'butter'    butterworth filter, standard filter with maximally flat
+    %               passband (Infinite impulse response), but stronger
+    %               ripples in transition band
+    preproc.cardiac.filter.type = 'butter';
+    
+    %
+    % [f_min, f_max] frequency interval in Hz of all frequency that should
+    %                pass the passband filter
+    %                default: [0.3 9] (to remove slow drifts, breathing
+    %                                   and slice sampling artifacts)
+    %                if empty, no filtering is performed
+    preproc.cardiac.filter.passband = [0.3 9];
+   
+    % [f_min, f_max] frequency interval in Hz of all frequencies, s.th. frequencies
+    %                outside this band should definitely *NOT* pass the filter
+    %                Default: [] 
+    %                NOTE: only relevant for 'cheby2' filter type
+    %                if empty, and passband is empty, no filtering is performed
+    %                if empty, but passband exists, stopband interval is
+    %                10% increased passband interval
+    preproc.cardiac.filter.stopband = [];
     
     % The initial cardiac pulse selection structure: Determines how the
     % majority of cardiac pulses is detected
-    % default: auto
+    % default: 'auto_matched'
     %
     % 'auto_matched'
     %           - auto generation of representative QRS-wave; detection via

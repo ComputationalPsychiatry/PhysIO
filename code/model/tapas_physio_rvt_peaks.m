@@ -76,9 +76,19 @@ maxFr = max(abs(fr));
 ampRpulseMax = interp1(timeRpulseMax, fr(iTimeRpulseMax), t, 'linear', 'extrap');
 ampRpulseMin = interp1(timeRpulseMin, fr(iTimeRpulseMin), t, 'linear', 'extrap');
 
+% Interpolate breath duration, but don't extrapolate
 durationBreath = diff(timeRpulseMax);
-interpDurationBreath = interp1(timeRpulseMax(2:end), durationBreath,t, ...
-    'linear', 'extrap');
+interpDurationBreath = interp1( ...
+    timeRpulseMax(2:end), durationBreath, t, ...
+    'linear');
+% Nearest-neighbour interpolation for before/after last breath
+% Be more careful here as can't let breath duration go negative
+if sum(isnan(interpDurationBreath)) > 0
+    nan_inds = isnan(interpDurationBreath);
+    interpDurationBreath(nan_inds) = interp1( ...
+        timeRpulseMax(2:end), durationBreath, t(nan_inds), ...
+        'nearest', 'extrap');
+end
 
 if verbose.level>=2
     verbose.fig_handles(end+1) = tapas_physio_get_default_fig_params();
