@@ -79,7 +79,7 @@ end
 
 
 % Convolve and rescale for display purposes
-convHRV = tapas_physio_conv(hr, crf);
+convHRV = tapas_physio_conv(hr, crf, 'causal');
 convHRV = convHRV / max(abs(convHRV));
 
 if verbose.level>=2
