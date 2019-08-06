@@ -1,6 +1,13 @@
 function tests = tapas_physio_conv_test()
-% Tests whether current findpeaks function of Matlab's signal processing
-% toolbox delivers same results as previous version used in reference data
+% Tests whether current PhysIO's own convolution fulfills specifications,
+% i.e. 
+%   1) is causal (i.e., response starts only at t=0 of the input) in the
+%      'causal' setting, and 
+%   2) is symmetric in the symmetric setting (i.e.,
+%      response function centered around Dirac input) NOTE: This is what
+%      Matlab's conv function does in the 'same' setting
+%   3) as (2) but this time indeed using Matlab's conv(..., 'same') for
+%      reference solution
 %
 %    tests = tapas_physio_conv_test()
 %
@@ -41,7 +48,8 @@ verifyEqual(testCase, ...
 end
 
 function test_conv_symmetric(testCase)
-%% Tests non-causal convolution via an impulse response
+%% Tests non-causal convolution (symmetric response around input) 
+% via an impulse response
 
 impulse  = [0 0 0 0 1 0 0 0 0];
 filter   = [1 2 3];
@@ -50,5 +58,18 @@ solution = [0 0 0 1 2 3 0 0 0];
 verifyEqual(testCase, ...
     tapas_physio_conv(impulse, filter, 'symmetric', 'zero'), ...
     solution);
+
+end
+
+function test_conv_symmetric_matlab_conv_same(testCase)
+%% Tests non-causal convolution vs Matlab's conv(...,'same')
+
+impulse  = [0 0 0 0 1 0 0 0 0];
+filter   = [1 2 3];
+solution =  conv(impulse, filter, 'same');  % [0 0 0 1 2 3 0 0 0];
+
+verifyEqual(testCase, ...
+    tapas_physio_conv(impulse, filter, 'symmetric', 'zero'), ...
+   solution);
 
 end
