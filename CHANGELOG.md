@@ -9,14 +9,16 @@ Current Release
 March 19, 2019
 
 
-Unreleased
-----------
+Unreleased (R2019b, v7.2.0-beta)
+--------------------------------
 
 ### Added
 - `requirements.txt` making dependencies on Matlab and specific toolboxes 
   explicit
 - `max_heart_rate_bpm` now a user parameter to adjust prior on max allowed 
   heart rate for cardiac pulse detection (`method = 'auto_matched'`)
+- bandpass-filtering of cardiac data during preprocessing now possible 
+  (`preproc.cardiac.filter`)
 
 ### Changed
 - Toned down and replaced irrelevant peak height and missing cardiac pulse 
@@ -25,6 +27,9 @@ Unreleased
   impact of physiological noise for serial correlations (Bollmann2018)
 
 ### Fixed
+- Corrected half-width shift of response functions for HRV and RVT regressors by
+  erroneous use of Matlab conv (gitlab issue #83, found and fixed by Sam
+  Harrison, TNU, see `tapas_physio_conv`)
 - Bugfix `tapas_physio_init()` not working, because dependent on functions 
   in `utils` subfolder not in path; `utils` added to path
 - `tapas_physio_review` for motion parameters (found and fixed by 
