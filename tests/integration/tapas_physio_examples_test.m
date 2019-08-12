@@ -42,13 +42,19 @@ testCase.TestData.pathPhysioPublic = fullfile(fileparts(mfilename('fullpath')), 
 testCase.TestData.pathExamples =  fullfile(testCase.TestData.pathPhysioPublic, '..', 'examples');
 end
 
-function test_ge_ppu3t_with_spm(testCase)
+% close all created figures from examples after each test
+function teardown(testCase)
+close(testCase.TestData.createdFigHandles);
+end
+
+function test_bids_ppu3t_matlab_only(testCase)
 %% Compares previously saved physio-structure and multiple regressors file
-% to current output of re-run of GE PPU3T example using SPM Batch Editor
-dirExample = 'GE/PPU3T';
-doUseSpm = true;
+% to current output of re-run of GE PPU3T example using matlab only
+dirExample = 'BIDS/PPU3T';
+doUseSpm = false;
 run_example_and_compare_reference(testCase, dirExample, doUseSpm)
 end
+
 
 function test_ge_ppu3t_matlab_only(testCase)
 %% Compares previously saved physio-structure and multiple regressors file
@@ -57,6 +63,34 @@ dirExample = 'GE/PPU3T';
 doUseSpm = false;
 run_example_and_compare_reference(testCase, dirExample, doUseSpm)
 end
+
+
+function test_philips_ppu3t_matlab_only(testCase)
+%% Compares previously saved physio-structure and multiple regressors file
+% to current output of re-run of GE PPU3T example using matlab only
+dirExample = 'Philips/PPU3T';
+doUseSpm = false;
+run_example_and_compare_reference(testCase, dirExample, doUseSpm)
+end
+
+
+function test_ge_ppu3t_with_spm(testCase)
+%% Compares previously saved physio-structure and multiple regressors file
+% to current output of re-run of GE PPU3T example using SPM Batch Editor
+dirExample = 'GE/PPU3T';
+doUseSpm = true;
+run_example_and_compare_reference(testCase, dirExample, doUseSpm)
+end
+
+
+function test_philips_ppu3t_with_spm(testCase)
+%% Compares previously saved physio-structure and multiple regressors file
+% to current output of re-run of Philips PPU3T example using SPM Batch Editor
+dirExample = 'Philips/PPU3T';
+doUseSpm = true;
+run_example_and_compare_reference(testCase, dirExample, doUseSpm)
+end
+
 
 function run_example_and_compare_reference(testCase, dirExample, doUseSpm)
 %% Compares previously saved physio-structure and multiple regressors file
@@ -126,6 +160,8 @@ R = load(fullfile(pathExampleOutput,fileExampleOutputTxt));
 actPhysio = physio;
 actRegressorsFromTxt = R;
  
+% for later closing
+testCase.TestData.createdFigHandles = physio.verbose.fig_handles;
 
 %% Load reference data and compare to actual run for certain subfields
 
