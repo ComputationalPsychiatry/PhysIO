@@ -1,5 +1,5 @@
 function varargout = tapas_physio_run_integration_tests()
-%Executes all existing integration tests of PhysIO Toolbox
+% Executes all existing integration tests of PhysIO Toolbox
 % NOTE: Integration tests are meant to check complex workflows, e.g., whole
 %       example scripts
 %       For smaller, but critical nuclei of the code, such as numerical

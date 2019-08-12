@@ -1,5 +1,5 @@
 function varargout = tapas_physio_run_unit_tests()
-%Executes all existing unit tests of PhysIO Toolbox
+% Executes all existing unit tests of PhysIO Toolbox
 % NOTE: Unit tests are meant to test small, but critical nuclei of the
 %       code, such as numerical routines (convolution, PCA...)
 %       For more complex workflows (e.g. whole example scripts), use
