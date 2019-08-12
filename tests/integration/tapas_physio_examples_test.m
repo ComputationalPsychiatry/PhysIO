@@ -115,11 +115,11 @@ fileReferenceData = fullfile(pathExamples, 'TestReferenceResults', 'examples', .
 load(fileReferenceData, 'physio');
 expPhysio = physio;
 
-% extract cpulse from actual and expected solution and compare
-actSolution = actPhysio.ons_secs.cpulse;
-expSolution = expPhysio.ons_secs.cpulse;
+% Check Multiple_Regressors output
+actSolution = actPhysio.model.R;
+expSolution = expPhysio.model.R;
 
-verifyEqual(testCase, actSolution, expSolution);
+verifyEqual(testCase, actSolution, expSolution, 'Comparing multiple regressors in physio.model.R');
 
 %% compare all numeric sub-fields of physio with some tolerance
 
@@ -132,7 +132,7 @@ testCase.verifyThat(actPhysio.ons_secs, ...
     'Using', StructComparator(NumericComparator, 'Recursively', true), ...
     'Within', RelativeTolerance(0.01), ...
     'IgnoringFields',  {'spulse_per_vol'}...
-    ));
+    ), 'Comparing all numeric subfields of ons_secs to check preprocessing of phys recordings');
 
 % recursive with string
 % testCase.verifyThat(actPhysio, ...
