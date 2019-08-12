@@ -19,12 +19,16 @@ Unreleased (R2019b, v7.2.0-beta)
   heart rate for cardiac pulse detection (`method = 'auto_matched'`)
 - bandpass-filtering of cardiac data during preprocessing now possible 
   (`preproc.cardiac.filter`)
+- Added integration tests for all examples in `tests/integration` for both SPM
+Batch Editor and Matlab-only configuration scripts. Reference data provided in
+`examples/TestReferenceResults/examples`
 
 ### Changed
 - Toned down and replaced irrelevant peak height and missing cardiac pulse 
   warnings (github issue #51)
 - Updated README to include external contributors and recent findings about
   impact of physiological noise for serial correlations (Bollmann2018)
+- Added unit tests for convolution and moved all to `tests/unit`
 
 ### Fixed
 - Corrected half-width shift of response functions for HRV and RVT regressors by
