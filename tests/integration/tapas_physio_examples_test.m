@@ -47,10 +47,27 @@ function teardown(testCase)
 close(testCase.TestData.createdFigHandles);
 end
 
+function test_bids_cpulse3t_matlab_only(testCase)
+%% Compares previously saved physio-structure and multiple regressors file
+% to current output of re-run of BIDS/CPULSE3T example using matlab only
+dirExample = 'BIDS/CPULSE3T';
+doUseSpm = false;
+run_example_and_compare_reference(testCase, dirExample, doUseSpm)
+end
+
 function test_bids_ppu3t_matlab_only(testCase)
 %% Compares previously saved physio-structure and multiple regressors file
-% to current output of re-run of GE PPU3T example using matlab only
+% to current output of re-run of BIDS/PPU3T example using matlab only
 dirExample = 'BIDS/PPU3T';
+doUseSpm = false;
+run_example_and_compare_reference(testCase, dirExample, doUseSpm)
+end
+
+
+function test_biopac_txt_ppu3t_matlab_only(testCase)
+%% Compares previously saved physio-structure and multiple regressors file
+% to current output of re-run of BioPac_txt/PPU3T example using matlab only
+dirExample = 'BioPac_txt/PPU3T';
 doUseSpm = false;
 run_example_and_compare_reference(testCase, dirExample, doUseSpm)
 end
@@ -58,8 +75,35 @@ end
 
 function test_ge_ppu3t_matlab_only(testCase)
 %% Compares previously saved physio-structure and multiple regressors file
-% to current output of re-run of GE PPU3T example using matlab only
+% to current output of re-run of GE/PPU3T example using matlab only
 dirExample = 'GE/PPU3T';
+doUseSpm = false;
+run_example_and_compare_reference(testCase, dirExample, doUseSpm)
+end
+
+
+function test_philips_ecg3t_matlab_only(testCase)
+%% Compares previously saved physio-structure and multiple regressors file
+% to current output of re-run of Philips/ECG3T example using matlab only
+dirExample = 'Philips/ECG3T';
+doUseSpm = false;
+run_example_and_compare_reference(testCase, dirExample, doUseSpm)
+end
+
+
+function test_philips_ecg3t_v2_matlab_only(testCase)
+%% Compares previously saved physio-structure and multiple regressors file
+% to current output of re-run of Philips/ECG3T_V2 example using matlab only
+dirExample = 'Philips/ECG3T_V2';
+doUseSpm = false;
+run_example_and_compare_reference(testCase, dirExample, doUseSpm)
+end
+
+
+function test_philips_ecg7t_matlab_only(testCase)
+%% Compares previously saved physio-structure and multiple regressors file
+% to current output of re-run of Philips/ECG7T example using matlab only
+dirExample = 'Philips/ECG7T';
 doUseSpm = false;
 run_example_and_compare_reference(testCase, dirExample, doUseSpm)
 end
@@ -67,8 +111,35 @@ end
 
 function test_philips_ppu3t_matlab_only(testCase)
 %% Compares previously saved physio-structure and multiple regressors file
-% to current output of re-run of GE PPU3T example using matlab only
+% to current output of re-run of Philips/PPU3T example using matlab only
 dirExample = 'Philips/PPU3T';
+doUseSpm = false;
+run_example_and_compare_reference(testCase, dirExample, doUseSpm)
+end
+
+
+function test_siemens_hcp_ppu3t_matlab_only(testCase)
+%% Compares previously saved physio-structure and multiple regressors file
+% to current output of re-run of Siemens_HCP/PPU3T example using matlab only
+dirExample = 'Siemens_HCP/PPU3T';
+doUseSpm = false;
+run_example_and_compare_reference(testCase, dirExample, doUseSpm)
+end
+
+
+function test_siemens_vb_ecg3t_matlab_only(testCase)
+%% Compares previously saved physio-structure and multiple regressors file
+% to current output of re-run of Siemens_VB/ECG3T example using matlab only
+dirExample = 'Siemens_VB/ECG3T';
+doUseSpm = false;
+run_example_and_compare_reference(testCase, dirExample, doUseSpm)
+end
+
+
+function test_siemens_vd_ppu3t_matlab_only(testCase)
+%% Compares previously saved physio-structure and multiple regressors file
+% to current output of re-run of Siemens_VD/PPU3T example using matlab only
+dirExample = 'Siemens_VD/PPU3T';
 doUseSpm = false;
 run_example_and_compare_reference(testCase, dirExample, doUseSpm)
 end
