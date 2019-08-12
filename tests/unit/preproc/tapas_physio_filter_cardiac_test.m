@@ -31,7 +31,7 @@ function test_philips_ppu7t_filter_cheby2(testCase)
 % time course with current re-run of same batch from Philips 7T PPU data
 % run GE example and extract physio
 
-pathPhysioPublic = fullfile(fileparts(mfilename('fullpath')), '..', '..');
+pathPhysioPublic = fullfile(fileparts(mfilename('fullpath')), '..', '..', '..');
 pathExamples =  fullfile(pathPhysioPublic, '..', 'examples');
 
 pathCurrentExample = fullfile(pathExamples, 'Philips/PPU7T');
@@ -70,7 +70,7 @@ function test_philips_ppu7t_filter_butter(testCase)
 % with current re-run of same batch from Philips 7T PPU data
 
 % run GE example and extract physio
-pathPhysioPublic = fullfile(fileparts(mfilename('fullpath')), '..', '..');
+pathPhysioPublic = fullfile(fileparts(mfilename('fullpath')), '..', '..', '..');
 % TODO: Make generic!
 pathExamples =  fullfile(pathPhysioPublic, '..', 'examples');
 
