@@ -30,7 +30,16 @@ function tests = tapas_physio_examples_test()
 % version 3 or, at your option, any later version). For further details,
 % see the file COPYING or <http://www.gnu.org/licenses/>.
 
+
 tests = functiontests(localfunctions);
+end
+
+% path to examples, needed for all test cases
+function setupOnce(testCase)
+% run GE example and extract physio
+testCase.TestData.pathPhysioPublic = fullfile(fileparts(mfilename('fullpath')), '..', '..');
+% TODO: Make generic!
+testCase.TestData.pathExamples =  fullfile(testCase.TestData.pathPhysioPublic, '..', 'examples');
 end
 
 function test_ge_ppu3t(testCase)
@@ -39,6 +48,11 @@ function test_ge_ppu3t(testCase)
 % Note: both SPM or matlab-script based execution is possible
 % (check parameter doUseSpm below!)
 
+%% #MOD parameters, to be altered per test
+doUseSpm = true;
+dirExample = 'GE/PPU3T';
+
+%% Generic settings
 % methods for recursively comparing structures, see
 % https://ch.mathworks.com/help/matlab/ref/matlab.unittest.constraints.structcomparator-class.html
 import matlab.unittest.constraints.IsEqualTo
@@ -48,18 +62,17 @@ import matlab.unittest.constraints.StructComparator
 import matlab.unittest.constraints.NumericComparator
 import matlab.unittest.constraints.StringComparator
 
-doUseSpm = true;
 
-% run GE example and extract physio
-pathPhysioPublic = fullfile(fileparts(mfilename('fullpath')), '..', '..');
-% TODO: Make generic!
-pathExamples =  fullfile(pathPhysioPublic, '..', 'examples');
+pathExamples = testCase.TestData.pathExamples;
 
+%% Actual run of example, via batch editor or as matlab script
 if doUseSpm
-    pathCurrentExample = fullfile(pathExamples, 'GE/PPU3T');
+    pathCurrentExample = fullfile(pathExamples, dirExample);
     pathNow = pwd;
     cd(pathCurrentExample); % for prepending absolute paths correctly
-    fileExample = fullfile(pathCurrentExample, 'ge_ppu3t_spm_job.mat');
+    
+    fileJobMat = [regexprep(lower(dirExample), '/', '_') '_spm_job.mat'];
+    fileExample = fullfile(pathCurrentExample, fileJobMat);
     load(fileExample, 'matlabbatch');
     
     % remove unnecessary verbosity for test
@@ -75,15 +88,18 @@ if doUseSpm
     load(matlabbatch{1}.spm.tools.physio.model.output_physio, 'physio');
     actPhysio = physio;
 else % has verbosity...cannot switch it off
-    fileExample = fullfile(pathExamples, 'GE/PPU3T/ge_ppu3t_matlab_script.m');
+    
+    fileJobMScript = [regexprep(lower(dirExample), '/', '_') '_matlab_script.m'];
+    fileExample = fullfile(pathExamples, dirExample, fileJobMScript);
     run(fileExample); % will output a PhysIO-struct
     actPhysio = physio;
 end
 
+%% Load reference data and compare to actual run for certain subfields
 
 % load physio from reference data
 fileReferenceData = fullfile(pathExamples, 'TestReferenceResults', 'examples', ...
-    'GE/PPU3T', 'physio.mat');
+    dirExample, 'physio.mat');
 load(fileReferenceData, 'physio');
 expPhysio = physio;
 
