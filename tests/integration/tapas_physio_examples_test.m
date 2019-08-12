@@ -64,6 +64,9 @@ function run_example_and_compare_reference(testCase, dirExample, doUseSpm)
 % Note: both SPM or matlab-script based execution is possible
 % (check parameter doUseSpm below!)
 
+% hard-coded relative tolerance
+relTol = 0.01; % 0.01 means 1 percent deviation from expected value allowed
+
 %% Generic settings
 % methods for recursively comparing structures, see
 % https://ch.mathworks.com/help/matlab/ref/matlab.unittest.constraints.structcomparator-class.html
@@ -76,10 +79,10 @@ import matlab.unittest.constraints.StringComparator
 
 
 pathExamples = testCase.TestData.pathExamples;
+pathCurrentExample = fullfile(pathExamples, dirExample);
 
 %% Actual run of example, via batch editor or as matlab script
 if doUseSpm
-    pathCurrentExample = fullfile(pathExamples, dirExample);
     pathNow = pwd;
     cd(pathCurrentExample); % for prepending absolute paths correctly
     
@@ -93,25 +96,53 @@ if doUseSpm
     spm_jobman('run', matlabbatch);
     cd(pathNow);
     
-    % retrieve physio struct from saved file
-    matlabbatch{1}.spm.tools.physio.model.output_physio = fullfile(pathCurrentExample, ...
-        matlabbatch{1}.spm.tools.physio.save_dir{1}, ...
-        matlabbatch{1}.spm.tools.physio.model.output_physio);
-    load(matlabbatch{1}.spm.tools.physio.model.output_physio, 'physio');
-    actPhysio = physio;
+    dirExampleOutput =  matlabbatch{1}.spm.tools.physio.save_dir{1};
+    fileExampleOutputPhysio = matlabbatch{1}.spm.tools.physio.model.output_physio;
+    fileExampleOutputTxt = matlabbatch{1}.spm.tools.physio.model.output_multiple_regressors;
+       
 else % has verbosity...cannot switch it off
     
     fileJobMScript = [regexprep(lower(dirExample), '/', '_') '_matlab_script.m'];
     fileExample = fullfile(pathExamples, dirExample, fileJobMScript);
-    run(fileExample); % will output a PhysIO-struct
-    actPhysio = physio;
+    
+    % runs example Matlab script
+    % will output a PhysIO-struct, from which we can parse output files
+    run(fileExample);
+    
+    % retrieve output files, remove preprending path
+    [~, dirExampleOutput] = fileparts(physio.save_dir);
+    [~, fn,ext] = fileparts(physio.model.output_physio);
+    fileExampleOutputPhysio = [fn ext];
+    [~, fn, ext] = fileparts(physio.model.output_multiple_regressors);
+    fileExampleOutputTxt = [fn ext];
 end
+
+
+%% Retrieve current results from file
+pathExampleOutput = fullfile(pathCurrentExample, dirExampleOutput);
+   
+load(fullfile(pathExampleOutput, fileExampleOutputPhysio), 'physio');
+R = load(fullfile(pathExampleOutput,fileExampleOutputTxt));
+actPhysio = physio;
+actRegressorsFromTxt = R;
+ 
 
 %% Load reference data and compare to actual run for certain subfields
 
-% load physio from reference data
+%% 1. Test: Load reference data from multiple regressors file
 fileReferenceData = fullfile(pathExamples, 'TestReferenceResults', 'examples', ...
-    dirExample, 'physio.mat');
+    dirExample, fileExampleOutputTxt);
+R = load(fileReferenceData);
+expRegressorsFromTxt = R;
+
+verifyEqual(testCase, actRegressorsFromTxt, expRegressorsFromTxt, ...
+     'RelTol', relTol, ...
+     'Comparing multiple regressors in txt-files');
+
+
+%% 2. load physio structure from reference data
+fileReferenceData = fullfile(pathExamples, 'TestReferenceResults', 'examples', ...
+    dirExample, fileExampleOutputPhysio);
 load(fileReferenceData, 'physio');
 expPhysio = physio;
 
@@ -119,9 +150,12 @@ expPhysio = physio;
 actSolution = actPhysio.model.R;
 expSolution = expPhysio.model.R;
 
-verifyEqual(testCase, actSolution, expSolution, 'Comparing multiple regressors in physio.model.R');
+verifyEqual(testCase, actSolution, expSolution, ...
+    'RelTol', relTol, ...
+    'Comparing multiple regressors in physio.model.R');
 
-%% compare all numeric sub-fields of physio with some tolerance
+
+%% 3. compare all numeric sub-fields of physio with some tolerance
 
 % ons_secs has all the computed preprocessed physiological and scan timing
 % sync data, from which .model derives the physiological regressors later
@@ -130,7 +164,7 @@ verifyEqual(testCase, actSolution, expSolution, 'Comparing multiple regressors i
 testCase.verifyThat(actPhysio.ons_secs, ...
     IsEqualTo(expPhysio.ons_secs,  ...
     'Using', StructComparator(NumericComparator, 'Recursively', true), ...
-    'Within', RelativeTolerance(0.01), ...
+    'Within', RelativeTolerance(relTol), ...
     'IgnoringFields',  {'spulse_per_vol'}...
     ), 'Comparing all numeric subfields of ons_secs to check preprocessing of phys recordings');
 
