@@ -4,13 +4,13 @@ RELEASE INFORMATION
 Current Release
 ---------------
 
-*Current version: PhysIO Toolbox Release R2019a, v7.1.0*
+*Current version: PhysIO Toolbox Release R2019b, v7.2.0*
 
-March 19, 2019
+August 20, 2019
 
 
-Unreleased (R2019b, v7.2.0-beta)
---------------------------------
+Minor Release Notes (R2019b, v7.2.0)
+------------------------------------
 
 ### Added
 - `requirements.txt` making dependencies on Matlab and specific toolboxes 
