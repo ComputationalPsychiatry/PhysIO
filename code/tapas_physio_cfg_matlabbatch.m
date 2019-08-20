@@ -177,14 +177,16 @@ relative_start_acquisition.help    = {
     ' NOTE: '
     '       1. For Philips SCANPHYSLOG, this parameter is ignored, if'
     '       scan_timing.sync is set.'
-    '       2. If you specify an acquisition_info file, leave this parameter'
-    '       empty (e.g., for Siemens_Tics, BIDS) since physiological recordings'
-    '       and acquisition timing are already synchronized by this'
-    '       information, and you would introduce another shift.'
+    '       2. If you specify an acquisition_info file, leave this'
+    '       parameter empty or 0 (e.g., for Siemens_Tics, BIDS) since'
+    '       physiological recordings and acquisition timing are already'
+    '       synchronized by this information, and you would introduce an'
+    '       additional shift.'
+    
   };
 relative_start_acquisition.strtype = 'e';
 relative_start_acquisition.num     = [Inf Inf];
-relative_start_acquisition.val     = {[]};
+relative_start_acquisition.val     = {0};
 
 
 %--------------------------------------------------------------------------

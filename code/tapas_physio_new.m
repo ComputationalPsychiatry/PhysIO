@@ -177,12 +177,13 @@ else
     % NOTE: 
     %       1. For Philips SCANPHYSLOG, this parameter is ignored, if
     %       scan_timing.sync is set.
-    %       2. If you specify an acquisition_info file, leave this parameter
-    %       empty (e.g., for Siemens_Tics, BIDS) since physiological recordings
-    %       and acquisition timing are already synchronized by this
-    %       information, and you would introduce another shift.
+    %       2. If you specify an acquisition_info file, leave this
+    %       parameter empty or 0 (e.g., for Siemens_Tics, BIDS) since
+    %       physiological recordings and acquisition timing are already
+    %       synchronized by this information, and you would introduce an
+    %       additional shift.
     %
-    log_files.relative_start_acquisition = [];
+    log_files.relative_start_acquisition = 0;
     
     % Determines which scan shall be aligned to which part of the logfile
     % Typically, aligning the last scan to the end of the logfile is
