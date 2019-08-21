@@ -1,7 +1,7 @@
 TAPAS PhysIO Toolbox 
 ====================
 
-*Current version: Release 2019a, v7.1.0*
+*Current version: Release 2019b, v7.2.0*
 
 > Copyright (C) 2012-2019  
 > Lars Kasper  
