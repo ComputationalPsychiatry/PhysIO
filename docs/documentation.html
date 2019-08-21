@@ -830,9 +830,9 @@ Help Window of the SPM Batch Editor</p>
 </ol>
 <p class="page" id="README"></p><h1>Readme</h1>
 <h1 id="tapas-physio-toolbox-">TAPAS PhysIO Toolbox </h1>
-<p><em>Current version: Release 2019a, v7.1.0</em></p>
+<p><em>Current version: Release 2019b, v7.2.0</em></p>
 <blockquote>
-<p>Copyright (C) 2012-2019<br>Lars Kasper<br><a href="#mailto107x61x73112x65x7264x62105111109x65100x2ex65x6546101116104x7ax2e99104">&#107;&#x61;&#x73;&#112;&#x65;&#x72;&#64;&#x62;&#105;&#111;&#109;&#x65;&#100;&#x2e;&#x65;&#x65;&#46;&#101;&#116;&#104;&#x7a;&#x2e;&#99;&#104;</a>  </p>
+<p>Copyright (C) 2012-2019<br>Lars Kasper<br><a href="#mailtox6bx61x73x70101x726498105x6f109101100x2ex65x65x2ex65116x68x7ax2e99x68">&#x6b;&#x61;&#x73;&#x70;&#101;&#x72;&#64;&#98;&#105;&#x6f;&#109;&#101;&#100;&#x2e;&#x65;&#x65;&#x2e;&#x65;&#116;&#x68;&#x7a;&#x2e;&#99;&#x68;</a>  </p>
 <p>Translational Neuromodeling Unit (TNU)<br>Institute for Biomedical Engineering<br>University of Zurich and ETH Zurich  </p>
 </blockquote>
 <h2 id="download">Download</h2>
@@ -1747,9 +1747,9 @@ ACQ_TIME_TICS  CHANNEL  VALUE  SIGNAL
 <span class="hljs-symbol">1 </span>   <span class="hljs-number">1904</span>    <span class="hljs-number">1780</span></pre><p class="page" id="CHANGELOG"></p><h1>Version History (Changelog)</h1>
 <h1 id="release-information">RELEASE INFORMATION</h1>
 <h2 id="current-release">Current Release</h2>
-<p><em>Current version: PhysIO Toolbox Release R2019a, v7.1.0</em></p>
-<p>March 19, 2019</p>
-<h2 id="unreleased-r2019b-v7-2-0-beta-">Unreleased (R2019b, v7.2.0-beta)</h2>
+<p><em>Current version: PhysIO Toolbox Release R2019b, v7.2.0</em></p>
+<p>August 20, 2019</p>
+<h2 id="minor-release-notes-r2019b-v7-2-0-">Minor Release Notes (R2019b, v7.2.0)</h2>
 <h3 id="added">Added</h3>
 <ul>
 <li><code>requirements.txt</code> making dependencies on Matlab and specific toolboxes 
@@ -1773,8 +1773,13 @@ impact of physiological noise for serial correlations (Bollmann2018)</li>
 <h3 id="fixed">Fixed</h3>
 <ul>
 <li>Corrected half-width shift of response functions for HRV and RVT regressors by
-erroneous use of Matlab conv (gitlab issue #83, found and fixed by Sam
-Harrison, TNU, see <code>tapas_physio_conv</code>)</li>
+erroneous use of Matlab <code>conv</code> <ul>
+<li>For details on the bug, its impact and fix, see our specific <a href="https://github.com/translationalneuromodeling/tapas/issues/65">Release
+Info on RVT/HRV Bugfix</a></li>
+<li>other references: TNU gitlab issue #83, found and fixed by Sam Harrison,
+TNU, see <code>tapas_physio_conv</code>)</li>
+</ul>
+</li>
 <li>Bugfix <code>tapas_physio_init()</code> not working, because dependent on functions 
 in <code>utils</code> subfolder not in path; <code>utils</code> added to path</li>
 <li><code>tapas_physio_review</code> for motion parameters (found and fixed by 
