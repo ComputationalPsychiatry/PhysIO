@@ -32,8 +32,11 @@ Batch Editor and Matlab-only configuration scripts. Reference data provided in
 
 ### Fixed
 - Corrected half-width shift of response functions for HRV and RVT regressors by
-  erroneous use of Matlab conv (gitlab issue #83, found and fixed by Sam
-  Harrison, TNU, see `tapas_physio_conv`)
+  erroneous use of Matlab `conv` 
+    - For details on the bug, its impact and fix, see our specific [Release
+    Info on RVT/HRV Bugfix](https://github.com/translationalneuromodeling/tapas/issues/65)
+    - other references: TNU gitlab issue #83, found and fixed by Sam Harrison,
+    TNU, see `tapas_physio_conv`)
 - Bugfix `tapas_physio_init()` not working, because dependent on functions 
   in `utils` subfolder not in path; `utils` added to path
 - `tapas_physio_review` for motion parameters (found and fixed by 
