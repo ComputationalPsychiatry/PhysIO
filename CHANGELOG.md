@@ -8,6 +8,19 @@ Current Release
 
 October 1st, 2019
 
+SCHEDULED Minor Release Notes (R2020a, v7.3.0) 
+----------------------------------------------
+
+### Added
+- New example datasets Siemens VB PPU3T with DICOM Sync (courtesy of Alexander Ritter, Jena, Germany)
+
+### Changed
+
+### Fixed
+- Bugfix Siemens VB (`*.resp, *.puls, *.ecg`)
+    - Synchronization to DICOM time stamp did not work for extended physiological recordings (not starting/ending with functional run) due to ignored absolute start time stamp
+    - reported by Alexander Ritter, Jena, Germany
+
 
 Bugfix Release Notes (v7.2.1)
 -----------------------------
