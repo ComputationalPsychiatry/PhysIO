@@ -121,8 +121,8 @@ if hasCardiacData
     
     
     if hasScanTimingDicomImage
-        tStartScan = tStartScanDicom;
-        tStopScan = tStopScanDicom; % is incorrect, use tStartScan + TR!
+        tStartScan = tStartScanDicom; % this is just the start of the selected DICOM volume
+        tStopScan = tStopScanDicom + sqpar.TR; % is incorrect, i.e., equals start of volume, therefore use tStartScan + TR!
     else
         % Just different time scale, gives bad scaling in plots, and not
         % needed...
@@ -140,7 +140,7 @@ if hasCardiacData
             % shift onset of first scan by knowledge of run duration and
             % onset of last scan in run
             relative_start_acquisition = ...
-                (tStartScan - (sqpar.Nscans-1)*sqpar.TR) ... 
+                (tStopScan - sqpar.Nscans*sqpar.TR) ... 
                 - logFooter.LogStartTimeSeconds;
     end
     
