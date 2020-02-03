@@ -4,9 +4,9 @@ RELEASE INFORMATION
 Current Release
 ---------------
 
-*Current version: PhysIO Toolbox Release R2019b, v7.2.1*
+*Current version: PhysIO Toolbox Release R2019b, v7.2.2*
 
-October 1st, 2019
+Feburary 3rd, 2020
 
 SCHEDULED Minor Release Notes (R2020a, v7.3.0) 
 ----------------------------------------------
@@ -17,9 +17,15 @@ SCHEDULED Minor Release Notes (R2020a, v7.3.0)
 ### Changed
 
 ### Fixed
+
+Bugfix Release Notes (v7.2.2)
+-----------------------------
+
+### Fixed
 - Bugfix Siemens VB (`*.resp, *.puls, *.ecg`)
     - Synchronization to DICOM time stamp did not work for extended physiological recordings (not starting/ending with functional run) due to ignored absolute start time stamp
-    - reported by Alexander Ritter, Jena, Germany
+    - reported by Alexander Ritter, Jena, Germany (Github issue #55, Gitlab #87)
+    - probably fixes Github issue #63 (Gitlab #86) as well
 
 
 Bugfix Release Notes (v7.2.1)
