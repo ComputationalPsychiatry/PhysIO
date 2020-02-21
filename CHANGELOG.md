@@ -4,9 +4,9 @@ RELEASE INFORMATION
 Current Release
 ---------------
 
-*Current version: PhysIO Toolbox Release R2019b, v7.2.2*
+*Current version: PhysIO Toolbox Release R2019b, v7.2.3*
 
-Feburary 3rd, 2020
+Feburary 21st, 2020
 
 
 SCHEDULED Minor Release Notes (R2020a, v7.3.0) 
@@ -19,6 +19,13 @@ SCHEDULED Minor Release Notes (R2020a, v7.3.0)
 
 ### Fixed
 
+
+Bugfix Release Notes (v7.2.3)
+-----------------------------
+
+### Fixed
+- Bugfix manual peak selection (Github issue #85, Gitlab #90)
+    - did not work because of figure handling
 
 Bugfix Release Notes (v7.2.2)
 -----------------------------
