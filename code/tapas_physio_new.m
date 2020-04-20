@@ -361,7 +361,7 @@ else
     % default: initial_cpulse_kRpeakfile.mat
     preproc.cardiac.initial_cpulse_select.file = 'initial_cpulse_kRpeakfile.mat';
     
-    % threshold for correlation with QRS-wave to find cardiac pulses
+    % threshold for peak height in normalized (max = 1) cardiac waveform to find pulse events
     % default: 0.4
     preproc.cardiac.initial_cpulse_select.min = 0.4;
     
