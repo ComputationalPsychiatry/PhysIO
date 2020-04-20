@@ -4,9 +4,9 @@ RELEASE INFORMATION
 Current Release
 ---------------
 
-*Current version: PhysIO Toolbox Release R2019b, v7.2.4*
+*Current version: PhysIO Toolbox Release R2019b, v7.2.5*
 
-April 7st, 2020
+April 20th, 2020
 
 
 SCHEDULED Minor Release Notes (R2020a, v7.3.0) 
@@ -18,6 +18,15 @@ SCHEDULED Minor Release Notes (R2020a, v7.3.0)
 ### Changed
 
 ### Fixed
+
+
+Bugfix Release Notes (v7.2.5)
+-----------------------------
+
+### Fixed
+- Corrected documentation for ` preproc.cardiac.initial_cpulse_select.min` parameter
+    - threshold for peak relative to time series max, *not* correlation
+    - reported by Sam Harrison, TNU, as gitlab issue #95
 
 Bugfix Release Notes (v7.2.4)
 -----------------------------
