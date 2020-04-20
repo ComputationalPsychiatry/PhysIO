@@ -1,10 +1,10 @@
 RELEASE INFORMATION
-===============================
+===================
 
 Current Release
 ---------------
 
-*Current version: PhysIO Toolbox Release R2019b, v7.2.5*
+*Current version: PhysIO Toolbox Release R2019b, v7.2.6*
 
 April 20th, 2020
 
@@ -13,11 +13,30 @@ SCHEDULED Minor Release Notes (R2020a, v7.3.0)
 ----------------------------------------------
 
 ### Added
+- Brain Imaging Data Structure (BIDS) export format (`.tsv.gz`, `.json`) to save raw physiological recordings after synchronization with scanner timing (internal gitlab issue #91)
+    - following current BIDS specification on [continuous physiological recordings](https://bids-specification.readthedocs.io/en/stable/04-modality-specific-files/06-physiological-and-other-continuous-recordings.html) and its [metadata]( https://bids-specification.readthedocs.io/en/stable/02-common-principles.html#tabular-files)
+    - single tab-separated values file with columns for cardiac and respiratory recordings
+        - if sampling frequencies of the two differ, upsampling to higher frequency is performed
 - New example datasets Siemens VB PPU3T with DICOM Sync (courtesy of Alexander Ritter, Jena, Germany)
+- More versatile control on figure visibility, saving and closing during `main` and `review` runs of PhysIO
+    - feature provided by Stephan Heunis, TU Eindhoven, The Netherlands (github issue #89)
+    - figures can now be plotted in the background without disturbing interactive Matlab sessions, and can be (more) selectively saved and closed during execution of `tapas_physio_review`
+    - more comprehensive support within `tapas_physio_main_create_regressors` to follow
+
 
 ### Changed
 
 ### Fixed
+
+
+Bugfix Release Notes (v7.2.6)
+-----------------------------
+
+### Fixed
+- Meaningful error message for `auto_matched` peak detection, if time series is too short
+    - at least 20 peaks (and pulse templates) are required to create a pulse template
+    - this is now stated explicitly, if time series is too short
+    - reported by Joy Schuurmans Stekhoven, TNU, as gitlab issue #92
 
 
 Bugfix Release Notes (v7.2.5)
