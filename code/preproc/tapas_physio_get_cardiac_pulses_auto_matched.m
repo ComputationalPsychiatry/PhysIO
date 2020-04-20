@@ -67,9 +67,16 @@ switch methodPeakDetection
             verbose);
     
     case 'correlation' % Steffen's forward-backward-correlation
+        % indices of pulse indices, between which start of time series (first pulse) is determined by backwards-search
+        idxStartPeakSearch = [0 20];
+
+        if numel(cpulseSecondGuess) < idxStartPeakSearch(2)
+            verbose = tapas_physio_log(['Not enough pulse events in physiological time series to perform backwards-search ' ...
+            'for first pulse wave peak. Please check peak thresholding, data quality or total length of time series.'], verbose, 2);
+        end
         [cpulse, verbose] = tapas_physio_findpeaks_template_correlation(...
             c, pulseCleanedTemplate, cpulseSecondGuess, averageHeartRateInSamples, ...
-            verbose);
+            verbose, 'idxStartPeakSearch', idxStartPeakSearch);
        
     case 'matched_filter'
         %ECG_min = thresh_min;
