@@ -34,7 +34,7 @@ function [cpulse, verbose] = tapas_physio_get_cardiac_pulses_auto_matched(...
 % Created: 2014-03-20
 % Copyright (C) 2014 TNU, Institute for Biomedical Engineering, University of Zurich and ETH Zurich.
 %
-% This file is part of the physIO toolbox, which is released under the terms of the GNU General Public
+% This file is part of the PhysIO Toolbox, which is released under the terms of the GNU General Public
 % Licence (GPL), version 3. You can redistribute it and/or modify it under the terms of the GPL
 % (either version 3 or, at your option, any later version). For further details, see the file
 % COPYING or <http://www.gnu.org/licenses/>.
@@ -69,10 +69,13 @@ switch methodPeakDetection
     case 'correlation' % Steffen's forward-backward-correlation
         % indices of pulse indices, between which start of time series (first pulse) is determined by backwards-search
         idxStartPeakSearch = [0 20];
-
-        if numel(cpulseSecondGuess) < idxStartPeakSearch(2)
-            verbose = tapas_physio_log(['Not enough pulse events in physiological time series to perform backwards-search ' ...
-            'for first pulse wave peak. Please check peak thresholding, data quality or total length of time series.'], verbose, 2);
+        nPeaksTotal = numel(cpulseSecondGuess);
+        nPeaksRequired = idxStartPeakSearch(2);
+        if nPeaksTotal < nPeaksRequired
+            stringError = sprintf(['Not enough pulse events (%d<%d) in physiological time series to perform backwards-search ' ...
+            'for first pulse wave peak. Please check peak thresholding, data quality or total length of time series.'], ...
+            nPeaksTotal, nPeaksRequired);
+            verbose = tapas_physio_log(stringError, verbose, 2);
         end
         [cpulse, verbose] = tapas_physio_findpeaks_template_correlation(...
             c, pulseCleanedTemplate, cpulseSecondGuess, averageHeartRateInSamples, ...
