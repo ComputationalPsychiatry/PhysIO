@@ -58,12 +58,12 @@ fr_analytic = hilbert(fr_lp);
 fr_mag = abs(fr_analytic);
 
 % Low-pass filter envelope to retrieve change in respiratory volume
-d = designfilt( ...
-    'lowpassiir', 'FilterOrder', 10, ...
-    'HalfPowerFrequency', 0.2, 'SampleRate', f_sample);
-fr_rv = filtfilt(d, padarray(fr_mag, n_pad, 'circular'));
-fr_rv = fr_rv(n_pad+1:end-n_pad);
-fr_rv(fr_rv < 0.0) = 0.0;
+% d = designfilt( ...
+%     'lowpassiir', 'FilterOrder', 10, ...
+%     'HalfPowerFrequency', 0.2, 'SampleRate', f_sample);
+% fr_rv = filtfilt(d, padarray(fr_mag, n_pad, 'circular'));
+% fr_rv = fr_rv(n_pad+1:end-n_pad);
+% fr_rv(fr_rv < 0.0) = 0.0;
 
 if verbose.level>=2
     verbose.fig_handles(end+1) = tapas_physio_get_default_fig_params();
@@ -72,12 +72,13 @@ if verbose.level>=2
     hp(1) = plot(t, fr);
     hp(2) = plot(t, fr_lp);
     hp(3) = plot(t, fr_mag);
-    hp(4) = plot(t, fr_rv);
+%     hp(4) = plot(t, fr_rv);
     strLegend = {
         'Filtered breathing signal', ...
         '... after low pass-filter', ...
         'Breathing signal envelope', ...
-        'Respiratory volume'};
+        };
+%         'Respiratory volume'};
     legend(hp, strLegend)
 end
 
@@ -163,7 +164,15 @@ end
 %% And make RVT! %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % RVT = magnitude * breathing rate
-fr_rvt = fr_rv .* fr_if;
+fr_rvt = fr_mag .* fr_if;
+
+% Low-pass filter envelope to remove within-cycle changes
+d = designfilt( ...
+    'lowpassiir', 'FilterOrder', 10, ...
+    'HalfPowerFrequency', 0.2, 'SampleRate', f_sample);
+fr_rvt = filtfilt(d, padarray(fr_rvt, n_pad, 'circular'));
+fr_rvt = fr_rvt(n_pad+1:end-n_pad);
+fr_rvt(fr_rvt < 0.0) = 0.0;
 
 % Need to downsample to `sample_points`, taking care to avoid aliasing
 f_sample_out = 1 / mean(diff(sample_points));
