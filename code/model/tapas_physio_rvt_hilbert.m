@@ -67,7 +67,7 @@ fr_lp = fr_lp(n_pad+1:end-n_pad);
 % such that we get a monotonically increasing phase
 fr_filt = fr_lp;
 fr_mag = abs(hilbert(fr_filt));
-for n = 1:5
+for n = 1:10
     % Analytic signal -> phase
     fr_analytic = hilbert(fr_filt);
     fr_phase = phase(fr_analytic);
@@ -132,7 +132,7 @@ fr_if = f_sample * gradient(fr_phase) / (2 * pi);
 fr_if = filtfilt(d, padarray(fr_if, n_pad, 'circular'));
 fr_if = fr_if(n_pad+1:end-n_pad);
 fr_if(fr_if >  2.0) = 2.0;   % Lower limit of 2.0 breaths per second
-fr_if(fr_if < 0.05) = 0.05;  % Upper limit of 20.0 s per breath
+fr_if(fr_if < (1 / 30.0)) = (1 / 30.0);  % Upper limit of 30.0 s per breath
 
 % RVT = magnitude * breathing rate
 fr_rvt = fr_rv .* fr_if;
