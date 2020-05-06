@@ -6,7 +6,11 @@ function [rvt] = tapas_physio_rvt_hilbert(fr, t, sample_points, verbose)
 % The respiratory volume/time is computed by calculating the instantaneous
 % amplitude / frequency of the breathing signal via the Hilbert transform.
 %
-% Reference:
+% References:
+%   Birn, R.M., Diamond, J.B., Smith, M.A., Bandettini, P.A., 2006.
+%       Separating respiratory-variation-related fluctuations from
+%       neuronal-activity-related fluctuations in fMRI.
+%       NeuroImage 31(4), 1536-1548.
 %   Birn, R.M., Smith, M.A., Jones, T.B., Bandettini, P.A., 2008.
 %       The respiration response function: The temporal dynamics of
 %       fMRI signal fluctuations related to changes in respiration.
@@ -122,7 +126,9 @@ d = designfilt( ...
     'HalfPowerFrequency', 0.2, 'SampleRate', f_sample);
 
 % Respiratory volume is amplitude envelope
-fr_rv = filtfilt(d, padarray(fr_mag, n_pad, 'circular'));
+% Note factor of two is for compatability with the common definition of RV
+% as the difference between max and min inhalation (i.e. twice the amplitude)
+fr_rv = 2.0 * filtfilt(d, padarray(fr_mag, n_pad, 'circular'));
 fr_rv = fr_rv(n_pad+1:end-n_pad);
 fr_rv(fr_rv < 0.0) = 0.0;
 
