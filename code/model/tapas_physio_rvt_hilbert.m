@@ -157,7 +157,7 @@ if verbose.level>=2
     hp(1) = plot(t, fr);
     hp(2) = plot(t, fr_lp);
     hp(3) = plot(t, fr_mag);
-    hp(4) = plot(t, fr_rv);
+    hp(4) = plot(t, fr_rv / 2.0);
     strLegend = {
         'Filtered breathing signal', ...
         '... after low pass-filter', ...
