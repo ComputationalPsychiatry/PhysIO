@@ -74,7 +74,7 @@ fr_mag = abs(hilbert(fr_filt));
 for n = 1:10
     % Analytic signal -> phase
     fr_analytic = hilbert(fr_filt);
-    fr_phase = phase(fr_analytic);
+    fr_phase = unwrap(angle(fr_analytic));
     
     % Remove any phase decreases that may occur
     % Find places where the gradient changes sign
