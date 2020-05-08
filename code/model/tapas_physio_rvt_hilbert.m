@@ -50,10 +50,10 @@ n_pad = ceil(10.0 * f_sample);
 
 %% Preprocess %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Mild low-pass filter to remove high-frequency noise
+% Slightly more aggressive low-pass filter than preproc to remove high-frequency noise
 d = designfilt( ...
     'lowpassiir', 'FilterOrder', 10, ...
-    'HalfPowerFrequency', 2.0, 'SampleRate', f_sample);
+    'HalfPowerFrequency', 1.0, 'SampleRate', f_sample);
 fr_lp = filtfilt(d, padarray(fr, n_pad, 'circular'));
 fr_lp = fr_lp(n_pad+1:end-n_pad);
 
