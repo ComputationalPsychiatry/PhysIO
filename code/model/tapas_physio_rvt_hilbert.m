@@ -73,8 +73,7 @@ fr_filt = fr_lp;
 fr_mag = abs(hilbert(fr_filt));
 for n = 1:10
     % Analytic signal -> phase
-    fr_analytic = hilbert(fr_filt);
-    fr_phase = unwrap(angle(fr_analytic));
+    fr_phase = unwrap(angle( hilbert(fr_filt) ));
     
     % Remove any phase decreases that may occur
     % Find places where the gradient changes sign
@@ -111,10 +110,8 @@ for n = 1:10
     fr_filt = fr_filt(n_pad+1:end-n_pad);
 end
 
-% Adjust magnitude according to phase
 % Keep phase only signal as reference so has been interpolated
 fr_filt = cos(fr_phase);
-fr_mag = fr_mag .* abs(hilbert(fr_filt));
 
 % figure; hold all; plot(t, fr); plot(t, fr_mag .* cos(fr_phase));
 
