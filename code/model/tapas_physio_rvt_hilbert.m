@@ -48,21 +48,14 @@ end
 f_sample = 1 / (t(2)-t(1));
 n_pad = ceil(10.0 * f_sample);
 
-%% Preprocess %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% Slightly more aggressive low-pass filter than preproc to remove high-frequency noise
-d = designfilt( ...
-    'lowpassiir', 'FilterOrder', 10, ...
-    'HalfPowerFrequency', 1.0, 'SampleRate', f_sample);
-fr_lp = filtfilt(d, padarray(fr, n_pad, 'circular'));
-fr_lp = fr_lp(n_pad+1:end-n_pad);
-
 %% Derive a well-behaved Hilbert transform %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Low-pass filter at approximately breathing-rate
+% Design a low-pass filter at not too far above breathing-rate
 d = designfilt( ...
     'lowpassiir', 'FilterOrder', 10, ...
     'HalfPowerFrequency', 0.75, 'SampleRate', f_sample);
+
+% Slightly more aggressive low-pass filter than preproc to remove high-frequency noise
 fr_lp = filtfilt(d, padarray(fr, n_pad, 'circular'));
 fr_lp = fr_lp(n_pad+1:end-n_pad);
 
@@ -130,7 +123,6 @@ fr_rv = fr_rv(n_pad+1:end-n_pad);
 fr_rv(fr_rv < 0.0) = 0.0;
 
 % Breathing rate is instantaneous frequency
-% Transform to instantaneous frequency
 fr_if = f_sample * gradient(fr_phase) / (2 * pi);
 fr_if = filtfilt(d, padarray(fr_if, n_pad, 'circular'));
 fr_if = fr_if(n_pad+1:end-n_pad);
