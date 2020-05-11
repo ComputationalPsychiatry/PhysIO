@@ -73,29 +73,32 @@ for n = 1:10
     fr_phase_diff = diff(sign(gradient(fr_phase)));
     decrease_inds = find(fr_phase_diff < 0);
     increase_inds = [find(fr_phase_diff > 0); length(fr_phase)];
-    for n_start = decrease_inds'
+    for n_max = decrease_inds'
+        % Key values:
         %   /2\   /4
         % 1/   \3/
-        % Find value of `fr` at:
-        %   [2]: start (i.e. peak)
-        %   [3]: end (i.e. trough)
-        fr_start = fr_phase(n_start);
-        n_end = increase_inds(find(increase_inds > n_start, 1));
-        fr_end = fr_phase(n_end);
+        %   [1]: start (i.e. value == [3])
+        %   [2]: max (i.e. peak)
+        %   [3]: min (i.e. trough)
+        %   [4]: end (i.e. value == [2])
+        % Find value of `fr_phase` at max and min:
+        fr_max = fr_phase(n_max);
+        n_min = increase_inds(find(increase_inds > n_max, 1));
+        fr_min = fr_phase(n_min);
         
-        % Now find where `fr` passes `fr_end` for the first time [1]
-        n_min = find(fr_phase > fr_end, 1);
-        if isempty(n_min)
-            n_min = n_start;
+        % Now find where `fr_phase` passes `fr_min` for the first time [1]
+        n_start = find(fr_phase > fr_min, 1);
+        if isempty(n_start)
+            n_start = n_max;
         end
-        % And find where `fr` passes `fr_end` for the last time [4]
-        n_max = find(fr_phase < fr_start, 1, 'last');
-        if isempty(n_max)
-            n_max = n_end;
+        % And find where `fr_phase` exceeds `fr_max` for the first time [4]
+        n_end = find(fr_phase < fr_max, 1, 'last');
+        if isempty(n_end)
+            n_end = n_min;
         end
         
         % Finally, linearly interpolate from [1] to [4]
-        fr_phase(n_min:n_max) = linspace(fr_end, fr_start, n_max-n_min+1);
+        fr_phase(n_start:n_end) = linspace(fr_min, fr_max, n_end - n_start + 1);
     end
     
     % And filter out any high frequencies from phase-only signal
