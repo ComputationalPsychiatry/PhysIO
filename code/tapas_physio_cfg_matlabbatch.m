@@ -585,7 +585,7 @@ max_heart_rate_bpm.val     = {90};
 min       = cfg_entry;
 min.tag     = 'min';
 min.name    = 'min';
-min.help    = {'Minimum threshold for peak height in normalized (max = 1) cardiac waveform to find pulse events'};
+min.help    = {'Minimum threshold for peak height in z-scored cardiac waveform to find pulse events'};
 min.strtype = 'e';
 min.num     = [Inf Inf];
 min.val     = {0.4};
@@ -654,7 +654,7 @@ initial_cpulse_select_method_load_template.val  = {
     initial_cpulse_select_file    
 };
 initial_cpulse_select_method_load_template.help = { ...
-    'Load template pusle shape from previous manual/auto run to perform detection of heartbeats via maximum cross-correlation'
+    'Load template pulse shape from previous manual/auto run to perform detection of heartbeats via maximum cross-correlation'
     };
 
 
