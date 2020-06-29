@@ -110,26 +110,19 @@ end
 %   cumsumh, sumh, h, npulse, dpulse, rphase)
 
 
-%% Create mock SPM to determine columns with get_regressor-function
-
-SPM.Sess = 1;
-nRegressors = size(model.R,2);
-s = 1;
-
-SPM.xX.name = cellfun(@(iCard) ['Sn(' int2str(s) ') R' int2str(iCard)], ...
-    num2cell(1:nRegressors), 'UniformOutput', false);
-
-[colPhys, colCard, colResp, colMult, colHRV, colRVT, colRois, colMove, colAll] = ...
-    tapas_physio_check_get_regressor_columns(SPM, model);
+%% RETROICOR
 
 if model.retroicor.include
-    R = model.R(:,[colCard,colResp,colMult]);
+    retroicor = model.R(:, contains(model.R_column_names, 'RETROICOR', 'IgnoreCase', true));
     hasCardiacData = ~isempty(ons_secs.c);
     hasRespData = ~isempty(ons_secs.r);
     verbose.fig_handles(end+1) = ...
-        tapas_physio_plot_retroicor_regressors(R, model.retroicor.order, hasCardiacData, ...
+        tapas_physio_plot_retroicor_regressors(retroicor, model.retroicor.order, hasCardiacData, ...
         hasRespData);
 end
+
+
+%% Movement
 
 if model.movement.include
     rp = model.movement.rp;
@@ -150,12 +143,9 @@ end
 % tapas_physio_create_noise_rois_regressors
 % => create functions out of inline-plotting
 
-%% TODO: replace this call by just using the plot-subpart of the
-% orthogonalization
-cardiac_sess = model.R(:,colCard);
-respire_sess = model.R(:,colResp);
-mult_sess = model.R(:,colMult);
+%% Overall regressors
 
 [R, verbose] = tapas_physio_orthogonalise_physiological_regressors(...
-    cardiac_sess, respire_sess, ...
-    mult_sess, model.R, model.orthogonalise, verbose);
+    model.R, model.R_column_names, model.orthogonalise, verbose);
+
+end
