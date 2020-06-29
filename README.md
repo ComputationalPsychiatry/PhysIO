@@ -251,15 +251,14 @@ Contributors
 - Project Team: 
     - Steffen Bollmann, Centre for Advanced Imaging, University of Queensland, Australia
     - Saskia Bollmann, Centre for Advanced Imaging, University of Queensland, Australia
+    - Sam Harrison, TNU Zurich
 - Contributors (Code):
     - Eduardo Aponte, TNU Zurich
     - Tobias U. Hauser, FIL London, UK
-    - Sam Harrison, TNU Zurich
     - Jakob Heinzle, TNU Zurich
     - Chloe Hutton, FIL London, UK (previously)
     - Miriam Sebold, Charite Berlin, Germany
-    - External TAPAS contributors listed in its [Contributor License Agreement]
-    (https://github.com/translationalneuromodeling/tapas/blob/master/Contributor-License-Agreement.md)
+    - External TAPAS contributors listed in its [Contributor License Agreement](https://github.com/translationalneuromodeling/tapas/blob/master/Contributor-License-Agreement.md)
 - Contributors (Examples):
     - listed in [EXAMPLES.md](https://gitlab.ethz.ch/physio/physio-doc/wikis/EXAMPLES)
 
