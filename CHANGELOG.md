@@ -23,7 +23,6 @@ SCHEDULED Minor Release Notes (R2020a, v7.3.0)
     - figures can now be plotted in the background without disturbing interactive Matlab sessions, and can be (more) selectively saved and closed during execution of `tapas_physio_review`
     - more comprehensive support within `tapas_physio_main_create_regressors` to follow
 
-
 ### Changed
 
 ### Fixed
@@ -47,6 +46,7 @@ Bugfix Release Notes (v7.2.5)
     - threshold for peak relative to z-scored time series, *not* correlation
     - reported by Sam Harrison, TNU, as gitlab issue #95
 
+
 Bugfix Release Notes (v7.2.4)
 -----------------------------
 
@@ -55,12 +55,14 @@ Bugfix Release Notes (v7.2.4)
     - allows generating saved figure without a display, e.g., on remote server
     - bugfix provided by Sam Harrison, TNU
 
+
 Bugfix Release Notes (v7.2.3)
 -----------------------------
 
 ### Fixed
 - Bugfix manual peak selection (Github issue #85, Gitlab #90)
     - did not work because of figure handling
+
 
 Bugfix Release Notes (v7.2.2)
 -----------------------------
