@@ -365,7 +365,9 @@ for onset_slice = onset_slices
             tapas_physio_create_movement_regressors(model.movement, verbose);
         
         [model.R, model.R_column_names] = append_regressors(model.R, model.R_column_names, ...
-            movement_R, 'Movement');
+            movement_R(:, 1:model.movement.order), 'Movement');
+        [model.R, model.R_column_names] = append_regressors(model.R, model.R_column_names, ...
+            movement_R(:, model.movement.order+1:end), 'Motion outliers');
     end
     
     
