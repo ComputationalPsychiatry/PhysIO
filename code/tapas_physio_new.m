@@ -362,8 +362,9 @@ else
     preproc.cardiac.initial_cpulse_select.file = 'initial_cpulse_kRpeakfile.mat';
     
     % threshold for peak height in z-scored cardiac waveform to find pulse events
-    % May need increasing for ECG
     % default: 0.4
+    % NOTE: For ECG, might need increase (e.g., 2.0), because of local maximum 
+    %       of T wave after QRS complex
     preproc.cardiac.initial_cpulse_select.min = 0.4;
     
     % variable saving an example cardiac QRS-wave to correlate with
