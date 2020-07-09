@@ -4,7 +4,7 @@ RELEASE INFORMATION
 Current Release
 ---------------
 
-*Current version: PhysIO Toolbox Release R2019b, v7.2.7*
+*Current version: PhysIO Toolbox Release R2019b, v7.2.8*
 
 July 9th, 2020
 
@@ -27,6 +27,15 @@ SCHEDULED Minor Release Notes (R2020a, v7.3.0)
 
 ### Fixed
 
+
+Bugfix Release Notes (v7.2.8)
+-----------------------------
+
+### Fixed
+- Bug(s) when checking SPM and PhysIO paths in `tapas_physio_init` under
+  certain particular Matlab path environment settings (Gitlab merge request !37)
+    - e.g., when add `physio-public/code` manually without subfolder
+    - or if spm existed as a folder name without being added to path
 
 Bugfix Release Notes (v7.2.7)
 -----------------------------
