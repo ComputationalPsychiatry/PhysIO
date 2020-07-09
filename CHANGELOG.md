@@ -4,9 +4,9 @@ RELEASE INFORMATION
 Current Release
 ---------------
 
-*Current version: PhysIO Toolbox Release R2019b, v7.2.6*
+*Current version: PhysIO Toolbox Release R2019b, v7.2.7*
 
-June 29th, 2020
+July 9th, 2020
 
 
 SCHEDULED Minor Release Notes (R2020a, v7.3.0) 
@@ -26,6 +26,20 @@ SCHEDULED Minor Release Notes (R2020a, v7.3.0)
 ### Changed
 
 ### Fixed
+
+
+Bugfix Release Notes (v7.2.7)
+-----------------------------
+
+### Changed
+- Reimplemented `tapas_physio_filter_respiratory.m`.
+    - Closes GitLab issue #98.
+    - Reduces the cut-off frequency of the high-pass filter, so as to behave
+      more like a detrending step. Previous value of 0.1 Hz could distort e.g.
+      sigh breaths, which can easily last upwards of 10 s.
+    - Reimplements the filters themselves, with a higher filter order, extra
+      padding, and a two step high-pass and low-pass procedure (i.e. rather
+      than band pass) to improve the overall stability.
 
 
 Bugfix Release Notes (v7.2.6)
