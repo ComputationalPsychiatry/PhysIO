@@ -587,8 +587,7 @@ min.tag     = 'min';
 min.name    = 'min';
 min.help    = { ...
     'Minimum threshold for peak height in z-scored cardiac waveform to find pulse events'
-    'NOTE: For ECG, might need increase (e.g., 2.0), because of local maximum'
-    '      of T wave after QRS complex'};
+    'NOTE: For ECG, might need increase (e.g., 2.0), because of local maximum of T wave after QRS complex'};
 min.strtype = 'e';
 min.num     = [Inf Inf];
 min.val     = {0.4};
