@@ -46,11 +46,15 @@ if model.rvt.include
         ];
 end
 
-% Can have a variable number here, so bail out. This is because:
-%   + Noise ROI components can be chosen to explain a certain percentage
-%     of variance
-%   + No way of reconstructing how many regressors were in the extra file
-if model.noise_rois.include || model.other.include
+if model.noise_rois.include
+    column_names = [column_names, ...
+        repmat({'Noise ROIs'}, 1, sum(model.noise_rois.n_components)), ...
+        ];
+end
+
+% Can have a variable number here, so bail out. This is because there is
+% no way of reconstructing how many regressors were in the extra file
+if model.other.include
     n_remaining = n_total - numel(column_names);
     column_names = [column_names, ...
         repmat({'Unknown'}, 1, n_remaining), ...
