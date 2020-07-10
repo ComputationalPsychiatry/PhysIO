@@ -73,6 +73,11 @@ sync        = scan_timing.sync;
 model       = physio.model;
 verbose     = physio.verbose;
 
+% Compatibility with old versions
+if ~isfield(model, 'R_column_names')
+    disp('Reconstructing regressor names...')
+    model.R_column_names = tapas_physio_guess_regressor_names(model, model.R);
+end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% 1. Write out all information from process log
