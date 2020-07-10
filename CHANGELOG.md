@@ -9,7 +9,7 @@ Current Release
 July 9th, 2020
 
 
-SCHEDULED Minor Release Notes (R2020a, v7.3.0) 
+SCHEDULED Minor Release Notes (R2020a, v7.4.0)
 ----------------------------------------------
 
 ### Added
@@ -28,6 +28,20 @@ SCHEDULED Minor Release Notes (R2020a, v7.3.0)
 ### Fixed
 
 
+SCHEDULED Minor Release Notes (v7.3.0)
+--------------------------------------
+
+### Added
+
+- Added descriptive names for the multiple regressors matrix.
+    - Closes GitLab issue #82.
+    - Now possible to straightforwardly inspect `physio.model.R` and the
+      contents of `physio.model.output_multiple_regressors` using
+      `physio.model.R_column_names`.
+    - Added `tapas_physio_guess_regressor_names()` to maintain backwards
+      compatibility.
+
+
 Bugfix Release Notes (v7.2.8)
 -----------------------------
 
@@ -36,6 +50,7 @@ Bugfix Release Notes (v7.2.8)
   certain particular Matlab path environment settings (Gitlab merge request !37)
     - e.g., when add `physio-public/code` manually without subfolder
     - or if spm existed as a folder name without being added to path
+
 
 Bugfix Release Notes (v7.2.7)
 -----------------------------

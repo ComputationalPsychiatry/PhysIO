@@ -2,7 +2,7 @@ function [column_names] = tapas_physio_guess_regressor_names(model, R)
 %tapas_physio_guess_regressor_names | Reconstructs missing names
 %   Given a physio.model structure returns a best guess for the names of
 %   the regressors. Useful for backwards compatibility for versions less
-%   than v7.2.9.
+%   than v7.3.0.
 %
 % INPUT:
 %   model        - physio.model structure
