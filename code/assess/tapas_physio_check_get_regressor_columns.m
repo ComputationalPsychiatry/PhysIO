@@ -75,6 +75,8 @@ else
     nHRV  = model.hrv.include.*numel(model.hrv.delays);
     nRVT  = model.rvt.include.*numel(model.rvt.delays);
     
+    assert(~model.other.include, 'SPM review not compatible with ''model.other''');
+    
 end
 
 cnames = SPM.xX.name';
