@@ -4,9 +4,9 @@ RELEASE INFORMATION
 Current Release
 ---------------
 
-*Current version: PhysIO Toolbox Release R2019b, v7.2.8*
+*Current version: PhysIO Toolbox Release R2020a, v7.3.0*
 
-July 9th, 2020
+July 10th, 2020
 
 
 SCHEDULED Minor Release Notes (v7.4.0)
@@ -23,8 +23,8 @@ SCHEDULED Minor Release Notes (v7.4.0)
 ### Fixed
 
 
-SCHEDULED Minor Release Notes (R2020a, v7.3.0)
-----------------------------------------------
+Minor Release Notes (R2020a, v7.3.0)
+------------------------------------
 
 ### Added
 
