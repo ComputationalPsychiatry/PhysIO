@@ -79,6 +79,7 @@ DEBUG = verbose.level >= 2;
 
 hasRespirationFile = ~isempty(log_files.respiration);
 hasCardiacFile = ~isempty(log_files.cardiac);
+hasExplicitJsonFile = ~isempty(log_files.scan_timing);
 
 if hasCardiacFile
     fileName = log_files.cardiac;
@@ -100,9 +101,17 @@ else
     fileJson = regexprep(fileName, '\.tsv', '\.json');
 end
 
+if hasExplicitJsonFile
+    fileJson = log_files.scan_timing;
+end
 
-
-hasJsonFile = isfile(fileJson);
+% 'isfile' is clearer than 'exist', because checks for correct absolute/relative path, not existence anywhere on Matlab path
+% but only available in Matlab version >= R2017b
+if exist('isfile', 'builtin')
+    hasJsonFile = isfile(fileJson);
+else
+    hasJsonFile = exist(fileJson, 'file') > 0;
+end
 
 if hasJsonFile
     val = jsondecode(fileread(fileJson));
@@ -123,14 +132,23 @@ if isempty(dt)
     end
 end
 
-tRelStartScan = log_files.relative_start_acquisition;
-if isempty(tRelStartScan)
+% sum implicit (.json) and explicit relative shifts of log/scan acquisition
+if isempty(log_files.relative_start_acquisition)
     if hasJsonFile
         % in BIDS, start of the phys logging is stated relative to the first volume scan start.
         % PhysIO defines the scan acquisiton relative to the phys log start
         tRelStartScan = -val.StartTime;
     else
-        tRelStartScan = 0;
+        verbose = tapas_physio_log(...
+            ['No .json file found and empty log_files.relative_start_acquisition. ' ...
+            'Please specify explicitly.'], verbose, 2);
+    end
+else
+    if hasJsonFile
+        % add both delays
+        tRelStartScan = log_files.relative_start_acquisition - val.StartTime;
+    else
+        tRelStartScan = log_files.relative_start_acquisition;
     end
 end
 

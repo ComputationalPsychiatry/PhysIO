@@ -32,7 +32,7 @@ end
 function test_readin_bids_ppu3t(testCase)
 
 % run BIDS PPU example and extract physio
-pathPhysioPublic = fullfile(fileparts(mfilename('fullpath')), '..', '..');
+pathPhysioPublic = fullfile(fileparts(mfilename('fullpath')), '..', '..', '..');
 % TODO: Make generic!
 pathExamples =  fullfile(pathPhysioPublic, '..', 'examples');
 
@@ -66,9 +66,9 @@ expPhysio = physio;
 actRaw = actPhysio.ons_secs.raw;
 expRaw = expPhysio.ons_secs.raw;
 
-verifyEqual(testCase, actRaw.t, expRaw.t, 'Raw time vector does not match');
-verifyEqual(testCase, actRaw.c, expRaw.c, 'Raw cardiac trace does not match');
-verifyEqual(testCase, actRaw.r, expRaw.r, 'Raw respiratory trace does not match');
+verifyEqual(testCase, actRaw.t, expRaw.t, 'RelTol', 1e-6, 'Raw time vector does not match');
+verifyEqual(testCase, actRaw.c, expRaw.c, 'RelTol', 1e-6, 'Raw cardiac trace does not match');
+verifyEqual(testCase, actRaw.r, expRaw.r, 'RelTol', 1e-6, 'Raw respiratory trace does not match');
 
 end
 
@@ -78,7 +78,7 @@ end
 function test_readin_bids_cpulse3t(testCase)
 
 % run BIDS cpulse3t example and extract physio
-pathPhysioPublic = fullfile(fileparts(mfilename('fullpath')), '..', '..');
+pathPhysioPublic = fullfile(fileparts(mfilename('fullpath')), '..', '..', '..');
 % TODO: Make generic!
 pathExamples =  fullfile(pathPhysioPublic, '..', 'examples');
 
