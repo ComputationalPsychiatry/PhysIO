@@ -55,9 +55,9 @@ slicenum = 1:sqpar.Nslices;
 sample_points  = tapas_physio_get_sample_points(ons_secs, sqpar, slicenum);
 switch lower(model_rvt.method)
     case 'peaks'
-        rvt = tapas_physio_rvt_peaks(ons_secs.fr, ons_secs.t, sample_points, verbose);
+        [rvt, verbose] = tapas_physio_rvt_peaks(ons_secs.fr, ons_secs.t, sample_points, verbose);
     case 'hilbert'
-        rvt = tapas_physio_rvt_hilbert(ons_secs.fr, ons_secs.t, sample_points, verbose);
+        [rvt, verbose] = tapas_physio_rvt_hilbert(ons_secs.fr, ons_secs.t, sample_points, verbose);
     otherwise
         error('Unrecognised value for ''rvt.method'' (%s)!', model_rvt.method)
 end

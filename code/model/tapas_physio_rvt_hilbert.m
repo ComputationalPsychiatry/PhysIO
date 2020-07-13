@@ -1,7 +1,8 @@
-function [rvt] = tapas_physio_rvt_hilbert(fr, t, sample_points, verbose)
+function [rvt, verbose] = tapas_physio_rvt_hilbert(fr, t, sample_points, verbose)
 % computes respiratory volume per time from filtered time series
 %
 %    [rvt] = tapas_physio_rvt(fr, t)
+%    [rvt, verbose] = tapas_physio_rvt(fr, t, sample_points, verbose)
 %
 % The respiratory volume/time is computed by calculating the instantaneous
 % amplitude / frequency of the breathing signal via the Hilbert transform.
@@ -109,7 +110,7 @@ end
 % Keep phase only signal as reference so has been interpolated
 fr_filt = cos(fr_phase);
 
-% figure; hold all; plot(t, fr); plot(t, fr_mag .* cos(fr_phase));
+% figure; hold on; plot(t, fr); plot(t, fr_mag .* cos(fr_phase));
 
 %% And make RVT! %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -135,17 +136,18 @@ fr_if(fr_if < (1 / 30.0)) = (1 / 30.0);  % Upper limit of 30.0 s per breath
 % RVT = magnitude * breathing rate
 fr_rvt = fr_rv .* fr_if;
 
-% figure; hold all; plot(t, fr); plot(t, fr_rv .* cos(fr_phase)); plot(t, fr_mag .* cos(fr_phase));
+% figure; hold on; plot(t, fr); plot(t, fr_rv .* cos(fr_phase)); plot(t, fr_mag .* cos(fr_phase));
 % plot(t, fr_mag .* cos(2.0 * pi * cumsum(fr_if) / f_sample));
-% figure; hold all; plot(t, zscore(fr_rv)); plot(t, zscore(fr_if));
-% figure; hold all; plot(abs(fft(zscore(fr_rv)))); plot(abs(fft(zscore(fr_if))));
+% figure; hold on; plot(t, zscore(fr_rv)); plot(t, zscore(fr_if));
+% figure; hold on; plot(abs(fft(zscore(fr_rv)))); plot(abs(fft(zscore(fr_if))));
 
 %% Plot figures %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 if verbose.level>=2
     verbose.fig_handles(end+1) = tapas_physio_get_default_fig_params();
     set(gcf, 'Name', 'Model: Respiratory Volume');
-    hold all;
+    hold on;
+    plot([t(1), t(end)], [0.0, 0.0], 'Color', [0.7, 0.7, 0.7]);
     hp(1) = plot(t, fr);
     hp(2) = plot(t, fr_lp);
     hp(3) = plot(t, fr_mag);
@@ -161,7 +163,8 @@ end
 if verbose.level>=2
     verbose.fig_handles(end+1) = tapas_physio_get_default_fig_params();
     set(gcf, 'Name', 'Model: Breathing rate');
-    hold all;
+    hold on;
+    plot([t(1), t(end)], [0.0, 0.0], 'Color', [0.7, 0.7, 0.7]);
     hp(1) = plot(t, fr);
     hp(2) = plot(t, fr_lp);
     hp(3) = plot(t, std(fr) * cos(fr_phase));
@@ -190,6 +193,6 @@ if sum(isnan(rvt)) > 0
         'nearest', 'extrap');
 end
 
-% figure; hold all; plot(t, fr_rvt); plot(sample_points, rvt);
+% figure; hold on; plot(t, fr_rvt); plot(sample_points, rvt);
 
 end
