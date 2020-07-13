@@ -80,7 +80,13 @@ n_pad = ceil(100.0 * sampfreq); % 100.0 s either side
 d = designfilt( ...
     'lowpassiir', 'HalfPowerFrequency', 0.01, ...
     'FilterOrder', 20, 'SampleRate', sampfreq);
-trend = filtfilt(d, padarray(rpulset, n_pad, 'circular'));
+% Use a large padding, and window so tapers back to mean naturally
+padding_window = window(@blackmanharris, 2 * n_pad + 1);
+rpulset_padded = padarray(rpulset, n_pad, 'symmetric');
+rpulset_padded(1:n_pad) = padding_window(1:n_pad) .* rpulset_padded(1:n_pad);
+rpulset_padded(end-n_pad+1:end) = padding_window(end-n_pad+1:end) .* rpulset_padded(end-n_pad+1:end);
+trend = filtfilt(d, rpulset_padded);
+%figure(); plot(rpulset_padded); hold on; plot(trend)
 trend = trend(n_pad+1:end-n_pad);
 rpulset = rpulset - trend;
 
