@@ -206,8 +206,8 @@ if ~hasPhaseLogfile
             
             if hasRespData
                 % filter respiratory signal
-                ons_secs.fr = tapas_physio_filter_respiratory(ons_secs.r, ...
-                    ons_secs.dt, doNormalize);
+                [ons_secs.fr, verbose] = tapas_physio_filter_respiratory( ...
+                    ons_secs.r, ons_secs.dt, doNormalize, verbose);
                 
                 % label constant samples as unreliable (clipping/detachment)
                 [ons_secs.r_is_reliable, ~, verbose]  = tapas_physio_detect_constants(ons_secs.fr, ...
