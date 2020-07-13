@@ -9,6 +9,22 @@ Current Release
 July 10th, 2020
 
 
+SCHEDULED Major Release Notes (v8.0.0)
+--------------------------------------
+
+### Added
+- New method for computing respiratory volume per unit time (RVT) via the
+  Hilbert transform.
+    - Preprint available from <TODO>.
+    - This is now the default option, but the old method is available by
+      setting `physio.model.rvt.method = 'peaks'` (or the equivalent within
+      the SPM batch editor).
+
+### Changed
+
+### Fixed
+
+
 SCHEDULED Minor Release Notes (v7.4.0)
 ----------------------------------------------
 
