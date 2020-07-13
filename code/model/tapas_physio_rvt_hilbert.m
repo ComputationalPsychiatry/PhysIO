@@ -57,7 +57,7 @@ d = designfilt( ...
     'HalfPowerFrequency', 0.75, 'SampleRate', f_sample);
 
 % Slightly more aggressive low-pass filter than preproc to remove high-frequency noise
-fr_lp = filtfilt(d, padarray(fr, n_pad, 'circular'));
+fr_lp = filtfilt(d, padarray(fr, n_pad, 'symmetric'));
 fr_lp = fr_lp(n_pad+1:end-n_pad);
 
 % Now iteratively refine phase estimate
@@ -103,7 +103,7 @@ for n = 1:10
     end
     
     % And filter out any high frequencies from phase-only signal
-    fr_filt = filtfilt(d, padarray(cos(fr_phase), n_pad, 'circular'));
+    fr_filt = filtfilt(d, padarray(cos(fr_phase), n_pad, 'symmetric'));
     fr_filt = fr_filt(n_pad+1:end-n_pad);
 end
 
@@ -122,13 +122,13 @@ d = designfilt( ...
 % Respiratory volume is amplitude envelope
 % Note factor of two is for compatability with the common definition of RV
 % as the difference between max and min inhalation (i.e. twice the amplitude)
-fr_rv = 2.0 * filtfilt(d, padarray(fr_mag, n_pad, 'circular'));
+fr_rv = 2.0 * filtfilt(d, padarray(fr_mag, n_pad, 'symmetric'));
 fr_rv = fr_rv(n_pad+1:end-n_pad);
 fr_rv(fr_rv < 0.0) = 0.0;
 
 % Breathing rate is instantaneous frequency
 fr_if = f_sample * gradient(fr_phase) / (2 * pi);
-fr_if = filtfilt(d, padarray(fr_if, n_pad, 'circular'));
+fr_if = filtfilt(d, padarray(fr_if, n_pad, 'symmetric'));
 fr_if = fr_if(n_pad+1:end-n_pad);
 fr_if(fr_if >  2.0) = 2.0;   % Lower limit of 2.0 breaths per second
 fr_if(fr_if < (1 / 30.0)) = (1 / 30.0);  % Upper limit of 30.0 s per breath

@@ -102,7 +102,7 @@ end
 d = designfilt( ...
     'lowpassiir', 'HalfPowerFrequency', 2.0, ...
     'FilterOrder', 20, 'SampleRate', sampfreq);
-rpulset = filtfilt(d, padarray(rpulset, n_pad, 'circular'));
+rpulset = filtfilt(d, padarray(rpulset, n_pad, 'symmetric'));
 rpulset = rpulset(n_pad+1:end-n_pad);
 
 if verbose.level>=3
