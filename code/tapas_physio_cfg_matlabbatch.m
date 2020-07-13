@@ -834,6 +834,40 @@ cardiac.name = 'cardiac';
 cardiac.val  = {modality filter initial_cpulse_select posthoc_cpulse_select};
 cardiac.help = {'...'};
 
+%--------------------------------------------------------------------------
+% respiratory filter passband
+%--------------------------------------------------------------------------
+filter_passband         = cfg_entry;
+filter_passband.tag     = 'passband';
+filter_passband.name    = 'Passband';
+filter_passband.help    = {
+    '[f_min, f_max] frequency interval in Hz of all frequency that should'
+    '               pass the passband filter. Want to remove high'
+    '               frequency noise and low frequency drifts, but not'
+    '               distort e.g. sigh breaths (which can take e.g. 20 s).'
+    '               default: [0.01, 2.0]'
+    };
+filter_passband.strtype = 'r';
+filter_passband.num     = [1 2];
+filter_passband.val     = {[0.01, 2.0]};
+
+%--------------------------------------------------------------------------
+% respiratory filter
+%--------------------------------------------------------------------------
+filter      = cfg_branch;
+filter.tag  = 'filter';
+filter.name = 'filter';
+filter.val  = {filter_passband};
+filter.help = {'...'};
+
+%--------------------------------------------------------------------------
+% respiratory
+%--------------------------------------------------------------------------
+respiratory      = cfg_branch;
+respiratory.tag  = 'respiratory';
+respiratory.name = 'respiratory';
+respiratory.val  = {filter};
+respiratory.help = {'...'};
 
 %--------------------------------------------------------------------------
 % preproc
@@ -841,7 +875,7 @@ cardiac.help = {'...'};
 preproc      = cfg_branch;
 preproc.tag  = 'preproc';
 preproc.name = 'preproc (Thresholding parameters for de-noising and timing)';
-preproc.val  = {cardiac};
+preproc.val  = {cardiac, respiratory};
 preproc.help = {'Thresholding parameters for de-noising of raw peripheral data'
     'and determination of sequence timing from logged MR gradient time courses'};
 

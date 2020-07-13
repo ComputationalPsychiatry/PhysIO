@@ -313,7 +313,6 @@ else
     %               ripples in transition band
     preproc.cardiac.filter.type = 'butter';
     
-    %
     % [f_min, f_max] frequency interval in Hz of all frequency that should
     %                pass the passband filter
     %                default: [0.3 9] (to remove slow drifts, breathing
@@ -392,6 +391,14 @@ else
     preproc.cardiac.posthoc_cpulse_select.lower_thresh = 60; % minimum reduction (in %) from average heartbeat duration to be classified an abundant heartbeat
     
     
+    preproc.respiratory = [];
+    
+    % [f_min, f_max] frequency interval in Hz of all frequency that should
+    %                pass the passband filter. Want to remove high
+    %                frequency noise and low frequency drifts, but not
+    %                distort e.g. sigh breaths (which can take e.g. 20 s).
+    %                default: [0.01 2.0]
+    preproc.respiratory.filter.passband = [0.01, 2.0];
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% Model (Module)

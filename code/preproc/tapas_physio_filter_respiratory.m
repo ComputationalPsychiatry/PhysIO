@@ -1,17 +1,24 @@
 function [rpulset, verbose] = tapas_physio_filter_respiratory(...
-    rpulset, rsampint, doNormalize, verbose)
+    rpulset, rsampint, cutoff_freqs, doNormalize, verbose)
 % Preprocesses respiratory data
 %   + Remove NaNs and outliers
-%   + Detrend at 0.01 Hz
-%   + Remove noise above 2.0 Hz
+%   + Detrend at `cutoff_freqs(1)` Hz
+%   + Remove noise above `cutoff_freqs(2)` Hz
 %
 %   rpulset = tapas_physio_filter_respiratory(pulset,rsampint)
 %
 % IN
-%   rpulset
-%   rsamping
-%   doNormalize     default:false
-%                   Optionally, data is normalized to be in -1...+1 range
+%   rpulset         Respiratory timeseries
+%   rsampint        Time between successive samples
+%   cutoff_freqs    [high-pass, low-pass] cutoff frequencies
+%                   default: [0.01, 2.0]
+%   doNormalize     Optionally, data is normalized to be in -1...+1 range
+%                   default: true
+%   verbose         See `physio.verbose`
+%
+% OUT
+%   rpulset         Filtered respiratory timeseries
+%   verbose         See `physio.verbose`
 
 % Author: Sam Harrison, 2020
 %
@@ -26,9 +33,12 @@ if isempty(rpulset)
 end
 
 if nargin < 3
-    doNormalize = true;
+    cutoff_freqs = [0.01, 2.0];
 end
 if nargin < 4
+    doNormalize = true;
+end
+if nargin < 5
     verbose.level = 0;
     verbose.fig_handles = [];
 end
@@ -72,13 +82,13 @@ end
 
 % Filter properties
 sampfreq = 1 / rsampint; % Hz
-n_pad = ceil(100.0 * sampfreq); % 100.0 s either side
+n_pad = ceil(4.0 * (1.0 / cutoff_freqs(1)) * sampfreq); % Generous padding either side
 
 % Low-pass filter to estimate trend
 % Then subtract to imitate high-pass filter
 % This is typically much more stable than a bandpass filter
 d = designfilt( ...
-    'lowpassiir', 'HalfPowerFrequency', 0.01, ...
+    'lowpassiir', 'HalfPowerFrequency', cutoff_freqs(1), ...
     'FilterOrder', 20, 'SampleRate', sampfreq);
 % Use a large padding, and window so tapers back to mean naturally
 padding_window = window(@blackmanharris, 2 * n_pad + 1);
@@ -100,7 +110,7 @@ end
 
 % Low-pass filter to remove noise
 d = designfilt( ...
-    'lowpassiir', 'HalfPowerFrequency', 2.0, ...
+    'lowpassiir', 'HalfPowerFrequency', cutoff_freqs(2), ...
     'FilterOrder', 20, 'SampleRate', sampfreq);
 rpulset = filtfilt(d, padarray(rpulset, n_pad, 'symmetric'));
 rpulset = rpulset(n_pad+1:end-n_pad);
