@@ -43,7 +43,7 @@ if nargin < 5
     verbose.fig_handles = [];
 end
 
-%% Basic preproc
+%% Basic preproc and outlier removal
 
 % If rpulset has nans, replace them with zeros
 rpulsetOffset = nanmean(rpulset);
@@ -63,15 +63,34 @@ if verbose.level>=3
     labels{end+1} = 'Raw respiratory signal';
 end
 
-% Now do a check for any outliers
+% Now do a check for any gross outliers relative to the statistics of the
+% whole timeseries
 z_thresh = 5.0;  % Relatively high, as distribution is typically skewed
 % figure(); histogram(rpulset);
 mpulse = mean(rpulset);
-stdpulse = std(rpulset);
+stdpulse = 1.4826 * mad(rpulset, 1);  % Robust to outliers: https://en.wikipedia.org/wiki/Robust_measures_of_scale
 outliers = (rpulset > (mpulse + (z_thresh * stdpulse)));
 rpulset(outliers) = mpulse + (z_thresh * stdpulse);
 outliers = (rpulset < (mpulse - (z_thresh * stdpulse)));
 rpulset(outliers) = mpulse - (z_thresh * stdpulse);
+% if verbose.level>=3
+%     plot([t(1), t(end)], [z_thresh, z_thresh], 'Color', [0.7, 0.7, 0.7]);
+%     plot([t(1), t(end)], [-z_thresh, -z_thresh], 'Color', [0.7, 0.7, 0.7]);
+% end
+
+% And despike via a sliding-window median filter
+mad_thresh = 5.0;  % Again, relatively high so only get large spikes (low-pass filter gets the rest)
+n_pad = ceil(0.25 / rsampint);  % 0.5 s total window length
+rpulset_padded = padarray(rpulset, n_pad, 'symmetric');
+medians = movmedian(rpulset_padded, 2 * n_pad + 1, 'Endpoints', 'discard');
+mads = movmad(rpulset_padded, 2 * n_pad + 1, 'Endpoints', 'discard');
+outliers = (abs(rpulset - medians) > mad_thresh * mads);
+rpulset(outliers) = medians(outliers);
+% if verbose.level>=3
+%     plot(t, (medians - m) / s, 'Color', [0.7, 0.7, 0.7]);
+%     plot(t, (medians + mad_thresh * mads - m) / s, 'Color', [0.7, 0.7, 0.7]);
+%     plot(t, (medians - mad_thresh * mads - m) / s, 'Color', [0.7, 0.7, 0.7]);
+% end
 
 if verbose.level>=3
     handles(end+1) = plot(t, (rpulset - m) / s);
