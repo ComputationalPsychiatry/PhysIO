@@ -157,7 +157,8 @@ if verbose.level>=2
         '... after low pass-filter', ...
         'Breathing signal envelope', ...
         'Respiratory volume'};
-    legend(hp, strLegend)
+    legend(hp, strLegend);
+    xlim([t(1), t(end)]);
 end
 
 if verbose.level>=2
@@ -174,7 +175,8 @@ if verbose.level>=2
         '... after low pass-filter', ...
         '... after removing amplitude', ...
         'Instantaneous breathing rate'};
-    legend(hp, strLegend)
+    legend(hp, strLegend);
+    xlim([t(1), t(end)]);
 end
 
 %% Downsample %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
