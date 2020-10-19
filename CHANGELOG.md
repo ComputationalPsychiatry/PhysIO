@@ -4,9 +4,9 @@ RELEASE INFORMATION
 Current Release
 ---------------
 
-*Current version: PhysIO Toolbox Release R2020a, v7.3.0*
+*Current version: PhysIO Toolbox Release R2020a, v7.3.1*
 
-July 10th, 2020
+October 19th, 2020
 
 
 SCHEDULED Minor Release Notes (v7.4.0)
@@ -22,12 +22,19 @@ SCHEDULED Minor Release Notes (v7.4.0)
 
 ### Fixed
 
+Bugfix Release Notes (v7.3.1)
+-----------------------------
+
+### Fixed
+- PPU read-in works for BioPac mat-file now 
+    - correct column labels and cardiac modality (Github Issue #103)
+    - thank you to Manon Durand-Ruel @mdurandruel for reporting  
+
 
 Minor Release Notes (R2020a, v7.3.0)
 ------------------------------------
 
 ### Added
-
 - Added descriptive names for the multiple regressors matrix.
     - Closes GitLab issue #82.
     - Now possible to straightforwardly inspect `physio.model.R` and the
