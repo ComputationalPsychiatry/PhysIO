@@ -55,7 +55,12 @@ function [physio, R, ons_secs] = tapas_physio_main_create_regressors(varargin)
 
 % Remove SPM subfolders from path to avoid conflicts with Matlab in-built
 % functions used in PhysIO
-tapas_physio_check_spm(1);
+doCorrectPath = true;
+tapas_physio_check_spm(doCorrectPath);
+% Silently check proper Batch Editor integration, if SPM exists,
+% but don't complain, if there is no SPM installed
+isVerbose = false;
+tapas_physio_check_spm_batch_editor_integration(isVerbose);
 
 % Include subfolders of code to path as well
 pathThis = fileparts(mfilename('fullpath'));
