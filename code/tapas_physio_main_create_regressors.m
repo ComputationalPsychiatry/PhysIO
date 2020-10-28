@@ -53,7 +53,11 @@ function [physio, R, ons_secs] = tapas_physio_main_create_regressors(varargin)
 %% 0. Set Default parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% include subfolders of code to path as well
+% Remove SPM subfolders from path to avoid conflicts with Matlab in-built
+% functions used in PhysIO
+tapas_physio_check_spm(1);
+
+% Include subfolders of code to path as well
 pathThis = fileparts(mfilename('fullpath'));
 addpath(genpath(pathThis)); 
 
