@@ -1,19 +1,20 @@
 function [rpulset, verbose] = tapas_physio_filter_respiratory(...
-    rpulset, rsampint, cutoff_freqs, doNormalize, verbose)
+    rpulset, rsampint, cutoff_freqs, despike, normalize, verbose)
 % Preprocesses respiratory data
 %
 % Key steps
 %   + Remove NaNs and outliers
-%   + Despike with sliding-window median filter
+%   + Optional: Despike with sliding-window median filter
 %   + Detrend at `cutoff_freqs(1)` Hz
 %   + Remove noise above `cutoff_freqs(2)` Hz
+%   + Optional: Normalise amplitude
 %
 % EXAMPLES
 %   rpulset = tapas_physio_filter_respiratory(rpulset, rsampint)
 %   rpulset = tapas_physio_filter_respiratory( ...
-%       rpulset, rsampint, cutoff_freqs, doNormalize)
+%       rpulset, rsampint, cutoff_freqs, despike, normalize)
 %   [rpulset, verbose] = tapas_physio_filter_respiratory( ...
-%       rpulset, rsampint, [], [], verbose)
+%       rpulset, rsampint, [], [], [], verbose)
 %
 % INPUTS
 %   rpulset         Respiratory timeseries
@@ -21,7 +22,9 @@ function [rpulset, verbose] = tapas_physio_filter_respiratory(...
 % OPTIONAL INPUTS
 %   cutoff_freqs    [high-pass, low-pass] cutoff frequencies
 %                   Default: [0.01, 2.0]
-%   doNormalize     Optionally, data is normalized to be in -1...+1 range
+%   despike         Optionally, data is despiked with a median filter
+%                   Default: false
+%   normalize       Optionally, data is normalized to be in -1...+1 range
 %                   Default: true
 %   verbose         See `physio.verbose`
 %
@@ -45,10 +48,13 @@ end
 if (nargin < 3) || isempty(cutoff_freqs)
     cutoff_freqs = [0.01, 2.0];
 end
-if nargin < 4 || isempty(doNormalize)
-    doNormalize = true;
+if nargin < 4 || isempty(despike)
+    despike = false;
 end
-if nargin < 5
+if nargin < 5 || isempty(normalize)
+    normalize = true;
+end
+if nargin < 6
     verbose.level = 0;
     verbose.fig_handles = [];
 end
@@ -89,18 +95,20 @@ rpulset(outliers) = mpulse - (z_thresh * stdpulse);
 % end
 
 % And despike via a sliding-window median filter
-mad_thresh = 5.0;  % Again, relatively high so only get large spikes (low-pass filter gets the rest)
-n_pad = ceil(0.25 / rsampint);  % 0.5 s total window length
-rpulset_padded = padarray(rpulset, n_pad, 'symmetric');
-medians = movmedian(rpulset_padded, 2 * n_pad + 1, 'Endpoints', 'discard');
-mads = movmad(rpulset_padded, 2 * n_pad + 1, 'Endpoints', 'discard');
-outliers = (abs(rpulset - medians) > mad_thresh * mads);
-rpulset(outliers) = medians(outliers);
-% if verbose.level>=3
-%     plot(t, (medians - m) / s, 'Color', [0.7, 0.7, 0.7]);
-%     plot(t, (medians + mad_thresh * mads - m) / s, 'Color', [0.7, 0.7, 0.7]);
-%     plot(t, (medians - mad_thresh * mads - m) / s, 'Color', [0.7, 0.7, 0.7]);
-% end
+if despike
+    mad_thresh = 5.0;  % Again, relatively high so only get large spikes (low-pass filter gets the rest)
+    n_pad = ceil(0.25 / rsampint);  % 0.5 s total window length
+    rpulset_padded = padarray(rpulset, n_pad, 'symmetric');
+    medians = movmedian(rpulset_padded, 2 * n_pad + 1, 'Endpoints', 'discard');
+    mads = movmad(rpulset_padded, 2 * n_pad + 1, 'Endpoints', 'discard');
+    outliers = (abs(rpulset - medians) > mad_thresh * mads);
+    rpulset(outliers) = medians(outliers);
+    % if verbose.level>=3
+    %     plot(t, (medians - m) / s, 'Color', [0.7, 0.7, 0.7]);
+    %     plot(t, (medians + mad_thresh * mads - m) / s, 'Color', [0.7, 0.7, 0.7]);
+    %     plot(t, (medians - mad_thresh * mads - m) / s, 'Color', [0.7, 0.7, 0.7]);
+    % end
+end
 
 if verbose.level>=3
     handles(end+1) = plot(t, (rpulset - m) / s);
@@ -151,7 +159,7 @@ end
 
 %% Normalise, if requested
 
-if doNormalize
+if normalize
     rpulset = rpulset/max(abs(rpulset));
 end
 
