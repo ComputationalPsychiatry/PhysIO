@@ -32,10 +32,10 @@ if isempty(rpulset)
     return;
 end
 
-if nargin < 3
+if (nargin < 3) || isempty(cutoff_freqs)
     cutoff_freqs = [0.01, 2.0];
 end
-if nargin < 4
+if nargin < 4 || isempty(doNormalize)
     doNormalize = true;
 end
 if nargin < 5
