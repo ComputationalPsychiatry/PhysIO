@@ -30,6 +30,9 @@ SCHEDULED Major Release Notes (v8.0.0)
   preprocessing via `physio.preproc.respiratory.filter` (or the equivalent
   within the SPM batch editor).
 
+- More robust detrending of raw respiratory timeseries via windowed padding
+  before filtering.
+
 ### Fixed
 
 
