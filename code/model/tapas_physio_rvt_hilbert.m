@@ -1,33 +1,31 @@
 function [rvt, verbose] = tapas_physio_rvt_hilbert(fr, t, sample_points, verbose)
-% computes respiratory volume per time from filtered time series
+% Computes respiratory volume per unit time (RVT) from filtered time series
 %
-%    [rvt] = tapas_physio_rvt(fr, t)
-%    [rvt, verbose] = tapas_physio_rvt(fr, t, sample_points, verbose)
+% RVT is computed by calculating the instantaneous amplitude / frequency
+% of the breathing signal via the Hilbert transform, as proposed by
+% Harrison et al.
 %
-% The respiratory volume/time is computed by calculating the instantaneous
-% amplitude / frequency of the breathing signal via the Hilbert transform.
+% EXAMPLES
+%   [rvt] = tapas_physio_rvt_hilbert(fr, t)
+%   [rvt, verbose] = tapas_physio_rvt_hilbert(fr, t, sample_points, verbose)
+%
+% INPUTS
+%   fr              Filtered respiratory time series
+%   t               Time vector for `fr` (seconds)
+% OPTIONAL INPUTS
+%   sample_points   Time vector (seconds) where RVT should be calculated
+%   verbose         See `physio.verbose`
+%
+% OUTPUTS
+%   rvt             Respiratory volume per unit time vector
+%   verbose         See `physio.verbose`
 %
 % References:
-%   Birn, R.M., Diamond, J.B., Smith, M.A., Bandettini, P.A., 2006.
-%       Separating respiratory-variation-related fluctuations from
-%       neuronal-activity-related fluctuations in fMRI.
-%       NeuroImage 31(4), 1536-1548.
-%   Birn, R.M., Smith, M.A., Jones, T.B., Bandettini, P.A., 2008.
-%       The respiration response function: The temporal dynamics of
-%       fMRI signal fluctuations related to changes in respiration.
-%       NeuroImage 40, 644-654.
+%   Harrison et al., "A Hilbert-based method for processing respiratory
+%   timeseries", bioRxiv, 2020
+%   https://doi.org/10.1101/2020.09.30.321562
 %
-% IN
-%   fr     filtered respiratory amplitude time series
-%   t      time vector for fr
-%   sample_points       vector of time points (seconds) respiratory volume/time should be calculated
-% OUT
-%   rvt         respiratory volume per unit time vector
-%
-% EXAMPLE
-%   [rvt, rpulse] = tapas_physio_rvt(fr, t)
-%
-%   See also tapas_physio_create_rvt_regressor
+%   See also tapas_physio_create_rvt_regressor, tapas_physio_rvt_hilbert
 
 % Author: Sam Harrison
 % Created: 2019-05-10
@@ -82,6 +80,8 @@ for n = 1:10
         %   [2]: max (i.e. peak)
         %   [3]: min (i.e. trough)
         %   [4]: end (i.e. value == [2])
+        % See also Fig. 2 in Harrison et al., bioRxiv, 2020
+        
         % Find value of `fr_phase` at max and min:
         fr_max = fr_phase(n_max);
         n_min = increase_inds(find(increase_inds > n_max, 1));
