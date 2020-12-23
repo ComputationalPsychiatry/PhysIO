@@ -15,12 +15,20 @@ SCHEDULED Major Release Notes (v8.0.0)
 ### Added
 - New method for computing respiratory volume per unit time (RVT) via the
   Hilbert transform.
-    - Preprint available from <TODO>.
+    - Preprint: Harrison et al., "A Hilbert-based method for processing
+      respiratory timeseries", bioRxiv, 2020.
+      <https://doi.org/10.1101/2020.09.30.321562>
     - This is now the default option, but the old method is available by
       setting `physio.model.rvt.method = 'peaks'` (or the equivalent within
       the SPM batch editor).
 
+- Respiratory preprocessing now includes an optional de-spiking step based on
+  median filtering.
+
 ### Changed
+- Now possible to change the frequencies of the respiratory filtering during
+  preprocessing via `physio.preproc.respiratory.filter` (or the equivalent
+  within the SPM batch editor).
 
 ### Fixed
 
