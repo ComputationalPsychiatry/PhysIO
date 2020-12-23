@@ -400,6 +400,10 @@ else
     %                default: [0.01 2.0]
     preproc.respiratory.filter.passband = [0.01, 2.0];
     
+    % Whether to remove spikes from the raw respiratory trace using a
+    % sliding window median filter.
+    preproc.respiratory.despike = false;
+    
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% Model (Module)
     % Physiological noise models derived from preprocessed physiological data

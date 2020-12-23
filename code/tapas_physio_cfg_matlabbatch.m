@@ -861,12 +861,27 @@ filter.val  = {filter_passband};
 filter.help = {'...'};
 
 %--------------------------------------------------------------------------
+% respiratory despiking
+%--------------------------------------------------------------------------
+
+despike        = cfg_menu;
+despike.tag    = 'despike';
+despike.name   = 'Despike';
+despike.help   = {
+    'Whether to remove spikes from the raw respiratory trace using a'
+    'sliding window median filter.'
+    };
+despike.labels = {'no', 'yes'};
+despike.values = {false, true};
+despike.val    = {false};
+
+%--------------------------------------------------------------------------
 % respiratory
 %--------------------------------------------------------------------------
 respiratory      = cfg_branch;
 respiratory.tag  = 'respiratory';
 respiratory.name = 'respiratory';
-respiratory.val  = {filter};
+respiratory.val  = {filter, despike};
 respiratory.help = {'...'};
 
 %--------------------------------------------------------------------------
