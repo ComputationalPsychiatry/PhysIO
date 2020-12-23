@@ -1,26 +1,36 @@
 function [rpulset, verbose] = tapas_physio_filter_respiratory(...
     rpulset, rsampint, cutoff_freqs, doNormalize, verbose)
 % Preprocesses respiratory data
+%
+% Key steps
 %   + Remove NaNs and outliers
+%   + Despike with sliding-window median filter
 %   + Detrend at `cutoff_freqs(1)` Hz
 %   + Remove noise above `cutoff_freqs(2)` Hz
 %
-%   rpulset = tapas_physio_filter_respiratory(pulset,rsampint)
+% EXAMPLES
+%   rpulset = tapas_physio_filter_respiratory(rpulset, rsampint)
+%   rpulset = tapas_physio_filter_respiratory( ...
+%       rpulset, rsampint, cutoff_freqs, doNormalize)
+%   [rpulset, verbose] = tapas_physio_filter_respiratory( ...
+%       rpulset, rsampint, [], [], verbose)
 %
-% IN
+% INPUTS
 %   rpulset         Respiratory timeseries
 %   rsampint        Time between successive samples
+% OPTIONAL INPUTS
 %   cutoff_freqs    [high-pass, low-pass] cutoff frequencies
-%                   default: [0.01, 2.0]
+%                   Default: [0.01, 2.0]
 %   doNormalize     Optionally, data is normalized to be in -1...+1 range
-%                   default: true
+%                   Default: true
 %   verbose         See `physio.verbose`
 %
-% OUT
+% OUTPUTS
 %   rpulset         Filtered respiratory timeseries
 %   verbose         See `physio.verbose`
 
 % Author: Sam Harrison, 2020
+% Copyright (C) 2020 TNU, Institute for Biomedical Engineering, University of Zurich and ETH Zurich.
 %
 % This file is part of the PhysIO toolbox, which is released under the terms of the GNU General Public
 % Licence (GPL), version 3. You can redistribute it and/or modify it under the terms of the GPL

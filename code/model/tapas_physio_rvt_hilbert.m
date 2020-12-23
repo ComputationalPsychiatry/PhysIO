@@ -27,11 +27,10 @@ function [rvt, verbose] = tapas_physio_rvt_hilbert(fr, t, sample_points, verbose
 %
 %   See also tapas_physio_create_rvt_regressor, tapas_physio_rvt_hilbert
 
-% Author: Sam Harrison
-% Created: 2019-05-10
+% Author: Sam Harrison, 2019
 % Copyright (C) 2019 TNU, Institute for Biomedical Engineering, University of Zurich and ETH Zurich.
 %
-% This file is part of the physIO toolbox, which is released under the terms of the GNU General Public
+% This file is part of the PhysIO toolbox, which is released under the terms of the GNU General Public
 % Licence (GPL), version 3. You can redistribute it and/or modify it under the terms of the GPL
 % (either version 3 or, at your option, any later version). For further details, see the file
 % COPYING or <http://www.gnu.org/licenses/>.
