@@ -783,3 +783,5 @@ switch default_scheme
     case 'Philips'
         physio = tapas_physio_new_philips(physio);
 end
+
+physio.version = tapas_physio_version();
