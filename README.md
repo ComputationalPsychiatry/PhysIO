@@ -313,6 +313,7 @@ development. Please cite the relevant papers if using the techniques.
 2. Harrison, S.J., Bianchi, S., Heinzle, J., Stephan, K.E., Iglesias, S., Kasper L., 2021.
 A Hilbert-based method for processing respiratory timeseries.
 NeuroImage, 117787. https://doi.org/10.1016/j.neuroimage.2021.117787
+    - *Superior RVT computation, preprocessing of respiratory traces*
 
 ### Related Papers (Implemented noise correction algorithms and optimal parameter choices)
 
