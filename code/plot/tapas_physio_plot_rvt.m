@@ -36,4 +36,4 @@ plot(sample_points,ons_secs.rvt, 'g');xlabel('time (seconds)');
 title('Respiratory volume per time');
 ylabel('a.u.');
 
-legend('filtered respiratory time series', 'RVT (sampled at onset_slice time)')
+legend('filtered respiratory time series', 'RVT (sampled at onset slice time)')

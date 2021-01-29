@@ -4,13 +4,27 @@ RELEASE INFORMATION
 Current Release
 ---------------
 
-*Current version: PhysIO Toolbox Release R2020a, v7.3.2*
+*Current version: PhysIO Toolbox Release R2021a, v8.0.0*
 
-October 28th, 2020
+January 29th, 2021
 
 
-SCHEDULED Major Release Notes (v8.0.0)
+SCHEDULED Minor Release Notes (v8.1.0)
 --------------------------------------
+
+### Added
+- Brain Imaging Data Structure (BIDS) export format (`.tsv.gz`, `.json`) to save raw physiological recordings after synchronization with scanner timing (internal gitlab issue #91)
+    - following current BIDS specification on [continuous physiological recordings](https://bids-specification.readthedocs.io/en/stable/04-modality-specific-files/06-physiological-and-other-continuous-recordings.html) and its [metadata]( https://bids-specification.readthedocs.io/en/stable/02-common-principles.html#tabular-files)
+    - single tab-separated values file with columns for cardiac and respiratory recordings
+        - if sampling frequencies of the two differ, upsampling to higher frequency is performed
+
+### Changed
+
+### Fixed
+
+
+Major Release Notes (v8.0.0)
+----------------------------
 
 ### Added
 - New method for computing respiratory volume per unit time (RVT) via the
@@ -32,20 +46,6 @@ SCHEDULED Major Release Notes (v8.0.0)
 
 - More robust detrending of raw respiratory timeseries via windowed padding
   before filtering.
-
-### Fixed
-
-
-SCHEDULED Minor Release Notes (v7.4.0)
-----------------------------------------------
-
-### Added
-- Brain Imaging Data Structure (BIDS) export format (`.tsv.gz`, `.json`) to save raw physiological recordings after synchronization with scanner timing (internal gitlab issue #91)
-    - following current BIDS specification on [continuous physiological recordings](https://bids-specification.readthedocs.io/en/stable/04-modality-specific-files/06-physiological-and-other-continuous-recordings.html) and its [metadata]( https://bids-specification.readthedocs.io/en/stable/02-common-principles.html#tabular-files)
-    - single tab-separated values file with columns for cardiac and respiratory recordings
-        - if sampling frequencies of the two differ, upsampling to higher frequency is performed
-
-### Changed
 
 ### Fixed
 
