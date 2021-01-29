@@ -15,9 +15,9 @@ SCHEDULED Major Release Notes (v8.0.0)
 ### Added
 - New method for computing respiratory volume per unit time (RVT) via the
   Hilbert transform.
-    - Preprint: Harrison et al., "A Hilbert-based method for processing
-      respiratory timeseries", bioRxiv, 2020.
-      <https://doi.org/10.1101/2020.09.30.321562>
+    - Publication: Harrison et al., "A Hilbert-based method for processing
+      respiratory timeseries", NeuroImage, 2021.
+      <https://doi.org/10.1016/j.neuroimage.2021.117787>
     - This is now the default option, but the old method is available by
       setting `physio.model.rvt.method = 'peaks'` (or the equivalent within
       the SPM batch editor).

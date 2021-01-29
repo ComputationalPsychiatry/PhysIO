@@ -22,8 +22,8 @@ function [rvt, verbose] = tapas_physio_rvt_hilbert(fr, t, sample_points, verbose
 %
 % References:
 %   Harrison et al., "A Hilbert-based method for processing respiratory
-%   timeseries", bioRxiv, 2020
-%   https://doi.org/10.1101/2020.09.30.321562
+%   timeseries", NeuroImage, 2021
+%   https://doi.org/10.1016/j.neuroimage.2021.117787
 %
 %   See also tapas_physio_create_rvt_regressor, tapas_physio_rvt_hilbert
 
