@@ -1,7 +1,7 @@
 TAPAS PhysIO Toolbox 
 ====================
 
-*Current version: Release 2021a, v8.0.0*
+*Current version: Release 2021a, v8.0.1*
 
 > Copyright (C) 2012-2021  
 > Lars Kasper  
@@ -289,21 +289,32 @@ open source projects and gratefully acknowledges their use.
     - Matlab file exchange, adam.tudorjones@pharm.ox.ac.uk
 
 
-References
-----------
+Cite Me
+-------
 
-### Main Toolbox Reference
+### Main Toolbox and TAPAS Reference
 
-Please cite the following paper in all of your publications that utilized the 
+Please cite the following papers in all of your publications that utilized the 
 PhysIO Toolbox. 
 
 1. Kasper, L., Bollmann, S., Diaconescu, A.O., Hutton, C., Heinzle, J., Iglesias, 
 S., Hauser, T.U., Sebold, M., Manjaly, Z.-M., Pruessmann, K.P., Stephan, K.E., 2017. 
 The PhysIO Toolbox for Modeling Physiological Noise in fMRI Data. 
 Journal of Neuroscience Methods 276, 56-72. https://doi.org/10.1016/j.jneumeth.2016.10.019
+    - main PhysIO Toolbox reference
+2. Frässle, S., Aponte, E.A., Bollmann, S., Brodersen, K.H., Do, C.T., Harrison, O.K., Harrison, S.J., Heinzle, J., Iglesias, S., Kasper, L., Lomakina, E.I., Mathys, C., Müller-Schrader, M., Pereira, I., Petzschner, F.H., Raman, S., Schöbi, D., Toussaint, B., Weber, L.A., Yao, Y., Stephan, K.E., 2021. TAPAS: an open-source software package for Translational Neuromodeling and Computational Psychiatry. Frontiers in Psychiatry 12, 857. https://doi.org/10.3389/fpsyt.2021.680811
+    - main TAPAS software collection reference
 
-The [FAQ](https://gitlab.ethz.ch/physio/physio-doc/wikis/FAQ#3-how-do-i-cite-physio) 
-contains a complete suggestion for a snippet in your methods section.
+You can include the following snippet in your Methods section,
+along with a brief description of the physiological noise models used: 
+
+> The analysis was performed using the Matlab PhysIO Toolbox ([1], version x.y.z,
+> open-source code available as part of the TAPAS software collection: [2], 
+> <https://www.translationalneuromodeling.org/tapas>)
+
+Our [FAQ](https://gitlab.ethz.ch/physio/physio-doc/wikis/FAQ#3-how-do-i-cite-physio) 
+contains a suggestion for a more detailed RETROICOR-related snippet.
+See the [main TAPAS README](../README.md) for more details on citing TAPAS itself.
 
 ### Novel methods
 
