@@ -312,19 +312,18 @@ along with a brief description of the physiological noise models used:
 > open-source code available as part of the TAPAS software collection: [2], 
 > <https://www.translationalneuromodeling.org/tapas>)
 
-Our [FAQ](https://gitlab.ethz.ch/physio/physio-doc/wikis/FAQ#3-how-do-i-cite-physio) 
-contains a suggestion for a more detailed RETROICOR-related snippet.
-See the [main TAPAS README](../README.md) for more details on citing TAPAS itself.
-
-### Novel methods
-
-The following list contains references for methods originating from PhysIO
-development. Please cite the relevant papers if using the techniques.
+If you use respiratory volume per time (RVT) regressors or preprocess respiratory traces 
+for RETROICOR, please also cite:
 
 3. Harrison, S.J., Bianchi, S., Heinzle, J., Stephan, K.E., Iglesias, S., Kasper L., 2021.
 A Hilbert-based method for processing respiratory timeseries.
 NeuroImage, 117787. https://doi.org/10.1016/j.neuroimage.2021.117787
     - *superior RVT computation, preprocessing of respiratory traces*
+
+Our [FAQ](https://gitlab.ethz.ch/physio/physio-doc/wikis/FAQ#3-how-do-i-cite-physio) 
+contains a suggestion for a more comprehensive RETROICOR-related methods paragraph.
+See the [main TAPAS README](../README.md) for more details on citing TAPAS itself.
+
 
 ### Related Papers (Implemented noise correction algorithms and optimal parameter choices)
 
