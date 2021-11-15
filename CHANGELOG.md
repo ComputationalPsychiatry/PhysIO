@@ -21,7 +21,7 @@ SCHEDULED Minor Release Notes (v8.1.0)
 ### Changed
 
 ### Fixed
-
+- Documentation (function headers, see Github issue #149)
 
 Bugfix Release Notes (v8.0.1)
 -----------------------------
