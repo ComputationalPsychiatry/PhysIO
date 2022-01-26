@@ -17,11 +17,17 @@ SCHEDULED Minor Release Notes (v8.1.0)
     - following current BIDS specification on [continuous physiological recordings](https://bids-specification.readthedocs.io/en/stable/04-modality-specific-files/06-physiological-and-other-continuous-recordings.html) and its [metadata]( https://bids-specification.readthedocs.io/en/stable/02-common-principles.html#tabular-files)
     - single tab-separated values file with columns for cardiac and respiratory recordings
         - if sampling frequencies of the two differ, upsampling to higher frequency is performed
+- Compatibility of whole code base with Matlab compiler in order to run `spm_make_standalone`
+    - provides oppurtunity to run SPM Batch Editor GUI version of PhysIO without Matlab license requirement 
+    - compiled version readily available within [Neurodesk](https://neurodesk.github.io/tutorials/functional_imaging/physio/) 
+- Siemens logfile reader for new Siemens software version XA30 (`.resp`, `.puls`, `.ecg` files created using `ideaCmdTool`)
 
 ### Changed
+- incorporated switch for certain toolbox functions (e.g., `imtool`) to only run in non-compiled code
 
 ### Fixed
 - Documentation (function headers, see Github issue #149)
+- typos in unused function (spotted in compilation)
 
 Bugfix Release Notes (v8.0.1)
 -----------------------------
