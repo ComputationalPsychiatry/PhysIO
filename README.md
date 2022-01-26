@@ -3,7 +3,7 @@ TAPAS PhysIO Toolbox
 
 *Current version: Release 2021a, v8.0.1*
 
-> Copyright (C) 2012-2021  
+> Copyright (C) 2012-2022  
 > Lars Kasper  
 > <kasper@biomed.ee.ethz.ch>  
 >  
