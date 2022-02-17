@@ -97,7 +97,7 @@ if DEBUG
     stringTitle = 'Sync: Extracted Sequence Timing Siemens';
     set(gcf, 'Name', stringTitle);
     subplot(2,1,1);
-    stem(tAcqSeconds, ones(size(tAcqSeconds)));
+    stem(tAcqSeconds, 2*ones(size(tAcqSeconds)));
     hold all;
     stem(t, ones(size(t)));
     xlabel('t (seconds), relative to phys logfile start');

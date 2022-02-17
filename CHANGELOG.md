@@ -27,7 +27,9 @@ SCHEDULED Minor Release Notes (v8.1.0)
 
 ### Fixed
 - Documentation (function headers, see Github issue #149)
-- typos in unused function (spotted in compilation)
+- Typos in unused function (spotted in compilation)
+- Synchronization SIEMENS AcquisitionLog / Physiological files (see Github issue #172)
+    - better visualization of sync, clearer error messages if dummy scans not found
 
 Bugfix Release Notes (v8.0.1)
 -----------------------------
