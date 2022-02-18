@@ -33,6 +33,8 @@ linkFAQ = 'https://gitlab.ethz.ch/physio/physio-doc/-/wikis/FAQ#3-how-do-i-cite-
 linkPaperPhysIO = 'https://doi.org/10.1016/j.jneumeth.2016.10.019';
 linkPaperTAPAS = 'https://doi.org/10.3389/fpsyt.2021.680811';
 linkPaperHilbertRVT = 'https://doi.org/10.1016/j.neuroimage.2021.117787';
+linkGithubTAPASPhysIO = 'https://github.com/translationalneuromodeling/tapas/tree/master/PhysIO';
+
 
 disp('  _____  _               _____ ____    _______          _ _')
 disp(' |  __ \| |             |_   _/ __ \  |__   __|        | | |')              
@@ -51,4 +53,6 @@ fprintf('\n\n\t The most relevant references related to this work are:');
 fprintf('\n\t - Main PhysIO paper: \t\t\t\t <a href="%s">%s</a>', linkPaperPhysIO, linkPaperPhysIO);
 fprintf('\n\t - Main TAPAS paper: \t\t\t\t <a href="%s">%s</a>',linkPaperTAPAS, linkPaperTAPAS);
 fprintf('\n\t - Respiratory Preprocessing/RVT: \t <a href="%s">%s</a>', linkPaperHilbertRVT, linkPaperHilbertRVT);
+fprintf('\n\n\t More information and the Matlab version of PhysIO can be found on the TAPAS Github:');
+fprintf('\n\n\t <a href="%s">%s</a>', linkGithubTAPASPhysIO, linkGithubTAPASPhysIO);
 fprintf('\n\n');
