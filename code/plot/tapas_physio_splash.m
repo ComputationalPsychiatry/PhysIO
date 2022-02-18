@@ -53,18 +53,18 @@ fprintf('\n\t Please refer to the following FAQ page on how to cite this work:')
 if ~(isdeployed || ismcc) && usejava('Desktop')
     fprintf('\n\n\t <a href="%s">%s</a>', linkFAQ, linkFAQ);
     fprintf('\n\n\t The most relevant references related to this work are:');
-    fprintf('\n\t - Main PhysIO paper: \t\t\t\t <a href="%s">%s</a>', linkPaperPhysIO, linkPaperPhysIO);
-    fprintf('\n\t - Main TAPAS paper: \t\t\t\t <a href="%s">%s</a>',linkPaperTAPAS, linkPaperTAPAS);
-    fprintf('\n\t - Respiratory Preprocessing/RVT: \t <a href="%s">%s</a>', linkPaperHilbertRVT, linkPaperHilbertRVT);
+    fprintf('\n\t - Main PhysIO paper:               <a href="%s">%s</a>', linkPaperPhysIO, linkPaperPhysIO);
+    fprintf('\n\t - Main TAPAS paper:                <a href="%s">%s</a>', linkPaperTAPAS, linkPaperTAPAS);
+    fprintf('\n\t - Respiratory Preprocessing/RVT:   <a href="%s">%s</a>', linkPaperHilbertRVT, linkPaperHilbertRVT);
     fprintf('\n\n\t More information and the Matlab version of PhysIO can be found on the TAPAS Github:');
     fprintf('\n\n\t <a href="%s">%s</a>', linkGithubTAPASPhysIO, linkGithubTAPASPhysIO);
     fprintf('\n\n');
 else
     fprintf('\n\n\t %s', linkFAQ);
     fprintf('\n\n\t The most relevant references related to this work are:');
-    fprintf('\n\t - Main PhysIO paper: \t\t\t\t %s', linkPaperPhysIO);
-    fprintf('\n\t - Main TAPAS paper: \t\t\t\t %s',linkPaperTAPAS);
-    fprintf('\n\t - Respiratory Preprocessing/RVT: \t %s', linkPaperHilbertRVT);
+    fprintf('\n\t - Main PhysIO paper:               %s', linkPaperPhysIO);
+    fprintf('\n\t - Main TAPAS paper:                %s', linkPaperTAPAS);
+    fprintf('\n\t - Respiratory Preprocessing/RVT:   %s', linkPaperHilbertRVT);
     fprintf('\n\n\t More information and the Matlab version of PhysIO can be found on the TAPAS Github:');
     fprintf('\n\n\t %s', linkGithubTAPASPhysIO);
     fprintf('\n\n');
