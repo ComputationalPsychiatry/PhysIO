@@ -20,7 +20,8 @@ SCHEDULED Minor Release Notes (v8.1.0)
 - Compatibility of whole code base with Matlab compiler in order to run `spm_make_standalone`
     - provides oppurtunity to run SPM Batch Editor GUI version of PhysIO without Matlab license requirement 
     - compiled version readily available within [Neurodesk](https://neurodesk.github.io/tutorials/functional_imaging/physio/) 
-- Siemens logfile reader for new Siemens software version XA30 (`.resp`, `.puls`, `.ecg` files created using `ideaCmdTool`)
+- BIDS Read-in for separate cardiac/respiratory trace files (e.g., due to different sampling frequencies)
+    - see GitHub Issue #
 
 ### Changed
 - incorporated switch for certain toolbox functions (e.g., `imtool`) to only run in non-compiled code
