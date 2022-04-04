@@ -74,6 +74,13 @@ doUseSpm = false;
 run_example_and_compare_reference(testCase, dirExample, doUseSpm)
 end
 
+function test_bids_ppu3t_separate_files_matlab_only(testCase)
+%% Compares previously saved physio-structure and multiple regressors file
+% to current output of re-run of BIDS/PPU3T_Separate_Files example using matlab only
+dirExample = 'BIDS/PPU3T_Separate_Files';
+doUseSpm = false;
+run_example_and_compare_reference(testCase, dirExample, doUseSpm)
+end
 
 function test_biopac_txt_ppu3t_matlab_only(testCase)
 %% Compares previously saved physio-structure and multiple regressors file
@@ -404,13 +411,28 @@ verifyEqual(testCase, actSolution, expSolution, ...
 % ons_secs has all the computed preprocessed physiological and scan timing
 % sync data, from which .model derives the physiological regressors later
 % on
-% spulse_per_vol cannot be compared, because cell!
+
+% First, test ons_secs.raw only to check whether data read-in and basic 
+% filtering before cropping at least worked!
+testCase.verifyThat(actPhysio.ons_secs.raw, ...
+    IsEqualTo(expPhysio.ons_secs.raw,  ...
+    'Using', StructComparator(NumericComparator, 'Recursively', true), ...
+    'Within', RelativeTolerance(relTol), ...
+    'IgnoringFields',  {'spulse_per_vol'}...
+    ), 'Comparing all numeric subfields of ons_secs.raw to check read-in and basic filtering of phys recordings');
+
+% Second, test other fields populated during preprocessing and some modeling steps
+% Note: spulse_per_vol cannot be compared, because cell!
+
 testCase.verifyThat(actPhysio.ons_secs, ...
     IsEqualTo(expPhysio.ons_secs,  ...
     'Using', StructComparator(NumericComparator, 'Recursively', true), ...
     'Within', RelativeTolerance(relTol), ...
-    'IgnoringFields',  {'spulse_per_vol'}...
-    ), 'Comparing all numeric subfields of ons_secs to check preprocessing of phys recordings');
+    'IgnoringFields',  {'spulse_per_vol', 'raw'}...
+    ), 'Comparing all numeric subfields of ons_secs to check full preprocessing of phys recordings');
+
+
+
 
 % recursive with string
 % testCase.verifyThat(actPhysio, ...
