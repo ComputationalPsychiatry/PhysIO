@@ -190,6 +190,17 @@ doUseSpm = false;
 run_example_and_compare_reference(testCase, dirExample, doUseSpm)
 end
 
+function test_siemens_vd_ppu3t_for_bids_vs_bids_converted_matlab_only(testCase)
+%% Compares previously saved physio-structure and multiple regressors file
+% from same Siemens VD data externally converted to BIDS
+% to current output of re-run of Siemens_VD/PPU3T_For_BIDS example using matlab only
+dirExample = 'Siemens_VD/PPU3T_For_BIDS';
+dirRefResults = 'BIDS/PPU3T_Separate_Files';
+doUseSpm = false;
+run_example_and_compare_reference(testCase, dirExample, doUseSpm, ...
+    dirRefResults)
+end
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% SPM-requiring tests start here
@@ -326,16 +337,50 @@ doUseSpm = true;
 run_example_and_compare_reference(testCase, dirExample, doUseSpm)
 end
 
+function test_siemens_vd_ppu3t_for_bids_vs_bids_converted_with_spm(testCase)
+%% Compares previously saved physio-structure and multiple regressors file
+% from same Siemens VD data externally converted to BIDS
+% to current output of re-run of Siemens_VD/PPU3T_For_BIDS example using SPM Batch Editor
+dirExample = 'Siemens_VD/PPU3T_For_BIDS';
+dirRefResults = 'BIDS/PPU3T_Separate_Files';
+doUseSpm = true;
+run_example_and_compare_reference(testCase, dirExample, doUseSpm, ...
+    dirRefResults)
+end
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Auxiliary Functions for automation and code re-use
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function run_example_and_compare_reference(testCase, dirExample, doUseSpm)
+function run_example_and_compare_reference(testCase, dirExample, doUseSpm, ...
+    dirRefResults)
 %% Compares previously saved physio-structure and multiple regressors file
 % to current output of re-run of example in specified example sub-folder
 % Note: both SPM or matlab-script based execution is possible
 % (check parameter doUseSpm below!)
+%
+% IN
+%   testCase    TestCase object, required by Matlab in this test function
+%   dirExample  subfolder of examples where example data is stored
+%               e.g., BIDS/PPU3T
+%   doUseSpm    if true, _spm_job.mat versions of example scripts are used, using batch editor
+%               if false, _matlab_script.m versions of example scripts are
+%               used
+%   dirRefResults 
+%               sub-folder of examples/TestReferenceResults that is used to
+%               load expected reference solutions for all test cases
+%               default: dirExample is used
+%               if you want to cross-check two different integrations based
+%               on the same data, this might be useful to cross-reference
+%               expected test results (e.g., converted-to-BIDS data vs native
+%               vendor read-in)
+%
+% OUT
+%
+if nargin < 4
+    dirRefResults = dirExample;
+end
 
 % hard-coded relative tolerance
 relTol = 0.01; % 0.01 means 1 percent deviation from expected value allowed
@@ -404,33 +449,15 @@ testCase.TestData.createdFigHandles = physio.verbose.fig_handles;
 
 %% Load reference data and compare to actual run for certain subfields
 
-%% 1. Test: Load reference data from multiple regressors file
+
+%% 1. load physio structure from reference data
 fileReferenceData = fullfile(pathExamples, 'TestReferenceResults', 'examples', ...
-    dirExample, fileExampleOutputTxt);
-R = load(fileReferenceData);
-expRegressorsFromTxt = R;
-
-verifyEqual(testCase, actRegressorsFromTxt, expRegressorsFromTxt, ...
-     'RelTol', relTol, ...
-     'Comparing multiple regressors in txt-files');
-
-
-%% 2. load physio structure from reference data
-fileReferenceData = fullfile(pathExamples, 'TestReferenceResults', 'examples', ...
-    dirExample, fileExampleOutputPhysio);
+    dirRefResults, fileExampleOutputPhysio);
 load(fileReferenceData, 'physio');
 expPhysio = physio;
 
-% Check Multiple_Regressors output
-actSolution = actPhysio.model.R;
-expSolution = expPhysio.model.R;
 
-verifyEqual(testCase, actSolution, expSolution, ...
-    'RelTol', relTol, ...
-    'Comparing multiple regressors in physio.model.R');
-
-
-%% 3. compare all numeric sub-fields of physio with some tolerance
+%% 2. Compare all numeric sub-fields of physio with some tolerance
 
 % ons_secs has all the computed preprocessed physiological and scan timing
 % sync data, from which .model derives the physiological regressors later
@@ -445,7 +472,7 @@ testCase.verifyThat(actPhysio.ons_secs.raw, ...
     'IgnoringFields',  {'spulse_per_vol'}...
     ), 'Comparing all numeric subfields of ons_secs.raw to check read-in and basic filtering of phys recordings');
 
-% 2. Check some crucial timing parameters more vigorously
+% 3. Check some crucial timing parameters more vigorously
 verifyEqual(testCase, actPhysio.ons_secs.raw.spulse, expPhysio.ons_secs.raw.spulse, ...
 'RelTol', relTol/10, ...
 'Comparing spulse (onset time of slice pulse (scan) events');
@@ -460,8 +487,6 @@ testCase.verifyThat(actPhysio.ons_secs, ...
     ), 'Comparing all numeric subfields of ons_secs to check full preprocessing of phys recordings');
 
 
-
-
 % recursive with string
 % testCase.verifyThat(actPhysio, ...
 %     IsEqualTo(expPhysio, 'Using', ...
@@ -469,5 +494,26 @@ testCase.verifyThat(actPhysio.ons_secs, ...
 %     'IgnoringCase', true, ...
 %     'IgnoringWhitespace', true ...
 %     ));
+
+
+% 4. Compare final multiple regressor matrix in physio.mat structure
+% Check Multiple_Regressors output
+actSolution = actPhysio.model.R;
+expSolution = expPhysio.model.R;
+
+verifyEqual(testCase, actSolution, expSolution, ...
+    'RelTol', relTol, ...
+    'Comparing multiple regressors in physio.model.R');
+
+%5. Test: Load reference data from multiple regressors txt file and test as
+%well
+fileReferenceData = fullfile(pathExamples, 'TestReferenceResults', 'examples', ...
+    dirRefResults, fileExampleOutputTxt);
+R = load(fileReferenceData);
+expRegressorsFromTxt = R;
+
+verifyEqual(testCase, actRegressorsFromTxt, expRegressorsFromTxt, ...
+     'RelTol', relTol, ...
+     'Comparing multiple regressors in txt-files');
 
 end
