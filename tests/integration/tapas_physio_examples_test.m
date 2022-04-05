@@ -203,6 +203,13 @@ doUseSpm = true;
 run_example_and_compare_reference(testCase, dirExample, doUseSpm)
 end
 
+function test_bids_ppu3t_separate_files_with_spm(testCase)
+%% Compares previously saved physio-structure and multiple regressors file
+% to current output of re-run of BIDS/PPU3T_Separate_Files example using SPM Batch Editor
+dirExample = 'BIDS/PPU3T_Separate_Files';
+doUseSpm = true;
+run_example_and_compare_reference(testCase, dirExample, doUseSpm)
+end
 
 function test_biopac_txt_ppu3t_with_spm(testCase)
 %% Compares previously saved physio-structure and multiple regressors file
