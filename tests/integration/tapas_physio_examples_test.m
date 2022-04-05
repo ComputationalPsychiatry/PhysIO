@@ -182,6 +182,14 @@ doUseSpm = false;
 run_example_and_compare_reference(testCase, dirExample, doUseSpm)
 end
 
+function test_siemens_vd_ppu3t_for_bids_matlab_only(testCase)
+%% Compares previously saved physio-structure and multiple regressors file
+% to current output of re-run of Siemens_VD/PPU3T_For_BIDS example using matlab only
+dirExample = 'Siemens_VD/PPU3T_For_BIDS';
+doUseSpm = false;
+run_example_and_compare_reference(testCase, dirExample, doUseSpm)
+end
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% SPM-requiring tests start here
@@ -305,6 +313,15 @@ function test_siemens_vd_ppu3t_with_spm(testCase)
 %% Compares previously saved physio-structure and multiple regressors file
 % to current output of re-run of Siemens_VD/PPU3T example using SPM Batch Editor
 dirExample = 'Siemens_VD/PPU3T';
+doUseSpm = true;
+run_example_and_compare_reference(testCase, dirExample, doUseSpm)
+end
+
+
+function test_siemens_vd_ppu3t_for_bids_with_spm(testCase)
+%% Compares previously saved physio-structure and multiple regressors file
+% to current output of re-run of Siemens_VD/PPU3T_For_BIDS example using SPM Batch Editor
+dirExample = 'Siemens_VD/PPU3T_For_BIDS';
 doUseSpm = true;
 run_example_and_compare_reference(testCase, dirExample, doUseSpm)
 end
