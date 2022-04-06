@@ -830,9 +830,9 @@ Help Window of the SPM Batch Editor</p>
 </ol>
 <p class="page" id="README"></p><h1>Readme</h1>
 <h1 id="tapas-physio-toolbox-">TAPAS PhysIO Toolbox </h1>
-<p><em>Current version: Release 2020a, v7.3.0</em></p>
+<p><em>Current version: Release 2022a, v8.1.0</em></p>
 <blockquote>
-<p>Copyright (C) 2012-2020<br>Lars Kasper<br><a href="#mailto107x61115x70101x72x40x62x69x6fx6dx6510046x65x6546101x7410412246x63x68">&#107;&#x61;&#115;&#x70;&#101;&#x72;&#x40;&#x62;&#x69;&#x6f;&#x6d;&#x65;&#100;&#46;&#x65;&#x65;&#46;&#101;&#x74;&#104;&#122;&#46;&#x63;&#x68;</a>  </p>
+<p>Copyright (C) 2012-2022<br>Lars Kasper<br><a href="#mailtox6bx61115112101x72x4098x69x6f109x65x64x2e10110146101116104122x2e99x68">&#x6b;&#x61;&#115;&#112;&#101;&#x72;&#x40;&#98;&#x69;&#x6f;&#109;&#x65;&#x64;&#x2e;&#101;&#101;&#46;&#101;&#116;&#104;&#122;&#x2e;&#99;&#x68;</a>  </p>
 <p>Translational Neuromodeling Unit (TNU)<br>Institute for Biomedical Engineering<br>University of Zurich and ETH Zurich  </p>
 </blockquote>
 <h2 id="download">Download</h2>
@@ -1005,7 +1005,7 @@ respiratory and interaction terms (see Harvey2008, Hutton2011)</li>
 <h3 id="automatization-and-performance-assessment">Automatization and Performance Assessment</h3>
 <ul>
 <li>Automatic creation of nuisance regressors, full integration into standard 
-GLMs, tested for SPM8/12 (&quot;multiple_regressors.mat&quot;)</li>
+GLMs, tested for SPM8/12 (<code>multiple_regressors.mat</code>)</li>
 <li>Integration in SPM Batch Editor: GUI for parameter input, dependencies to 
 integrate physiological noise correction in preprocessing pipeline</li>
 <li>Performance Assessment: Automatic F-contrast and tSNR Map creation and display 
@@ -1111,18 +1111,43 @@ parameters</li>
 </ul>
 </li>
 </ul>
-<h2 id="references">References</h2>
-<h3 id="main-toolbox-reference">Main Toolbox Reference</h3>
-<p>Please cite the following paper in all of your publications that utilized the 
+<h2 id="cite-me">Cite Me</h2>
+<h3 id="main-toolbox-and-tapas-reference">Main Toolbox and TAPAS Reference</h3>
+<p>Please cite the following papers in all of your publications that utilized the 
 PhysIO Toolbox. </p>
 <ol>
 <li>Kasper, L., Bollmann, S., Diaconescu, A.O., Hutton, C., Heinzle, J., Iglesias, 
 S., Hauser, T.U., Sebold, M., Manjaly, Z.-M., Pruessmann, K.P., Stephan, K.E., 2017. 
 The PhysIO Toolbox for Modeling Physiological Noise in fMRI Data. 
-Journal of Neuroscience Methods 276, 56–72. <a href="https://doi.org/10.1016/j.jneumeth.2016.10.019">https://doi.org/10.1016/j.jneumeth.2016.10.019</a></li>
+Journal of Neuroscience Methods 276, 56-72. <a href="https://doi.org/10.1016/j.jneumeth.2016.10.019">https://doi.org/10.1016/j.jneumeth.2016.10.019</a><ul>
+<li><em>main PhysIO Toolbox reference</em></li>
+</ul>
+</li>
+<li>Frässle, S., Aponte, E.A., Bollmann, S., Brodersen, K.H., Do, C.T., Harrison, O.K., Harrison, S.J., Heinzle, J., Iglesias, S., Kasper, L., Lomakina, E.I., Mathys, C., Müller-Schrader, M., Pereira, I., Petzschner, F.H., Raman, S., Schöbi, D., Toussaint, B., Weber, L.A., Yao, Y., Stephan, K.E., 2021. TAPAS: an open-source software package for Translational Neuromodeling and Computational Psychiatry. Frontiers in Psychiatry 12, 857. <a href="https://doi.org/10.3389/fpsyt.2021.680811">https://doi.org/10.3389/fpsyt.2021.680811</a><ul>
+<li><em>main TAPAS software collection reference</em></li>
+</ul>
+</li>
 </ol>
-<p>The <a href="https://gitlab.ethz.ch/physio/physio-doc/wikis/FAQ#3-how-do-i-cite-physio">FAQ</a> 
-contains a complete suggestion for a snippet in your methods section.</p>
+<p>You can include the following snippet in your Methods section,
+along with a brief description of the physiological noise models used: </p>
+<blockquote>
+<p>The analysis was performed using the Matlab PhysIO Toolbox ([1], version x.y.z,
+open-source code available as part of the TAPAS software collection: [2], 
+<a href="https://www.translationalneuromodeling.org/tapas">https://www.translationalneuromodeling.org/tapas</a>)</p>
+</blockquote>
+<p>If you use respiratory volume per time (RVT) regressors or preprocess respiratory traces 
+for RETROICOR, please also cite:</p>
+<ol start="3">
+<li>Harrison, S.J., Bianchi, S., Heinzle, J., Stephan, K.E., Iglesias, S., Kasper L., 2021.
+A Hilbert-based method for processing respiratory timeseries.
+NeuroImage, 117787. <a href="https://doi.org/10.1016/j.neuroimage.2021.117787">https://doi.org/10.1016/j.neuroimage.2021.117787</a><ul>
+<li><em>superior RVT computation, preprocessing of respiratory traces</em></li>
+</ul>
+</li>
+</ol>
+<p>Our <a href="https://gitlab.ethz.ch/physio/physio-doc/wikis/FAQ#3-how-do-i-cite-physio">FAQ</a> 
+contains a suggestion for a more comprehensive RETROICOR-related methods paragraph.
+See the <a href="#README">main TAPAS README</a> for more details on citing TAPAS itself.</p>
 <h3 id="related-papers-implemented-noise-correction-algorithms-and-optimal-parameter-choices-">Related Papers (Implemented noise correction algorithms and optimal parameter choices)</h3>
 <p>The following sections list papers that </p>
 <ul>
@@ -1135,63 +1160,63 @@ targeted application</li>
 paper. The list is by no means complete, and we are happy to add any relevant papers 
 suggested to us. </p>
 <h4 id="retroicor">RETROICOR</h4>
-<ol start="2">
-<li><p>Glover, G.H., Li, T.Q. &amp; Ress, D. Image�?based method for retrospective correction
-of PhysIOlogical motion effects in fMRI: RETROICOR. Magn Reson Med 44, 162-7 (2000).</p>
+<ol start="4">
+<li><p>Glover, G.H., Li, T.Q. &amp; Ress, D. Image-based method for retrospective correction
+of Physiological motion effects in fMRI: RETROICOR. Magn Reson Med 44, 162-7 (2000).</p>
 </li>
 <li><p>Hutton, C. et al. The impact of Physiological noise correction on fMRI at 7 T.
-NeuroImage 57, 101�?112 (2011).</p>
+NeuroImage 57, 101-112 (2011).</p>
 </li>
 <li><p>Harvey, A.K. et al. Brainstem functional magnetic resonance imaging:
 Disentangling signal from PhysIOlogical noise. Journal of Magnetic Resonance
-Imaging 28, 1337�?1344 (2008).</p>
+Imaging 28, 1337-1344 (2008).</p>
 </li>
 <li><p>Bollmann, S., Puckett, A.M., Cunnington, R., Barth, M., 2018. 
 Serial correlations in single-subject fMRI with sub-second TR. 
-NeuroImage 166, 152–166. <a href="https://doi.org/10.1016/j.neuroimage.2017.10.043">https://doi.org/10.1016/j.neuroimage.2017.10.043</a></p>
+NeuroImage 166, 152-166. <a href="https://doi.org/10.1016/j.neuroimage.2017.10.043">https://doi.org/10.1016/j.neuroimage.2017.10.043</a></p>
 </li>
 </ol>
 <h4 id="acompcor-noise-rois">aCompCor / Noise ROIs</h4>
-<ol start="6">
+<ol start="8">
 <li>Behzadi, Y., Restom, K., Liau, J., Liu, T.T., 2007. A component based noise
 correction method (CompCor) for BOLD and perfusion based fMRI. NeuroImage 37,
-90–101. <a href="https://doi.org/10.1016/j.neuroimage.2007.04.042">https://doi.org/10.1016/j.neuroimage.2007.04.042</a></li>
+90-101. <a href="https://doi.org/10.1016/j.neuroimage.2007.04.042">https://doi.org/10.1016/j.neuroimage.2007.04.042</a></li>
 </ol>
 <h4 id="rvt">RVT</h4>
-<ol start="7">
+<ol start="9">
 <li>Birn, R.M., Smith, M.A., Jones, T.B., Bandettini, P.A., 2008. The respiration response
-function: The temporal dynamics of fMRI s ignal fluctuations related to changes in
-respiration. NeuroImage 40, 644–654. doi:10.1016/j.neuroimage.2007.11.059</li>
+function: The temporal dynamics of fMRI signal fluctuations related to changes in
+respiration. NeuroImage 40, 644-654. doi:10.1016/j.neuroimage.2007.11.059</li>
 <li>Jo, H.J., Saad, Z.S., Simmons, W.K., Milbury, L.A., Cox, R.W., 2010. 
 Mapping sources of correlation in resting state FMRI, with artifact detection 
-and removal. NeuroImage 52, 571–582. <a href="https://doi.org/10.1016/j.neuroimage.2010.04.246">https://doi.org/10.1016/j.neuroimage.2010.04.246</a>  <ul>
+and removal. NeuroImage 52, 571-582. <a href="https://doi.org/10.1016/j.neuroimage.2010.04.246">https://doi.org/10.1016/j.neuroimage.2010.04.246</a>  <ul>
 <li><em>regressor delay suggestions</em></li>
 </ul>
 </li>
 </ol>
 <h4 id="hrv">HRV</h4>
-<ol start="9">
+<ol start="11">
 <li>Chang, C., Cunningham, J.P., Glover, G.H., 2009. Influence of heart rate on the
-BOLD signal: The cardiac response function. NeuroImage 44, 857–869.
+BOLD signal: The cardiac response function. NeuroImage 44, 857-869.
 doi:10.1016/j.neuroimage.2008.09.029</li>
 <li>Shmueli, K., van Gelderen, P., de Zwart, J.A., Horovitz, S.G., Fukunaga, M., 
 Jansma, J.M., Duyn, J.H., 2007. Low-frequency fluctuations in the cardiac rate 
 as a source of variance in the resting-state fMRI BOLD signal. 
-NeuroImage 38, 306–320. <a href="https://doi.org/10.1016/j.neuroimage.2007.07.037">https://doi.org/10.1016/j.neuroimage.2007.07.037</a>  <ul>
+NeuroImage 38, 306-320. <a href="https://doi.org/10.1016/j.neuroimage.2007.07.037">https://doi.org/10.1016/j.neuroimage.2007.07.037</a>  <ul>
 <li><em>regressor delay suggestions</em></li>
 </ul>
 </li>
 </ol>
 <h4 id="motion-censoring-framewise-displacement-">Motion (Censoring, Framewise Displacement)</h4>
-<ol start="11">
+<ol start="13">
 <li><p>Siegel, J.S., Power, J.D., Dubis, J.W., Vogel, A.C., Church, J.A., Schlaggar, B.L.,
 Petersen, S.E., 2014. Statistical improvements in functional magnetic resonance
 imaging analyses produced by censoring high-motion data points. Hum. Brain Mapp.
-35, 1981–1996. <a href="https://doi.org/10.1002/hbm.22307">https://doi.org/10.1002/hbm.22307</a></p>
+35, 1981-1996. <a href="https://doi.org/10.1002/hbm.22307">https://doi.org/10.1002/hbm.22307</a></p>
 </li>
 <li><p>Power, J.D., Barnes, K.A., Snyder, A.Z., Schlaggar, B.L., Petersen, S.E., 2012. 
 Spurious but systematic correlations in functional connectivity MRI networks 
-arise from subject motion. NeuroImage 59, 2142–2154. 
+arise from subject motion. NeuroImage 59, 2142-2154. 
 <a href="https://doi.org/10.1016/j.neuroimage.2011.10.018">https://doi.org/10.1016/j.neuroimage.2011.10.018</a></p>
 </li>
 </ol>
@@ -1228,18 +1253,44 @@ along with this program (see the file <a href="#LICENSE">LICENSE</a>).  If not, 
 </ul>
 </blockquote>
 <h2 id="3-how-do-i-cite-physio-">3. How do I cite PhysIO?</h2>
-<p>The <strong>core reference for PhysIO</strong> is: <em>The PhysIO Toolbox for Modeling Physiological Noise in fMRI Data</em> (<a href="http://dx.doi.org/10.1016/j.jneumeth.2016.10.019">http://dx.doi.org/10.1016/j.jneumeth.2016.10.019</a>)</p>
-<p>Please cite this paper if you use PhysIO in your work. Moreover, this paper is also a good source for more information on PhysIO (see next question).</p>
-<p>A <strong>standard snippet to include</strong> in your method section could look like the following, assuming you use our specific implementation of RETROICOR, which uses Fourier expansions of different order for the estimated phases of cardiac pulsation (3rd order), respiration (4th order) and cardio-­‐respiratory interactions (1st order) following (Harvey et al., 2008)</p>
-<blockquote>
-<p>Correction for physiological noise was performed via RETROICOR [1,2] using Fourier
-expansions of different order for the estimated phases of cardiac pulsation (3rd order),
-respiration (4th order) and cardio-­‐respiratory interactions (1st order) [2]: The
-corresponding confound regressors were created using the Matlab PhysIO Toolbox ([4],
-open source code available as part of the TAPAS software collection:
-<a href="https://www.translationalneuromodeling.org/tapas)">https://www.translationalneuromodeling.org/tapas)</a>.</p>
-</blockquote>
+<p>The <strong>core references for PhysIO</strong> are: </p>
 <ol>
+<li>Kasper, L., Bollmann, S., Diaconescu, A.O., Hutton, C., Heinzle, J., Iglesias, 
+S., Hauser, T.U., Sebold, M., Manjaly, Z.-M., Pruessmann, K.P., Stephan, K.E., 2017. 
+<em>The PhysIO Toolbox for Modeling Physiological Noise in fMRI Data</em>. 
+Journal of Neuroscience Methods 276, 56-72. <a href="https://doi.org/10.1016/j.jneumeth.2016.10.019">https://doi.org/10.1016/j.jneumeth.2016.10.019</a><ul>
+<li><em>main PhysIO Toolbox reference, also a good starting point to learn about more about the methods in PhysIO (see next question)</em></li>
+</ul>
+</li>
+<li>Frässle, S., Aponte, E.A., Bollmann, S., Brodersen, K.H., Do, C.T., Harrison, O.K., Harrison, S.J., Heinzle, J., Iglesias, S., Kasper, L., Lomakina, E.I., Mathys, C., Müller-Schrader, M., Pereira, I., Petzschner, F.H., Raman, S., Schöbi, D., Toussaint, B., Weber, L.A., Yao, Y., Stephan, K.E., 2021. <em>TAPAS: an open-source software package for Translational Neuromodeling and Computational Psychiatry</em>. Frontiers in Psychiatry 12, 857. <a href="https://doi.org/10.3389/fpsyt.2021.680811">https://doi.org/10.3389/fpsyt.2021.680811</a><ul>
+<li><em>main TAPAS software collection reference, see <a href="https://github.com/translationalneuromodeling/tapas#readme">main TAPAS README</a> for more details on TAPAS itself</em></li>
+</ul>
+</li>
+</ol>
+<p>Please cite these papers if you use PhysIO in your work. Here is a minimum example snippet: </p>
+<blockquote>
+<p>The analysis was performed using the Matlab PhysIO Toolbox ([1], version x.y.z,
+open-source code available as part of the TAPAS software collection: [2], 
+<a href="https://www.translationalneuromodeling.org/tapas">https://www.translationalneuromodeling.org/tapas</a>)</p>
+</blockquote>
+<p>If you use respiratory volume per time (RVT) regressors or preprocess respiratory traces 
+for RETROICOR, please also cite:</p>
+<ol start="3">
+<li>Harrison, S.J., Bianchi, S., Heinzle, J., Stephan, K.E., Iglesias, S., Kasper L., 2021.
+A Hilbert-based method for processing respiratory timeseries.
+NeuroImage, 117787. <a href="https://doi.org/10.1016/j.neuroimage.2021.117787">https://doi.org/10.1016/j.neuroimage.2021.117787</a><ul>
+<li><em>superior RVT computation, preprocessing of respiratory traces</em></li>
+</ul>
+</li>
+</ol>
+<p>A <strong>standard comprehensive snippet to include</strong> in your method section could look like the following, assuming you use our specific implementation of RETROICOR, which uses Fourier expansions of different order for the estimated phases of cardiac pulsation (3rd order), respiration (4th order) and cardio-­respiratory interactions (1st order) following (Harvey et al., 2008), and include respiratory volume per time (RVT) as well as heart-rate variability (HRV) regressors.</p>
+<blockquote>
+<p>Physiological noise correction was performed using the Matlab PhysIO Toolbox ([1], version x.y.z,
+open-source code available as part of the TAPAS software collection: [2], 
+<a href="https://www.translationalneuromodeling.org/tapas">https://www.translationalneuromodeling.org/tapas</a>). A RETROICOR model [4,5]) was employed, using Fourier expansions of different order for the estimated phases of cardiac pulsation (3rd order),
+respiration (4th order) and cardio-­‐respiratory interactions (1st order) [6]. Furthermore, respiratory volume per time (RVT, [3,7]) and heart rate variability (HRV, [8]) were modeled. </p>
+</blockquote>
+<ol start="4">
 <li><p>Glover, G.H., Li, T.Q. &amp; Ress, D. Image-­‐based method for retrospective correction
 of PhysIOlogical motion effects in fMRI: RETROICOR. Magn Reson Med 44, 162-­‐
 7 (2000).</p>
@@ -1251,17 +1302,6 @@ NeuroImage 57, 101-­‐112 (2011).</p>
 Disentangling signal from PhysIOlogical noise. Journal of Magnetic Resonance
 Imaging 28, 1337-­‐1344 (2008).</p>
 </li>
-<li><p>Kasper, L., Bollmann, S., Diaconescu, A.O., Hutton, C., Heinzle, J., Iglesias, S., Hauser, T.U., Sebold, M., Manjaly, Z.-M., Pruessmann, K.P., Stephan, K.E., 2017. The PhysIO Toolbox for Modeling Physiological Noise in fMRI Data. Journal of Neuroscience Methods 276, 56–72. doi:10.1016/j.jneumeth.2016.10.019</p>
-</li>
-</ol>
-<p>If you use <strong>respiratory‐volume-­per time (RVT), heart-‐rate
-variability (HRV), noise ROIs or 12/24 regressor motion modeling</strong>, also include the
-respective references:</p>
-<ol start="5">
-<li><p>Behzadi, Y., Restom, K., Liau, J., Liu, T.T., 2007. A component based noise
-correction method (CompCor) for BOLD and perfusion based fMRI. NeuroImage 37,
-90–101. doi:10.1016/j.neuroimage.2007.04.042</p>
-</li>
 <li><p>Birn, R.M., Smith, M.A., Jones, T.B., Bandettini, P.A., 2008. The respiration response
 function: The temporal dynamics of fMRI s ignal fluctuations related to changes in
 respiration. NeuroImage 40, 644–654. doi:10.1016/j.neuroimage.2007.11.059
@@ -1271,10 +1311,24 @@ PhysIO Toolbox | Citing this work 20</p>
 BOLD signal: The cardiac response function. NeuroImage 44, 857–869.
 doi:10.1016/j.neuroimage.2008.09.029</p>
 </li>
+</ol>
+<p>If you use <strong>noise ROIs (aCompCor) or 12/24 regressor motion modeling</strong>, also include the
+respective references:</p>
+<ol start="9">
+<li><p>Behzadi, Y., Restom, K., Liau, J., Liu, T.T., 2007. A component based noise
+correction method (CompCor) for BOLD and perfusion based fMRI. NeuroImage 37,
+90–101. doi:10.1016/j.neuroimage.2007.04.042</p>
+<ul>
+<li><em>aCompCor</em></li>
+</ul>
+</li>
 <li><p>Siegel, J.S., Power, J.D., Dubis, J.W., Vogel, A.C., Church, J.A., Schlaggar, B.L.,
 Petersen, S.E., 2014. Statistical improvements in functional magnetic resonance
 imaging analyses produced by censoring high-motion data points. Hum. Brain Mapp.
 35, 1981–1996. doi:10.1002/hbm.22307</p>
+<ul>
+<li><em>Motion Regressors</em></li>
+</ul>
 </li>
 </ol>
 <h2 id="4-where-do-i-find-more-documentation-for-physio-">4. Where do I find more documentation for PhysIO?</h2>
@@ -1440,7 +1494,23 @@ it by about 5-10ms to allow for timing inaccuracies).</li>
 <li>In SPM, you can use the Batch Editor as a Help GUI directly. If you open or create a TAPAS PhysIO Batch and click on any parameter, there will be useful information about its meaning and suitable values in the help window, located in the lower part of the Batch Editor.</li>
 <li>Within Matlab, type <code>edit tapas_physio_new</code>. This constructor function lists all parameters of the physio-structure with inline comments on their purpose and possible values.</li>
 </ul>
-<h2 id="15-i-cannot-find-the-answer-to-my-question-in-the-faq-whom-do-i-ask-for-help-">15. I cannot find the answer to my question in the FAQ. Whom do I ask for help?</h2>
+<h2 id="15-i-don-t-have-matlab-can-i-still-use-the-physio-toolbox-">15. I don&#39;t have Matlab, can I still use the PhysIO Toolbox?</h2>
+<p>Yes, our friends at <a href="https://neurodesk.github.io/">NeuroDesk</a> provide a docker container that contains the latest standalone version of SPM with inbuilt PhysIO. NeuroDesk runs in a browser and on any major operating system, and no Matlab license is required. For more details on PhysIO in NeuroDesk, check out their <a href="https://neurodesk.github.io/tutorials/">Tutorials</a> on functional imaging.</p>
+<p>Internally, this is using a compiled version of SPM with PhysIO. Contact us if you want to compile SPM with PhysIO yourself - for example, to deploy your own modifications of PhysIO to collaborators without Matlab.</p>
+<p>Once SPM+PhysIO is compiled and you have the right Matlab Runtime Environment installed on your computer (determined by the Matlab version used for compilation), you can run a PhysIO SPM Batch file (<code>.m</code> or <code>.mat</code>) by calling</p>
+<pre class="hljs"><span class="hljs-string">./run_spm12.sh</span> <span class="hljs-string">../MATLAB_Runtime/v99</span> <span class="hljs-keyword">batch</span> physio_<span class="hljs-keyword">batch</span>.mat</pre><p>If you omit the batch file (but keep the keyword <code>batch</code>), this will just open the Batch Editor to interactively create and run a PhysIO batch.</p>
+<h2 id="16-physio-fails-already-when-running-your-provided-example-data-e-g-with-out-of-memory-errors-what-happened-">16. PhysIO fails already when running your provided example data, e.g., with &quot;Out of Memory&quot; errors. What happened?</h2>
+<p>All PhysIO examples are thoroughly tested before each release using a unit/integration testing framework, but of course we cannot catch every bug in advance. </p>
+<p>The most likely explanation, however, is that the setup of PhysIO on your machine was not successful. Here are a few things you can try:</p>
+<ul>
+<li>Did you run <code>tapas_physio_init()</code> and did it give any warnings?</li>
+<li>Do you have the subfolders of SPM in your Matlab path = e.g., you used <code>addpath(genpath(&#39;path/to/spm12&#39;))</code>? <ul>
+<li>If yes, try <code>rmpath(genpath(&#39;path/to/spm12&#39;));addpath(&#39;path/to/spm12&#39;)</code> and run the example again.</li>
+<li>More details on this issue can be found in our <a href="https://github.com/translationalneuromodeling/tapas/issues/166">GitHub Forum</a>.</li>
+</ul>
+</li>
+</ul>
+<h2 id="17-i-cannot-find-the-answer-to-my-question-in-the-faq-whom-do-i-ask-for-help-">17. I cannot find the answer to my question in the FAQ. Whom do I ask for help?</h2>
 <p>We are very happy to provide support on how to use the PhysIO Toolbox. However, 
 as every researcher, we only have a limited amount of time. So please excuse, if 
 we might not provide a detailed answer to your request, but just some general 
@@ -1448,11 +1518,11 @@ pointers and templates. Before you contact us, please try the following:</p>
 <ol>
 <li>A first look at the <a href="https://gitlab.ethz.ch/physio/physio-doc/wikis/FAQ">FAQ</a> 
 (which is frequently extended) might already answer your questions.</li>
-<li>A lot of questions have also been discussed on our mailinglist 
+<li>For older versions of PhysIO, a lot of questions have been discussed on our now defunct mailinglist 
 <a href="https://sympa.ethz.ch/sympa/info/tapas">tapas@sympa.ethz.ch</a>, 
-which has a searchable <a href="https://sympa.ethz.ch/sympa/arc/tapas">archive</a>.</li>
+but its <a href="https://sympa.ethz.ch/sympa/arc/tapas">archive</a> is still searchable.</li>
 <li>For new requests, we would like to ask you to submit them as 
-<a href="https://github.com/translationalneuromodeling/tapas/issues">issues</a> on our github release page for TAPAS.</li>
+<a href="https://github.com/translationalneuromodeling/tapas/issues">issues</a> on our GitHub page for TAPAS.</li>
 </ol>
 <p class="page" id="EXAMPLES"></p><h1>Examples</h1>
 <h1 id="example-datasets-for-physio">Example Datasets for PhysIO</h1>
@@ -1478,9 +1548,13 @@ files</a>.</p>
 <h3 id="ppu-3t">PPU 3T</h3>
 <p>Courtesy of Hrvoje Stojic, Max Planck UCL Centre for Computational Psychiatry
 and Ageing Research, University College London</p>
-<p>PPU (finger plethysmograph) and breathing belt, Siemens 3T scanner, Nultiband CMRR sequence</p>
+<p>PPU (finger plethysmograph) and breathing belt, Siemens 3T scanner, Multiband CMRR sequence</p>
 <p>Description: Similar to CPULSE3T (same acquisition system), but now with analog
 data instead of vendor-detected pulses, data from different subject</p>
+<h3 id="ppu-3t-separate-files">PPU 3T Separate Files</h3>
+<p>Courtesy of Alexandre Sayal CIBIT, University of Coimbra</p>
+<p>PPU (finger plethysmograph) and breathing belt, Siemens 3T scanner, Multiband CMRR sequence</p>
+<p>Description: Similar to PPU 3T, but two separate BIDS files for cardiac and respiratory recordings, because of differing sampling rate (5 vs 20 ms). Externally converted from <code>SIEMENS_VD/PPU3T_For_BIDS</code> example below.</p>
 <h2 id="general-electric">General Electric</h2>
 <h3 id="ppu-3t">PPU 3T</h3>
 <p>Courtesy of Steffen Bollmann, Kinderspital Zurich and ETH Zurich</p>
@@ -1520,12 +1594,16 @@ scanner</p>
 <p>Description: Challenging cardiac data that requires bandpass-filtering during preprocessing, since it is compromised by both high frequency noise (from the scanner, modulated at every slice TR) and low frequency noise (breathing modulation).</p>
 <h2 id="siemens-vb">Siemens - VB</h2>
 <p>Siemens has different physiological logfile formats, for which examples are provided here. A detailed description of these formats is on a different <a href="#MANUAL_PART_READIN">wiki page</a>.</p>
-<p>This is the older Siemens log file format (also available via <em>manual recording</em>), which is part of software release <em>VB</em>, and can be determined by the file extensions <code>.resp</code>, <code>.ecg</code>, <code>.puls</code>, in combination with an optional <code>.dcm</code> DICOM header file for the first acquired volume.</p>
+<p>This is the older Siemens log file format (also available via <em>manual recording</em>), which is part of software release <em>VB</em>, and can be determined by the file extensions <code>.resp</code>, <code>.ecg</code>, <code>.puls</code>, in combination with an optional <code>.dcm</code> DICOM header file for the first (or last) acquired volume.</p>
 <p>A lot of 7T scanners still use this format.</p>
 <h3 id="ecg-3t">ECG 3T</h3>
 <p>Courtesy of Miriam Sebold, Charite Berlin, and Quentin Huys, TNU Zurich</p>
 <p>4-electrode ECG data, Siemens 3T scanner</p>
 <p>Description: Similar to ECG 3T, but acquired on a Siemens system with only one logfile for ECG data. The quality of the signal is challenging, stemming from a patient population.</p>
+<h3 id="ppu3t-sync-first-and-sync-last-">PPU3T (Sync First and Sync Last)</h3>
+<p>Courtesy of Alexander Ritter, University of Jena, Germany</p>
+<p>Siemens 3T pulse oximetry and respiratory bellows data from a complete scan session of a healthy volunteer, plus the DICOM header file of the first and last (382nd) volume of an fMRI run, respectively.</p>
+<p>This showcases scan timing synchronization using the DICOM timestamps in an intricate case, where the physiological logfile spans the whole scan session (and not only the fMRI run). See <a href="https://github.com/translationalneuromodeling/tapas/issues/55">TAPAS github issue #55</a> for further details.</p>
 <h2 id="siemens-hcp">Siemens - HCP</h2>
 <p>The Human Connectome Project uses Siemens scanners, and the logfile format that comes with their published data seems to be pre-converted and custom (even though the documentation desribes the VB format). We have implemented an own reader for that and written a little tutorial for a single subject dataset of the HCP. </p>
 <p><a href="https://github.com/translationalneuromodeling/tapas/issues/6#issuecomment-361001716">https://github.com/translationalneuromodeling/tapas/issues/6#issuecomment-361001716</a></p>
@@ -1547,6 +1625,11 @@ scanner</p>
 <h3 id="ppu-3t">PPU 3T</h3>
 <p>Courtesy of Saskia Bollmann, Centre for Advanced Imaging, University of Queensland, Brisbane, Australia</p>
 <p>Pulse oximetry and breathing belt data, Siemens Prisma 3T, logfile version <code>EJA_1</code>, multi-echo fMRI (3 echoes)</p>
+<p>The UUID and date/time stamps were altered for anonymization.</p>
+<h3 id="ppu-3t-separate-files">PPU 3T Separate Files</h3>
+<p>Courtesy of Alexandre Sayal CIBIT, University of Coimbra</p>
+<p>PPU (finger plethysmograph) and breathing belt, Siemens 3T scanner, Multiband CMRR sequence</p>
+<p>Description: Raw data that was used to convert to two separate BIDS files above (<code>BIDS/PPU3T_Separate_Files</code>) for cardiac and respiratory recordings, because of differing sampling rate (5 vs 20 ms). </p>
 <p>The UUID and date/time stamps were altered for anonymization.</p>
 <p class="page" id="MANUAL_PART_READIN"></p><h1>Technical Documentation: Read-in</h1>
 <h1 id="brain-imaging-data-structure-bids-">Brain Imaging Data Structure (BIDS)</h1>
@@ -1748,22 +1831,95 @@ ACQ_TIME_TICS  CHANNEL  VALUE  SIGNAL
 <span class="hljs-symbol">1 </span>   <span class="hljs-number">1904</span>    <span class="hljs-number">1780</span></pre><p class="page" id="CHANGELOG"></p><h1>Version History (Changelog)</h1>
 <h1 id="release-information">RELEASE INFORMATION</h1>
 <h2 id="current-release">Current Release</h2>
-<p><em>Current version: PhysIO Toolbox Release R2020a, v7.3.0</em></p>
-<p>July 10th, 2020</p>
-<h2 id="scheduled-minor-release-notes-v7-4-0-">SCHEDULED Minor Release Notes (v7.4.0)</h2>
+<p><em>Current version: PhysIO Toolbox Release R2022a, v8.1.0</em></p>
+<p>April 5th, 2022</p>
+<h2 id="minor-release-notes-v8-1-0-">Minor Release Notes (v8.1.0)</h2>
 <h3 id="added">Added</h3>
 <ul>
-<li>Brain Imaging Data Structure (BIDS) export format (<code>.tsv.gz</code>, <code>.json</code>) to save raw physiological recordings after synchronization with scanner timing (internal gitlab issue #91)<ul>
-<li>following current BIDS specification on <a href="https://bids-specification.readthedocs.io/en/stable/04-modality-specific-files/06-physiological-and-other-continuous-recordings.html">continuous physiological recordings</a> and its <a href="https://bids-specification.readthedocs.io/en/stable/02-common-principles.html#tabular-files">metadata</a></li>
-<li>single tab-separated values file with columns for cardiac and respiratory recordings<ul>
-<li>if sampling frequencies of the two differ, upsampling to higher frequency is performed</li>
+<li>Compatibility of whole code base with Matlab compiler in order to run <code>spm_make_standalone</code><ul>
+<li>provides oppurtunity to run SPM Batch Editor GUI version of PhysIO without Matlab license requirement </li>
+<li>compiled version readily available within <a href="https://neurodesk.github.io/tutorials/functional_imaging/physio/">Neurodesk</a> </li>
 </ul>
 </li>
+<li>BIDS Read-in for separate cardiac/respiratory trace files (e.g., due to different sampling frequencies)<ul>
+<li>see GitHub Issue #164 and pull request #167 by @alexsayal</li>
+<li>Additional unit tests for new read-in and example data</li>
 </ul>
 </li>
 </ul>
 <h3 id="changed">Changed</h3>
+<ul>
+<li>Switch for certain toolbox functions (e.g., <code>imtool</code>) to only run in 
+non-compiled code</li>
+</ul>
 <h3 id="fixed">Fixed</h3>
+<ul>
+<li>Documentation (function headers, see Github issue #149)</li>
+<li>Typos in unused function (spotted in compilation)</li>
+<li>Synchronization SIEMENS AcquisitionLog / Physiological files (see Github issue #172)<ul>
+<li>better visualization of sync, clearer error messages if dummy scans not found</li>
+</ul>
+</li>
+</ul>
+<h2 id="bugfix-release-notes-v8-0-1-">Bugfix Release Notes (v8.0.1)</h2>
+<h3 id="changed">Changed</h3>
+<ul>
+<li>Citation of novel <a href="https://doi.org/10.3389/fpsyt.2021.680811">TAPAS paper</a> in README and CITATION</li>
+</ul>
+<h2 id="major-release-notes-v8-0-0-">Major Release Notes (v8.0.0)</h2>
+<h3 id="added">Added</h3>
+<ul>
+<li><p>New method for computing respiratory volume per unit time (RVT) via the
+Hilbert transform.</p>
+<ul>
+<li>Publication: Harrison et al., &quot;A Hilbert-based method for processing
+respiratory timeseries&quot;, NeuroImage, 2021.
+<a href="https://doi.org/10.1016/j.neuroimage.2021.117787">https://doi.org/10.1016/j.neuroimage.2021.117787</a></li>
+<li>This is now the default option, but the old method is available by
+setting <code>physio.model.rvt.method = &#39;peaks&#39;</code> (or the equivalent within
+the SPM batch editor).</li>
+</ul>
+</li>
+<li><p>Respiratory preprocessing now includes an optional de-spiking step based on
+median filtering.</p>
+</li>
+</ul>
+<h3 id="changed">Changed</h3>
+<ul>
+<li><p>Now possible to change the frequencies of the respiratory filtering during
+preprocessing via <code>physio.preproc.respiratory.filter</code> (or the equivalent
+within the SPM batch editor).</p>
+</li>
+<li><p>More robust detrending of raw respiratory timeseries via windowed padding
+before filtering.</p>
+</li>
+</ul>
+<h3 id="fixed">Fixed</h3>
+<h2 id="bugfix-release-notes-v7-3-2-">Bugfix Release Notes (v7.3.2)</h2>
+<h3 id="added">Added</h3>
+<ul>
+<li>version number <code>physio.version</code> in physio-struct (Gitlab issue #101)</li>
+</ul>
+<h3 id="fixed">Fixed</h3>
+<ul>
+<li>Subfolder of SPM in path (fieldtrip) created ambiguous function calls 
+to overloaded functions (Gitlab issue #102 and Gihub issue #110)<ul>
+<li>e.g., <code>filtfilt</code> in <code>tapas_physio_filter_respiratory</code> created flat 
+regressors for v7.3 for Siemens VD example dataset</li>
+<li>now subfolders of SPM will be removed when calling
+<code>tapas_physio_main_create_regressors</code></li>
+</ul>
+</li>
+</ul>
+<h2 id="bugfix-release-notes-v7-3-1-">Bugfix Release Notes (v7.3.1)</h2>
+<h3 id="fixed">Fixed</h3>
+<ul>
+<li>PPU read-in works for BioPac mat-file now <ul>
+<li>correct column labels and cardiac modality (Github Issue #103)</li>
+<li>thank you to Manon Durand-Ruel @mdurandruel for reporting  </li>
+</ul>
+</li>
+</ul>
 <h2 id="minor-release-notes-r2020a-v7-3-0-">Minor Release Notes (R2020a, v7.3.0)</h2>
 <h3 id="added">Added</h3>
 <ul>
