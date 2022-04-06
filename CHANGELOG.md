@@ -6,24 +6,19 @@ Current Release
 
 *Current version: PhysIO Toolbox Release R2022a, v8.1.0*
 
-March 30th, 2022
+April 5th, 2022
 
 
 Minor Release Notes (v8.1.0)
 ----------------------------
 
 ### Added
-- Brain Imaging Data Structure (BIDS) export format (`.tsv.gz`, `.json`) to save raw physiological recordings after synchronization with scanner timing (internal gitlab issue #91)
-    - following current BIDS specification on 
-      [continuous physiological recordings](https://bids-specification.readthedocs.io/en/stable/04-modality-specific-files/06-physiological-and-other-continuous-recordings.html) 
-      and its [metadata]( https://bids-specification.readthedocs.io/en/stable/02-common-principles.html#tabular-files)
-    - single tab-separated values file with columns for cardiac and respiratory recordings
-        - if sampling frequencies of the two differ, upsampling to higher frequency is performed
 - Compatibility of whole code base with Matlab compiler in order to run `spm_make_standalone`
     - provides oppurtunity to run SPM Batch Editor GUI version of PhysIO without Matlab license requirement 
     - compiled version readily available within [Neurodesk](https://neurodesk.github.io/tutorials/functional_imaging/physio/) 
 - BIDS Read-in for separate cardiac/respiratory trace files (e.g., due to different sampling frequencies)
     - see GitHub Issue #164 and pull request #167 by @alexsayal
+    - Additional unit tests for new read-in and example data
 
 ### Changed
 - Switch for certain toolbox functions (e.g., `imtool`) to only run in 
