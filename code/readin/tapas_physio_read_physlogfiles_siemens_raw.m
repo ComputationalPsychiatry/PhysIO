@@ -54,12 +54,12 @@ logFooter.LogStartTimeSeconds =   str2num(char(regexprep(linesFooter(~cellfun(@i
 logFooter.LogStopTimeSeconds =    str2num(char(regexprep(linesFooter(~cellfun(@isempty,strfind(linesFooter,...
     'LogStopMDHTime'))),'\D',''))) / 1000;
 
-% MPCU  = Computer who controls the scanner => physio logging happens here  
-% MDH   = Compute who is the host; console => DICOM time stamp here!
+% MPCU  = Computer who controls the physiological logging in real-time => physio logging happens here  
+% MDH   = Computer who is the host (Measurement Data Header); console => DICOM time stamp here
 %
-% - according to Chris Rorden, PART
-% (http://www.mccauslandcenter.sc.edu/crnl/tools/part) - MDH is the time we
-% should use for phys logging synchronization, since DICOM conversion uses
+% According to Chris Rorden, PART (https://github.com/neurolabusc/Part#usage and 
+% https://github.com/nipy/heudiconv/issues/450#issuecomment-645003447) 
+% MDH is the time we should use for phys logging synchronization, since DICOM conversion uses
 % this clock
 
 % This is just a different time-scale (of the phys log computer), it does 
