@@ -72,7 +72,7 @@ logFooter.StopTimeSecondsRecordingClock = str2num(char(regexprep(linesFooter(~ce
 % found here (https://github.com/nipy/heudiconv/issues/450#issuecomment-645003447) 
 % 
 % MPCU is the clock of the computer that controls the physiological
-% recording, but does not know about the scan volume and DICOM timing
+% recording (same as MARS?), but does not know about the scan volume and DICOM timing
 
 logFooter.StartTimeSeconds = logFooter.StartTimeSecondsScannerClock;
 logFooter.StopTimeSeconds = logFooter.StopTimeSecondsScannerClock;

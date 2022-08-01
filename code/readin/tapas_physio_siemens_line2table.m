@@ -1,6 +1,6 @@
-function data_table = tapas_physio_siemens_line2table(lineData, cardiacModality)
-% transforms data line of Siemens log file into table (sorting amplitude
-% and trigger signals)
+function [data_table, log_parts] = tapas_physio_siemens_line2table(lineData, cardiacModality)
+% transforms data line of Siemens log file (before linebreak after 5003 
+% signal for recording end) into table (sorting amplitude and trigger signals)
 %
 %   data_table = tapas_physio_siemens_line2table(input)
 %
@@ -15,6 +15,7 @@ function data_table = tapas_physio_siemens_line2table(lineData, cardiacModality)
 %                   6000 = cardiac pulse off
 %                   6002 = phys recording on
 %                   6003 = phys recording off
+%   log_parts       part of logfile according to markers by Siemens
 %
 % EXAMPLE
 %   tapas_physio_siemens_line2table
@@ -32,10 +33,35 @@ function data_table = tapas_physio_siemens_line2table(lineData, cardiacModality)
 % COPYING or <http://www.gnu.org/licenses/>.
 
 
-% signals start of data logging
-iTrigger = regexpi(lineData, ' 6002 ');
+iStartInfoRegion = strfind(lineData, '5002');
+iEndInfoRegion = strfind(lineData, '6002');
+iStartFooter = strfind(lineData, '5003');
 
-if ~isempty(iTrigger)
+% header marker identifier (data collection, signal source...)
+logHeader = lineData(1:iStartInfoRegion(1)-1);
+
+nInfoRegions = numel(iStartInfoRegion);
+
+for iInfoRegion = 1:nInfoRegions
+    logInfoRegions{iInfoRegion} = lineData((iStartInfoRegion(iInfoRegion)+3):(iEndInfoRegion(iInfoRegion)-1));
+end
+
+
+% Determine logfile version (which alters no of channels etc.) from header
+%5002 LOGVERSION   1 6002%
+%5002 LOGVERSION_RESP   3 6002%
+%5002 LOGVERSION_PULS   3 6002%
+logVersionCell = regexp(lineData, '5002 LOGVERSION[^0-9]*(\d+) 6002', 'tokens');
+logVersion = str2double(logVersionCell{1}{1});
+
+
+log_parts.logHeader = logHeader;
+log_parts.logInfoRegions = logInfoRegion;
+log_parts.logVersion = logVersion;
+
+% last 6002 signals start of data logging
+if ~isempty(iEndInfoRegion)
+    iTrigger = iEndInfoRegion(end);
     % crop string after trigger
     lineData = lineData((iTrigger(end)+6):end);
     doCropLater = false;
@@ -80,27 +106,29 @@ nSamples = numel(data_stream);
 
 switch upper(cardiacModality) % ecg has two channels, resp and puls only one
     case 'ECG'
-        nRows = ceil(nSamples/2);
+        switch logVersion
+            case 1
+                nChannels = 2;
+            case 3
+                nChannels = 4;
+        end
+        nRows = ceil(nSamples/nChannels);
         
         % create a table with channel_1, channels_AVF and trigger signal in
         % different Columns
         % - iData_table is a helper table that maps the original indices of the
         % ECG signals in data{1} onto their new positions
-        data_table = zeros(nRows,3);
-        iData_table = zeros(nRows,3);
+        data_table = zeros(nRows,nChannels+1);
+        iData_table = zeros(nRows,nChannels+1);
         
-        data_table(1:nRows,1) = data_stream(1:2:end);
-        iData_table(1:nRows,1) = iDataStream(1:2:end);
-        
-        if mod(nSamples,2) == 1
-            data_table(1:nRows-1,2) = data_stream(2:2:end);
-            iData_table(1:nRows-1,2) = iDataStream(2:2:end);
-        else
-            data_table(1:nRows,2) = data_stream(2:2:end);
-            iData_table(1:nRows,2) = iDataStream(2:2:end);
+        for iChannel = 1:nChannels
+            data_table(1:nRows,iChannel) = data_stream(iChannel:nChannels:end);
+            iData_table(1:nRows,iChannel) = iDataStream(iChannel:nChannels:end);
         end
         
-        % now fill up 3rd column with trigger data
+        % TODO: deal with mod(nSamples, nChannels) > 0 (incomplete data?)
+        
+        % now fill up nChannel+1. column with trigger data
         % - for each trigger index in data{1}, check where ECG data with closest
         % smaller index ended up in the data_table ... and put trigger code in
         % same row of that table
@@ -108,15 +136,17 @@ switch upper(cardiacModality) % ecg has two channels, resp and puls only one
         
         for iTrigger = 1:nTriggers
             % find index before trigger event in data stream and
-            % detect it in table
-            iRow = find(iData_table(:,2) == iNonEcgSignals(iTrigger)-1);
-            
-            % look in 1st column as well whether maybe signal detected there
-            if isempty(iRow)
-                iRow = find(iData_table(:,1) == iNonEcgSignals(iTrigger)-1);
+            % detect it in table, look in last columns first, then go
+            % backwards
+            iRow = [];
+            iChannel = nChannels;
+            while isempty(iRow)
+                
+                iRow = find(iData_table(:,iChannel) == iNonEcgSignals(iTrigger)-1);
+                iChannel = iChannel - 1;
             end
             
-            data_table(iRow,3) = codeNonEcgSignals(iTrigger);
+            data_table(iRow,nChannels+1) = codeNonEcgSignals(iTrigger);
         end
         
     case {'RESP', 'PPU'} % only one channel available, fill second row with zeros
