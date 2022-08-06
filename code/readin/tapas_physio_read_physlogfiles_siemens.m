@@ -143,8 +143,8 @@ if hasCardiacData
     
     
     if hasScanTimingDicomImage
-        tStartScan = tStartScanDicom; % this is the start of the selected DICOM volume
-        tStopScan = tStopScanDicom;   % this is the end time of the last DICOM volume (start + TR) 
+        tStartScan = tStartScanDicom; % this is the start of the DICOM volume selected for sync
+        tStopScan = tStopScanDicom;   % this is the end time (start + TR) of the DICOM volume selected for sync 
     else
         tStartScan = logFooter.StartTimeSeconds;
         tStopScan = logFooter.StopTimeSeconds;
@@ -213,9 +213,9 @@ if hasRespData
     tLogTotal = logFooter.StopTimeSeconds - logFooter.StartTimeSeconds;
     
     if hasScanTimingDicomImage
-        tStartScan = tStartScanDicom; % this is the start of the selected DICOM volume
-        tStopScan = tStopScanDicom;   % this is the end time of the last DICOM volume (start + TR) 
-    else
+        tStartScan = tStartScanDicom; % this is the start of the DICOM volume selected for sync
+        tStopScan = tStopScanDicom;   % this is the end time (start + TR) of the DICOM volume selected for sync 
+   else
         tStartScan = logFooter.StartTimeSeconds;
         tStopScan = logFooter.StopTimeSeconds; 
     end
