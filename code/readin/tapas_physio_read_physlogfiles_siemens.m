@@ -143,8 +143,8 @@ if hasCardiacData
     
     
     if hasScanTimingDicomImage
-        tStartScan = tStartScanDicom; % this is just the start of the selected DICOM volume
-        tStopScan = tStopScanDicom;    
+        tStartScan = tStartScanDicom; % this is the start of the selected DICOM volume
+        tStopScan = tStopScanDicom;   % this is the end time of the last DICOM volume (start + TR) 
     else
         tStartScan = logFooter.StartTimeSeconds;
         tStopScan = logFooter.StopTimeSeconds;
@@ -213,8 +213,8 @@ if hasRespData
     tLogTotal = logFooter.StopTimeSeconds - logFooter.StartTimeSeconds;
     
     if hasScanTimingDicomImage
-        tStartScan = tStartScanDicom;
-        tStopScan = tStopScanDicom; % is incorrect, use tStartScan + TR!
+        tStartScan = tStartScanDicom; % this is the start of the selected DICOM volume
+        tStopScan = tStopScanDicom;   % this is the end time of the last DICOM volume (start + TR) 
     else
         tStartScan = logFooter.StartTimeSeconds;
         tStopScan = logFooter.StopTimeSeconds; 
@@ -228,7 +228,7 @@ if hasRespData
             % shift onset of first scan by knowledge of run duration and
             % onset of last scan in run
             relative_start_acquisition = ...
-                (tStopScan - (sqpar.Nscans-1)*sqpar.TR) ... 
+                (tStopScan - sqpar.Nscans*sqpar.TR) ... 
                 - logFooter.StartTimeSeconds;
     end
     
