@@ -6,7 +6,8 @@ function [nTestFailed, nTestTotal, testResults] = tapas_physio_test(level)
 % IN
 %   level       Depth of testing required
 %                Approximate run time per level
-%                    0:  around a minute
+%                    0:  around a minute 
+%                        here: unit tests only
 %                    1:  around 5 minutes (a coffee)
 %                        here: matlab-only integration tests, no SPM integration
 %                    2:  around an hour  (time for lunch)
@@ -45,7 +46,7 @@ tic
 testResults = [];
 
 if level >= 0
-    testResults =  [testResults tapas_physio_run_unit_tests()];
+    testResults = [testResults tapas_physio_run_unit_tests()];
 else
     nTestTotal = 0;
     nTestFailed = 0;
@@ -57,20 +58,21 @@ if level == 1
     % 'matlab' in the name (SPM GUI tests have SPM in the name)
     import matlab.unittest.TestSuite;
     
-    pathTests = fullfile(fileparts(mfilename('fullpath')), 'integration');
+    pathTests   = fullfile(fileparts(mfilename('fullpath')), 'integration');
     suiteFolder = TestSuite.fromFolder(pathTests, ...
-        'IncludingSubfolders', true, 'Name', '*matlab*');
-    testResults =  [testResults run(suiteFolder)];
+        'IncludingSubfolders', true, 'Name', '*matlab_only*');
+    testResults = [testResults run(suiteFolder)];
 end
 
 if level >= 2
-    testResults =  [testResults tapas_physio_run_integration_tests()];
+    testResults = [testResults tapas_physio_run_integration_tests()];
 end
 
 nTestTotal =  numel(testResults);
 nTestFailed = sum([testResults.Failed]);
 
 % pretty summary output
+fprintf('\n\n\n\tTable of all executed PhysIO Tests:\n\n');
 disp(testResults.table);
 
 toc

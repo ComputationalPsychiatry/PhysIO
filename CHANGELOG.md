@@ -12,6 +12,7 @@ Upcoming Release Notes (v8.2.0-beta)
 ------------------------------------
 
 ### Added
+- Interface `tapas_physio_test` to TAPAS-generic `tapas_test` function
 - Added suport for logfile version 3 of Siemens physio recordings 
     - multi ECG/Resp channels and interleaved status messages
 ### Fixed
