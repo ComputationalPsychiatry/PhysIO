@@ -4,12 +4,12 @@ RELEASE INFORMATION
 Current Release
 ---------------
 
-*Current version: PhysIO Toolbox Release R2022a, v8.1.0*
+*Current version: PhysIO Toolbox Release R2022b, v8.2.0*
 
-April 5th, 2022
+September 5th, 2022
 
-Upcoming Release Notes (v8.2.0-beta)
-------------------------------------
+Minor Release Notes (v8.2.0)
+----------------------------
 
 ### Added
 - Interface `tapas_physio_test` to TAPAS-generic `tapas_test` function
