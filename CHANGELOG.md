@@ -17,7 +17,7 @@ Minor Release Notes (v8.2.0)
     - multi ECG/Resp channels and interleaved status messages
 ### Fixed
 - Removed dependence on `nanmean` (Statistics Toolbox)
-    - See GitHub issue #205 and 
+    - See GitHub issue #205 
 
 Minor Release Notes (v8.1.0)
 ----------------------------
