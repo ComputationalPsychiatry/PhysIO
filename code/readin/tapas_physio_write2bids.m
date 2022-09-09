@@ -9,9 +9,12 @@ function []= tapa_physio_write2bids(ons_secs,which_bids )
 % OUT: tsv file(s) with columns caridac, respiratory, trigger
 %    json file with meta data
 
+save_dir=physio.write_bids
+
 % after step1
 switch which_bids
     case 1 | 2
+        tag = ""
         cardiac = ons_secs.c;
         respiratory = ons_secs.r;
 
@@ -19,13 +22,14 @@ switch which_bids
         "SamplingFrequency",physio.log_files.sampling_interval, "Columns", ["cardiac", "respiratory"]); 
 
         % create JSON file
-        JSONFILE_name= sprintf('%s_%s_JSON.json',subj, session); 
+        JSONFILE_name= sprintf('%s_%s_JSON.json',tag);
         fid = fopen(fullfile(save_dir,JSONFILE_name),'w'); 
         encodedJSON = jsonencode(s); 
         % write output
         fprintf(fid, encodedJSON); 
 
     case 3
+    tag = "trigger"
     % triggerafter step 2
     cardiac = ons_secs.c;
     respiratory = ons_secs.r;
