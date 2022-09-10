@@ -1,18 +1,19 @@
-function []= tapa_physio_write2bids(ons_secs,which_bids )
-% Converts trigger cardiac and respiratory data from physio structure into
-% a tsv file according to BIDS format, with meta data
-% in json file
+function []= tapa_physio_write2bids(ons_secs, location )
+% Converts trigger, cardiac and respiratory data from physio structure into
+% a .tsv file according to BIDS format, with meta data in a corresponding json file.
 
-% IN: physio structure
+% IN: ons_secs structure
+%     
+  
 %
 
 % OUT: tsv file(s) with columns caridac, respiratory, trigger
-%    json file with meta data
+%      json file with meta data
 
 save_dir=physio.write_bids
 
 % after step1
-switch which_bids
+switch location
     case 1 | 2
         tag = ""
         cardiac = ons_secs.c;
@@ -45,15 +46,6 @@ switch which_bids
         trigger_binary(row_number)=1;
     end
 
-
-    %TODO write to file
-
-    % TODO this needs to be updated to change by subjects - can this info be
-    % taken from the pysio structure?
-    subj='sub-01';
-    session= 'ses-01';
-    save_dir=physio.save_dir
-
     % prepare structure to write into BIDS
     s = struct("StartTime", physio.log_files.relative_start_acquisition , ...
         "SamplingFrequency",physio.log_files.sampling_interval, "Columns", ["cardiac", "respiratory", "trigger"]); 
@@ -61,7 +53,7 @@ switch which_bids
 
 
     % create JSON file
-    JSONFILE_name= sprintf('%s_%s_JSON.json',subj, session); 
+    JSONFILE_name= sprintf('%s_%s_JSON.json',tag); 
     fid=fopen(fullfile(save_dir,JSONFILE_name),'w'); 
     encodedJSON = jsonencode(s);
     % write output
