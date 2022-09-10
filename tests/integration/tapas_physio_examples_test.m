@@ -184,6 +184,14 @@ doUseSpm = false;
 run_example_and_compare_reference(testCase, dirExample, doUseSpm)
 end
 
+function test_siemens_vb_resp3t_logversion_3_matlab_only(testCase)
+%% Compares previously saved physio-structure and multiple regressors file
+% to current output of re-run of Siemens_VB/ECG3T example using matlab only
+dirExample = 'Siemens_VB/RESP3T_Logversion_3';
+doUseSpm = false;
+run_example_and_compare_reference(testCase, dirExample, doUseSpm)
+end
+
 
 function test_siemens_vd_ppu3t_matlab_only(testCase)
 %% Compares previously saved physio-structure and multiple regressors file
@@ -342,6 +350,14 @@ function test_siemens_vb_resp3t_logversion_1_with_spm(testCase)
 %% Compares previously saved physio-structure and multiple regressors file
 % to current output of re-run of Siemens_VB/ECG3T example using SPM Batch Editor
 dirExample = 'Siemens_VB/RESP3T_Logversion_1';
+doUseSpm = true;
+run_example_and_compare_reference(testCase, dirExample, doUseSpm)
+end
+
+function test_siemens_vb_resp3t_logversion_3_with_spm(testCase)
+%% Compares previously saved physio-structure and multiple regressors file
+% to current output of re-run of Siemens_VB/ECG3T example using SPM Batch Editor
+dirExample = 'Siemens_VB/RESP3T_Logversion_3';
 doUseSpm = true;
 run_example_and_compare_reference(testCase, dirExample, doUseSpm)
 end
