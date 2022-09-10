@@ -176,6 +176,14 @@ doUseSpm = false;
 run_example_and_compare_reference(testCase, dirExample, doUseSpm)
 end
 
+function test_siemens_vb_resp3t_logversion_1_matlab_only(testCase)
+%% Compares previously saved physio-structure and multiple regressors file
+% to current output of re-run of Siemens_VB/ECG3T example using matlab only
+dirExample = 'Siemens_VB/RESP3T_Logversion_1';
+doUseSpm = false;
+run_example_and_compare_reference(testCase, dirExample, doUseSpm)
+end
+
 
 function test_siemens_vd_ppu3t_matlab_only(testCase)
 %% Compares previously saved physio-structure and multiple regressors file
@@ -326,6 +334,14 @@ function test_siemens_vb_ppu3t_sync_last_with_spm(testCase)
 % to current output of re-run of Siemens_VB/PPU3T example
 % (sync to last DICOM volume time stamp) using SPM Batch Editor
 dirExample = 'Siemens_VB/PPU3T_Sync_Last';
+doUseSpm = true;
+run_example_and_compare_reference(testCase, dirExample, doUseSpm)
+end
+
+function test_siemens_vb_resp3t_logversion_1_with_spm(testCase)
+%% Compares previously saved physio-structure and multiple regressors file
+% to current output of re-run of Siemens_VB/ECG3T example using SPM Batch Editor
+dirExample = 'Siemens_VB/RESP3T_Logversion_1';
 doUseSpm = true;
 run_example_and_compare_reference(testCase, dirExample, doUseSpm)
 end
