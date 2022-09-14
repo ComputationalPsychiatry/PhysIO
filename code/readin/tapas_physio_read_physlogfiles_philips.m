@@ -124,7 +124,7 @@ t= -log_files.relative_start_acquisition + ((0:(Nsamples-1))*dt)';
 cpulse = find(acq_codes==1);
 if ~isempty(cpulse)
     cpulse = t(cpulse);
-end;
+end
 
 if hasResp
     r = y(:,idxColResp);
@@ -164,7 +164,7 @@ if hasCardiac
                 labelColCardiac = 'ppu';
         end
         
-        idxColCardiac = find(contains(columnNames, labelColCardiac));
+        idxColCardiac = find(strcmpi(columnNames, labelColCardiac));
         c = y(:, idxColCardiac);
         hasValidCardiacReadout = any(c);
         
