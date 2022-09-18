@@ -6,6 +6,7 @@ function []= tapa_physio_write2bids(ons_secs, write_bids, save_dir, log_files)
 %     write_bids:   parameter describing the stage of the processing pipeline
 %                   at which the files are being written
 %    save_dir: where the file should be written to
+%    save_dir: where the file should be written to
 
 % OUT: tsv file(s) caridac, respiratory, trigger
 %      json file with meta data
