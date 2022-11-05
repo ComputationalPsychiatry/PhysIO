@@ -133,24 +133,36 @@ end
 
 % compare  newly written bids output file from the Phillips ECG V3 test case to saved files
 function compare_write2bids_consistency(testCase)
-   % lcoation  in which the new bids coded files will be written by running the example anew
-   pathCurrentExample = fullfile(pathExamples, 'ECG3T_V2');
-   % location where the reference files are stored
-   pathReferenceFiles = fileReferenceData = fullfile(pathExamples, 'TestReferenceResults', 'write2bids', ...
-   'sub-01_task_desc_physio_sync.tsv');
-
-   % location of the physio file that will be passed to create_main_regrssors
-   fileReferenceData = fullfile(pathExamples, 'TestReferenceResults', 'write2bids', ...
-    'physio.mat');
-    load(fileReferenceData, 'physio');
-    expPhysio = physio;
-
-    % adjust physio file
+   % location where the reference files are stored - step norm
+   pathReferenceFiles = fullfile(pathExamples, 'TestReferenceResults', 'write2bids', 'norm');
 
 
-    % run physio create main regrssors with the physio file
+   % location of the physio example file that will be passed to create_main_regrssors
+   pathExampleData = fullfile(pathExamples, 'write2bids', 'norm');
+   
+   load(fullfile(pathExampleData, 'physio.mat'), 'physio'); % this physio structure contains data from step 2
+    
+    % does that work?
+    cd(pathExampleData)
+    physio = tapas_physio_main_create_regressors(physio);
 
-    % only now physio_out exists
+    % read json file from example data
+    cd(fullfile(pathExampleData, 'physio_out')
 
-    % compare results
+    fileName = 'sub-01_task_desc_physio_norm.json'; % filename in JSON extension 
+    str = fileread(fileName); % dedicated for reading files as text 
+    ExampleJson = jsondecode(str);
+
+
+    % read json file from reference folder
+    cd(fullfile(pathReferenceFiles)
+
+    fileName = 'sub-01_task_desc_physio_norm.json'; % filename in JSON extension 
+    str = fileread(fileName); % dedicated for reading files as text 
+    ReferenceJson = jsondecode(str);
+
+
+    
+    verifyEqual(testCase, ExampleJson, ReferenceJson, 'json files do not match');
+
 end
