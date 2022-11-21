@@ -62,6 +62,12 @@ function [c, r, t, cpulse, acq_codes, verbose, gsr] = tapas_physio_read_physlogf
 
 %% read out values
 DEBUG = verbose.level >= 2;
+doDebugTriggers = verbose.level >= 2;
+doReplaceNans = true;
+
+% if true, assume that trigger switches between +5V and 0 for start of one
+% volume, and back to 5V at start of next volume
+hasAlternatingTriggerFlank = true; 
 
 hasRespirationFile = ~isempty(log_files.respiration);
 hasCardiacFile = ~isempty(log_files.cardiac);
@@ -109,6 +115,49 @@ r = C{idxColResp};
 gsr = C{2}; % TODO: do correctly!
 iAcqOn = (C{idxColTrigger}>thresholdTrigger); % trigger is 5V, but flips on/off between volumes
 
+% replace NaNs by max or min depending on nearest non-NaN-neighbour
+% (whether it was closer to max or min)
+if doReplaceNans
+    maxVal = max(c);
+    minVal = min(c);
+    idxNan = find(isnan(c)); % for loop
+    idxValid = find(~isnan(c));
+
+    % find nearest neighbors of valid indices, and replace with min/max,
+    % whatever value closest neighbor was closer to
+    if exist('knnsearch')
+        idxValidClosest = knnsearch(idxValid, idxNan);
+        validValClosest = c(idxValid(idxValidClosest));
+        isValidValClosestCloserToMin = abs(validValClosest-maxVal) > abs(validValClosest - minVal);
+        c(idxNan(isValidValClosestCloserToMin)) = minVal;
+        c(idxNan(~isValidValClosestCloserToMin)) = maxVal;
+    else % slow...todo: optimize!
+
+        nNans = numel(idxNan);
+        iNan = 1;
+        while iNan <= nNans
+
+            if ~mod(iNan, 1000)
+                fprintf('%d/%d NaNs replaced\n', iNan, nNans);
+            end
+
+            idx = idxNan(iNan);
+
+            [~,iValidClosest] = min(abs(idxValid-idx));
+            validValClosest = c(idxValid(iValidClosest));
+
+            % choose min or max valid value, whatever is closest
+            if abs(maxVal-validValClosest) > abs(validValClosest - minVal)
+                c(idx) = minVal;
+            else
+                c(idx) = maxVal;
+            end
+
+            iNan = iNan + 1
+        end
+    end
+end
+
 %% Create timing vector from samples
 
 dt = log_files.sampling_interval;
@@ -137,6 +186,36 @@ if ~isempty(iAcqOn) % otherwise, nothing to read ...
     % no index shift, for the same reason
     iAcqEnd     = [find(d_iAcqOn == -1); iAcqEnd];
     
+    % remove duplicate entries
+    iAcqStart = unique(iAcqStart);
+    iAcqEnd = unique(iAcqEnd);
+
+    if hasAlternatingTriggerFlank
+        % choose all rising and falling triggers as volume starts (instead
+        % of interpreting falling as an end of a trigger)
+        iAcqStartNew = sort([iAcqStart;iAcqEnd]);
+        iAcqEndNew = [];
+    else
+        iAcqStartNew = iAcqStart;
+        iAcqEndNew = iAcqEnd;
+    end
+
+
+    if doDebugTriggers
+        figure;plot(C{1},C{idxColTrigger})
+        hold all;
+        stem(C{1}(iAcqStart), C{idxColTrigger}(iAcqStart))
+        stem(C{1}(iAcqEnd), C{idxColTrigger}(iAcqEnd))
+        stem(C{1}(iAcqStartNew), 0.8*C{idxColTrigger}(iAcqStartNew))
+        
+        title('Trigger Debugging')
+        legend('Volume Trigger Signal', 'Trigger Rising Flank', ...
+            'Trigger Falling Flank', 'Chosen Trigger Volume Start')
+    end
+    
+    iAcqStart = iAcqStartNew;
+    iAcqEnd = iAcqEndNew;
+
     acq_codes = zeros(nSamples,1);
     acq_codes(iAcqStart) = 8; % to match Philips etc. format
     acq_codes(iAcqEnd) = 16; % don't know...
