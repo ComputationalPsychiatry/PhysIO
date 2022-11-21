@@ -87,26 +87,34 @@ switch lower(cardiac_modality)
 end
 
 labelColResp = 'Respiration';
-labelColTrigger = 'Volume trigger';        
+labelColTrigger = 'Volume trigger';
 
 % it just so works that the first column is just the time (in seconds) per
 % row, but labeled "ChannelTitle=", so other column indices line up
-idxColCardiac = find(strcmpi(columnNames, labelColCardiac));
-idxColResp = find(strcmpi(columnNames, labelColResp));
-idxColTrigger = find(strcmpi(columnNames, labelColTrigger));
+% startsWith is needed to ignore trailing end-of-line for column names
+if exist('startsWith', 'builtin')
+    idxColCardiac = find(startsWith(columnNames, labelColCardiac));
+    idxColResp = find(startsWith(columnNames, labelColResp));
+    idxColTrigger = find(startsWith(columnNames, labelColTrigger));
+else % older Matlab versions, checking chars only up to length of label
+    idxColCardiac = find(strncmpi(columnNames, labelColCardiac, numel(labelColCardiac)));
+    idxColResp = find(strncmpi(columnNames, labelColResp, numel(labelColResp)));
+    idxColTrigger = find(strncmpi(columnNames, labelColTrigger, numel(labelColTrigger)));
+end
 
+thresholdTrigger = 4; % Volt, TTL trigger
 
-c = double(C{idxColCardiac});
-r = double(C{idxColResp});
-gsr = double(C{2});
-iAcqOn = (double(C{idxColTrigger})~=0); % trigger has 11, rest is 0;
+c = C{idxColCardiac};
+r = C{idxColResp};
+gsr = C{2}; % TODO: do correctly!
+iAcqOn = (C{idxColTrigger}>thresholdTrigger); % trigger is 5V, but flips on/off between volumes
 
 %% Create timing vector from samples
 
 dt = log_files.sampling_interval;
 
 if isempty(dt)
-    dt = 1/1000; % 1000 Hz sampling interval
+    dt = mean(diff(C{1})); % first column has timing vector for LabChart
 end
 
 nSamples = max(numel(c), numel(r));
@@ -152,7 +160,7 @@ end
 %% Plot, if wanted
 
 if DEBUG
-    stringTitle = 'Read-In: Raw BioPac physlog data (TXT Export)';
+    stringTitle = 'Read-In: Raw ADInstruments/LabChart physlog data (TXT Export)';
     verbose.fig_handles(end+1) = ...
         tapas_physio_plot_raw_physdata_siemens_hcp(t, c, r, acq_codes, ...
         stringTitle);
