@@ -62,7 +62,7 @@ function [c, r, t, cpulse, acq_codes, verbose, gsr] = tapas_physio_read_physlogf
 
 %% read out values
 DEBUG = verbose.level >= 2;
-doDebugTriggers = verbose.level >= 2;
+doDebugTriggers = verbose.level >= 3;
 doReplaceNans = true;
 
 % if true, assume that trigger switches between +5V and 0 for start of one
