@@ -58,7 +58,6 @@ if nargin < 3
     verbose.level = 0;
 end
 
-log_files.vendor = 'ADInstruments_txt';
 switch lower(log_files.vendor)
     case {'adinstruments_txt', 'labchart_txt'}
         [c, r, t, cpulse, acq_codes] = ...

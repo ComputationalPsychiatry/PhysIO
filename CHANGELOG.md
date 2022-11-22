@@ -6,7 +6,7 @@ Current Release
 
 *Current version: PhysIO Toolbox Release R2022b, v8.2.0*
 
-September 14th, 2022
+November 22nd, 2022
 
 Minor Release Notes (v8.2.0)
 ----------------------------
@@ -16,6 +16,10 @@ Minor Release Notes (v8.2.0)
 - Added suport for logfile version 3 of Siemens physio recordings 
     - multi ECG/Resp channels and interleaved status messages
     - new integration test for Siemens VB Logversion 3
+- Added support for ADInstruments/LabChart Txt-export format (see 
+  [CUBRIC Seminar Example](https://github.com/BRAIN-TO/cubric-physio) and
+  gitlab branch #107)
+
 ### Fixed
 - Removed dependence on `nanmean` (Statistics Toolbox)
     - See [GitHub issue #205](https://github.com/translationalneuromodeling/tapas/issues/205) 
