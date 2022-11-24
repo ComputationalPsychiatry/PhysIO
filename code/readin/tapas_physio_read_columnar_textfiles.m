@@ -151,7 +151,7 @@ nHeaderLines = nHeaderLines + nEmptyLinesAfterHeader(nColumns); % since empty li
 % now read the rest of the file
 fid = fopen(fileName);
 switch upper(fileType)
-    case {'ADINSTRUMENTS_TXT', 'LABCHART_TXT''BIDS', 'BIOPAC_TXT', 'INFO', 'PULS', 'RESP'}
+    case {'ADINSTRUMENTS_TXT', 'LABCHART_TXT', 'BIDS', 'BIOPAC_TXT', 'INFO', 'PULS', 'RESP'}
         C = textscan(fid, parsePatternPerNColumns{nColumns}, 'HeaderLines', nHeaderLines);
     case 'PHILIPS' % sometimes odd lines with single # occur within text file
         C = textscan(fid, parsePatternPerNColumns{nColumns}, 'HeaderLines', nHeaderLines, 'CommentStyle', '#');
