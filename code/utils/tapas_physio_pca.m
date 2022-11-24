@@ -36,7 +36,7 @@ end
 if nVoxels <= nVolumes
     % TODO: reimplement using PCA of COV((X-mu)'*(X-mu))
     method = 'stats-pca';
-    % error([mfilename ':NotEnoughVoxels'], 'nVoxels <= nVolumes')
+    error([mfilename ':NotEnoughVoxels'], 'nVoxels <= nVolumes')
 end
 
 
