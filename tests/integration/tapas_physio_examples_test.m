@@ -438,6 +438,7 @@ end
 
 % hard-coded relative tolerance
 relTol = 0.01; % 0.01 means 1 percent deviation from expected value allowed
+absTol = 1e-6; % for time courses (e.g., breathing) that reach close to 0, relative tolerance can be misleading, use relative value to max instead
 
 %% Generic settings
 % methods for recursively comparing structures, see
@@ -527,8 +528,15 @@ if doTestOnsSecsRaw
         IsEqualTo(expPhysio.ons_secs.raw,  ...
         'Using', StructComparator(NumericComparator, 'Recursively', true), ...
         'Within', RelativeTolerance(relTol), ...
-        'IgnoringFields',  {'spulse_per_vol'}...
+        'IgnoringFields',  {'spulse_per_vol', 'fr'}...
         ), 'Comparing all numeric subfields of ons_secs.raw to check read-in and basic filtering of phys recordings');
+
+    % test filtered respiratory trace separetely, because of values close
+    % to zero in trace (relative errors can be huge even if 1e-6)
+    verifyEqual(testCase, actPhysio.ons_secs.raw.fr, expPhysio.ons_secs.raw.fr, ...
+        'AbsTol', absTol*max(abs(expPhysio.ons_secs.raw.fr)), ...
+        'Comparing raw.fr (raw filtered respiratory trace)');
+
 end
 
 % 2. Check some crucial timing parameters more vigorously
