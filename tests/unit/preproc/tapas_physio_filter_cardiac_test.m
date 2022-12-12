@@ -62,7 +62,10 @@ expPhysio = physio;
 actSolution = actPhysio.ons_secs.c;
 expSolution = expPhysio.ons_secs.c;
 
-verifyEqual(testCase, actSolution, expSolution);
+% RelTol would be too conservative, because values close to 0 in raw
+% timeseries
+verifyEqual(testCase, actSolution, expSolution, ...
+    'AbsTol', 1e-6*max(abs(expSolution)));
 end
 
 function test_philips_ppu7t_filter_butter(testCase)
@@ -102,5 +105,8 @@ expPhysio = physio;
 actSolution = actPhysio.ons_secs.c;
 expSolution = expPhysio.ons_secs.c;
 
-verifyEqual(testCase, actSolution, expSolution);
+% RelTol would be too conservative, because values close to 0 in raw
+% timeseries
+verifyEqual(testCase, actSolution, expSolution, ...
+    'AbsTol', 1e-6*max(abs(expSolution)));
 end
