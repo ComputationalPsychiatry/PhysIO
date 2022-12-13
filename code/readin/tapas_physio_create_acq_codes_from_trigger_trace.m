@@ -45,7 +45,8 @@ if nargin < 5
     isAlternating = false;
 end
 
-if isAlternating
+isNewTriggerDetection = false;
+if isNewTriggerDetection
     % new implementation for ADInstruments, make standard also for BIDS (s.b.
     % in else part); this should also work for non-alternating (see switch
     % below), but does not at the moment for BIDS example
@@ -83,13 +84,15 @@ if isAlternating
 
         doDebugTriggers = verbose.level >= 3;
         if doDebugTriggers
-            figure;plot(t,trigger_trace)
+            verbose.fig_handles(end+1,1) = tapas_physio_get_default_fig_params();
+            plot(t,trigger_trace)
             hold all;
             stem(t(iAcqStart), trigger_trace(iAcqStart))
             stem(t(iAcqEnd), trigger_trace(iAcqEnd))
             stem(t(iAcqStartNew), 0.8*trigger_trace(iAcqStartNew))
-
-            title('Trigger Debugging')
+            strTitle = 'Read-In: Trigger Debugging';
+            title(strTitle);
+            set(gcf, 'Name', strTitle);
             legend('Volume Trigger Signal', 'Trigger Rising Flank', ...
                 'Trigger Falling Flank', 'Chosen Trigger Volume Start')
         end
@@ -144,10 +147,13 @@ else
 
          doDebugTriggers = verbose.level >= 3;
         if doDebugTriggers
-            figure;plot(t,trigger_trace)
+            verbose.fig_handles(end+1,1) = tapas_physio_get_default_fig_params();
+            plot(t,trigger_trace)
             hold all;
             stem(t(iAcqStart), trigger_trace(iAcqStart))
-            title('Trigger Debugging')
+            strTitle = 'Read-In: Trigger Debugging';
+            title(strTitle);
+            set(gcf, 'Name', strTitle);
             legend('Volume Trigger Signal', 'Trigger Rising Flank')
         end
 
