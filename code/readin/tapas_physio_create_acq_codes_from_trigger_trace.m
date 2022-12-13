@@ -141,6 +141,16 @@ else
         iAcqOutlier = 1 + find(dAcqStart < outlierThreshold*mean(dAcqStart));
         iAcqStart(idxAcqStart(iAcqOutlier)) = 0;
 
+
+         doDebugTriggers = verbose.level >= 3;
+        if doDebugTriggers
+            figure;plot(t,trigger_trace)
+            hold all;
+            stem(t(iAcqStart), trigger_trace(iAcqStart))
+            title('Trigger Debugging')
+            legend('Volume Trigger Signal', 'Trigger Rising Flank')
+        end
+
         nSamples = size(trigger_trace,1);
         acq_codes = zeros(nSamples,1);
         acq_codes(iAcqStart) = 8; % to match Philips etc. format
