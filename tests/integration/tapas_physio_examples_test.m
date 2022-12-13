@@ -533,9 +533,15 @@ if doTestOnsSecsRaw
 
     % test filtered respiratory trace separetely, because of values close
     % to zero in trace (relative errors can be huge even if 1e-6)
+    % if isempty, set arbitrary tolerance
+    absTolFr = absTol*max(abs(expPhysio.ons_secs.raw.fr));
+    if isempty(absTolFr)
+        absTolFr = absTol;
+    end
+
     verifyEqual(testCase, actPhysio.ons_secs.raw.fr, expPhysio.ons_secs.raw.fr, ...
-        'AbsTol', absTol*max(abs(expPhysio.ons_secs.raw.fr)), ...
-        'Comparing raw.fr (raw filtered respiratory trace)');
+        'AbsTol', absTolFr, ...
+        'Comparing ons_secs.raw.fr (raw filtered respiratory trace)');
 
 end
 

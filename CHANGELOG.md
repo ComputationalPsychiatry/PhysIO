@@ -26,6 +26,7 @@ Minor Release Notes (v8.2.0)
 - Compatibility with multiple SPM toolbox locations for `lmod` ([GitHub issue #211](https://github.com/translationalneuromodeling/tapas/issues/211))
     - as listed in `spm_get_defaults('tbx')`
 - Refactoring of Philips read-in to support novel 12-column logfile version, see [GitHub issue #207](https://github.com/translationalneuromodeling/tapas/issues/207#issuecomment-1246078600)
+- Unit/Integration tests for filtered traces (cardiac and respiratory) switched to absolute tolerances (relative problematic for traces close to zero)
 
 Minor Release Notes (v8.1.0)
 ----------------------------
