@@ -61,6 +61,8 @@ function [c, r, t, cpulse, acq_codes, verbose, gsr] = tapas_physio_read_physlogf
 % COPYING or <http://www.gnu.org/licenses/>.
 
 %% read out values
+thresholdTrigger = 4; % Volt, TTL trigger
+
 DEBUG = verbose.level >= 2;
 doDebugTriggers = verbose.level >= 3;
 doReplaceNans = true;
@@ -107,8 +109,6 @@ else % older Matlab versions, checking chars only up to length of label
     idxColResp = find(strncmpi(columnNames, labelColResp, numel(labelColResp)));
     idxColTrigger = find(strncmpi(columnNames, labelColTrigger, numel(labelColTrigger)));
 end
-
-thresholdTrigger = 4; % Volt, TTL trigger
 
 c = C{idxColCardiac};
 r = C{idxColResp};
