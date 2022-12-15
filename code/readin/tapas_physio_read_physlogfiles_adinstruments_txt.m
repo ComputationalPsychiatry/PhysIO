@@ -66,9 +66,9 @@ thresholdTrigger = 4; % Volt, TTL trigger
 DEBUG = verbose.level >= 2;
 doReplaceNans = true;
 
-% if true, assume that trigger switches between +5V and 0 for start of one
+% alternating assumes that trigger switches between +5V and 0 for start of one
 % volume, and back to 5V at start of next volume
-hasAlternatingTriggerFlank = true; 
+triggerEdge = 'alternating'; %'rising', 'falling';
 
 hasRespirationFile = ~isempty(log_files.respiration);
 hasCardiacFile = ~isempty(log_files.cardiac);
@@ -170,7 +170,7 @@ t = -log_files.relative_start_acquisition + ((0:(nSamples-1))*dt)';
 
 %% Recompute acq_codes as for Siemens (volume on/volume off)
 [acq_codes, verbose] = tapas_physio_create_acq_codes_from_trigger_trace(t, trigger_trace, verbose, ...
-    thresholdTrigger, hasAlternatingTriggerFlank);
+    thresholdTrigger, triggerEdge, 'maxpeaks_and_alternating');
 
 
 %% Plot, if wanted
