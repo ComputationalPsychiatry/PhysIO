@@ -45,7 +45,7 @@ if nargin < 5
     isAlternating = false;
 end
 
-isNewTriggerDetection = false;
+isNewTriggerDetection = true;
 if isNewTriggerDetection
     % new implementation for ADInstruments, make standard also for BIDS (s.b.
     % in else part); this should also work for non-alternating (see switch
@@ -102,8 +102,11 @@ if isNewTriggerDetection
 
         nSamples = size(trigger_trace,1);
         acq_codes = zeros(nSamples,1);
-        acq_codes(iAcqStart) = 8; % to match Philips etc. format
-        acq_codes(iAcqEnd) = 16; % don't know...
+        acq_codes(iAcqStart) = 8; % to match Philips etc. format, volume onset start
+
+        % to match Philips etc. format, volume onset stop,but don't overwrite
+        % onsets:
+        acq_codes(setdiff(iAcqEnd, iAcqStart)) = 16;
 
         % report estimated onset gap between last slice of volume_n and 1st slice of
         % volume_(n+1)
@@ -111,8 +114,11 @@ if isNewTriggerDetection
         nAcqEnds = numel(iAcqEnd);
         nAcqs = min(nAcqStarts, nAcqEnds);
 
-        if nAcqs >= 1
-            % report time of acquisition, as defined in SPM
+        nDistinctStartEnds = numel(setdiff(iAcqEnd, iAcqStart));
+        if nAcqs >= 1 && (nDistinctStartEnds > 0.5*nAcqStarts)
+            % report time of acquisition, as defined in SPM, but only if
+            % majority of the acquisition trigger starts don't coincide with the
+            % end triggers (i.e., length 1 triggers)
             TA = mean(t(iAcqEnd(1:nAcqs)) - t(iAcqStart(1:nAcqs)));
             verbose = tapas_physio_log(...
                 sprintf('TA = %.4f s (Estimated time of acquisition during one volume TR)', ...
