@@ -321,7 +321,8 @@ end
 
 
 %% Recompute acq_codes as for Siemens (volume on/volume off)
-[acq_codes, verbose] = tapas_physio_create_acq_codes_from_trigger_trace(t, trigger_trace, verbose);
+[acq_codes, verbose] = tapas_physio_create_acq_codes_from_trigger_trace(t, trigger_trace, verbose, ...
+    1, 'rising', 'auto_matched');
 
 %% Plot extracted data so far
 if DEBUG
@@ -421,7 +422,8 @@ nSamples = max(numel(c), numel(r));
 t = -tRelStartScan + ((0:(nSamples-1))*dt)';
 
 %% Recompute acq_codes as for Siemens (volume on/volume off)
-[acq_codes, verbose] = tapas_physio_create_acq_codes_from_trigger_trace(t, trigger_trace, verbose);
+[acq_codes, verbose] = tapas_physio_create_acq_codes_from_trigger_trace(t, trigger_trace, verbose, ...
+        1, 'rising', 'auto_matched');
 
 
 %% Plot extracted traces so far
