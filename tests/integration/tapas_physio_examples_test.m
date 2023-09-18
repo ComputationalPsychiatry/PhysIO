@@ -49,7 +49,11 @@ end
 
 % close all created figures from examples after each test
 function teardown(testCase)
-close(testCase.TestData.createdFigHandles);
+if isfield(testCase, 'TestData') && ...
+        isfield(testCase.TestData, 'createdFigHandles') && ...
+        ~isempty(testCase.TestData.createdFigHandles)
+    close(testCase.TestData.createdFigHandles);
+end
 end
 
 
