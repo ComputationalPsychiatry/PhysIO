@@ -250,9 +250,9 @@ Contributors
       TNU & MR-Technology Group, IBT, University of Zurich & ETH Zurich
 - Project Team: 
     - Johanna Bayer, Center for Youth Mental Health, The University of Melbourne, Melbourne, VIC, Australia
-    - Sam Harrison, TNU Zurich
     - Saskia Bollmann, Centre for Advanced Imaging, University of Queensland, Australia
     - Steffen Bollmann, Centre for Advanced Imaging, University of Queensland, Australia
+    - Sam Harrison, TNU Zurich
 - Contributors (Code):
     - Eduardo Aponte, TNU Zurich
     - Tobias U. Hauser, FIL London, UK
