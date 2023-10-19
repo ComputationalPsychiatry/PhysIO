@@ -4,9 +4,24 @@ RELEASE INFORMATION
 Current Release
 ---------------
 
-*Current version: PhysIO Toolbox Release R2022b, v8.2.0*
+*Current version: PhysIO Toolbox Release R2023a, v9.0.0-beta*
 
-November 22nd, 2022
+October 19th, 2023
+
+Major Release Notes (v9.0.0)
+----------------------------
+
+### Upcoming (branches to be integrated for release)
+- BIDS writer: write out BIDS-compatbile physiological logfiles (`.tsv.gz` and `.json`)
+  from any vendor format
+- Review visualization: Allow more detailed re-creation of figures from 
+  online execution, control visual verbosity retrospectively (e.g., for debugging)
+
+### Added
+- Read-In of AcquisitionTime from BIDS converted Siemens DICOMs after 
+  [dcm2niix](https://www.nitrc.org/plugins/mwiki/index.php/dcm2nii:MainPage)
+  conversion for synchronization (Gitlab issue 109)
+
 
 Minor Release Notes (v8.2.0)
 ----------------------------

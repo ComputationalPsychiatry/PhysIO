@@ -1,9 +1,9 @@
 TAPAS PhysIO Toolbox 
 ====================
 
-*Current version: Release 2022b, v8.2.0*
+*Current version: Release 2023a, v9.0.0-beta*
 
-> Copyright (C) 2012-2022  
+> Copyright (C) 2012-2023  
 > Lars Kasper  
 > <kasper@biomed.ee.ethz.ch>  
 >  
@@ -249,9 +249,10 @@ Contributors
     - [Lars Kasper](https://brain-to.ca/content/lars-kasper),
       TNU & MR-Technology Group, IBT, University of Zurich & ETH Zurich
 - Project Team: 
-    - Steffen Bollmann, Centre for Advanced Imaging, University of Queensland, Australia
-    - Saskia Bollmann, Centre for Advanced Imaging, University of Queensland, Australia
+    - Johanna Bayer, Center for Youth Mental Health, The University of Melbourne, Melbourne, VIC, Australia
     - Sam Harrison, TNU Zurich
+    - Saskia Bollmann, Centre for Advanced Imaging, University of Queensland, Australia
+    - Steffen Bollmann, Centre for Advanced Imaging, University of Queensland, Australia
 - Contributors (Code):
     - Eduardo Aponte, TNU Zurich
     - Tobias U. Hauser, FIL London, UK
@@ -288,6 +289,9 @@ open source projects and gratefully acknowledges their use.
     - recursive parser for field names of a structure
     - Matlab file exchange, adam.tudorjones@pharm.ox.ac.uk
 
+We further acknowledge the generous support of the MathWorks (MA, USA), who 
+supported Johanna Bayer for the [2022 MATLAB Community Toolbox Training Program](https://www.incf.org/blog/second-summer-training-project-collaboration-between-incf-and-mathworks) 
+established in collaboration with the International Neuroinformatics Coordinating Facility ([INCF](https://www.incf.org/)).
 
 Cite Me
 -------
@@ -386,7 +390,7 @@ imaging analyses produced by censoring high-motion data points. Hum. Brain Mapp.
 Spurious but systematic correlations in functional connectivity MRI networks 
 arise from subject motion. NeuroImage 59, 2142-2154. 
 https://doi.org/10.1016/j.neuroimage.2011.10.018
-
+    - *definition of framewise displacement*
 
 Copying/License
 ---------------
