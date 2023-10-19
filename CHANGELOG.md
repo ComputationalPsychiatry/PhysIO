@@ -259,8 +259,7 @@ Minor Release Notes (R2019a, v7.1.0)
 ------------------------------------
 
 ### Added
-- BIDS reader and example (Brain Imaging Data Structure, 
-http://bids.neuroimaging.io/bids_spec.pdf) for `*_physio.tsv[.gz]/.json` files
+- Brain Imaging Data Structure ([BIDS](https://bids-specification.readthedocs.io/en/stable/04-modality-specific-files/06-physiological-and-other-continuous-recordings.html)) reader and example for `*_physio.tsv[.gz]/.json` files
 - Added BioPac txt-File read-in and example
 - Template example with all physio-fields for matlab script and settings as in default SPM batch
 - Started unit testing framework in folder `tests`
