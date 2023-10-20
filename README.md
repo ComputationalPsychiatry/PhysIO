@@ -1,9 +1,9 @@
 TAPAS PhysIO Toolbox 
 ====================
 
-*Current version: Release 2022b, v8.2.0*
+*Current version: Release 2023a, v9.0.0-beta*
 
-> Copyright (C) 2012-2022  
+> Copyright (C) 2012-2023  
 > Lars Kasper  
 > <kasper@biomed.ee.ethz.ch>  
 >  
@@ -95,7 +95,7 @@ as every researcher, we only have a limited amount of time. So please excuse, if
 we might not provide a detailed answer to your request, but just some general 
 pointers and templates. Before you contact us, please try the following:
 
-1. A first look at the [FAQ](https://gitlab.ethz.ch/physio/physio-doc/wikis/FAQ) 
+1. A first look at the [FAQ](https://gitlab.ethz.ch/physio/physio-doc/-/wikis/FAQ) 
    (which is frequently extended) might already answer your questions.
 2. A lot of questions (before 2018) have also been discussed on our mailinglist 
    [tapas@sympa.ethz.ch](https://sympa.ethz.ch/sympa/info/tapas), 
@@ -115,8 +115,8 @@ Documentation for this toolbox is provided in the following forms
     - [README.md](README.md): this file, purpose, installation, getting started, pointer to more help
     - [CHANGELOG.md](CHANGELOG.md): List of all toolbox versions and the respective release notes, 
       i.e. major changes in functionality, bugfixes etc.
-2. User Guide: The markdown-based [GitLab Wiki](https://gitlab.ethz.ch/physio/physio-doc/wikis/home), including an FAQ
-    - online (and frequently updated) at http://gitlab.ethz.ch/physio/physio-doc/wikis/home.
+2. User Guide: The markdown-based [GitLab Wiki](https://gitlab.ethz.ch/physio/physio-doc/-/wikis/home), including an FAQ
+    - online (and frequently updated) at http://gitlab.ethz.ch/physio/physio-doc/-/wikis/home.
     - offline (with stables releases) as part of the toolbox in folder `physio/wikidocs`: 
         - plain text `.md` markdown files
         - as single HTML and PDF  file: `documentation.{html,pdf}`
@@ -216,7 +216,7 @@ currently supported (alphabetic order):
 - Siemens Human Connectome Project (preprocessed files `*Physio_log.txt`)
 
 See also the 
-[Wiki page on Read-In](https://gitlab.ethz.ch/physio/physio-doc/wikis/MANUAL_PART_READIN) 
+[Wiki page on Read-In](https://gitlab.ethz.ch/physio/physio-doc/-/wikis/MANUAL_PART_READIN) 
 for a more detailed list and description of the supported formats.
 
 
@@ -249,8 +249,9 @@ Contributors
     - [Lars Kasper](https://brain-to.ca/content/lars-kasper),
       TNU & MR-Technology Group, IBT, University of Zurich & ETH Zurich
 - Project Team: 
-    - Steffen Bollmann, Centre for Advanced Imaging, University of Queensland, Australia
+    - Johanna Bayer, Center for Youth Mental Health, The University of Melbourne, Melbourne, VIC, Australia
     - Saskia Bollmann, Centre for Advanced Imaging, University of Queensland, Australia
+    - Steffen Bollmann, Centre for Advanced Imaging, University of Queensland, Australia
     - Sam Harrison, TNU Zurich
 - Contributors (Code):
     - Eduardo Aponte, TNU Zurich
@@ -260,8 +261,7 @@ Contributors
     - Miriam Sebold, Charite Berlin, Germany
     - External TAPAS contributors are listed in the [Contributor License Agreement](https://github.com/translationalneuromodeling/tapas/blob/master/Contributor-License-Agreement.md)
 - Contributors (Examples):
-    - listed in [EXAMPLES.md](https://gitlab.ethz.ch/physio/physio-doc/wikis/EXAMPLES)
-
+    - listed in [EXAMPLES.md](https://gitlab.ethz.ch/physio/physio-doc/-/wikis/EXAMPLES)
 
 Requirements
 ------------
@@ -288,6 +288,9 @@ open source projects and gratefully acknowledges their use.
     - recursive parser for field names of a structure
     - Matlab file exchange, adam.tudorjones@pharm.ox.ac.uk
 
+We further acknowledge the generous support of the MathWorks (MA, USA), who 
+supported Johanna Bayer for the [2022 MATLAB Community Toolbox Training Program](https://www.incf.org/blog/second-summer-training-project-collaboration-between-incf-and-mathworks) 
+established in collaboration with the International Neuroinformatics Coordinating Facility ([INCF](https://www.incf.org/)).
 
 Cite Me
 -------
@@ -320,7 +323,7 @@ A Hilbert-based method for processing respiratory timeseries.
 NeuroImage, 117787. https://doi.org/10.1016/j.neuroimage.2021.117787
     - *superior RVT computation, preprocessing of respiratory traces*
 
-Our [FAQ](https://gitlab.ethz.ch/physio/physio-doc/wikis/FAQ#3-how-do-i-cite-physio) 
+Our [FAQ](https://gitlab.ethz.ch/physio/physio-doc/-/wikis/FAQ#3-how-do-i-cite-physio) 
 contains a suggestion for a more comprehensive RETROICOR-related methods paragraph.
 See the [main TAPAS README](../README.md) for more details on citing TAPAS itself.
 
@@ -386,7 +389,7 @@ imaging analyses produced by censoring high-motion data points. Hum. Brain Mapp.
 Spurious but systematic correlations in functional connectivity MRI networks 
 arise from subject motion. NeuroImage 59, 2142-2154. 
 https://doi.org/10.1016/j.neuroimage.2011.10.018
-
+    - *definition of framewise displacement*
 
 Copying/License
 ---------------
