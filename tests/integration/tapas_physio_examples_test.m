@@ -477,14 +477,30 @@ if doUseSpm
     fileExampleOutputPhysio = matlabbatch{1}.spm.tools.physio.model.output_physio;
     fileExampleOutputTxt = matlabbatch{1}.spm.tools.physio.model.output_multiple_regressors;
     
-else % has verbosity...cannot switch it off
+else % run matlab script, but read it line-by-line, but switch off verbosity
     
     fileJobMScript = [regexprep(lower(dirExample), '/', '_') '_matlab_script.m'];
     fileExample = fullfile(pathExamples, dirExample, fileJobMScript);
     
+    %% read and eval all lines in example file apart from tapas_physio_main_regressors
+    % then switch off verbosity and execute main
+    fid = fopen(fileExample);
+    strColumnHeader = 'tapas_physio_main_create_regressors';
+    haveFoundColumnHeader = isempty(strColumnHeader);
+    strLine = 'physio = [];';
+    % execute all lines up to tapas_physio_main_create_regressors
+    while ~haveFoundColumnHeader
+        eval(strLine);
+        strLine = fgets(fid);
+        haveFoundColumnHeader = any(regexpi(strLine, strColumnHeader));        
+    end
+    fclose(fid);
+    physio.verbose.level = 0;
+    eval(strLine); % execute tapas_physio_main_create_regressors
+
     % runs example Matlab script
     % will output a PhysIO-struct, from which we can parse output files
-    run(fileExample);
+    % run(fileExample);
     
     % retrieve output files, remove preprending path
     [~, dirExampleOutput] = fileparts(physio.save_dir);
