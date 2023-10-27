@@ -118,7 +118,7 @@ if hasScanTimingFile
             dateVector = datevec(val.AcquisitionTime, 'HH:MM:SS.FFF');
             tStartScanImageHeader = dateVector(end-2:end)*[3600 60 1]';
             TR = val.RepetitionTime;
-        
+
         otherwise % assume and try DICOM file
 
             dicomHeader             = spm_dicom_headers(...
@@ -150,174 +150,173 @@ if hasScanTimingFile
                     dateVector = datevec(dc.AcquisitionDateTime, 'yyyymmddHHMMSS.FFF');
                     tStartScanImageHeader = dateVector(end-2:end)*[3600 60 1]';
                     TR = dc.SharedFunctionalGroupsSequence{1}.MRTimingAndRelatedParametersSequence{1}.RepetitionTime/1000;
-
                 end
-
-            end
-
-            tStopScanImageHeader     = tStartScanImageHeader + TR;
+           end
     end
 
-
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% Read in cardiac data
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-    if hasCardiacData
-
-        [lineData, logFooter] = tapas_physio_read_physlogfiles_siemens_raw(...
-            log_files.cardiac);
-        tLogTotal = logFooter.StopTimeSeconds - logFooter.StartTimeSeconds;
+    tStopScanImageHeader     = tStartScanImageHeader + TR;
+end
 
 
-        if hasScanTimingFile
-            tStartScan = tStartScanImageHeader; % this is the start of the DICOM volume selected for sync
-            tStopScan = tStopScanImageHeader;   % this is the end time (start + TR) of the DICOM volume selected for sync
-        else
-            tStartScan = logFooter.StartTimeSeconds;
-            tStopScan = logFooter.StopTimeSeconds;
-        end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Read in cardiac data
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-        switch log_files.align_scan
-            case 'first'
-                relative_start_acquisition = tStartScan ...
-                    - logFooter.StartTimeSeconds;
-            case 'last'
-                % shift onset of first scan by knowledge of run duration and
-                % onset of last scan in run
-                relative_start_acquisition = ...
-                    (tStopScan - sqpar.Nscans*sqpar.TR) ...
-                    - logFooter.StartTimeSeconds;
-        end
+if hasCardiacData
+
+    [lineData, logFooter] = tapas_physio_read_physlogfiles_siemens_raw(...
+        log_files.cardiac);
+    tLogTotal = logFooter.StopTimeSeconds - logFooter.StartTimeSeconds;
 
 
-        % add arbitrary offset specified by user
-        relative_start_acquisition = relative_start_acquisition + ...
-            explicit_relative_start_acquisition;
-
-        data_table = tapas_physio_siemens_line2table(lineData, cardiac_modality);
-
-        if isempty(dt)
-            nSamplesC = size(data_table,1);
-            dt_c = tLogTotal/(nSamplesC-1);
-        else
-            dt_c = dt(1);
-        end
-
-        dataCardiac = tapas_physio_siemens_table2cardiac(data_table, ecgChannel, dt_c, ...
-            relative_start_acquisition, endCropSeconds);
-
-        if DEBUG
-            verbose.fig_handles(end+1) = ...
-                tapas_physio_plot_raw_physdata_siemens(dataCardiac);
-        end
-
-
-        %% crop end of log file
-        cpulse = dataCardiac.cpulse_on;
-        c = dataCardiac.c;
-        t_c = dataCardiac.t;
-        stopSample = dataCardiac.stopSample;
-
-        cpulse(cpulse > t_c(dataCardiac.stopSample)) = [];
-        t_c(stopSample+1:end) = [];
-        c(stopSample+1:end) = [];
-
-
-
+    if hasScanTimingFile
+        tStartScan = tStartScanImageHeader; % this is the start of the DICOM volume selected for sync
+        tStopScan = tStopScanImageHeader;   % this is the end time (start + TR) of the DICOM volume selected for sync
     else
-        c = [];
-        t_c = [];
+        tStartScan = logFooter.StartTimeSeconds;
+        tStopScan = logFooter.StopTimeSeconds;
+    end
+
+    switch log_files.align_scan
+        case 'first'
+            relative_start_acquisition = tStartScan ...
+                - logFooter.StartTimeSeconds;
+        case 'last'
+            % shift onset of first scan by knowledge of run duration and
+            % onset of last scan in run
+            relative_start_acquisition = ...
+                (tStopScan - sqpar.Nscans*sqpar.TR) ...
+                - logFooter.StartTimeSeconds;
     end
 
 
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% Read in respiratory data
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % add arbitrary offset specified by user
+    relative_start_acquisition = relative_start_acquisition + ...
+        explicit_relative_start_acquisition;
 
-    if hasRespData
-        [lineData, logFooter] = tapas_physio_read_physlogfiles_siemens_raw(...
-            log_files.respiration);
-        tLogTotal = logFooter.StopTimeSeconds - logFooter.StartTimeSeconds;
+    data_table = tapas_physio_siemens_line2table(lineData, cardiac_modality);
 
-        if hasScanTimingFile
-            tStartScan = tStartScanImageHeader; % this is the start of the DICOM volume selected for sync
-            tStopScan = tStopScanImageHeader;   % this is the end time (start + TR) of the DICOM volume selected for sync
-        else
-            tStartScan = logFooter.StartTimeSeconds;
-            tStopScan = logFooter.StopTimeSeconds;
-        end
-
-        switch log_files.align_scan
-            case 'first'
-                relative_start_acquisition = tStartScan - ...
-                    logFooter.StartTimeSeconds;
-            case 'last'
-                % shift onset of first scan by knowledge of run duration and
-                % onset of last scan in run
-                relative_start_acquisition = ...
-                    (tStopScan - sqpar.Nscans*sqpar.TR) ...
-                    - logFooter.StartTimeSeconds;
-        end
-
-
-        % add arbitrary offset specified by user
-        relative_start_acquisition = relative_start_acquisition + ...
-            explicit_relative_start_acquisition;
-
-        data_table = tapas_physio_siemens_line2table(lineData, 'RESP');
-
-        if isempty(dt)
-            nSamplesR = size(data_table,1);
-            dt_r = tLogTotal/(nSamplesR-1);
-        else
-            dt_r = dt(end);
-        end
-
-        dataResp = tapas_physio_siemens_table2cardiac(data_table, ecgChannel, ...
-            dt_r, relative_start_acquisition, endCropSeconds);
-
-        if DEBUG
-            verbose.fig_handles(end+1) = ...
-                tapas_physio_plot_raw_physdata_siemens(dataResp);
-        end
-
-
-        r = dataResp.c;
-        t_r = dataResp.t;
-
-        %
-        %% crop end of log file???
-        % stopSample = dataResp.stopSample;
-        % t(stopSample+1:end) = [];
-        % c(stopSample+1:end) = [];
-
-
+    if isempty(dt)
+        nSamplesC = size(data_table,1);
+        dt_c = tLogTotal/(nSamplesC-1);
     else
-        r = [];
-        t_r = [];
+        dt_c = dt(1);
+    end
+
+    dataCardiac = tapas_physio_siemens_table2cardiac(data_table, ecgChannel, dt_c, ...
+        relative_start_acquisition, endCropSeconds);
+
+    if DEBUG
+        verbose.fig_handles(end+1) = ...
+            tapas_physio_plot_raw_physdata_siemens(dataCardiac);
     end
 
 
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% Adapt time scales resp/cardiac, i.e. zero fill c or r
-    % to get equal length with max(c_t, r_t)
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% crop end of log file
+    cpulse = dataCardiac.cpulse_on;
+    c = dataCardiac.c;
+    t_c = dataCardiac.t;
+    stopSample = dataCardiac.stopSample;
 
-    nSamplesR = numel(r);
-    nSamplesC = numel(c);
+    cpulse(cpulse > t_c(dataCardiac.stopSample)) = [];
+    t_c(stopSample+1:end) = [];
+    c(stopSample+1:end) = [];
 
-    if  nSamplesR > nSamplesC
-        t = t_r; % time scale defined by respiration now, since longer
-        if nSamplesC > 0 % zero-fill cardiac data
-            c(nSamplesC+1:nSamplesR) = 0;
-        end
+
+
+else
+    c = [];
+    t_c = [];
+end
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Read in respiratory data
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+if hasRespData
+    [lineData, logFooter] = tapas_physio_read_physlogfiles_siemens_raw(...
+        log_files.respiration);
+    tLogTotal = logFooter.StopTimeSeconds - logFooter.StartTimeSeconds;
+
+    if hasScanTimingFile
+        tStartScan = tStartScanImageHeader; % this is the start of the DICOM volume selected for sync
+        tStopScan = tStopScanImageHeader;   % this is the end time (start + TR) of the DICOM volume selected for sync
     else
-        t = t_c;
-        if nSamplesR > 0
-            r(nSamplesR+1:nSamplesC) = 0;
-        end
+        tStartScan = logFooter.StartTimeSeconds;
+        tStopScan = logFooter.StopTimeSeconds;
     end
+
+    switch log_files.align_scan
+        case 'first'
+            relative_start_acquisition = tStartScan - ...
+                logFooter.StartTimeSeconds;
+        case 'last'
+            % shift onset of first scan by knowledge of run duration and
+            % onset of last scan in run
+            relative_start_acquisition = ...
+                (tStopScan - sqpar.Nscans*sqpar.TR) ...
+                - logFooter.StartTimeSeconds;
+    end
+
+
+    % add arbitrary offset specified by user
+    relative_start_acquisition = relative_start_acquisition + ...
+        explicit_relative_start_acquisition;
+
+    data_table = tapas_physio_siemens_line2table(lineData, 'RESP');
+
+    if isempty(dt)
+        nSamplesR = size(data_table,1);
+        dt_r = tLogTotal/(nSamplesR-1);
+    else
+        dt_r = dt(end);
+    end
+
+    dataResp = tapas_physio_siemens_table2cardiac(data_table, ecgChannel, ...
+        dt_r, relative_start_acquisition, endCropSeconds);
+
+    if DEBUG
+        verbose.fig_handles(end+1) = ...
+            tapas_physio_plot_raw_physdata_siemens(dataResp);
+    end
+
+
+    r = dataResp.c;
+    t_r = dataResp.t;
+
+    %
+    %% crop end of log file???
+    % stopSample = dataResp.stopSample;
+    % t(stopSample+1:end) = [];
+    % c(stopSample+1:end) = [];
+
+
+else
+    r = [];
+    t_r = [];
+end
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Adapt time scales resp/cardiac, i.e. zero fill c or r
+% to get equal length with max(c_t, r_t)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+nSamplesR = numel(r);
+nSamplesC = numel(c);
+
+if  nSamplesR > nSamplesC
+    t = t_r; % time scale defined by respiration now, since longer
+    if nSamplesC > 0 % zero-fill cardiac data
+        c(nSamplesC+1:nSamplesR) = 0;
+    end
+else
+    t = t_c;
+    if nSamplesR > 0
+        r(nSamplesR+1:nSamplesC) = 0;
+    end
+end
 
 
 end

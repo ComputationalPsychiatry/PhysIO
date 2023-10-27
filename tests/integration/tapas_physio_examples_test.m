@@ -484,6 +484,13 @@ else % run matlab script, but read it line-by-line, but switch off verbosity
     
     %% read and eval all lines in example file apart from tapas_physio_main_regressors
     % then switch off verbosity and execute main
+    % i.e., emulate running the example script via "run(fileExample);" 
+  
+    pathTmp = fileparts(fileExample);
+    if ~isempty(pathTmp) % to emulate behavior of Matlab's "run", we have to CD to the folder
+        pathNow = pwd;
+        cd(pathTmp);
+    end
     fid = fopen(fileExample);
     strColumnHeader = 'tapas_physio_main_create_regressors';
     haveFoundColumnHeader = isempty(strColumnHeader);
@@ -496,11 +503,20 @@ else % run matlab script, but read it line-by-line, but switch off verbosity
     end
     fclose(fid);
     physio.verbose.level = 0;
-    eval(strLine); % execute tapas_physio_main_create_regressors
-
-    % runs example Matlab script
-    % will output a PhysIO-struct, from which we can parse output files
-    % run(fileExample);
+    
+    try
+        eval(strLine); % execute tapas_physio_main_create_regressors
+        if ~isempty(pathTmp)
+            cd(pathNow);
+        end
+    catch err
+        % at least CD back to original directory
+        if ~isempty(pathTmp)
+            cd(pathNow);
+        end
+        rethrow(err)
+    end
+    % output of example script is  PhysIO-struct, from which we can parse output files
     
     % retrieve output files, remove preprending path
     [~, dirExampleOutput] = fileparts(physio.save_dir);
