@@ -27,13 +27,22 @@ function tests = tapas_physio_readin_bids_test()
 tests = functiontests(localfunctions);
 end
 
+% path to examples, needed for all test cases
+function setupOnce(testCase)
+% Get PhysIO public repo base folder from this file's location
+testCase.TestData.pathPhysioPublic = tapas_physio_simplify_path(fullfile(fileparts(mfilename('fullpath')), '..', '..', '..'));
+testCase.TestData.pathExamples = tapas_physio_get_path_examples(testCase.TestData.pathPhysioPublic);
+% for time courses (e.g., breathing) that reach close to 0, relative
+% tolerance can be misleading, use relative value to max instead
+testCase.TestData.absTol = 1e-6;
+end
+
 % compare raw read-in PPU trace data from BIDS example to previously saved reference
 % results
 function test_readin_bids_ppu3t(testCase)
 
 % Get PhysIO public repo base folder from this file's location
-pathPhysioPublic = fullfile(fileparts(mfilename('fullpath')), '..', '..', '..');
-pathExamples = tapas_physio_get_path_examples(pathPhysioPublic);
+pathExamples = testCase.TestData.pathExamples;
 
 
 % load SPM matlabbatch, but convert to pure script before executing
@@ -78,8 +87,7 @@ end
 function test_readin_bids_cpulse3t(testCase)
 
 % run BIDS cpulse3t example and extract physio
-pathPhysioPublic = fullfile(fileparts(mfilename('fullpath')), '..', '..', '..');
-pathExamples = tapas_physio_get_path_examples(pathPhysioPublic);
+pathExamples = testCase.TestData.pathExamples;
 
 % load SPM matlabbatch, but convert to pure script before executing
 % remove unnecessary (beyond read-in) part from job exeuction (e.g.
