@@ -161,11 +161,11 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Read in cardiac data
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+referenceClockString = 'MPCU';
 if hasCardiacData
 
     [lineData, logFooter] = tapas_physio_read_physlogfiles_siemens_raw(...
-        log_files.cardiac);
+        log_files.cardiac, referenceClockString);
     tLogTotal = logFooter.StopTimeSeconds - logFooter.StartTimeSeconds;
 
 
@@ -236,7 +236,7 @@ end
 
 if hasRespData
     [lineData, logFooter] = tapas_physio_read_physlogfiles_siemens_raw(...
-        log_files.respiration);
+        log_files.respiration, referenceClockString);
     tLogTotal = logFooter.StopTimeSeconds - logFooter.StartTimeSeconds;
 
     if hasScanTimingFile
