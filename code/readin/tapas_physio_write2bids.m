@@ -71,7 +71,7 @@ switch bids_step
             "SamplingFrequency",log_files.sampling_interval, "Columns", ["cardiac", "respiratory", "trigger"]);
 
         mat=[cardiac respiratory trigger_binary];
-      
+
 end
 
 % create JSON file
@@ -85,6 +85,12 @@ end
 % write output
 fprintf(fid, encodedJSON);
 
- save_file = fullfile(bids_dir,sprintf('%2$s_desc-%1$s_physio.tsv',tag, bids_prefix));
-        save(save_file,"mat",'-ascii');
-        gzip(save_file);
+save_file = fullfile(bids_dir,sprintf('%2$s_desc-%1$s_physio.tsv',tag, bids_prefix));
+save(save_file,"mat",'-ascii');
+
+gzip(save_file);
+
+% delete uncompressed .tsv file after zipping
+if isfile([save_file, '.gz'])
+    delete(save_file)
+end
