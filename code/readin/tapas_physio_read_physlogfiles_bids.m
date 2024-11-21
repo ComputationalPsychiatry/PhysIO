@@ -425,7 +425,6 @@ t = -tRelStartScan + ((0:(nSamples-1))*dt)';
 [acq_codes, verbose] = tapas_physio_create_acq_codes_from_trigger_trace(t, trigger_trace, verbose, ...
         1, 'rising', 'auto_matched');
 
-
 %% Plot extracted traces so far
 if DEBUG
     stringTitle = 'Read-In: Raw BIDS physlog data (TSV file)';

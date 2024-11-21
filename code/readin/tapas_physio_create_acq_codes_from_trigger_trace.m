@@ -76,6 +76,18 @@ if nargin < 6
     detectionMethod = 'maxpeaks_and_alternating';
 end
 
+% override trigger detection method if only a few discrete values are in input
+% data (i.e., already acq_codes / trigger flags used, e.g., binary 0 and 1
+% whenever trigger)
+nUniqueTriggerTraceValues = numel(unique(trigger_trace));
+if nUniqueTriggerTraceValues <= 5 && ... % 5 = no trigger / slice trigger / volume trigger / start of scan / end of scan
+    ~strcmpi(detectionMethod, 'maxpeaks_from_diff')
+    detectionMethod = 'maxpeaks_from_diff';
+    verbose = tapas_physio_log(...
+        sprintf('Only %d values in trigger trace, falling back to simple %s trigger detection', ...
+    nUniqueTriggerTraceValues, detectionMethod), verbose, 0);
+end
+
 isAlternating = strcmpi(triggerEdge, 'alternating');
 isTrailing = any(strcmpi(triggerEdge, {'trailing', 'falling'}));
 
