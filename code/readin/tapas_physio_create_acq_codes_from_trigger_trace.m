@@ -23,9 +23,9 @@ function [acq_codes, verbose] = ...
 %                   trigger (default)
 %                   'trailing'/'falling' - a trailing (falling) flank determines a
 %                   volume start
-%                   'alternating' - trigger trace switches between two 
+%                   'alternating' - trigger trace switches between two
 %                   levels for each volume start event, e.g.,
-%                   +5V and 0 for start of one volume, and back to 5V at start 
+%                   +5V and 0 for start of one volume, and back to 5V at start
 %                   of next volume
 %   detectionMethod
 %                   'auto_matched'
@@ -76,16 +76,23 @@ if nargin < 6
     detectionMethod = 'maxpeaks_and_alternating';
 end
 
-% override trigger detection method if only a few discrete values are in input
-% data (i.e., already acq_codes / trigger flags used, e.g., binary 0 and 1
-% whenever trigger)
+% override trigger detection method to simple peak detection if
+% - only a few discrete values are in input data
+%   (i.e., if trigger_trace is already acq_codes / trigger indicator variable (e.g., = 1 for volume trigger)
+% - no longer stretches of constant non-zero values exist (plateau-like
+% indicator)
 nUniqueTriggerTraceValues = numel(unique(trigger_trace));
+
+[iStartArray, iEndArray] = find_longest_array_above_threshold(abs(trigger_trace),0);
+nSamplesLongestNonzero = iEndArray - iStartArray + 1;
+
 if nUniqueTriggerTraceValues <= 5 && ... % 5 = no trigger / slice trigger / volume trigger / start of scan / end of scan
-    ~strcmpi(detectionMethod, 'maxpeaks_from_diff')
+        nSamplesLongestNonzero < 3 && ... 3 % check whether really indicator variable
+        ~strcmpi(detectionMethod, 'maxpeaks_from_diff')
     detectionMethod = 'maxpeaks_from_diff';
     verbose = tapas_physio_log(...
         sprintf('Only %d values in trigger trace, falling back to simple %s trigger detection', ...
-    nUniqueTriggerTraceValues, detectionMethod), verbose, 0);
+        nUniqueTriggerTraceValues, detectionMethod), verbose, 0);
 end
 
 isAlternating = strcmpi(triggerEdge, 'alternating');
@@ -109,7 +116,7 @@ switch lower(detectionMethod)
         [~, iAcqStart] = ismember(tAcqStart, t);
 
         % UNTESTED: look at maxima in mirrored time series as well and combine
-        if isAlternating 
+        if isAlternating
             [tAcqEnd, verbose] = ...
                 tapas_physio_get_cardiac_pulses_auto_matched( ...
                 max(trigger_trace)-trigger_trace, t, thresh_min, minPulseDistanceSamples, verbose);
@@ -270,5 +277,19 @@ switch lower(detectionMethod)
             end
         end
 end
+end
 
+% from https://stackoverflow.com/questions/32439805/find-longest-continuous-array-with-values-exceeding-a-threshold
+function [iStartArray, iEndArray, valuesArray] = find_longest_array_above_threshold(X,t)
+% X - array of values
+% t - threshold
+Y = X>t; %// convert to zeros and ones
+z = diff([false; Y; false]); %// compute changes. `false`s are needed to "close" the sequence
+s = find(z>0); %// find indices of starts of runs
+e = find(z<0)-1; %// find ends
+[~, w] = max(e-s); %// w is the index of the longest run
+iStartArray = s(w); %// index of start of longest subsequence
+iEndArray = e(w); %// index of end of longest subsequence
+valuesArray = X(s(w):e(w)); %// values of longest subsequence
+end
 

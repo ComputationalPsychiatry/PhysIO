@@ -68,7 +68,7 @@ hasRespirationFile = ~isempty(log_files.respiration);
 hasCardiacFile = ~isempty(log_files.cardiac);
 
 if hasRespirationFile
-    y   = load(log_files.respiration, 'ascii');
+    y   = load(log_files.respiration, '-ascii');
     trigger_trace_r = y(:,1);
     r   = y(:,2);
 else
@@ -76,7 +76,7 @@ else
 end
 
 if hasCardiacFile
-    y   = load(log_files.cardiac, 'ascii');
+    y   = load(log_files.cardiac, '-ascii');
     trigger_trace_c = y(:,1);
     c   = y(:,3);
 else
