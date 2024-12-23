@@ -161,7 +161,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Read in cardiac data
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-referenceClockString = 'MDH';
+referenceClockString = 'MDH'; %'MPCU';or 'MDH' (default)
 if hasCardiacData
 
     [lineData, logFooter] = tapas_physio_read_physlogfiles_siemens_raw(...
