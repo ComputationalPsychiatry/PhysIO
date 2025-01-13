@@ -198,7 +198,12 @@ function test_siemens_vb_ppu3t_sync_first_matlab_only(testCase)
 % synced to first DICOM volume of run
 dirExample = 'Siemens_VB/PPU3T_Sync_First';
 doUseSpm = false;
-run_example_and_compare_reference(testCase, dirExample, doUseSpm)
+dirRefResults = dirExample;
+idxTests = 1:5;
+ignoredFieldsOnsSecs = {'cpulse'}; 
+isVerbose = true;
+run_example_and_compare_reference(testCase, dirExample, doUseSpm, ...
+    dirRefResults, idxTests, ignoredFieldsOnsSecs, isVerbose)
 end
 
 function test_siemens_vb_ppu3t_sync_last_matlab_only(testCase)
@@ -207,7 +212,12 @@ function test_siemens_vb_ppu3t_sync_last_matlab_only(testCase)
 % synced to last DICOM volume of run
 dirExample = 'Siemens_VB/PPU3T_Sync_Last';
 doUseSpm = false;
-run_example_and_compare_reference(testCase, dirExample, doUseSpm)
+dirRefResults = dirExample;
+idxTests = 1:5;
+ignoredFieldsOnsSecs = {'cpulse'}; 
+isVerbose = true;
+run_example_and_compare_reference(testCase, dirExample, doUseSpm, ...
+    dirRefResults, idxTests, ignoredFieldsOnsSecs, isVerbose)
 end
 
 function test_siemens_vb_resp3t_logversion_1_matlab_only(testCase)
@@ -376,7 +386,12 @@ function test_siemens_vb_ppu3t_sync_first_with_spm(testCase)
 % (sync to first DICOM volume time stamp) using SPM Batch Editor
 dirExample = 'Siemens_VB/PPU3T_Sync_First';
 doUseSpm = true;
-run_example_and_compare_reference(testCase, dirExample, doUseSpm)
+dirRefResults = dirExample;
+idxTests = 1:5;
+ignoredFieldsOnsSecs = {'cpulse'}; 
+isVerbose = true;
+run_example_and_compare_reference(testCase, dirExample, doUseSpm, ...
+    dirRefResults, idxTests, ignoredFieldsOnsSecs, isVerbose)
 end
 
 function test_siemens_vb_ppu3t_sync_last_with_spm(testCase)
@@ -385,7 +400,12 @@ function test_siemens_vb_ppu3t_sync_last_with_spm(testCase)
 % (sync to last DICOM volume time stamp) using SPM Batch Editor
 dirExample = 'Siemens_VB/PPU3T_Sync_Last';
 doUseSpm = true;
-run_example_and_compare_reference(testCase, dirExample, doUseSpm)
+dirRefResults = dirExample;
+idxTests = 1:5;
+ignoredFieldsOnsSecs = {'cpulse'}; 
+isVerbose = true;
+run_example_and_compare_reference(testCase, dirExample, doUseSpm, ...
+    dirRefResults, idxTests, ignoredFieldsOnsSecs, isVerbose)
 end
 
 function test_siemens_vb_resp3t_logversion_1_with_spm(testCase)
