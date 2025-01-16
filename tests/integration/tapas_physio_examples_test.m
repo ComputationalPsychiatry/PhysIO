@@ -200,8 +200,8 @@ dirExample = 'Siemens_VB/PPU3T_Sync_First';
 doUseSpm = false;
 dirRefResults = dirExample;
 idxTests = 1:5;
-ignoredFieldsOnsSecs = {'cpulse'}; 
-isVerbose = true;
+ignoredFieldsOnsSecs = {}; % {'cpulse'};
+isVerbose = false;
 run_example_and_compare_reference(testCase, dirExample, doUseSpm, ...
     dirRefResults, idxTests, ignoredFieldsOnsSecs, isVerbose)
 end
@@ -214,8 +214,8 @@ dirExample = 'Siemens_VB/PPU3T_Sync_Last';
 doUseSpm = false;
 dirRefResults = dirExample;
 idxTests = 1:5;
-ignoredFieldsOnsSecs = {'cpulse'}; 
-isVerbose = true;
+ignoredFieldsOnsSecs = {}; % {'cpulse'};
+isVerbose = false;
 run_example_and_compare_reference(testCase, dirExample, doUseSpm, ...
     dirRefResults, idxTests, ignoredFieldsOnsSecs, isVerbose)
 end
@@ -388,8 +388,8 @@ dirExample = 'Siemens_VB/PPU3T_Sync_First';
 doUseSpm = true;
 dirRefResults = dirExample;
 idxTests = 1:5;
-ignoredFieldsOnsSecs = {'cpulse'}; 
-isVerbose = true;
+ignoredFieldsOnsSecs = {}; % {'cpulse'}; 
+isVerbose = false;
 run_example_and_compare_reference(testCase, dirExample, doUseSpm, ...
     dirRefResults, idxTests, ignoredFieldsOnsSecs, isVerbose)
 end
@@ -402,8 +402,8 @@ dirExample = 'Siemens_VB/PPU3T_Sync_Last';
 doUseSpm = true;
 dirRefResults = dirExample;
 idxTests = 1:5;
-ignoredFieldsOnsSecs = {'cpulse'}; 
-isVerbose = true;
+ignoredFieldsOnsSecs = {}; %{'cpulse'}; 
+isVerbose = false;
 run_example_and_compare_reference(testCase, dirExample, doUseSpm, ...
     dirRefResults, idxTests, ignoredFieldsOnsSecs, isVerbose)
 end
