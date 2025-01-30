@@ -1,11 +1,11 @@
 TAPAS PhysIO Toolbox 
 ====================
 
-*Current version: Release 2023a, v9.0.0-beta*
+*Current version: Release 2024a, v9.0.0*
 
-> Copyright (C) 2012-2023  
+> Copyright (C) 2012-2025  
 > Lars Kasper  
-> <kasper@biomed.ee.ethz.ch>  
+> <lars.kasper@alumni.ethz.ch>  
 >  
 > Translational Neuromodeling Unit (TNU)  
 > Institute for Biomedical Engineering  
@@ -43,7 +43,7 @@ to enable physiological noise correction for large-scale and multi-center studie
 
 Some highlights:
 1. Robust automatic preprocessing of peripheral recordings via iterative peak 
-   detection, validated in noisy data and patients.
+   detection and Hilbert transforms, validated in noisy data and patients.
 2. Flexible support of peripheral data formats (Siemens, Philips, HCP, GE, Biopac, ...) 
    and noise models (RETROICOR, RVHRCOR).
 3. Fully automated noise correction and performance assessment for group studies.
@@ -52,6 +52,11 @@ Some highlights:
 The accompanying technical paper about the toolbox concept and methodology 
 can be found at: https://doi.org/10.1016/j.jneumeth.2016.10.019
 
+Details on the peak-detection-free computation of respiratory volume and rate are outlined in our publication on the Hilbert transform: https://doi.org/10.1016/j.neuroimage.2021.117787
+
+The PhysIO Toolbox is part of the TAPAS software collection of *Translational Algorithms for Psychiatry-Advancing Science*, whose design principles are described in the following paper: https://doi.org/10.3389/fpsyt.2021.680811.
+
+There is also a video introduction into PhysIO and the TAPAS philosophy, given as part of the MRITogether23 Workshop on open science in MRI: [*PhysIO, UniQC and a TAPAStry of Tools* (20 min YouTube Video)](https://www.youtube.com/watch?v=zkPvQjLV2Is).
 
 Installation
 ------------
@@ -81,7 +86,7 @@ Getting Started
 1. Download the TAPAS examples via running `tapas_download_example_data()` 
    (found in `misc`-subfolder of TAPAS)
     - The PhysIO Example files will be downloaded to `tapas/examples/<tapas-version>/PhysIO`
-2. Run `philips_ecg3t_matlab_script.m` in subdirectory `Philips/ECG3T`
+2. Run `siemens_vb_ppu3t_sync_first_matlab_script.m` in subdirectory `Siemens_VB/PPU3T_Sync_First`
 3. See subdirectory `physio/docs` and the next two section of this document for help.
 
 You may try any of the examples in the other vendor folders as well.
@@ -174,6 +179,35 @@ Model-based correction of physiological noise:
 Features of this Toolbox
 ------------------------
 
+### Flexible Read-in
+
+The toolbox is dedicated to seamless integration into a clinical research 
+setting and therefore offers correction methods to recover physiological 
+data from imperfect peripheral measures. Read-in of the following formats is 
+currently supported (alphabetic order):
+
+- BioPac `.mat` and `.txt` export files
+- Brain Imaging Data Structure files ([BIDS](https://bids-specification.readthedocs.io/en/stable/modality-specific-files/physiological-and-other-continuous-recordings.html#recommendations-for-specific-use-cases)) `*_physio.tsv[.gz]/.json` files
+- Custom logfiles: should contain one amplitude value per line, one logfile per 
+  device. Sampling interval(s) are provided as a separate parameter to the toolbox.
+- General Electric
+- Philips SCANPHYSLOG files (all versions from release 2.6 to 5.3)
+- Siemens Manual Recordings (acquired via `IdeaCmdTool`), named "Siemens VB" files in the PhysIO interface (files `.ecg`, `.resp`, `.puls`)
+- Siemens Automatic Recordings (XA60 and above, or WIP Physio, or CMRR C2P sequences), named "Siemens VD" in the PhysIO interface (files `*_ECG.log`, `*_RESP.log`, `*_PULS.log`, `*_Info.log`)
+- Siemens Human Connectome Project (preprocessed files `*Physio_log.txt`)
+
+See also the 
+[Wiki page on Read-In](https://gitlab.ethz.ch/physio/physio-doc/-/wikis/MANUAL_PART_READIN) 
+for a more detailed list and description of the supported formats.
+
+### Robust Preprocessing
+
+The toolbox has been extensively tested on different recording devices, field strengths and (clinical) study populations, and can handle a wide range of data imperfections in peripheral traces. Highlights are:
+
+- Tested on various systems and subject populations (e.g., HCP, Children, 7T, ADHD, Major Depression, Psychosis)
+- Cardiac Data: Iterative peak detection via Bayesian updates of current heart rate estimates (Steffen Bollmann)
+- Respiratory Data: Novel volume estimation via Hilbert transform, respects, e.g., sighs, yawns, deep breaths (Samuel J. Harrison)
+
 ### Physiological Noise Modeling
 
 - Modeling physiological noise regressors from peripheral data 
@@ -190,56 +224,27 @@ Features of this Toolbox
 
 ### Automatization and Performance Assessment
 
+- Automatic Quality Assurance Diagnostic Figures (Heart beat-to-beat interval curves, respiration amplitude histograms) and flagging of 
 - Automatic creation of nuisance regressors, full integration into standard 
   GLMs, tested for SPM8/12 (`multiple_regressors.mat`)
+    - Data export as text file available for usage in other analysis packages
 - Integration in SPM Batch Editor: GUI for parameter input, dependencies to 
   integrate physiological noise correction in preprocessing pipeline
 - Performance Assessment: Automatic F-contrast and tSNR Map creation and display 
   for groups of physiological noise regressors, using SPM GLM tools via 
   `tapas_physio_report_contrasts()`.
 
-### Flexible Read-in
 
-The toolbox is dedicated to seamless integration into a clinical research 
-setting and therefore offers correction methods to recover physiological 
-data from imperfect peripheral measures. Read-in of the following formats is 
-currently supported (alphabetic order):
+Requirements
+------------
 
-- Biopac `.mat` and `.txt` -export
-- Brain Imaging Data Structure ([BIDS](http://bids.neuroimaging.io/bids_spec.pdf) for `*_physio.tsv[.gz]/.json` files)
-- Custom logfiles: should contain one amplitude value per line, one logfile per 
-  device. Sampling interval(s) are provided as a separate parameter to the toolbox.
-- General Electric
-- Philips SCANPHYSLOG files (all versions from release 2.6 to 5.3)
-- Siemens VB (files `.ecg`, `.resp`, `.puls`)
-- Siemens VD (files `*_ECG.log`, `*_RESP.log`, `*_PULS.log`)
-- Siemens Human Connectome Project (preprocessed files `*Physio_log.txt`)
-
-See also the 
-[Wiki page on Read-In](https://gitlab.ethz.ch/physio/physio-doc/-/wikis/MANUAL_PART_READIN) 
-for a more detailed list and description of the supported formats.
-
-
-Compatibility
--------------
-
-- Matlab Toolbox
-- Input: 
-    - Fully integrated to work with physiological logfiles for Philips MR systems (SCANPHYSLOG)
-    - tested for General Electric (GE) log-files
-    - implementation for Siemens log-files (both VB and VD/VE, CMRR multiband)
-    - also: interface for 'Custom', i.e. general heart-beat time stamps 
-      & breathing volume time courses from other log formats
-    - BioPac
-    - ... (other upcoming formats)
-- Output: 
-    - Nuisance regressors for mass-univariate statistical analysis with SPM5,8,12
-      or as text file for export to any other package
-    - raw and processed physiological logfile data
-    - Graphical Batch Editor interface to SPM
-- Part of the TAPAS Software Collection of the Translational Neuromodeling Unit 
-  (TNU) Zurich
-    - ensures long term support and ongoing development
+- All specific software requirements and their versions are in a separate file
+  in this folder, `requirements.txt`.
+- In brief:
+  - Typically, PhysIO needs Matlab to run, and a few of its toolboxes
+  - Some functionality requires SPM (GUI via the SPM Batch Editor, nuisance regression, contrast reporting, 
+    writing residual and SNR images).    
+  - There is a standalone version within [Neurodesk](https://www.neurodesk.org/tutorials-examples/tutorials/functional_imaging/physio/) that does not require Matlab
 
 
 Contributors
@@ -249,8 +254,9 @@ Contributors
     - [Lars Kasper](https://brain-to.ca/content/lars-kasper),
       TNU & MR-Technology Group, IBT, University of Zurich & ETH Zurich
 - Project Team: 
-    - Johanna Bayer, Center for Youth Mental Health, The University of Melbourne, Melbourne, VIC, Australia
+    - Johanna Bayer, Donders Institute for Brain, Cognition and Behaviour, Nijmegen, Netherlands
     - Saskia Bollmann, Centre for Advanced Imaging, University of Queensland, Australia
+- Project Team Alumni:
     - Steffen Bollmann, Centre for Advanced Imaging, University of Queensland, Australia
     - Sam Harrison, TNU Zurich
 - Contributors (Code):
@@ -262,16 +268,6 @@ Contributors
     - External TAPAS contributors are listed in the [Contributor License Agreement](https://github.com/translationalneuromodeling/tapas/blob/master/Contributor-License-Agreement.md)
 - Contributors (Examples):
     - listed in [EXAMPLES.md](https://gitlab.ethz.ch/physio/physio-doc/-/wikis/EXAMPLES)
-
-Requirements
-------------
-
-- All specific software requirements and their versions are in a separate file
-  in this folder, `requirements.txt`.
-- In brief:
-    - PhysIO needs Matlab to run, and a few of its toolboxes.
-    - Some functionality requires SPM (GUI, nuisance regression, contrast reporting, 
-      writing residual and SNR images).
 
 
 Acknowledgements
@@ -288,9 +284,10 @@ open source projects and gratefully acknowledges their use.
     - recursive parser for field names of a structure
     - Matlab file exchange, adam.tudorjones@pharm.ox.ac.uk
 
-We further acknowledge the generous support of the MathWorks (MA, USA), who 
+We further acknowledge the generous support from the MathWorks (MA, USA), who 
 supported Johanna Bayer for the [2022 MATLAB Community Toolbox Training Program](https://www.incf.org/blog/second-summer-training-project-collaboration-between-incf-and-mathworks) 
 established in collaboration with the International Neuroinformatics Coordinating Facility ([INCF](https://www.incf.org/)).
+
 
 Cite Me
 -------
@@ -315,8 +312,8 @@ along with a brief description of the physiological noise models used:
 > open-source code available as part of the TAPAS software collection: [2], 
 > <https://www.translationalneuromodeling.org/tapas>)
 
-If you use respiratory volume per time (RVT) regressors or preprocess respiratory traces 
-for RETROICOR, please also cite:
+If you process respiratory traces, for example, to compute respiratory volume per time (RVT) or 
+RETROICOR regressors, please also cite:
 
 3. Harrison, S.J., Bianchi, S., Heinzle, J., Stephan, K.E., Iglesias, S., Kasper L., 2021.
 A Hilbert-based method for processing respiratory timeseries.
