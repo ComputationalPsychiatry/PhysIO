@@ -193,7 +193,7 @@ currently supported (alphabetic order):
 - General Electric
 - Philips SCANPHYSLOG files (all versions from release 2.6 to 5.3)
 - Siemens Manual Recordings (acquired via `IdeaCmdTool`), named "Siemens VB" files in the PhysIO interface (files `.ecg`, `.resp`, `.puls`)
-- Siemens Automatic Recordings (XA60 and above, or WIP Physio, or CMRR C2P sequences), named "Siemens VD" in the PhysIO interface (files `*_ECG.log`, `*_RESP.log`, `*_PULS.log`, `*_Info.log`)
+- Siemens Automatic Recordings (XA60 and above, or WIP Advanced Physiologging (AdvPhysio), or CMRR C2P BOLD sequences), named "Siemens VD" in the PhysIO interface (files `*_ECG.log`, `*_RESP.log`, `*_PULS.log`, `*_Info.log`)
 - Siemens Human Connectome Project (preprocessed files `*Physio_log.txt`)
 
 See also the 
