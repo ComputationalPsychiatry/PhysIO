@@ -11,5 +11,5 @@ sphinx:
 # Dependencies required to build your docs
 python:
    install:
-   - requirements: requirements_docs.txt
+   - requirements: requirements_doc.txt
 
