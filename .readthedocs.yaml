@@ -6,7 +6,7 @@ build:
 
 # Build documentation with sphinx
 sphinx:
-   configuration: docs/source/conf.py
+   configuration: docs/conf.py
 
 # Dependencies required to build your docs
 python:
