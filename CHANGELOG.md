@@ -4,9 +4,9 @@ RELEASE INFORMATION
 Current Release
 ---------------
 
-*Current version: PhysIO Toolbox Release R2024a, v9.0.0*
+*Current version: PhysIO Toolbox Release R2024a, v9.0.1*
 
-March 25th, 2025
+April 7th, 2025
 
 
 Bugfix Release Notes (v9.0.1)
