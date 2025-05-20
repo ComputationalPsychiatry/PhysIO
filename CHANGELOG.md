@@ -4,10 +4,18 @@ RELEASE INFORMATION
 Current Release
 ---------------
 
-*Current version: PhysIO Toolbox Release R2024a, v9.0.1*
+*Current version: PhysIO Toolbox Release R2024a, v9.0.2*
 
-April 7th, 2025
+April 30th, 2025
 
+Bugfix Release Notes (v9.0.2)
+----------------------------
+
+### Added
+- Contributor License Agreement from TAPAS now also repository-specific in PhysIO
+
+### Fixed
+- Integration with Mathworks GitHub App
 
 Bugfix Release Notes (v9.0.1)
 ----------------------------
