@@ -1,4 +1,4 @@
-Code: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15578837.svg)](https://doi.org/10.5281/zenodo.15578837) | Paper [![DOI](https://zenodo.org/badge/DOI/10.1016/j.jneumeth.2016.10.019.svg)](https://doi.org/10.1016/j.jneumeth.2016.10.019)
+Code: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15578837.svg)](https://doi.org/10.5281/zenodo.15578837) | Paper [![DOI](https://zenodo.org/badge/DOI/10.1016/j.jneumeth.2016.10.019.svg)](https://doi.org/10.1016/j.jneumeth.2016.10.019) | Examples [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15579087.svg)](https://doi.org/10.5281/zenodo.15579087)
 
 
 TAPAS PhysIO Toolbox 
