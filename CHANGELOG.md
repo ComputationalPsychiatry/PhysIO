@@ -4,9 +4,15 @@ RELEASE INFORMATION
 Current Release
 ---------------
 
-*Current version: PhysIO Toolbox Release R2024a, v9.0.2*
+*Current version: PhysIO Toolbox Release R2024a, v9.0.3*
 
-April 30th, 2025
+June 2nd, 2025
+
+Bugfix Release Notes (v9.0.3)
+----------------------------
+
+### Added
+- New Release for Zenodo (repository-specific DOI)
 
 Bugfix Release Notes (v9.0.2)
 ----------------------------
