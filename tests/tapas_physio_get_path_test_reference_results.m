@@ -17,7 +17,7 @@ function pathTestReferenceResults = tapas_physio_get_path_test_reference_results
 %                       if false, the standard download path for examples,
 %                       as used by tapas_physio_download_example_data(), is
 %                       returned
-%   doDownloadData      true or false [default]; if true and no valid path 
+%   doDownloadData      true or false [default]; if true and no valid path
 %                       exists, initiate download of reference data from
 %                       web
 %
@@ -68,18 +68,12 @@ if doVerifyPath
         haveFoundPath = isfolder(fullfile(pathTestReferenceResults, 'BIDS'));
     end
 
-    % If no examples folder found, suggest to download them via tapas-function
-    if ~isfolder(fullfile(pathTestReferenceResults, 'BIDS'))
-        physio = tapas_physio_new();
-        tapas_physio_log('No PhysIO examples data found. Please download via tapas_physio_download_example_data()', physio.verbose, 2);
-    end
-
 else % use canonical Zenodo download path for examples
     pathTestReferenceResults = possiblePaths{end};
 end
 
 pathTestReferenceResults = tapas_physio_simplify_path(pathTestReferenceResults);
 
-if doDownloadData
- 
+if doDownloadData && (doVerifyPath && ~haveFoundPath)
+    pathTestReferenceResults = tapas_physio_download_test_reference_results();
 end

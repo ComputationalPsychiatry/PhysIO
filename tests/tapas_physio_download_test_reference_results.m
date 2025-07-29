@@ -31,7 +31,7 @@ semVersion = regexprep(currentRelease, '.*v', 'v');
 % release version to temporary directory
 urlZenodo = sprintf('https://zenodo.org/records/16579519/files/ComputationalPsychiatry/PhysIO-Test-Reference-Results-%s.zip', semVersion);
 tempZipFilePath = [tempname '.zip'];  % tempname is matlab inbuilt
-fprintf('Downloading Test Reference Results for PhysIO version %s into PhysIO/examples folder...\n', semVersion);
+fprintf('Downloading Test Reference Results for PhysIO version %s into PhysIO/test-reference-results folder...\n', semVersion);
 fprintf('This may take a few minutes (250 MB)\n')
 websave(tempZipFilePath, urlZenodo);
 fprintf('Done. \n\n')
@@ -50,6 +50,6 @@ unzip(tempZipFilePath, pathTestReferenceResults);
 % Cleanup: examples are in a subfolder
 % ComputationalPsychiatry-PhysIO-Examples-<GitCommitHash>, move them
 % directly into examples
-dirPhysioExamples = dir([pathTestReferenceResults '/ComputationalPsychiatry-PhysIO-Examples-*']).name;
+dirPhysioExamples = dir([pathTestReferenceResults '/ComputationalPsychiatry-PhysIO-Test-Reference-Results-*']).name;
 movefile(fullfile(pathTestReferenceResults, dirPhysioExamples, "*"), pathTestReferenceResults)
 rmdir(fullfile(pathTestReferenceResults, dirPhysioExamples), 's')
