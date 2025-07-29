@@ -1,19 +1,19 @@
-function pathToExamples = tapas_physio_download_example_data()
-% Downloads example data for current version of PhysIO
+function pathTestReferenceResults = tapas_physio_download_test_reference_results()
+% Downloads reference results for tests of current version of PhysIO
 %
-%   pathToExamples = tapas_physio_download_example_data()
+%   pathTestReferenceResults = tapas_physio_download_test_reference_results()
 %
 % IN
 %
 % OUT
 %
 % EXAMPLE
-%   tapas_physio_download_example_data
+%   tapas_physio_download_test_reference_results
 %
 %   See also
  
 % Author:   Lars Kasper
-% Created:  2025-06-17
+% Created:  2025-07-29
 % Copyright (C) 2025 TNU, Institute for Biomedical Engineering,
 %                    University of Zurich and ETH Zurich.
 %
@@ -29,10 +29,10 @@ semVersion = regexprep(currentRelease, '.*v', 'v');
 
 % download current version of PhysIO examples, corresponding to code
 % release version to temporary directory
-urlZenodo = sprintf('https://zenodo.org/records/15579087/files/ComputationalPsychiatry/PhysIO-Examples-%s.zip', semVersion);
+urlZenodo = sprintf('https://zenodo.org/records/16579519/files/ComputationalPsychiatry/PhysIO-Test-Reference-Results-%s.zip', semVersion);
 tempZipFilePath = [tempname '.zip'];  % tempname is matlab inbuilt
-fprintf('Downloading Example Data for PhysIO version %s into PhysIO/examples folder...\n', semVersion);
-fprintf('This may take a few minutes (50 MB)\n')
+fprintf('Downloading Test Reference Results for PhysIO version %s into PhysIO/examples folder...\n', semVersion);
+fprintf('This may take a few minutes (250 MB)\n')
 websave(tempZipFilePath, urlZenodo);
 fprintf('Done. \n\n')
 
@@ -40,18 +40,16 @@ fprintf('Done. \n\n')
 doVerifyPath = false;
 
 % make sure subfolders are in path before calling any other functions
-if ~exist('tapas_physio_get_path_examples')
-    tapas_physio_init();
-end
 
-pathToExamples = tapas_physio_get_path_examples([], ...
+
+pathTestReferenceResults = tapas_physio_get_path_test_reference_results([], ...
     doVerifyPath);
 
-unzip(tempZipFilePath, pathToExamples);
+unzip(tempZipFilePath, pathTestReferenceResults);
 
 % Cleanup: examples are in a subfolder
 % ComputationalPsychiatry-PhysIO-Examples-<GitCommitHash>, move them
 % directly into examples
-dirPhysioExamples = dir([pathToExamples '/ComputationalPsychiatry-PhysIO-Examples-*']).name;
-movefile(fullfile(pathToExamples, dirPhysioExamples, "*"), pathToExamples)
-rmdir(fullfile(pathToExamples, dirPhysioExamples), 's')
+dirPhysioExamples = dir([pathTestReferenceResults '/ComputationalPsychiatry-PhysIO-Examples-*']).name;
+movefile(fullfile(pathTestReferenceResults, dirPhysioExamples, "*"), pathTestReferenceResults)
+rmdir(fullfile(pathTestReferenceResults, dirPhysioExamples), 's')
