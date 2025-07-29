@@ -42,13 +42,14 @@ if nargin < 2
     doVerifyPath = true;
 end
 
-% try PhysIO examples from Zenodo first
-% then: old separate Gitlab repository via submodule in PhysIO Gitlab
-% then: old separate Gitlab repository as separate repository
+% try PhysIO examples from separate Gitlab repository first (deployment
+% mode physio-dev)
+% then: try old separate Gitlab repository via submodule in PhysIO Gitlab
+% then: try download target from Zenodo download
 possibleExamplePaths = {
-    fullfile(pathPhysioPublic, 'examples')
-    fullfile(pathPhysioPublic, '..', 'examples')
     fullfile(pathPhysioPublic, '..', 'physio-examples')
+    fullfile(pathPhysioPublic, '..', 'examples')
+    fullfile(pathPhysioPublic, 'examples')
     };
 
 if doVerifyPath
@@ -72,8 +73,8 @@ if doVerifyPath
         tapas_physio_log('No PhysIO examples data found. Please download via tapas_physio_download_example_data()', physio.verbose, 2);
     end
 
-else % use canonical zenodo download path for examples
-    pathExamples = possibleExamplePaths{1};
+else % use canonical Zenodo download path for examples
+    pathExamples = possibleExamplePaths{end};
 end
 
 pathExamples = tapas_physio_simplify_path(pathExamples);
