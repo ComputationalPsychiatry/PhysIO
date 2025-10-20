@@ -8,13 +8,24 @@ function  fh = tapas_physio_plot_movement_outliers_fd(rp, quality_measures, ...
 %           censoring, censoring_threshold)
 %
 % IN
-%
+%   quality_measures    - output of tapas_physio_get_movement_quality_measures
+%   censoring           - output tapas_physio_create_movement_regressors,
+%                         default: []
+%                         censoring = struct('nOutliers', nOutliers, 'R_outlier', R_outlier, ...
+%                           'iOutlierTrans', iOutlierTrans, 'iOutlierRot', iOutlierRot, ...
+%                           'iOutlierArray', iOutlierArray);
+%                        
+%   censoring threshold - for horizontal line indicating censoring
+%                         default: from tapas_physio_new()
+%   verbose             - for saving figure handlles
+%                         default: []
+%   
 % OUT
 %
 % EXAMPLE
 %   tapas_physio_plot_movement_outliers_fd
 %
-%   See also tapas_physio_get_movement_quality_measures
+%   See also tapas_physio_get_movement_quality_measures tapas_physio_create_movement_regressors
 
 % Author: Lars Kasper
 % Created: 2018-02-21
@@ -35,6 +46,15 @@ else
     fh = tapas_physio_get_default_fig_params();
 end
 
+if nargin < 4
+    physio = tapas_physio_new();
+    censoring_threshold = physio.model.movement.censoring_threshold;
+end
+
+if nargin < 3
+    censoring = [];
+end
+
 stringTitle = 'Model: Motion Quality Control - Framewise Displacement';
 set(fh, 'Name', stringTitle);
 
@@ -44,8 +64,15 @@ colors = [
     0 0 1
     ];
 
+hasOutliers = ~isempty(censoring) && ~isempty(censoring.R_outlier);
+
+nPlots = 2;
+if hasOutliers
+    nPlots = 3;
+end
+
 %% Realignment parameter
-hs(1) = subplot(3,1,1);
+hs(1) = subplot(nPlots,1,1);
 
 for iDim = 1:3
     plot(rp(:,iDim), 'Color', colors(iDim,:)); hold all;
@@ -60,7 +87,7 @@ title(sprintf('Realignment Parameter (mm), rotation scaled to rHead = %d mm', ..
 
 
 %% Framewise displacement and friends, subject measures
-hs(2) = subplot(3,1,2);
+hs(2) = subplot(nPlots,1,2);
 nVols = numel(quality_measures.FD);
 plot(quality_measures.absTransDisplacement, 'k'); hold all;
 plot(quality_measures.absRotDisplacement, 'k--');
@@ -79,9 +106,10 @@ title({
 
 
 %% mask of outlier regressors (stick/spike) for censoring
-hs(3) = subplot(3,1,3);
-imagesc(censoring.R_outlier.')
-
+if hasOutliers
+    hs(3) = subplot(nPlots,1,3);
+    imagesc(censoring.R_outlier.')
+end
 
 xlabel('Volume #');
 title('Outlier Mask of Stick (Spike) Regressors for censored volumes');

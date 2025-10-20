@@ -14,7 +14,7 @@ function [R, movement, verbose] = tapas_physio_create_movement_regressors(...
 %               time-series. Magn Reson Med. 1996;35:346?355.)
 %
 % IN
-%   movement    physio.model.movement
+%   movement    physio.model.movement OR realignment parameter matrix [nScans, 6]
 %   verbose     physio.verbose
 % OUT
 %   R                   [nScans, (6|12|24)+nOutliers] regressor matrix 
@@ -92,19 +92,26 @@ function [R, movement, verbose] = tapas_physio_create_movement_regressors(...
 
 rHead = 50; % head radius in mm for FD computation (Power et al., 2012)
 
-[fp, fn, ext] = fileparts(movement.file_realignment_parameters);
-
-if ~exist(movement.file_realignment_parameters, 'file')
-    verbose = tapas_physio_log('No input multiple regressors found', verbose, 1);
-    R = [];
-else
-    tmp = load(movement.file_realignment_parameters);
-    if strcmp('.txt', ext) % text-file
-        rp = tmp;
-    else % mat file
-        rp = tmp.R;
+hasRealignmentParameters = true;
+if isstruct(movement) % PhysIO input structure with file name
+    [fp, fn, ext] = fileparts(movement.file_realignment_parameters);
+    if ~exist(movement.file_realignment_parameters, 'file')
+        verbose = tapas_physio_log('No input multiple regressors found', verbose, 1);
+        R = [];
+        hasRealignmentParameters = false;
+    else
+        tmp = load(movement.file_realignment_parameters);
+        if strcmp('.txt', ext) % text-file
+            rp = tmp;
+        else % mat file
+            rp = tmp.R;
+        end
     end
-    
+else % simple rp matrix
+    rp = movement;
+end
+
+if hasRealignmentParameters
     
     %% Motion Quality control
     
