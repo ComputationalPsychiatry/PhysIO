@@ -7,7 +7,7 @@ TAPAS PhysIO Toolbox
 *Current version: Release 2024a, v9.0.3*
 
 > Copyright (C) 2012-2025  
-> Lars Kasper  
+> [Lars Kasper](https://mrikasper.github.io)  
 > <lars.kasper@alumni.ethz.ch>  
 >  
 > Translational Neuromodeling Unit (TNU)  
@@ -254,10 +254,10 @@ Contributors
 ------------
 
 - Lead Programmer: 
-    - [Lars Kasper](https://brain-to.ca/content/lars-kasper),
+    - [Lars Kasper](https://mrikasper.github.io),
       TNU & MR-Technology Group, IBT, University of Zurich & ETH Zurich
 - Project Team: 
-    - Johanna Bayer, Donders Institute for Brain, Cognition and Behaviour, Nijmegen, Netherlands
+    - [Johanna Bayer](https://github.com/likeajumprope), Donders Institute for Brain, Cognition and Behaviour, Nijmegen, Netherlands
     - Saskia Bollmann, Centre for Advanced Imaging, University of Queensland, Australia
 - Project Team Alumni:
     - Steffen Bollmann, Centre for Advanced Imaging, University of Queensland, Australia
