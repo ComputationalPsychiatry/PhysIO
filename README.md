@@ -18,14 +18,13 @@ TAPAS PhysIO Toolbox
 Download
 --------
 
-- Please download the latest stable versions of the PhysIO Toolbox on GitHub as part of the 
-  [TAPAS software releases of the TNU](https://github.com/translationalneuromodeling/tapas/releases).
-- Older versions are available on the [TNU website](http://www.translationalneuromodeling.org/tapas).
-- The latest bugfixes can be found in the 
-  [development branch of TAPAS](https://github.com/translationalneuromodeling/tapas/tree/development) 
+- Please download the latest stable versions of the [PhysIO Toolbox on GitHub](https://github.com/ComputationalPsychiatry/PhysIO), which is part of the 
+  [TAPAS GitHub Organization](https://github.com/ComputationalPsychiatry).
+- Older versions are available on the archived [previous TAPAS GitHub Repository](https://github.com/tranlsationalneuromodeling/tapas).
+- The latest developments can be found in the [PhysIO master branch](https://github.com/ComputationalPsychiatry/PhysIO/tree/master), and the stable version are regularly published as [releases](https://github.com/ComputationalPsychiatry/PhysIO/releases) 
   and are announced in the [GitHub Issue Forum](https://github.com/translationalneuromodeling/tapas/issues). 
 - Changes between all versions are documented in the 
-  [CHANGELOG](https://gitlab.ethz.ch/physio/physio-doc/blob/master/CHANGELOG.md).
+  [CHANGELOG](https://github.com/ComputationalPsychiatry/PhysIO/blob/master/CHANGELOG.md).
 
 
 Purpose
@@ -257,7 +256,7 @@ Contributors
     - [Lars Kasper](https://mrikasper.github.io),
       TNU & MR-Technology Group, IBT, University of Zurich & ETH Zurich
 - Project Team: 
-    - [Johanna Bayer](https://github.com/likeajumprope), Donders Institute for Brain, Cognition and Behaviour, Nijmegen, Netherlands
+    - [Johanna Bayer](https://opencodereview.netlify.app/), Donders Institute for Brain, Cognition and Behaviour, Nijmegen, Netherlands
     - Saskia Bollmann, Centre for Advanced Imaging, University of Queensland, Australia
 - Project Team Alumni:
     - Steffen Bollmann, Centre for Advanced Imaging, University of Queensland, Australia
