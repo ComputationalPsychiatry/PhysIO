@@ -14,19 +14,6 @@ TAPAS PhysIO Toolbox
 > Institute for Biomedical Engineering  
 > University of Zurich and ETH Zurich  
 
-
-Download
---------
-
-- Please download the latest stable versions of the [PhysIO Toolbox on GitHub](https://github.com/ComputationalPsychiatry/PhysIO), which is part of the 
-  [TAPAS GitHub Organization](https://github.com/ComputationalPsychiatry).
-- Older versions are available on the archived [previous TAPAS GitHub Repository](https://github.com/tranlsationalneuromodeling/tapas).
-- The latest developments can be found in the [PhysIO master branch](https://github.com/ComputationalPsychiatry/PhysIO/tree/master), and the stable version are regularly published as [releases](https://github.com/ComputationalPsychiatry/PhysIO/releases) 
-  and are announced in the [GitHub Issue Forum](https://github.com/translationalneuromodeling/tapas/issues). 
-- Changes between all versions are documented in the 
-  [CHANGELOG](https://github.com/ComputationalPsychiatry/PhysIO/blob/master/CHANGELOG.md).
-
-
 Purpose
 -------
 
@@ -59,6 +46,19 @@ Details on the peak-detection-free computation of respiratory volume and rate ar
 The PhysIO Toolbox is part of the TAPAS software collection of *Translational Algorithms for Psychiatry-Advancing Science*, whose design principles are described in the following paper: https://doi.org/10.3389/fpsyt.2021.680811.
 
 There is also a video introduction into PhysIO and the TAPAS philosophy, given as part of the MRITogether23 Workshop on open science in MRI: [*PhysIO, UniQC and a TAPAStry of Tools* (20 min YouTube Video)](https://www.youtube.com/watch?v=zkPvQjLV2Is).
+
+
+Download
+--------
+
+- Please download the [PhysIO Toolbox on GitHub](https://github.com/ComputationalPsychiatry/PhysIO), which is part of the 
+  [TAPAS GitHub Organization](https://github.com/ComputationalPsychiatry).
+- Older versions are available on the archived [previous TAPAS GitHub Repository](https://github.com/translationalneuromodeling/tapas).
+- The latest developments can be found in the [PhysIO master branch](https://github.com/ComputationalPsychiatry/PhysIO/tree/master), and the stable version are regularly published as [releases](https://github.com/ComputationalPsychiatry/PhysIO/releases) 
+  and are announced in the [GitHub Issue Forum](https://github.com/translationalneuromodeling/tapas/issues). 
+- Changes between all versions are documented in the 
+  [CHANGELOG](https://github.com/ComputationalPsychiatry/PhysIO/blob/master/CHANGELOG.md).
+
 
 Installation
 ------------
@@ -102,15 +102,16 @@ as every researcher, we only have a limited amount of time. So please excuse, if
 we might not provide a detailed answer to your request, but just some general 
 pointers and templates. Before you contact us, please try the following:
 
-1. A first look at the [FAQ](https://gitlab.ethz.ch/physio/physio-doc/-/wikis/FAQ) 
+1. A first look at the [FAQ](https://github.com/ComputationalPsychiatry/PhysIO/wiki/FAQ) in our Wiki
    (which is frequently extended) might already answer your questions.
-2. A lot of questions (before 2018) have also been discussed on our mailinglist 
+2. A lot of older, but still relevant questions (dated 2018-2025) have been answered on the
+   [old GitHub issues page](https://github.com/translationalneuromodeling/tapas/issues?q=label%3Aphysio)
+   of our previous TAPAS Github organization.
+3. Some *really* old* questions (before 2018) have also been discussed on our mailinglist 
    [tapas@sympa.ethz.ch](https://sympa.ethz.ch/sympa/info/tapas), 
    which has a searchable [archive](https://sympa.ethz.ch/sympa/arc/tapas).
-3. For new requests, we would like to ask you to submit them as 
-   [issues](https://github.com/translationalneuromodeling/tapas/issues) on our 
-   github release page for TAPAS, which is also an up-to-date resource to 
-   user-driven questions (since 2018).
+4. For new requests, we would like to ask you to submit them as issues to our new [PhysIO GitHub Issues](https://github.com/ComputationalPsychiatry/PhysIO/issues) page.
+   
 
 
 Documentation
@@ -122,11 +123,7 @@ Documentation for this toolbox is provided in the following forms
     - [README.md](README.md): this file, purpose, installation, getting started, pointer to more help
     - [CHANGELOG.md](CHANGELOG.md): List of all toolbox versions and the respective release notes, 
       i.e. major changes in functionality, bugfixes etc.
-2. User Guide: The markdown-based [GitLab Wiki](https://gitlab.ethz.ch/physio/physio-doc/-/wikis/home), including an FAQ
-    - online (and frequently updated) at http://gitlab.ethz.ch/physio/physio-doc/-/wikis/home.
-    - offline (with stables releases) as part of the toolbox in folder `physio/wikidocs`: 
-        - plain text `.md` markdown files
-        - as single HTML and PDF  file: `documentation.{html,pdf}`
+2. User Guide: The markdown-based [GitLab Wiki](https://github.com/ComputationalPsychiatry/PhysIO/wiki), including an FAQ
 3. Within SPM: All toolbox parameters and their settings are explained in the 
    Help Window of the SPM Batch Editor
 4. Within Matlab: Extensive header at the start of each `tapas_physio_*` function and commenting
