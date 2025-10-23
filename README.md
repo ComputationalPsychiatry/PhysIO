@@ -53,41 +53,36 @@ Download
 
 - Please download the [PhysIO Toolbox on GitHub](https://github.com/ComputationalPsychiatry/PhysIO), which is part of the 
   [TAPAS GitHub Organization](https://github.com/ComputationalPsychiatry).
+  	- you can either clone the github repository `git clone https://github.com/ComputationalPsychiatry/PhysIO` or download the Source code(zip) from the Releases page on GitHub
 - Older versions are available on the archived [previous TAPAS GitHub Repository](https://github.com/translationalneuromodeling/tapas).
 - The latest developments can be found in the [PhysIO master branch](https://github.com/ComputationalPsychiatry/PhysIO/tree/master), and the stable version are regularly published as [releases](https://github.com/ComputationalPsychiatry/PhysIO/releases) 
   and are announced in the [GitHub Issue Forum](https://github.com/translationalneuromodeling/tapas/issues). 
-- Changes between all versions are documented in the 
-  [CHANGELOG](https://github.com/ComputationalPsychiatry/PhysIO/blob/master/CHANGELOG.md).
+    - Changes between all versions are documented in the 
+      [CHANGELOG](https://github.com/ComputationalPsychiatry/PhysIO/blob/master/CHANGELOG.md).
+- Alternatively, you can download the latest PhysIO release directly in Matlab by selecting "Home -> Add-Ons", search for PhysIO and press "Add -> Add to Matlab"
+    - PhysIO will then be installed in `<USER HOME>\AppData\Roaming\MathWorks\MATLAB Add-Ons\Collections` (on Windows)
 
 
 Installation
 ------------
 
 ### Matlab
-1. Unzip the TAPAS archive in your folder of choice
+1. If you downloaded the Source code (zip), extract the archive to your preferred destination folder
 2. Open Matlab
-3. Go to `/your/path/to/tapas/physio/code`
-4. Run `tapas_physio_init()` in Matlab
+3. Go to the `/<PHYSIO_PATH>` and then to the subfolder `code`, i.e., `cd /<PHYSIO_PATH>/code`
+4. Run `tapas_physio_init()` in the Matlab command window, which does the following
+    - Adds the `physio/code/` folder to your Matlab path
+    - Adds SPM to your Matlab path (you can enter it manually, if not found)
+    - Links the folder (Linux/Max) or copies the folder (Windows) `physio/code/` to `/your/path/to/SPM/toolbox/PhysIO`, if the PhysIO code is not already found there
 
-
-*Note*: Step (4) executes the following steps, which you could do manually as well.
-- Adds the `physio/code/` folder to your Matlab path
-- Adds SPM to your Matlab path (you can enter it manually, if not found)
-- Links the folder (Linux/Max) or copies the folder (Windows) `physio/code/` to `/your/path/to/SPM/toolbox/PhysIO`, if the PhysIO code is not already found there  
-
-Only the first point is necessary for using PhysIO standalone with Matlab.
-The other two points enable PhysIO's SPM integration, i.e., certain functionality 
-(Batch Editor GUI, pipeline dependencies, model assessment via F-contrasts).
+Please note: PhysIO works standalone in Matlab. However, copying/linking the code folder to the SPM installation enable PhysIO's SPM integration (Batch Editor GUI and help, pipeline dependencies, model assessment via F-contrasts).
 
 
 Getting Started
 ---------------
 
-...following the installation, you can try out an example:
-
-1. Download the TAPAS examples via running `tapas_download_example_data()` 
-   (found in `misc`-subfolder of TAPAS)
-    - The PhysIO Example files will be downloaded to `tapas/examples/<tapas-version>/PhysIO`
+1. Download the PhysIO examples via running `tapas_download_physio_example_data()` 
+    - The PhysIO Example files will be downloaded to `/<PHYSIO_PATH>/examples`
 2. Run `siemens_vb_ppu3t_sync_first_matlab_script.m` in subdirectory `Siemens_VB/PPU3T_Sync_First`
 3. See subdirectory `physio/docs` and the next two section of this document for help.
 
