@@ -1,4 +1,4 @@
-Code: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15578837.svg)](https://doi.org/10.5281/zenodo.15578837) | Paper [![DOI](https://zenodo.org/badge/DOI/10.1016/j.jneumeth.2016.10.019.svg)](https://doi.org/10.1016/j.jneumeth.2016.10.019) | Examples [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15579087.svg)](https://doi.org/10.5281/zenodo.15579087)
+Code [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15578837.svg)](https://doi.org/10.5281/zenodo.15578837) | Paper [![DOI](https://zenodo.org/badge/DOI/10.1016/j.jneumeth.2016.10.019.svg)](https://doi.org/10.1016/j.jneumeth.2016.10.019) | Examples [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15579087.svg)](https://doi.org/10.5281/zenodo.15579087)
 
 
 TAPAS PhysIO Toolbox 
@@ -51,16 +51,20 @@ There is also a video introduction into PhysIO and the TAPAS philosophy, given a
 Download
 --------
 
-- Please download the [PhysIO Toolbox on GitHub](https://github.com/ComputationalPsychiatry/PhysIO), which is part of the 
+1. From GitHub:
+    - Please download the [PhysIO Toolbox on GitHub](https://github.com/ComputationalPsychiatry/PhysIO), which is part of the 
   [TAPAS GitHub Organization](https://github.com/ComputationalPsychiatry).
-  	- you can either clone the github repository `git clone https://github.com/ComputationalPsychiatry/PhysIO` or download the Source code(zip) from the Releases page on GitHub
-- Older versions are available on the archived [previous TAPAS GitHub Repository](https://github.com/translationalneuromodeling/tapas).
-- The latest developments can be found in the [PhysIO master branch](https://github.com/ComputationalPsychiatry/PhysIO/tree/master), and the stable version are regularly published as [releases](https://github.com/ComputationalPsychiatry/PhysIO/releases) 
-  and are announced in the [GitHub Issue Forum](https://github.com/translationalneuromodeling/tapas/issues). 
-    - Changes between all versions are documented in the 
-      [CHANGELOG](https://github.com/ComputationalPsychiatry/PhysIO/blob/master/CHANGELOG.md).
-- Alternatively, you can download the latest PhysIO release directly in Matlab by selecting "Home -> Add-Ons", search for PhysIO and press "Add -> Add to Matlab"
+  	- either __clone__ the github repository `git clone https://github.com/ComputationalPsychiatry/PhysIO`
+  	- or __download__ the Source code(zip) from the Releases page on GitHub
+2. Within Matlab:
+    - Select "Home -> Add-Ons", search for TAPAS PhysIO and press "Add -> Add to Matlab"
     - PhysIO will then be installed in `<USER HOME>\AppData\Roaming\MathWorks\MATLAB Add-Ons\Collections` (on Windows)
+3. Which version should I download?
+    - The latest developments can be found in the [PhysIO master branch](https://github.com/ComputationalPsychiatry/PhysIO/tree/master)
+    - The stable version is regularly published under [releases](https://github.com/ComputationalPsychiatry/PhysIO/releases) 
+    - Changes between all versions are documented in the [CHANGELOG](https://github.com/ComputationalPsychiatry/PhysIO/blob/master/CHANGELOG.md).
+    - Older versions are available on the archived [previous TAPAS GitHub Repository](https://github.com/translationalneuromodeling/tapas).
+
 
 
 Installation
