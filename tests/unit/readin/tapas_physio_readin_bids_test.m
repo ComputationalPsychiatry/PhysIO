@@ -30,6 +30,8 @@ end
 %% Setup path to examples, needed for all test cases
 function setupOnce(testCase)
 testCase.TestData.pathExamples = tapas_physio_get_path_examples();
+testCase.TestData.pathTestReferenceResults = tapas_physio_get_path_test_reference_results(...
+    [], 1, 1);
 testCase.TestData.createdFigHandles = [];
 % for time courses (e.g., breathing) that reach close to 0, relative
 % tolerance can be misleading, use relative value to max instead
@@ -46,15 +48,13 @@ end
 % results
 function test_readin_bids_ppu3t(testCase)
 
-pathExamples = testCase.TestData.pathExamples;
-
 % load SPM matlabbatch, but convert to pure script before executing
 % remove unnecessary (beyond read-in) part from job exeuction (e.g.
 % visualization, modeling)
 % ...still needs SPM at the moment for conversion
 % TODO: parse matlab-script.m file apart from last, execution line
 
-pathCurrentExample = fullfile(pathExamples, 'BIDS/PPU3T');
+pathCurrentExample = fullfile(testCase.TestData.pathExamples, 'BIDS/PPU3T');
 pathNow = pwd;
 cd(pathCurrentExample); % for prepending absolute paths correctly
 fileExample = fullfile(pathCurrentExample, 'bids_ppu3t_spm_job.mat');
@@ -69,7 +69,7 @@ cd(pathNow)
 actPhysio = physio;
 
 % load physio from reference data
-fileReferenceData = fullfile(pathExamples, 'TestReferenceResults', 'readin', ...
+fileReferenceData = fullfile(testCase.TestData.pathTestReferenceResults, 'readin', ...
     'physio_readin_bids_ppu3t.mat');
 load(fileReferenceData, 'physio');
 expPhysio = physio;
@@ -90,7 +90,6 @@ end
 function test_readin_bids_cpulse3t(testCase)
 
 % run BIDS cpulse3t example and extract physio
-pathExamples = testCase.TestData.pathExamples;
 
 % load SPM matlabbatch, but convert to pure script before executing
 % remove unnecessary (beyond read-in) part from job exeuction (e.g.
@@ -98,7 +97,7 @@ pathExamples = testCase.TestData.pathExamples;
 % ...still needs SPM at the moment for conversion
 % TODO: parse matlab-script.m file apart from last, execution line
 
-pathCurrentExample = fullfile(pathExamples, 'BIDS/CPULSE3T');
+pathCurrentExample = fullfile(testCase.TestData.pathExamples, 'BIDS/CPULSE3T');
 pathNow = pwd;
 cd(pathCurrentExample); % for prepending absolute paths correctly
 fileExample = fullfile(pathCurrentExample, 'bids_cpulse3t_spm_job.mat');
@@ -118,7 +117,7 @@ cd(pathNow)
 actPhysio = physio;
 
 % load physio from reference data
-fileReferenceData = fullfile(pathExamples, 'TestReferenceResults', 'readin', ...
+fileReferenceData = fullfile(testCase.TestData.pathTestReferenceResults, 'readin', ...
     'physio_readin_bids_cpulse3t.mat');
 load(fileReferenceData, 'physio');
 expPhysio = physio;
@@ -137,15 +136,13 @@ end
 % saved reference .json file
 function test_write2bids_json(testCase)
 
-pathExamples = testCase.TestData.pathExamples;
-
 dirCurrentExample = 'Philips/ECG3T_V2';
 
 % location where the reference files are stored - step norm
-pathReferenceFiles = fullfile(pathExamples, 'TestReferenceResults', 'examples', dirCurrentExample);
+pathReferenceFiles = fullfile(testCase.TestData.pathTestReferenceResults, 'examples', dirCurrentExample);
 
 % location of the physio example file that will be passed to create_main_regrssors
-pathCurrentExample = fullfile(pathExamples, dirCurrentExample);
+pathCurrentExample = fullfile(testCase.TestData.pathExamples, dirCurrentExample);
 pathNow = pwd;
 cd(pathCurrentExample); % for prepending absolute paths correctly
 fileExample = fullfile(pathCurrentExample, 'philips_ecg3t_v2_spm_job.mat');
@@ -196,15 +193,13 @@ end
 % saved reference .tsv file
 function test_write2bids_tsv(testCase)
 
-pathExamples = testCase.TestData.pathExamples;
-
 dirCurrentExample = 'Philips/ECG3T_V2';
 
 % location where the reference files are stored - step norm
-pathReferenceFiles = fullfile(pathExamples, 'TestReferenceResults', 'examples', dirCurrentExample);
+pathReferenceFiles = fullfile(testCase.TestData.pathTestReferenceResults, 'examples', dirCurrentExample);
 
 % location of the physio example file that will be passed to create_main_regrssors
-pathCurrentExample = fullfile(pathExamples, dirCurrentExample);
+pathCurrentExample = fullfile(testCase.TestData.pathExamples, dirCurrentExample);
 pathNow = pwd;
 cd(pathCurrentExample); % for prepending absolute paths correctly
 fileExample = fullfile(pathCurrentExample, 'philips_ecg3t_v2_spm_job.mat');

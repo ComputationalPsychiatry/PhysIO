@@ -56,7 +56,7 @@ function    [quality_measures, dRp] = ...
 % EXAMPLE
 %   tapas_physio_get_movement_quality_measures
 %
-%   See also
+%   See also tapas_physio_create_movement_regressors
 
 % Author: Lars Kasper
 % Created: 2018-02-21
@@ -68,6 +68,10 @@ function    [quality_measures, dRp] = ...
 % (either version 3 or, at your option, any later version). For further details, see the file
 % COPYING or <http://www.gnu.org/licenses/>.
 %
+
+if nargin < 2
+    rHead = 50; % head radius in mm for FD computation (Power et al., 2012)
+end
 
 dRp = diff(R);
 dRp = [zeros(1,size(R,2)); dRp];

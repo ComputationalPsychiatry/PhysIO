@@ -1,4 +1,4 @@
-Code: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15578837.svg)](https://doi.org/10.5281/zenodo.15578837) | Paper [![DOI](https://zenodo.org/badge/DOI/10.1016/j.jneumeth.2016.10.019.svg)](https://doi.org/10.1016/j.jneumeth.2016.10.019) | Examples [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15579087.svg)](https://doi.org/10.5281/zenodo.15579087)
+Code [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15578837.svg)](https://doi.org/10.5281/zenodo.15578837) | Paper [![DOI](https://zenodo.org/badge/DOI/10.1016/j.jneumeth.2016.10.019.svg)](https://doi.org/10.1016/j.jneumeth.2016.10.019) | Examples [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15579087.svg)](https://doi.org/10.5281/zenodo.15579087)
 
 
 TAPAS PhysIO Toolbox 
@@ -7,26 +7,12 @@ TAPAS PhysIO Toolbox
 *Current version: Release 2024a, v9.0.3*
 
 > Copyright (C) 2012-2025  
-> Lars Kasper  
+> [Lars Kasper](https://mrikasper.github.io)  
 > <lars.kasper@alumni.ethz.ch>  
 >  
 > Translational Neuromodeling Unit (TNU)  
 > Institute for Biomedical Engineering  
 > University of Zurich and ETH Zurich  
-
-
-Download
---------
-
-- Please download the latest stable versions of the PhysIO Toolbox on GitHub as part of the 
-  [TAPAS software releases of the TNU](https://github.com/translationalneuromodeling/tapas/releases).
-- Older versions are available on the [TNU website](http://www.translationalneuromodeling.org/tapas).
-- The latest bugfixes can be found in the 
-  [development branch of TAPAS](https://github.com/translationalneuromodeling/tapas/tree/development) 
-  and are announced in the [GitHub Issue Forum](https://github.com/translationalneuromodeling/tapas/issues). 
-- Changes between all versions are documented in the 
-  [CHANGELOG](https://gitlab.ethz.ch/physio/physio-doc/blob/master/CHANGELOG.md).
-
 
 Purpose
 -------
@@ -61,34 +47,46 @@ The PhysIO Toolbox is part of the TAPAS software collection of *Translational Al
 
 There is also a video introduction into PhysIO and the TAPAS philosophy, given as part of the MRITogether23 Workshop on open science in MRI: [*PhysIO, UniQC and a TAPAStry of Tools* (20 min YouTube Video)](https://www.youtube.com/watch?v=zkPvQjLV2Is).
 
+
+Download
+--------
+
+1. From GitHub:
+    - Please download the [PhysIO Toolbox on GitHub](https://github.com/ComputationalPsychiatry/PhysIO), which is part of the 
+  [TAPAS GitHub Organization](https://github.com/ComputationalPsychiatry).
+  	- either __clone__ the github repository `git clone https://github.com/ComputationalPsychiatry/PhysIO`
+  	- or __download__ the Source code(zip) from the Releases page on GitHub
+2. Within Matlab:
+    - Select "Home -> Add-Ons", search for TAPAS PhysIO and press "Add -> Add to Matlab"
+    - PhysIO will then be installed in `<USER HOME>\AppData\Roaming\MathWorks\MATLAB Add-Ons\Collections` (on Windows)
+3. Which version should I download?
+    - The latest developments can be found in the [PhysIO master branch](https://github.com/ComputationalPsychiatry/PhysIO/tree/master)
+    - The stable version is regularly published under [releases](https://github.com/ComputationalPsychiatry/PhysIO/releases) 
+    - Changes between all versions are documented in the [CHANGELOG](https://github.com/ComputationalPsychiatry/PhysIO/blob/master/CHANGELOG.md).
+    - Older versions are available on the archived [previous TAPAS GitHub Repository](https://github.com/translationalneuromodeling/tapas).
+
+
+
 Installation
 ------------
 
 ### Matlab
-1. Unzip the TAPAS archive in your folder of choice
+1. If you downloaded the Source code (zip), extract the archive to your preferred destination folder
 2. Open Matlab
-3. Go to `/your/path/to/tapas/physio/code`
-4. Run `tapas_physio_init()` in Matlab
+3. Go to the `/<PHYSIO_PATH>` and then to the subfolder `code`, i.e., `cd /<PHYSIO_PATH>/code`
+4. Run `tapas_physio_init()` in the Matlab command window, which does the following
+    - Adds the `physio/code/` folder to your Matlab path
+    - Adds SPM to your Matlab path (you can enter it manually, if not found)
+    - Links the folder (Linux/Max) or copies the folder (Windows) `physio/code/` to `/your/path/to/SPM/toolbox/PhysIO`, if the PhysIO code is not already found there
 
-
-*Note*: Step (4) executes the following steps, which you could do manually as well.
-- Adds the `physio/code/` folder to your Matlab path
-- Adds SPM to your Matlab path (you can enter it manually, if not found)
-- Links the folder (Linux/Max) or copies the folder (Windows) `physio/code/` to `/your/path/to/SPM/toolbox/PhysIO`, if the PhysIO code is not already found there  
-
-Only the first point is necessary for using PhysIO standalone with Matlab.
-The other two points enable PhysIO's SPM integration, i.e., certain functionality 
-(Batch Editor GUI, pipeline dependencies, model assessment via F-contrasts).
+Please note: PhysIO works standalone in Matlab. However, copying/linking the code folder to the SPM installation enable PhysIO's SPM integration (Batch Editor GUI and help, pipeline dependencies, model assessment via F-contrasts).
 
 
 Getting Started
 ---------------
 
-...following the installation, you can try out an example:
-
-1. Download the TAPAS examples via running `tapas_download_example_data()` 
-   (found in `misc`-subfolder of TAPAS)
-    - The PhysIO Example files will be downloaded to `tapas/examples/<tapas-version>/PhysIO`
+1. Download the PhysIO examples via running `tapas_download_physio_example_data()` 
+    - The PhysIO Example files will be downloaded to `/<PHYSIO_PATH>/examples`
 2. Run `siemens_vb_ppu3t_sync_first_matlab_script.m` in subdirectory `Siemens_VB/PPU3T_Sync_First`
 3. See subdirectory `physio/docs` and the next two section of this document for help.
 
@@ -103,15 +101,16 @@ as every researcher, we only have a limited amount of time. So please excuse, if
 we might not provide a detailed answer to your request, but just some general 
 pointers and templates. Before you contact us, please try the following:
 
-1. A first look at the [FAQ](https://gitlab.ethz.ch/physio/physio-doc/-/wikis/FAQ) 
+1. A first look at the [FAQ](https://github.com/ComputationalPsychiatry/PhysIO/wiki/FAQ) in our Wiki
    (which is frequently extended) might already answer your questions.
-2. A lot of questions (before 2018) have also been discussed on our mailinglist 
+2. A lot of older, but still relevant questions (dated 2018-2025) have been answered on the
+   [old GitHub issues page](https://github.com/translationalneuromodeling/tapas/issues?q=label%3Aphysio)
+   of our previous TAPAS Github organization.
+3. Some *really* old* questions (before 2018) have also been discussed on our mailinglist 
    [tapas@sympa.ethz.ch](https://sympa.ethz.ch/sympa/info/tapas), 
    which has a searchable [archive](https://sympa.ethz.ch/sympa/arc/tapas).
-3. For new requests, we would like to ask you to submit them as 
-   [issues](https://github.com/translationalneuromodeling/tapas/issues) on our 
-   github release page for TAPAS, which is also an up-to-date resource to 
-   user-driven questions (since 2018).
+4. For new requests, we would like to ask you to submit them as issues to our new [PhysIO GitHub Issues](https://github.com/ComputationalPsychiatry/PhysIO/issues) page.
+   
 
 
 Documentation
@@ -123,11 +122,7 @@ Documentation for this toolbox is provided in the following forms
     - [README.md](README.md): this file, purpose, installation, getting started, pointer to more help
     - [CHANGELOG.md](CHANGELOG.md): List of all toolbox versions and the respective release notes, 
       i.e. major changes in functionality, bugfixes etc.
-2. User Guide: The markdown-based [GitLab Wiki](https://gitlab.ethz.ch/physio/physio-doc/-/wikis/home), including an FAQ
-    - online (and frequently updated) at http://gitlab.ethz.ch/physio/physio-doc/-/wikis/home.
-    - offline (with stables releases) as part of the toolbox in folder `physio/wikidocs`: 
-        - plain text `.md` markdown files
-        - as single HTML and PDF  file: `documentation.{html,pdf}`
+2. User Guide: The markdown-based [GitLab Wiki](https://github.com/ComputationalPsychiatry/PhysIO/wiki), including an FAQ
 3. Within SPM: All toolbox parameters and their settings are explained in the 
    Help Window of the SPM Batch Editor
 4. Within Matlab: Extensive header at the start of each `tapas_physio_*` function and commenting
@@ -254,10 +249,10 @@ Contributors
 ------------
 
 - Lead Programmer: 
-    - [Lars Kasper](https://brain-to.ca/content/lars-kasper),
+    - [Lars Kasper](https://mrikasper.github.io),
       TNU & MR-Technology Group, IBT, University of Zurich & ETH Zurich
 - Project Team: 
-    - Johanna Bayer, Donders Institute for Brain, Cognition and Behaviour, Nijmegen, Netherlands
+    - [Johanna Bayer](https://opencodereview.netlify.app/), Donders Institute for Brain, Cognition and Behaviour, Nijmegen, Netherlands
     - Saskia Bollmann, Centre for Advanced Imaging, University of Queensland, Australia
 - Project Team Alumni:
     - Steffen Bollmann, Centre for Advanced Imaging, University of Queensland, Australia

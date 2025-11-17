@@ -60,7 +60,7 @@ if ~isSpmOnPath
     
     if isempty(pathSpm) % we don't know where to look for, prompt user
         fprintf('\n\t');
-        pathSpm = input('No SPM path found. If you want to add it, just enter it now [ENTER to continue]:', 's');
+        pathSpm = input('No SPM path found. If you want to add it, just enter it now [omit '''', press ENTER to continue]:', 's');
     end
     
     if exist(pathSpm, 'dir')
