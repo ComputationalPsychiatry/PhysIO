@@ -4,7 +4,7 @@ Code [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15578837.svg)](https://
 TAPAS PhysIO Toolbox 
 ====================
 
-*Current version: Release 2024a, v9.0.3*
+*Current version: Release 2025a, v9.1-rc1*
 
 > Copyright (C) 2012-2025  
 > [Lars Kasper](https://mrikasper.github.io)  
