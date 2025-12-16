@@ -282,7 +282,7 @@ end
 % TODO: Call BIDS derivative writer function here
 % For now: write to BIDS file with note on preprocessing (filtering,
 % cropping to acquisition window, cardiac pulse detection)
-if isequal(write_bids.bids_step,4)
+if hasPhyslogFiles && isequal(write_bids.bids_step,4)
     tapas_physio_write2bids(ons_secs, write_bids, log_files);
 end
 
