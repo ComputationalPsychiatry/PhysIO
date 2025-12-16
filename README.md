@@ -71,24 +71,25 @@ Installation
 ------------
 
 ### Matlab
-1. If you downloaded the Source code (zip), extract the archive to your preferred destination folder
+1. If you downloaded the Source code (zip), extract the archive to your preferred destination folder `<PHYSIO_PATH>`
+    - **Please Note**: PhysIO works standalone in Matlab. 
+      However, for the SPM integration to work seamlessly (Batch Editor GUI 
+      and help, pipeline dependencies, model assessment via F-contrasts), 
+      move the unzipped archive folder to to `<pathToSpm>/toolbox`, i.e.,
+      `<PHYSIO_PATH> = <pathToSpm>/toolbox/PhysIO` or similar
 2. Open Matlab
-3. Go to the `/<PHYSIO_PATH>` and then to the subfolder `code`, i.e., `cd /<PHYSIO_PATH>/code`
+3. Change directory (`cd`) to the `<PHYSIO_PATH>`
 4. Run `tapas_physio_init()` in the Matlab command window, which does the following
-    - Adds the `physio/code/` folder to your Matlab path
+    - Adds the `<PHYSIO_PATH>/code/` folder to your Matlab path
     - Adds SPM to your Matlab path (you can enter it manually, if not found)
-    - Links the folder (Linux/Max) or copies the folder (Windows) `physio/code/` to `/your/path/to/SPM/toolbox/PhysIO`, if the PhysIO code is not already found there
-
-Please note: PhysIO works standalone in Matlab. However, copying/linking the code folder to the SPM installation enable PhysIO's SPM integration (Batch Editor GUI and help, pipeline dependencies, model assessment via F-contrasts).
-
-
+    
 Getting Started
 ---------------
 
-1. Download the PhysIO examples via running `tapas_download_physio_example_data()` 
-    - The PhysIO Example files will be downloaded to `/<PHYSIO_PATH>/examples`
+1. Download the PhysIO examples via running `tapas_download_physio_example_data()` (located in the `<PHYSIO_PATH>` main folder)
+    - The PhysIO Example files will be downloaded to `<PHYSIO_PATH>/examples`
 2. Run `siemens_vb_ppu3t_sync_first_matlab_script.m` in subdirectory `Siemens_VB/PPU3T_Sync_First`
-3. See subdirectory `physio/docs` and the next two section of this document for help.
+3. See the next two sections of this document for more help and documentation.
 
 You may try any of the examples in the other vendor folders as well.
 
