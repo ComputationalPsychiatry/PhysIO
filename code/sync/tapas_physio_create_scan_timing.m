@@ -73,6 +73,16 @@ sqpar   = scan_timing.sqpar;
 
 % TODO: introduce auto that takes time stamps from default locations
 % for different vendors
+
+% Error if gradient time course synchronization is tried on anything else
+% but Philips logfiles
+if contains(lower(scan_timing.sync.method), 'gradient') ...
+        && ~contains(lower(log_files.vendor), 'philips')
+    verbose = tapas_physio_log(...
+        sprintf(...
+        'scan_timing.sync.method: ''%s'' is only available for log_files.vendor = ''Philips'', not ''%s''', ...
+        scan_timing.sync.method, log_files.vendor), verbose, 2);
+end
 switch lower(scan_timing.sync.method)
     case 'nominal'
         [VOLLOCS, LOCS] = ...
