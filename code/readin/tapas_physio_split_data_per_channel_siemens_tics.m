@@ -80,6 +80,29 @@ for iChannel = 1:nChannels
     cSignalsChannel = cSignals(idxChannel);
     extTriggerSignalsChannel = extTriggerSignals(idxChannel);
     
+    %% for GitHub Issue 22: https://github.com/ComputationalPsychiatry/PhysIO/issues/22
+    % PULS_TRIGGER are extra rows with values 2048, have to be removed to
+    % not confuse the interpolation with duplicate entries
+    % save TICS value for later re-labeling after duplicates removal
+    idxTriggerEvents = find(cSignalsChannel);
+    hasExtraTriggerEventRows = ~isempty(idxTriggerEvents) && ...
+        all(unique(cChannel(idxTriggerEvents)) == 2048);
+    if hasExtraTriggerEventRows
+        % store time points for Trigger signal
+        cTicsSignalsChannel = cTicsChannel(idxTriggerEvents);
+        % remove rows with 2048 trigger events
+        cChannel(idxTriggerEvents)                      = [];
+        cTicsChannel(idxTriggerEvents)                  = [];
+        idxChannel(idxTriggerEvents)                    = [];
+        cSignalsChannel(idxTriggerEvents)               = [];
+        extTriggerSignalsChannel(idxTriggerEvents)      = [];
+        
+        % reinsert trigger signal at right time points
+        [lia locb] = ismember(cTicsSignalsChannel, cTicsChannel);
+        % for formerly duplicate time points, add the signal
+        cSignalsChannel(locb(lia)) = 1;
+    end
+
     %% interpolate to same time grid (tics) for channel combination  already...
     
     % first, remove duplicates in tics time axis by averaging
