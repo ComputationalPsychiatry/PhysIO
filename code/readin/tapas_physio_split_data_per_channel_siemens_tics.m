@@ -80,6 +80,57 @@ for iChannel = 1:nChannels
     cSignalsChannel = cSignals(idxChannel);
     extTriggerSignalsChannel = extTriggerSignals(idxChannel);
     
+    %% for GitHub Issue 22: https://github.com/ComputationalPsychiatry/PhysIO/issues/22
+    % PULS_TRIGGER are extra rows with values 2048, have to be removed to
+    % not confuse the interpolation with duplicate entries
+    % save TICS value for later re-labeling after duplicates removal
+    idxTriggerEvents = find(cSignalsChannel);
+    hasExtraTriggerEventRows = ~isempty(idxTriggerEvents) && ...
+        all(unique(cChannel(idxTriggerEvents)) == 2048);
+    if hasExtraTriggerEventRows
+        % store time points for Trigger signal
+        cTicsSignalsChannel = cTicsChannel(idxTriggerEvents);
+        % remove rows with 2048 trigger events
+        cChannel(idxTriggerEvents)                      = [];
+        cTicsChannel(idxTriggerEvents)                  = [];
+        idxChannel(idxTriggerEvents)                    = [];
+        cSignalsChannel(idxTriggerEvents)               = [];
+        extTriggerSignalsChannel(idxTriggerEvents)      = [];
+        
+        % reinsert trigger signal at right time points
+        [lia locb] = ismember(cTicsSignalsChannel, cTicsChannel);
+        % for formerly duplicate tics time points, add the signal label
+        % directly
+        cSignalsChannel(locb(lia)) = 1;
+        % for non-exact matches of time points, add signal label to closest
+        % time point
+        cTicsSignalsChannelNoMatch = cTicsSignalsChannel(find(~lia));
+        
+        % If stats toolbox available, knnsearch can be used
+        % [idx, dist] = knnsearch(cTicsChannel, cTicsSignalsChannelNoMatch);
+
+        % otherwise: toolbox-free next neighbor search via interp1
+        % from https://stackoverflow.com/questions/55916651/find-a-matching-or-closest-value-in-an-array-from-a-given-value
+        cTicsMatching = interp1(cTicsChannel,cTicsChannel,cTicsSignalsChannelNoMatch,'nearest');
+        [lia locb] = ismember(cTicsMatching, cTicsChannel);
+        % for formerly duplicate tics time points, add the signal label
+        % directly
+        cSignalsChannel(locb(lia)) = 1;
+    
+      if DEBUG
+          fh = tapas_physio_get_default_fig_params();
+          set(fh, 'Name', 'Read-In: Raw ECG Siemens Tics data, remove PULS_TRIGGER 2048 lines')
+          verbose.fig_handles(end+1) = fh;
+          plot(cTicsChannel, cChannel);
+          hold all;
+          stem(cTicsChannel(cSignalsChannel), cChannel(cSignalsChannel));
+          xlabel('Tics (2.5ms since start of day)')
+          ylabel(['Channel Trace: ' stringChannels{iChannel}])
+          title('Read-In: Raw ECG Siemens Tics data, remove PULS\_TRIGGER 2048 lines - Check Trigger Event Alignment')
+      end
+
+    end
+
     %% interpolate to same time grid (tics) for channel combination  already...
     
     % first, remove duplicates in tics time axis by averaging
