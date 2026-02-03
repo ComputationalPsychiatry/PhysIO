@@ -4,9 +4,27 @@ RELEASE INFORMATION
 Current Release
 ---------------
 
-*Current version: PhysIO Toolbox Release R2024a, v9.0.3*
+*Current version: PhysIO Toolbox Release R2025a, v9.1.0*
 
-June 2nd, 2025
+February 3rd, 2026
+
+Minor Release Notes (v9.1.0)
+----------------------------
+
+### Added
+- Provided separate repositories for 
+  [PhysIO Example Data](https://github.com/ComputationalPsychiatry/PhysIO-Examples) 
+  and [Test Reference Results](https://github.com/ComputationalPsychiatry/PhysIO-Test-Reference-Results)
+- Created corresponding Zenodo DOIs for [PhysIO Example Data](https://zenodo.org/records/15579087) 
+  and [Test Reference Results](https://zenodo.org/records/16579519)
+
+### Changed
+- Moved SPM Batch Editor configuration into repository main folder
+    - `PhysIO` folder itself can just be moved/cloned as subfolder of `spm/toolbox`
+    - no more manual copying of `code` subfolder
+- Updated Documentation to new Zenodo/GitHub locations
+
+### Fixed
 
 Bugfix Release Notes (v9.0.3)
 ----------------------------
