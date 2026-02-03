@@ -35,6 +35,8 @@ function setupOnce(testCase)
 % Get PhysIO public repo base folder from this file's location
 testCase.TestData.pathPhysioPublic = tapas_physio_simplify_path(fullfile(fileparts(mfilename('fullpath')), '..', '..', '..'));
 testCase.TestData.pathExamples = tapas_physio_get_path_examples(testCase.TestData.pathPhysioPublic);
+testCase.TestData.pathTestReferenceResults = tapas_physio_get_path_test_reference_results(...
+    testCase.TestData.pathPhysioPublic, 1, 1);
 % for time courses (e.g., breathing) that reach close to 0, relative
 % tolerance can be misleading, use relative value to max instead
 testCase.TestData.absTol = 1e-6;
@@ -64,7 +66,7 @@ physio.preproc.cardiac.filter.stopband = [0.4 3.9];
 actPhysio = tapas_physio_main_create_regressors(physio);
 
 % load physio from reference data
-fileReferenceData = fullfile(testCase.TestData.pathExamples, 'TestReferenceResults', 'preproc', ...
+fileReferenceData = fullfile(testCase.TestData.pathTestReferenceResults, 'preproc', ...
     'physio_filter_cardiac_cheby2.mat');
 load(fileReferenceData, 'physio');
 expPhysio = physio;
@@ -103,7 +105,7 @@ physio.preproc.cardiac.filter.stopband = [];
 actPhysio = tapas_physio_main_create_regressors(physio);
 
 % load physio from reference data
-fileReferenceData = fullfile(testCase.TestData.pathExamples, 'TestReferenceResults', 'preproc', ...
+fileReferenceData = fullfile(testCase.TestData.pathTestReferenceResults, 'preproc', ...
     'physio_filter_cardiac_butter.mat');
 load(fileReferenceData, 'physio');
 expPhysio = physio;

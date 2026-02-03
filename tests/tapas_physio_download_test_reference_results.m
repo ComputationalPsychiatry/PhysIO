@@ -25,7 +25,9 @@ function pathTestReferenceResults = tapas_physio_download_test_reference_results
  
 currentRelease = tapas_physio_version();
 
-semVersion = regexprep(currentRelease, '.*v', 'v');
+% TODO: make this a new version / find latest existing one online
+%semVersion = regexprep(currentRelease, '.*v', 'v');
+semVersion = 'v9.0.3';
 
 % download current version of PhysIO examples, corresponding to code
 % release version to temporary directory

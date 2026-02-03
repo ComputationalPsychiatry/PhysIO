@@ -43,6 +43,8 @@ end
 function setupOnce(testCase)
 % Get PhysIO public repo base folder from this file's location
 testCase.TestData.pathExamples = tapas_physio_get_path_examples();
+testCase.TestData.pathTestReferenceResults = tapas_physio_get_path_test_reference_results(...
+    [], 1, 1);
 testCase.TestData.createdFigHandles = [];
 end
 
@@ -613,7 +615,7 @@ testCase.TestData.createdFigHandles = physio.verbose.fig_handles;
 %% Load reference data and compare to actual run for certain subfields
 
 % Load physio structure from reference data
-fileReferenceData = fullfile(pathExamples, 'TestReferenceResults', 'examples', ...
+fileReferenceData = fullfile(testCase.TestData.pathTestReferenceResults, 'examples', ...
     dirRefResults, fileExampleOutputPhysio);
 load(fileReferenceData, 'physio');
 expPhysio = physio;
@@ -694,7 +696,7 @@ end
 %well
 
 if doTestMultipleRegressorsTxt
-    fileReferenceData = fullfile(pathExamples, 'TestReferenceResults', 'examples', ...
+    fileReferenceData = fullfile(testCase.TestData.pathTestReferenceResults, 'examples', ...
         dirRefResults, fileExampleOutputTxt);
     R = load(fileReferenceData);
     expRegressorsFromTxt = R;

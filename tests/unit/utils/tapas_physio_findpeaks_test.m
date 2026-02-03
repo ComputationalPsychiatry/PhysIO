@@ -33,8 +33,9 @@ end
 % path to examples, needed for all test cases
 function setupOnce(testCase)
 % Get PhysIO public repo base folder from this file's location
-testCase.TestData.pathPhysioPublic = tapas_physio_simplify_path(fullfile(fileparts(mfilename('fullpath')), '..', '..', '..'));
-testCase.TestData.pathExamples = tapas_physio_get_path_examples(testCase.TestData.pathPhysioPublic);
+testCase.TestData.pathExamples = tapas_physio_get_path_examples();
+testCase.TestData.pathTestReferenceResults = tapas_physio_get_path_test_reference_results(...
+    [], 1, 1);
 % for time courses (e.g., breathing) that reach close to 0, relative
 % tolerance can be misleading, use relative value to max instead
 testCase.TestData.absTol = 1e-6;
@@ -80,7 +81,7 @@ end
 
 
 % load physio from reference data
-fileReferenceData = fullfile(pathExamples, 'TestReferenceResults', 'utils', ...
+fileReferenceData = fullfile(testCase.TestData.pathTestReferenceResults, 'utils', ...
     'physio_findpeaks_ge_ppu3t.mat');
 load(fileReferenceData, 'physio');
 expPhysio = physio;

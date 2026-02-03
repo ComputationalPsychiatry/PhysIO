@@ -185,6 +185,12 @@ expectedJsonFile = fullfile(pathReferenceFiles, jsonFilename);
 str = fileread(expectedJsonFile); % dedicated for reading files as text
 expectedJson = jsondecode(str);
 
+doIgnoreVersion = true;
+if doIgnoreVersion
+    actualJson = rmfield(actualJson, 'SoftwareVersions');
+    expectedJson = rmfield(expectedJson, 'SoftwareVersions');
+end
+
 verifyEqual(testCase, actualJson, expectedJson, 'BIDS-writer JSON files do not match');
 
 end

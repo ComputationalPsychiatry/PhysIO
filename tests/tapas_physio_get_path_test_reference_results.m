@@ -65,7 +65,7 @@ if doVerifyPath
     while ~haveFoundPath && iPath < numel(possiblePaths)
         iPath = iPath + 1;
         pathTestReferenceResults = possiblePaths{iPath};
-        haveFoundPath = isfolder(fullfile(pathTestReferenceResults, 'BIDS'));
+        haveFoundPath = isfolder(fullfile(pathTestReferenceResults, 'examples', 'BIDS'));
     end
 
 else % use canonical Zenodo download path for examples
