@@ -28,7 +28,7 @@ function isPhysioCorrectlyInitialized = tapas_physio_init()
 % add path for utils, if physio not in path
 if ~exist('tapas_physio_logo')
     pathPhysio = fileparts(mfilename('fullpath'));
-    addpath(fullfile(pathPhysio, 'utils')); % needed for further path checks
+    addpath(fullfile(pathPhysio, 'code', 'utils')); % needed for further path checks
 end
 
 tapas_physio_logo(); % print logo
@@ -47,9 +47,8 @@ else
 end
 
 % Adding test paths as well to run tapas_physio_test via tapas_test
-% TODO: does not work, if code folder in SPM/toolbox
 if ~exist('tapas_physio_test')
-   pathPhysIOTest = fullfile(fileparts(pathPhysIO), 'tests');
+   pathPhysIOTest = fullfile(fileparts(pathPhysIO), 'code', 'tests');
    addpath(genpath(pathPhysIOTest));
 end
 
@@ -78,7 +77,7 @@ end
 
 
 %% Check PhysIO/Matlab Integration via Batch Editor
-fprintf('Checking whether PhysIO/code folder is a subfolder of SPM/toolbox (or a link within there)...');
+fprintf('Checking whether PhysIO folder is a subfolder of SPM/toolbox (or a link within there)...');
 
 isVerbose = false; % we will try to create link, don't warn yet
 [isPhysioVisibleForSpmBatchEditor, pathSpm, pathPhysIO] = ...
