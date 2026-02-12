@@ -29,9 +29,11 @@ end
 
 %% Setup path to examples, needed for all test cases
 function setupOnce(testCase)
-testCase.TestData.pathExamples = tapas_physio_get_path_examples();
+doVerifyPath = true;
+doDownloadData = true;
+testCase.TestData.pathExamples = tapas_physio_get_path_examples([], doVerifyPath, doDownloadData);
 testCase.TestData.pathTestReferenceResults = tapas_physio_get_path_test_reference_results(...
-    [], 1, 1);
+    [], doVerifyPath, doDownloadData);
 testCase.TestData.createdFigHandles = [];
 % for time courses (e.g., breathing) that reach close to 0, relative
 % tolerance can be misleading, use relative value to max instead

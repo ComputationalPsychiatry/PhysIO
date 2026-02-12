@@ -1,5 +1,5 @@
 function pathExamples = tapas_physio_get_path_examples(pathPhysioPublic, ...
-    doVerifyPath)
+    doVerifyPath, doDownloadData)
 % Returns GitLab-internal or TAPAS-public PhysIO Examples folder, based on
 % location of public PhysIO directory
 %
@@ -16,6 +16,9 @@ function pathExamples = tapas_physio_get_path_examples(pathPhysioPublic, ...
 %                       if false, the standard download path for examples,
 %                       as used by tapas_physio_download_example_data(), is
 %                       returned
+%   doDownloadData      true or false [default]; if true and no valid path
+%                       exists, initiate download of reference data from
+%                       web
 % OUT
 %
 % EXAMPLE
@@ -42,6 +45,10 @@ if nargin < 2
     doVerifyPath = true;
 end
 
+if nargin < 3
+    doDownloadData = false;
+end
+
 % try PhysIO examples from separate Gitlab repository first (deployment
 % mode physio-dev)
 % then: try old separate Gitlab repository via submodule in PhysIO Gitlab
@@ -54,23 +61,11 @@ possibleExamplePaths = {
 
 if doVerifyPath
     iPath = 0;
-    haveFoundExamplePath = false;
-    while ~haveFoundExamplePath && iPath < numel(possibleExamplePaths)
+    haveFoundPath = false;
+    while ~haveFoundPath && iPath < numel(possibleExamplePaths)
         iPath = iPath + 1;
         pathExamples = possibleExamplePaths{iPath};
-        haveFoundExamplePath = isfolder(fullfile(pathExamples, 'BIDS'));
-    end
-
-    % otherwise use public TAPAS examples
-    if ~haveFoundExamplePath
-        pathExamples =  fullfile(pathPhysioPublic, ...
-            '..', 'examples', tapas_get_current_version(), 'PhysIO');
-    end
-
-    % If no examples folder found, suggest to download them via tapas-function
-    if ~isfolder(fullfile(pathExamples, 'BIDS'))
-        physio = tapas_physio_new();
-        tapas_physio_log('No PhysIO examples data found. Please download via tapas_physio_download_example_data()', physio.verbose, 2);
+        haveFoundPath = isfolder(fullfile(pathExamples, 'BIDS'));
     end
 
 else % use canonical Zenodo download path for examples
@@ -78,3 +73,17 @@ else % use canonical Zenodo download path for examples
 end
 
 pathExamples = tapas_physio_simplify_path(pathExamples);
+
+if doDownloadData && (doVerifyPath && ~haveFoundPath)
+    pathExamples = tapas_physio_download_example_data();
+end
+
+if (doVerifyPath && ~haveFoundPath)
+    if doDownloadData
+        pathExamples = tapas_physio_download_test_reference_results();
+    else
+        physio = tapas_physio_new();
+        tapas_physio_log('No PhysIO examples data found. Please download via tapas_physio_download_example_data()', physio.verbose, 2);
+    end
+end
+

@@ -33,9 +33,11 @@ end
 % path to examples, needed for all test cases
 function setupOnce(testCase)
 % Get PhysIO public repo base folder from this file's location
-testCase.TestData.pathExamples = tapas_physio_get_path_examples();
+doVerifyPath = true;
+doDownloadData = true;
+testCase.TestData.pathExamples = tapas_physio_get_path_examples([], doVerifyPath, doDownloadData);
 testCase.TestData.pathTestReferenceResults = tapas_physio_get_path_test_reference_results(...
-    [], 1, 1);
+    [], doVerifyPath, doDownloadData);
 % for time courses (e.g., breathing) that reach close to 0, relative
 % tolerance can be misleading, use relative value to max instead
 testCase.TestData.absTol = 1e-6;
