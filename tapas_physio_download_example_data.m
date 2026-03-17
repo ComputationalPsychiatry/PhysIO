@@ -24,14 +24,19 @@ function pathToExamples = tapas_physio_download_example_data()
 % see the file COPYING or <http://www.gnu.org/licenses/>.
  
 currentRelease = tapas_physio_version();
+semVersion = regexprep(currentRelease, '.*v', 'v');
 
-% TODO: make this a new version / find latest existing one online
-%semVersion = regexprep(currentRelease, '.*v', 'v');
-semVersion = 'v9.0.3';
+% find version-corresponding Zenodo record and URL of zip online
+conceptRecidExamples = 15579086; % this should be valid forever
+zenodoRecord = tapas_physio_get_zenodo_record_for_version(...
+    conceptRecidExamples, semVersion);
 
 % download current version of PhysIO examples, corresponding to code
 % release version to temporary directory
-urlZenodo = sprintf('https://zenodo.org/records/15579087/files/ComputationalPsychiatry/PhysIO-Examples-%s.zip', semVersion);
+
+% remove /api in middle of URL and /content at the end
+urlZenodo = regexprep(zenodoRecord.files(1).links.self, {'/api', '/content'}, '');
+
 tempZipFilePath = [tempname '.zip'];  % tempname is matlab inbuilt
 fprintf('Downloading Example Data for PhysIO version %s into PhysIO/examples folder...\n', semVersion);
 fprintf('This may take a few minutes (50 MB)\n')
