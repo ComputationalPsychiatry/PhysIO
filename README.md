@@ -1,4 +1,5 @@
-[Code](https://github.com/ComputationalPsychiatry/PhysIO) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15578837.svg)](https://doi.org/10.5281/zenodo.15578837) | [Paper](http://www.sciencedirect.com/science/article/pii/S016502701630259X) [![DOI](https://zenodo.org/badge/DOI/10.1016/j.jneumeth.2016.10.019.svg)](https://doi.org/10.1016/j.jneumeth.2016.10.019) | [Examples](https://github.com/ComputationalPsychiatry/PhysIO-Examples) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15579087.svg)](https://doi.org/10.5281/zenodo.15579087)
+[Code](https://github.com/ComputationalPsychiatry/PhysIO) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15578837.svg)](https://doi.org/10.5281/zenodo.15578837) | [Paper](http://www.sciencedirect.com/science/article/pii/S016502701630259X) [![DOI](https://zenodo.org/badge/DOI/10.1016/j.jneumeth.2016.10.019.svg)](https://doi.org/10.1016/j.jneumeth.2016.10.019) | [Examples](https://github.com/ComputationalPsychiatry/PhysIO-Examples) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15579087.svg)](https://doi.org/10.5281/zenodo.15579087) | [Test Data](https://github.com/ComputationalPsychiatry/PhysIO-Test-Reference-Results) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.16579519.svg)](https://doi.org/10.5281/zenodo.16579519) 
+
 
 
 TAPAS PhysIO Toolbox 
