@@ -6,7 +6,7 @@ Current Release
 
 *Current version: PhysIO Toolbox Release R2025a, v9.1.0*
 
-February 3rd, 2026
+March 17th, 2026
 
 Minor Release Notes (v9.1.0)
 ----------------------------

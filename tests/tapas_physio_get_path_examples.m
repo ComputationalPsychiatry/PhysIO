@@ -38,7 +38,7 @@ function pathExamples = tapas_physio_get_path_examples(pathPhysioPublic, ...
 % see the file COPYING or <http://www.gnu.org/licenses/>.
 
 if nargin < 1 || isempty(pathPhysioPublic)
-    pathPhysioPublic = tapas_physio_simplify_path(fullfile(fileparts(mfilename('fullpath')), '..'));
+    pathPhysioPublic = tapas_physio_simplify_path(fileparts(fileparts(mfilename('fullpath'))));
 end
 
 if nargin < 2
@@ -54,7 +54,7 @@ end
 % then: try old separate Gitlab repository via submodule in PhysIO Gitlab
 % then: try download target from Zenodo download
 possibleExamplePaths = {
-    fullfile(pathPhysioPublic, '..', 'physio-examples')
+    fullfile(pathPhysioPublic, '..', 'PhysIO-Examples')
     fullfile(pathPhysioPublic, '..', 'examples')
     fullfile(pathPhysioPublic, 'examples')
     };
@@ -64,7 +64,7 @@ if doVerifyPath
     haveFoundPath = false;
     while ~haveFoundPath && iPath < numel(possibleExamplePaths)
         iPath = iPath + 1;
-        pathExamples = possibleExamplePaths{iPath};
+        pathExamples = tapas_physio_simplify_path(possibleExamplePaths{iPath});
         haveFoundPath = isfolder(fullfile(pathExamples, 'BIDS'));
     end
 

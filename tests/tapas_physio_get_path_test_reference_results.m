@@ -55,7 +55,7 @@ end
 % conventions
 possiblePaths = {
     fullfile(pathPhysioPublic, '..', 'physio-examples', 'TestReferenceResults')
-    fullfile(pathPhysioPublic, '..', 'physio-test-reference-results')
+    fullfile(pathPhysioPublic, '..', 'PhysIO-Test-Reference-Results')
     fullfile(pathPhysioPublic, 'test-reference-results')
     };
 
@@ -64,7 +64,7 @@ if doVerifyPath
     haveFoundPath = false;
     while ~haveFoundPath && iPath < numel(possiblePaths)
         iPath = iPath + 1;
-        pathTestReferenceResults = possiblePaths{iPath};
+        pathTestReferenceResults = tapas_physio_simplify_path(possiblePaths{iPath});
         haveFoundPath = isfolder(fullfile(pathTestReferenceResults, 'examples', 'BIDS'));
     end
 

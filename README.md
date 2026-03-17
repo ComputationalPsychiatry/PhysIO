@@ -250,10 +250,9 @@ Contributors
 ------------
 
 - Lead Programmer: 
-    - [Lars Kasper](https://mrikasper.github.io),
-      TNU & MR-Technology Group, IBT, University of Zurich & ETH Zurich
+    - [Lars Kasper](https://mrikasper.github.io), Toronto Neuroimaging Facility (ToNI), Deparment of Psychology, University of Toronto, Toronto, Canada
 - Project Team: 
-    - [Johanna Bayer](https://opencodereview.netlify.app/), Donders Institute for Brain, Cognition and Behaviour, Nijmegen, Netherlands
+    - [Johanna Bayer](https://opencodereview.netlify.app/), Montreal Neurological Institute (MNI), McGill University, Montreal, Canada
     - Saskia Bollmann, Centre for Advanced Imaging, University of Queensland, Australia
 - Project Team Alumni:
     - Steffen Bollmann, Centre for Advanced Imaging, University of Queensland, Australia

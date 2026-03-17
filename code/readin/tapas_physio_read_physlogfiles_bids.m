@@ -197,7 +197,7 @@ if isZipped
     [status,message,messageId] = rmdir(tempFilePath, 's');
     % warning if deletion failed
     if status == 0
-        tapas_physio_log(sprintf('%s: %s', messageId, message), verbose, 1)
+        tapas_physio_log(sprintf('%s: %s', messageId, message), verbose, 1);
     end
 end
 
@@ -447,7 +447,7 @@ if isZipped
     [status,message,messageId] = rmdir(tempFilePath, 's');
     % warning if deletion failed
     if status == 0
-        tapas_physio_log(sprintf('%s: %s', messageId, message), verbose, 1)
+        tapas_physio_log(sprintf('%s: %s', messageId, message), verbose, 1);
     end
 end
 
