@@ -1,5 +1,5 @@
 function tests = tapas_physio_findpeaks_test()
-% Tests whether current findpeaks function of Matlab's signal processing
+% Tests whether current findpeaks function of Matlab signal processing
 % toolbox delivers same results as previous version used in reference data
 %
 %    tests = tapas_physio_findpeaks_test()
@@ -34,7 +34,7 @@ end
 function setupOnce(testCase)
 
 % default: true; set to false for updating local example/test data git repositories
-doUseZenodoPaths = false; doVerifyPath = true; doDownloadData = true;
+doUseZenodoPaths = true; doVerifyPath = true; doDownloadData = true;
 [testCase.TestData.pathExamples, ...
     testCase.TestData.pathTestReferenceResults] ...
     = tapas_physio_get_paths_for_tests(...
