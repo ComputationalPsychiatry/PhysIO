@@ -23,8 +23,8 @@ function [isPhysioOnPath, pathPhysIO] = tapas_physio_check_path()
 % COPYING or <http://www.gnu.org/licenses/>.
 %
 
-% 2x fileparts, since it is the parent folder of where check_path resides
-pathPhysIO = fileparts(fileparts(mfilename('fullpath')));
+% 3x fileparts, since it is the grand-parent folder of where check_path resides
+pathPhysIO = fileparts(fileparts(fileparts(mfilename('fullpath'))));
 
 % cell of all subfolders of PhysIO/code, remove empty paths, e.g. due to
 % trailing pathsep

@@ -39,12 +39,16 @@ end
 %% Auxiliary functions for automation of code folder structure
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% path to examples, needed for all test cases
+% path to examples and reference results, needed for all test cases
 function setupOnce(testCase)
-% Get PhysIO public repo base folder from this file's location
-testCase.TestData.pathExamples = tapas_physio_get_path_examples();
-testCase.TestData.pathTestReferenceResults = tapas_physio_get_path_test_reference_results(...
-    [], 1, 1);
+
+% default: true; set to false for updating local example/test data git repositories
+doUseZenodoPaths = true; doVerifyPath = true; doDownloadData = true;
+[testCase.TestData.pathExamples, ...
+    testCase.TestData.pathTestReferenceResults] ...
+    = tapas_physio_get_paths_for_tests(...
+    doUseZenodoPaths, doVerifyPath, doDownloadData);
+
 testCase.TestData.createdFigHandles = [];
 end
 

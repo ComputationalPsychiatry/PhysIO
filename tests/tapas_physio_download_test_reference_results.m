@@ -26,12 +26,22 @@ function pathTestReferenceResults = tapas_physio_download_test_reference_results
 currentRelease = tapas_physio_version();
 
 % TODO: make this a new version / find latest existing one online
-%semVersion = regexprep(currentRelease, '.*v', 'v');
-semVersion = 'v9.0.3';
+semVersion = regexprep(currentRelease, '.*v', 'v');
+
+
+% find version-corresponding Zenodo record and URL of zip online
+conceptRecidTestReferenceResults = 16579518; % this should be valid forever
+zenodoRecord = tapas_physio_get_zenodo_record_for_version(...
+    conceptRecidTestReferenceResults, semVersion);
 
 % download current version of PhysIO examples, corresponding to code
 % release version to temporary directory
-urlZenodo = sprintf('https://zenodo.org/records/16579519/files/ComputationalPsychiatry/PhysIO-Test-Reference-Results-%s.zip', semVersion);
+
+% remove /api in middle of URL and /content at the end
+urlZenodo = regexprep(zenodoRecord.files(1).links.self, {'/api', '/content'}, '');
+
+% download current version of PhysIO examples, corresponding to code
+% release version to temporary directory
 tempZipFilePath = [tempname '.zip'];  % tempname is matlab inbuilt
 fprintf('Downloading Test Reference Results for PhysIO version %s into PhysIO/test-reference-results folder...\n', semVersion);
 fprintf('This may take a few minutes (250 MB)\n')

@@ -1,5 +1,5 @@
 function tests = tapas_physio_findpeaks_test()
-% Tests whether current findpeaks function of Matlab's signal processing
+% Tests whether current findpeaks function of Matlab signal processing
 % toolbox delivers same results as previous version used in reference data
 %
 %    tests = tapas_physio_findpeaks_test()
@@ -32,10 +32,14 @@ end
 
 % path to examples, needed for all test cases
 function setupOnce(testCase)
-% Get PhysIO public repo base folder from this file's location
-testCase.TestData.pathExamples = tapas_physio_get_path_examples();
-testCase.TestData.pathTestReferenceResults = tapas_physio_get_path_test_reference_results(...
-    [], 1, 1);
+
+% default: true; set to false for updating local example/test data git repositories
+doUseZenodoPaths = true; doVerifyPath = true; doDownloadData = true;
+[testCase.TestData.pathExamples, ...
+    testCase.TestData.pathTestReferenceResults] ...
+    = tapas_physio_get_paths_for_tests(...
+    doUseZenodoPaths, doVerifyPath, doDownloadData);
+
 % for time courses (e.g., breathing) that reach close to 0, relative
 % tolerance can be misleading, use relative value to max instead
 testCase.TestData.absTol = 1e-6;

@@ -112,10 +112,9 @@ verbose.review.create_hrv_regressors.delays = delays;
 verbose.review.create_hrv_regressors.samplePointsOut = samplePointsOut;
 verbose.review.create_hrv_regressors.convHRVOut = convHRVOut;
 
-if verbose.level>=2
+if verbose.level >= 2
    [verbose] = tapas_physio_plot_create_hrv_regressors(sample_points, hrOut, ...
-    hr, t, crf, convHRV, delays,samplePointsOut, convHRVOut, verbose)
-
+    hr, t, crf, convHRV, delays,samplePointsOut, convHRVOut, verbose);
 end
 
 end
