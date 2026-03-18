@@ -124,7 +124,7 @@ Documentation for this toolbox is provided in the following forms
     - [README.md](README.md): this file, purpose, installation, getting started, pointer to more help
     - [CHANGELOG.md](CHANGELOG.md): List of all toolbox versions and the respective release notes, 
       i.e. major changes in functionality, bugfixes etc.
-2. User Guide: The markdown-based [GitLab Wiki](https://github.com/ComputationalPsychiatry/PhysIO/wiki), including an FAQ
+2. User Guide: The markdown-based [GitHub Wiki](https://github.com/ComputationalPsychiatry/PhysIO/wiki), including an FAQ
 3. Within SPM: All toolbox parameters and their settings are explained in the 
    Help Window of the SPM Batch Editor
 4. Within Matlab: Extensive header at the start of each `tapas_physio_*` function and commenting
@@ -187,7 +187,7 @@ data from imperfect peripheral measures. Read-in of the following formats is
 currently supported (alphabetic order):
 
 - BioPac `.mat` and `.txt` export files
-- Brain Imaging Data Structure files ([BIDS](https://bids-specification.readthedocs.io/en/stable/modality-specific-files/physiological-and-other-continuous-recordings.html#recommendations-for-specific-use-cases)) `*_physio.tsv[.gz]/.json` files
+- Brain Imaging Data Structure files ([BIDS](https://bids-specification.readthedocs.io/en/stable/modality-specific-files/physiological-recordings.html)) `*_physio.tsv[.gz]/.json` files
 - Custom logfiles: should contain one amplitude value per line, one logfile per 
   device. Sampling interval(s) are provided as a separate parameter to the toolbox.
 - General Electric
@@ -197,7 +197,7 @@ currently supported (alphabetic order):
 - Siemens Human Connectome Project (preprocessed files `*Physio_log.txt`)
 
 See also the 
-[Wiki page on Read-In](https://gitlab.ethz.ch/physio/physio-doc/-/wikis/MANUAL_PART_READIN) 
+[Wiki page on Read-In](https://github.com/ComputationalPsychiatry/PhysIO/wiki/MANUAL_PART_READIN) 
 for a more detailed list and description of the supported formats.
 
 ### Robust Preprocessing
