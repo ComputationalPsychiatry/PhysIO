@@ -37,21 +37,20 @@ if ~isfield(verbose, 'fig_handles') || numel(verbose.fig_handles) == 0 || ...
         tapas_physio_log('No figures found to save to file', verbose, 1);
     end
 else
-    [pfx fn sfx] = fileparts(verbose.fig_output_file);
+    [pfx, fn, sfx] = fileparts(verbose.fig_output_file);
     switch sfx
         case '.ps'
-            try %level 2 PS
-                for k=1:length(verbose.fig_handles)
-                    print(verbose.fig_handles(k),'-dpsc2', '-append',verbose.fig_output_file);
-                end
-            catch
-                delete(verbose.fig_output_file);
-                for k=1:length(verbose.fig_handles)
-                    print(verbose.fig_handles(k), '-dpsc', '-append', verbose.fig_output_file);
-                end
-             end
+            warning('tapas:physio:PostScriptNotSupported', ...
+                ['PostScript export is no longer supported by MATLAB. ' ...
+                'Saving the report as PDF instead.']);
+            verbose.fig_output_file = fullfile(pfx, [fn '.pdf']);
+            export_figures_to_pdf(verbose.fig_handles, ...
+                verbose.fig_output_file);
+        case '.pdf'
+            export_figures_to_pdf(verbose.fig_handles, ...
+                verbose.fig_output_file);
         case '.fig'
-            for k=1:length(verbose.fig_handles)
+            for k=1:numel(verbose.fig_handles)
                 saveas(verbose.fig_handles(k), fullfile(pfx,[fn sprintf('_%02d', k) sfx]));
             end
         case '' % empty, do nothing!
@@ -67,8 +66,15 @@ else
                     printFormat = '-djpeg';
                     warning('Image format to save output figures not supported, choosing jpeg instead');
             end
-            for k=1:length(verbose.fig_handles)
+            for k=1:numel(verbose.fig_handles)
                 print(verbose.fig_handles(k),printFormat,fullfile(pfx,[fn sprintf('_%02d', k) sfx]));
             end
     end
+end
+end
+
+function export_figures_to_pdf(figHandles, fileName)
+for k = 1:numel(figHandles)
+    exportgraphics(figHandles(k), fileName, 'Append', k > 1);
+end
 end
