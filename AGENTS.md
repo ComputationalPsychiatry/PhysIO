@@ -248,21 +248,27 @@ motion parameter regressors.
 Tests use the **MATLAB unit testing framework** (`matlab.unittest`).
 
 ```matlab
-% Run all unit tests
-cd tests/unit
-results = runtests('.');
-
-% Run all integration tests (requires downloaded example data)
-cd tests/integration
-results = runtests('.');
+% Run all unit and integration tests (recommended single entry point)
+testResults = tapas_physio_run_all_tests();
 ```
 
-Integration tests compare pipeline output against reference data stored in
-`test-reference-results/` subfolder (from different repository, see note above). 
+The runner discovers tests recursively, verifies the required example and reference
+data, and downloads the version-matched datasets from Zenodo when they are missing.
+It runs both suites and raises an error if any test fails or is incomplete. Run it
+from the PhysIO repository with PhysIO and SPM initialized on the MATLAB path.
+
+Do not use `cd tests/unit; runtests('.')` as the complete unit-test command: it does
+not recurse into the category subfolders and can therefore report zero tests.
+
+Integration tests compare pipeline output against reference data stored in the
+`test-reference-results/` subfolder (from a different repository; see note above).
 When adding a new example or fixing a bug that legitimately changes output, 
 update the reference results accordingly.
 
 Both SPM Batch Editor and MATLAB-only code paths are tested for all examples.
+
+All unit and integration tests must complete successfully before a pull request is
+marked ready for review. Keep a pull request in draft state while tests are failing.
 
 ---
 
