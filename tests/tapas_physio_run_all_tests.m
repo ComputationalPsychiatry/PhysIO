@@ -3,11 +3,13 @@ function testResults = tapas_physio_run_all_tests()
 %
 %   testResults = tapas_physio_run_all_tests()
 %
-% The required example data and test reference results are downloaded to
-% the canonical PhysIO folders when they are not already available. Both
-% suites are run recursively. An error is raised after both suites finish
-% if any test failed or was incomplete, making this function suitable as a
-% single pre-pull-request entry point for developers and coding agents.
+% Run tapas_physio_init() before calling this function so that PhysIO and
+% SPM are initialized on the MATLAB path. If necessary, this function
+% downloads both the PhysIO example data and the test reference results to
+% their canonical PhysIO folders. Both suites are run recursively. An error
+% is raised after both suites finish if any test failed or was incomplete,
+% making this function suitable as a single pre-pull-request entry point
+% for developers and coding agents.
 %
 % OUT
 %   testResults    Struct with fields unit and integration containing the
@@ -17,8 +19,9 @@ function testResults = tapas_physio_run_all_tests()
 %          tapas_physio_run_integration_tests,
 %          tapas_physio_get_paths_for_tests
 
-% Verify the external test data before starting either suite. The helper
-% downloads the version-matched Zenodo archives when required.
+% Verify both external datasets before starting either suite. If the
+% example data or test reference results are missing, the helper downloads
+% their version-matched Zenodo archives.
 doUseZenodoPaths = true;
 doVerifyPath = true;
 doDownloadData = true;
