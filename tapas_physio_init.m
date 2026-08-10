@@ -25,11 +25,10 @@ function isPhysioCorrectlyInitialized = tapas_physio_init()
 % see the file COPYING or <http://www.gnu.org/licenses/>.
 %
 
-% add path for utils, if physio not in path
-if ~exist('tapas_physio_logo')
-    pathPhysio = fileparts(mfilename('fullpath'));
-    addpath(fullfile(pathPhysio, 'code', 'utils')); % needed for further path checks
-end
+% Add this installation's utilities before checking the active PhysIO paths.
+pathPhysio = fileparts(mfilename('fullpath'));
+addpath(fullfile(pathPhysio, 'code', 'utils'), '-begin');
+tapas_physio_check_duplicate_paths();
 
 tapas_physio_logo(); % print logo
 
