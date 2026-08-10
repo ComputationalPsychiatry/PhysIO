@@ -40,15 +40,31 @@ else
     [pfx, fn, sfx] = fileparts(verbose.fig_output_file);
     switch sfx
         case '.ps'
-            warning('tapas:physio:PostScriptNotSupported', ...
-                ['PostScript export is no longer supported by MATLAB. ' ...
-                'Saving the report as PDF instead.']);
-            verbose.fig_output_file = fullfile(pfx, [fn '.pdf']);
-            export_figures_to_pdf(verbose.fig_handles, ...
-                verbose.fig_output_file);
+            % exportgraphics was introduced in MATLAB R2020a (version 9.8).
+            if ~verLessThan('matlab', '9.8')
+                warning('tapas:physio:PostScriptNotSupported', ...
+                    ['PostScript export is no longer supported by this ' ...
+                    'MATLAB release. Saving the report as PDF instead.']);
+                verbose.fig_output_file = fullfile(pfx, [fn '.pdf']);
+                export_figures_to_pdf(verbose.fig_handles, ...
+                    verbose.fig_output_file);
+            else
+                export_figures_to_postscript(verbose.fig_handles, ...
+                    verbose.fig_output_file);
+            end
         case '.pdf'
-            export_figures_to_pdf(verbose.fig_handles, ...
-                verbose.fig_output_file);
+            % exportgraphics was introduced in MATLAB R2020a (version 9.8).
+            if ~verLessThan('matlab', '9.8')
+                export_figures_to_pdf(verbose.fig_handles, ...
+                    verbose.fig_output_file);
+            else
+                warning('tapas:physio:PdfNotSupported', ...
+                    ['Multipage PDF export requires MATLAB R2020a or ' ...
+                    'newer. Saving the report as PostScript instead.']);
+                verbose.fig_output_file = fullfile(pfx, [fn '.ps']);
+                export_figures_to_postscript(verbose.fig_handles, ...
+                    verbose.fig_output_file);
+            end
         case '.fig'
             for k=1:numel(verbose.fig_handles)
                 saveas(verbose.fig_handles(k), fullfile(pfx,[fn sprintf('_%02d', k) sfx]));
@@ -76,5 +92,20 @@ end
 function export_figures_to_pdf(figHandles, fileName)
 for k = 1:numel(figHandles)
     exportgraphics(figHandles(k), fileName, 'Append', k > 1);
+end
+end
+
+function export_figures_to_postscript(figHandles, fileName)
+try % Level 2 PostScript
+    for k = 1:numel(figHandles)
+        print(figHandles(k), '-dpsc2', '-append', fileName); %#ok<PRINTPS4>
+    end
+catch
+    if isfile(fileName)
+        delete(fileName);
+    end
+    for k = 1:numel(figHandles)
+        print(figHandles(k), '-dpsc', '-append', fileName); %#ok<PRINTPS2>
+    end
 end
 end
