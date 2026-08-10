@@ -75,15 +75,13 @@ end
 pathExamples = tapas_physio_simplify_path(pathExamples);
 
 if doDownloadData && (doVerifyPath && ~haveFoundPath)
-    pathExamples = tapas_physio_download_example_data();
-end
-
-if (doVerifyPath && ~haveFoundPath)
-    if doDownloadData
-        pathExamples = tapas_physio_download_test_reference_results();
-    else
-        physio = tapas_physio_new();
-        tapas_physio_log('No PhysIO examples data found. Please download via tapas_physio_download_example_data()', physio.verbose, 2);
-    end
+    tapas_physio_download_example_data();
+    % Verify the downloaded data without triggering another download.
+    pathExamples = tapas_physio_get_path_examples(pathPhysioPublic, ...
+        doVerifyPath, false);
+elseif doVerifyPath && ~haveFoundPath
+    physio = tapas_physio_new();
+    tapas_physio_log(['No PhysIO examples data found. Please download ' ...
+        'via tapas_physio_download_example_data()'], physio.verbose, 2);
 end
 

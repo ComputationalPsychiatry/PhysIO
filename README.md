@@ -87,7 +87,7 @@ Installation
 Getting Started
 ---------------
 
-1. Download the PhysIO examples via running `tapas_download_physio_example_data()` (located in the `<PHYSIO_PATH>` main folder)
+1. Download the PhysIO examples via running `tapas_physio_download_example_data()` (located in the `<PHYSIO_PATH>` main folder)
     - The PhysIO Example files will be downloaded to `<PHYSIO_PATH>/examples`
 2. Run `siemens_vb_ppu3t_sync_first_matlab_script.m` in subdirectory `Siemens_VB/PPU3T_Sync_First`
 3. See the next two sections of this document for more help and documentation.
