@@ -356,7 +356,6 @@ end
 
 hasJsonFile = isfile(fileJson);
 
-nColumns = [];
 if hasJsonFile
     val = jsondecode(fileread(fileJson));
     nColumns = numel(val.Columns);
@@ -364,6 +363,7 @@ else
     verbose = tapas_physio_log(...
         ['No .json file found. Please specify log_files.sampling_interval' ...
         ' and log_files.relative_start_acquisition explicitly.'], verbose, 1);
+    nColumns = tapas_physio_count_bids_columns(fileName);
 end
 
 dt = log_files.sampling_interval;
@@ -401,19 +401,25 @@ end
 % 1 = cardiac, 2 = resp, 3 = trigger
 bidsColumnNames = {'cardiac', 'respiratory', 'trigger'};
 idxCol = 1:3;  %set default values for columns from BIDS
+hasTriggerColumn = false;
 for iCol = 1:3
     if hasJsonFile
         idxCurrCol = find(cellfun(@(x) isequal(lower(x), bidsColumnNames{iCol}), val.Columns));
         if ~isempty(idxCurrCol)
             idxCol(iCol) = idxCurrCol;
+            if strcmpi(bidsColumnNames{iCol}, 'trigger')
+                hasTriggerColumn = true;
+            end
         end
     end
 end
 
 C = tapas_physio_read_columnar_textfiles(fileName, 'BIDS', nColumns);
+if ~hasJsonFile
+    hasTriggerColumn = nColumns >= idxCol(3);
+end
 c = double(C{idxCol(1)});
 r = double(C{idxCol(2)});
-trigger_trace = double(C{idxCol(3)}); % trigger has 1, rest is 0;
 
 
 %% Create timing vector from samples
@@ -422,8 +428,13 @@ nSamples = max(numel(c), numel(r));
 t = -tRelStartScan + ((0:(nSamples-1))*dt)';
 
 %% Recompute acq_codes as for Siemens (volume on/volume off)
-[acq_codes, verbose] = tapas_physio_create_acq_codes_from_trigger_trace(t, trigger_trace, verbose, ...
-        1, 'rising', 'auto_matched');
+if hasTriggerColumn
+    trigger_trace = double(C{idxCol(3)}); % trigger has 1, rest is 0;
+    [acq_codes, verbose] = tapas_physio_create_acq_codes_from_trigger_trace(t, trigger_trace, verbose, ...
+            1, 'rising', 'auto_matched');
+else
+    acq_codes = [];
+end
 
 %% Plot extracted traces so far
 if DEBUG
@@ -467,5 +478,15 @@ legend({
     sprintf('original %s time series', stringOrigInterp{2}) });
 title(stringTitle);
 xlabel('time (seconds');
+end
+
+function nColumns = tapas_physio_count_bids_columns(fileName)
+% Determine the positional column count for legacy files without JSON.
+
+fid = fopen(fileName, 'r');
+cleanupFile = onCleanup(@() fclose(fid));
+firstLine = strtrim(fgetl(fid));
+nColumns = numel(regexp(firstLine, '\s+', 'split'));
+
 end
 
