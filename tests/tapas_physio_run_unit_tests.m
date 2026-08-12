@@ -27,6 +27,10 @@ function varargout = tapas_physio_run_unit_tests()
 % version 3 or, at your option, any later version). For further details,
 % see the file COPYING or <http://www.gnu.org/licenses/>.
  
+% Individual test files do not perform this check when run directly; call
+% tapas_physio_check_duplicate_paths first when bypassing an official runner.
+tapas_physio_check_duplicate_paths();
+
 import matlab.unittest.TestSuite;
 
 pathTests = fullfile(fileparts(mfilename('fullpath')), 'unit');

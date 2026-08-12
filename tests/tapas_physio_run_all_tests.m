@@ -19,6 +19,10 @@ function testResults = tapas_physio_run_all_tests()
 %          tapas_physio_run_integration_tests,
 %          tapas_physio_get_paths_for_tests
 
+% Individual test files do not perform this check when run directly; call
+% tapas_physio_check_duplicate_paths first when bypassing an official runner.
+tapas_physio_check_duplicate_paths();
+
 % Verify both external datasets before starting either suite. If the
 % example data or test reference results are missing, the helper downloads
 % their version-matched Zenodo archives.

@@ -41,6 +41,10 @@ if nargin < 1
     level = 0;
 end
 
+% Individual test files do not perform this check when run directly; call
+% tapas_physio_check_duplicate_paths first when bypassing an official runner.
+tapas_physio_check_duplicate_paths();
+
 tic
 
 testResults = [];
