@@ -182,12 +182,12 @@ if doComputeRatio
     fileTsnrCompare = fullfile(oldDirSpm, sprintf('tSNR_con%04d.nii', iCForRatio));
     
     % Load or compute tSNR image for comparison contrast
-    if ~exist(fileTsnrCompare, 'file');
+    if ~exist(fileTsnrCompare, 'file')
         % when computed, don't compute another ratio, and don't delete tmp
         % here! (will be done at the end)
         tSnrCompareImage = tapas_physio_compute_tsnr_spm(...
             fullfile(oldDirSpm, 'SPM.mat'), ...
-            iCForRatio, doInvert, [], 1);
+            iCForRatio, [], doInvert, 1);
     else
         VCompare = spm_vol(fileTsnrCompare);
         tSnrCompareImage = spm_read_vols(VCompare);
