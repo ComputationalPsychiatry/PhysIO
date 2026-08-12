@@ -62,6 +62,7 @@ end
 % include sub-folders of code to path as well
 pathThis = fileparts(mfilename('fullpath'));
 addpath(genpath(pathThis));
+tapas_physio_check_duplicate_paths();
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Modules (Overview)
