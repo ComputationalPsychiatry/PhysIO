@@ -3,8 +3,9 @@ function pathPhysioRoots = tapas_physio_check_duplicate_paths(pathPhysioRoots)
 %
 %   pathPhysioRoots = tapas_physio_check_duplicate_paths()
 %
-% If multiple installations are found, an error lists them and provides a
-% ready-to-paste command for keeping each installation in turn.
+% If multiple installations are found, recovery instructions are printed
+% before an error is raised. Each instruction line is a complete MATLAB
+% command, so the whole block can be pasted into the Command Window.
 %
 % IN
 %   pathPhysioRoots  optional list of installation roots; primarily useful
@@ -42,22 +43,26 @@ if numel(pathPhysioRoots) <= 1
     return;
 end
 
-message = sprintf(['Multiple PhysIO installations are active on the MATLAB path:\n\n' ...
+instructions = sprintf(['Multiple PhysIO installations are active on the MATLAB path:\n\n' ...
     '%s\nChoose one installation to keep.\n'], format_path_list(pathPhysioRoots));
 
 for iRoot = 1:numel(pathPhysioRoots)
-    command = sprintf('cd(''%s''); ', escape_quotes(pathPhysioRoots{iRoot}));
+    command = sprintf('cd(''%s'')\n', escape_quotes(pathPhysioRoots{iRoot}));
     indexRemove = setdiff(1:numel(pathPhysioRoots), iRoot, 'stable');
     for iRemove = indexRemove
-        command = [command, sprintf('rmpath(genpath(''%s'')); ', ...
+        command = [command, sprintf('rmpath(genpath(''%s''))\n', ...
             escape_quotes(pathPhysioRoots{iRemove}))]; %#ok<AGROW>
     end
-    command = [command, 'clear functions; rehash; tapas_physio_init();']; %#ok<AGROW>
-    message = [message, sprintf('\nTo keep installation %d, paste:\n%s\n', ...
+    command = [command, sprintf('clear functions\nrehash\ntapas_physio_init()\n')]; %#ok<AGROW>
+    instructions = [instructions, sprintf('\nTo keep installation %d, paste:\n%s', ...
         iRoot, command)]; %#ok<AGROW>
 end
 
-error('tapas:physio:MultipleInstallations', '%s', message);
+% ERROR reformats long messages and may insert line breaks inside quoted
+% paths. FPRINTF preserves the commands exactly as generated.
+fprintf(2, '\n%s\n', instructions);
+error('tapas:physio:MultipleInstallations', ...
+    'Multiple PhysIO installations are active. See recovery commands above.');
 
 
 function pathCanonical = get_canonical_path(pathInput)
