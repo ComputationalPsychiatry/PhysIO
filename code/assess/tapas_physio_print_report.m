@@ -17,7 +17,8 @@ if strcmpi(extensionReport, '.pdf') && verLessThan('matlab', '9.8') == 0
         error('tapas_physio:GraphicsFigureNotFound', ...
             'The SPM Graphics figure could not be found.');
     end
-    exportgraphics(graphicsFigure, fileReport, 'Append', isfile(fileReport));
+    fileReport = tapas_physio_export_figures( ...
+        graphicsFigure, fileReport, isfile(fileReport));
     return;
 end
 
