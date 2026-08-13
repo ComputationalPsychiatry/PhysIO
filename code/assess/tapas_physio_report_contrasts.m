@@ -3,13 +3,13 @@ function varargout = tapas_physio_report_contrasts(varargin)
 % in a given GLM
 %
 %  - Section plots on an anatomical overlay are created and saved as
-%    post-script file with one page for each contrasts
+%    PDF file with one page for each contrast
 %
 %  - Input parameters are specified via name/value pairs, e.g.
 %
 %
 %   args = tapas_physio_report_contrasts(...
-%                   'fileReport', 'physio.ps', ...
+%                   'fileReport', 'physio.pdf', ...
 %                   'fileSpm', 'analysisFolder/SPM.mat', ...
 %                   'filePhysIO', 'analysisFolder/physio.mat', ...
 %                   'fileStructural', 'anatomyFolder/warpedAnatomy.nii')
@@ -18,12 +18,13 @@ function varargout = tapas_physio_report_contrasts(varargin)
 %
 %   Required parameters:
 %
-%                  fileReport: sets the path and file name for the postscript 
-%                              file your contrast report is printed to. 
+%                  fileReport: sets the path and file name for the file your
+%                              contrast report is printed to. Its extension
+%                              selects the format.
 %                              A reasonable (and default) location is the 
 %                              single subject analysis folder so the file 
 %                              resides with the GLM (fileSPM)
-%                              default: 'pathSpm/physio_report_contrasts.ps';
+%                              default: 'pathSpm/physio_report_contrasts.pdf';
 %              fileStructural: structural underlay for results,
 %                              e.g. 'mean.nii'
 %                     fileSpm: SPM.mat holding physiological regressors,
@@ -59,7 +60,7 @@ function varargout = tapas_physio_report_contrasts(varargin)
 %                              in each plot
 %       saveTable              true of false (default)
 %                              prints screenshot of results table to
-%                              ps-file as well
+%                              report file as well
 %
 % OUT
 %   args    structure of default and updated arguments used in this
@@ -88,7 +89,7 @@ function varargout = tapas_physio_report_contrasts(varargin)
 defaults.titleGraphicsWindow = '';
 % PhysIO Toolbox code should be in same folder as this file
 defaults.filePhysIO      = 'physio.mat';
-defaults.fileReport      = 'physio_report_contrasts.ps'; % where contrast maps are saved
+defaults.fileReport      = 'physio_report_contrasts.pdf'; % where contrast maps are saved
 defaults.fileStructural  = 'mean.nii';
 defaults.fileSpm         = 'SPM.mat';
 defaults.drawCrosshair   = true;

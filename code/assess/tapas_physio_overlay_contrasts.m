@@ -3,12 +3,12 @@ function varargout = tapas_physio_overlay_contrasts(varargin)
 % instead of showing results table
 %
 %  - Section plots on an anatomical overlay are created and saved as
-%    post-script file with one page for each contrast
+%    PDF file with one page for each contrast
 %
 %  - Input parameters are specified via name/value pairs, e.g.
 %
 %   fileReport = tapas_physio_overlay_contrasts(...
-%                   'fileReport', 'contrast_report.ps', ...
+%                   'fileReport', 'contrast_report.pdf', ...
 %                   'fileSpm', 'analysisFolder/SPM.mat', ...
 %                   'fileStructural', 'anatomyFolder/warpedAnatomy.nii')
 %
@@ -16,7 +16,8 @@ function varargout = tapas_physio_overlay_contrasts(varargin)
 %
 %   Required parameters:
 %
-%                  fileReport: post-script file to print results to
+%                  fileReport: file to print results to; the extension sets
+%                              the format (default: PDF)
 %              fileStructural: structural underlay for results,
 %                              e.g. 'mean.nii'
 %                               default: spm/canonical/avg152T1.nii
@@ -74,7 +75,7 @@ function varargout = tapas_physio_overlay_contrasts(varargin)
 % general paths study
 defaults.titleGraphicsWindow    = '';
 % PhysIO Toolbox code should be in same folder as this file
-defaults.fileReport             = 'report_contrasts.ps'; % where contrast maps are saved
+defaults.fileReport             = 'report_contrasts.pdf'; % where contrast maps are saved
 defaults.fileStructural         = 'mean.nii';
 defaults.fileSpm                = 'SPM.mat';
 defaults.drawCrosshair          = true;
@@ -139,16 +140,18 @@ for idxContrast = idxContrasts
         
         % Change directory, ince spm_print always prepend current directory 
         % to print-file name :-(
-        [pathReport, filenameReport] = fileparts(fileReport);
+        [pathReport, filenameReport, extensionReport] = fileparts(fileReport);
         if isempty(pathReport)
             pathReport = pwd;
         end
         pathTmp = pwd;
         
         cd(pathReport);
+
+        filenameReport = [filenameReport extensionReport];
         
         if saveTable
-            spm_print(fileReport)
+            tapas_physio_print_report(filenameReport);
         end
         
         xSPM = evalin('base', 'xSPM');
@@ -181,7 +184,7 @@ for idxContrast = idxContrasts
             spm_orthviews('SetBlobsMax', 1, 1, colorbarMax)
         end
        
-        spm_print(filenameReport);
+        tapas_physio_print_report(filenameReport);
         cd(pathTmp);
 end
 cd(pathBeforeReport);
