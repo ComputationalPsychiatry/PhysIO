@@ -162,12 +162,16 @@ data_table = zeros(nRows,nChannels+1);
 iData_table = zeros(nRows,nChannels+1);
 
 for iChannel = 1:nChannels
-    data_table(1:nRows,iChannel) = data_stream(iChannel:nChannels:end);
-    iData_table(1:nRows,iChannel) = iDataStream(iChannel:nChannels:end);
+    channel_stream = data_stream(iChannel:nChannels:end);
+    nSamplesChannel = numel(channel_stream);
+    data_table(1:nSamplesChannel,iChannel) = channel_stream;
+    iData_table(1:nSamplesChannel,iChannel) = iDataStream(iChannel:nChannels:end);
 end
 
-% TODO: deal with mod(nSamples, nChannels) > 0 (incomplete data?)
-
+% not total number of samples not divisible by nChannels => missing data
+if mod(nSamples, nChannels) > 0 
+    tapas_physio_log('total number of samples not divisible by nChannels => incomplete data?', [], 1);
+end
 
 %% 7. Re-insert trigger markers as extra column
 % now fill up nChannel+1. column with trigger data
