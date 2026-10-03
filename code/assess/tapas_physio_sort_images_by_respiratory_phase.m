@@ -96,7 +96,7 @@ nVols = sqpar.Nscans;
 [h, respPhaseArray] = hist(r_phase, nRespiratoryPhases);
 
 if verbose
-    stringTitle = 'Assess: Number of slice/volume occurences of each respiratory phase';
+    stringTitle = 'Assess: Number of slice/volume occurrences of each respiratory phase';
     fh(1) = tapas_physio_get_default_fig_params();
     set(gcf, 'Name', stringTitle);
     bar(respPhaseArray,h); xlabel('respiratory phase'); ylabel('counts');
@@ -172,7 +172,7 @@ if verbose
 end
 
 %% re-sort time series according to respiratory phase, take mean and first ..
-% occurences of each phase to get movie
+% occurrences of each phase to get movie
 nX = size(img4D,1);
 nY = size(img4D,2);
 imgRespiratoryPhasesMeanVols = zeros(nX, nY, nSlices, nRespiratoryPhases);
@@ -278,7 +278,7 @@ function V = reuse_nifti_hdr(fnIn, fnOut, Y, iVolArray)
 % IN
 %   fnIn    file name (nifti/analyse) to create new vol from (4D also)
 %   fnOut   file to write to
-%   Y       (optional) matrix that is writen to fnOut, if given
+%   Y       (optional) matrix that is written to fnOut, if given
 %   iVolArray   index vector of which volumes shall
 %               be manipulated, e.g. [1] default: all
 %

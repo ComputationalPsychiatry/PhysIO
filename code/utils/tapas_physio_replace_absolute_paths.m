@@ -7,7 +7,7 @@ function job = tapas_physio_replace_absolute_paths(job, pathArray)
 %   job     structure variable, e.g. SPM, matlabbatch, or physio structure
 %           with different fields (physio.save_dir,
 %           physio.log_files.cardiac...)
-%   pathArray cell(nPaths,1) of absolute paths in occuring in some of the
+%   pathArray cell(nPaths,1) of absolute paths in occurring in some of the
 %           fields that shall be removed;
 %
 % NOTE: only tested on Mac/Linux systems so far, \ instead of / might lead

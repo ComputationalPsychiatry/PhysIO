@@ -130,7 +130,7 @@ end
 
 
 %% set scan time (in phys time scale) corresponding to index, where valid index exists 
-% (i.e. for scan events occuring during phys logfile
+% (i.e. for scan events occurring during phys logfile
 
 spulse = NaN(size(ons.acq_slice_all));
 svolpulse = NaN(size(ons.acq_vol_all));

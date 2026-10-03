@@ -55,7 +55,7 @@ end
 function test_readin_bids_ppu3t(testCase)
 
 % load SPM matlabbatch, but convert to pure script before executing
-% remove unnecessary (beyond read-in) part from job exeuction (e.g.
+% remove unnecessary (beyond read-in) part from job execution (e.g.
 % visualization, modeling)
 % ...still needs SPM at the moment for conversion
 % TODO: parse matlab-script.m file apart from last, execution line
@@ -98,7 +98,7 @@ function test_readin_bids_cpulse3t(testCase)
 % run BIDS cpulse3t example and extract physio
 
 % load SPM matlabbatch, but convert to pure script before executing
-% remove unnecessary (beyond read-in) part from job exeuction (e.g.
+% remove unnecessary (beyond read-in) part from job execution (e.g.
 % visualization, modeling)
 % ...still needs SPM at the moment for conversion
 % TODO: parse matlab-script.m file apart from last, execution line

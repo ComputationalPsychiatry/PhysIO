@@ -36,7 +36,7 @@ function [cpulse, verbose] = tapas_physio_get_cardiac_pulses(t, c, ...
 %                   required to specify a characteristic R-peak interval in the ECG
 %                   or pulse oximetry time series
 %   cardiac_modality    'ECG', 'ECG_WiFi' electrocardiogram (with/without
-%                   wireless transmisssion for Philips data)
+%                   wireless transmission for Philips data)
 %                       'OXY'/'PPU' pulse oximetry unit
 %
 %   verbose         Substructure of Physio, holding verbose.level and
@@ -44,7 +44,7 @@ function [cpulse, verbose] = tapas_physio_get_cardiac_pulses(t, c, ...
 %                   debugging plots for thresholding are only provided, if verbose.level >=2
 %
 % OUT
-%   cpulse          vector of onset-times (in seconds) of occuring heart
+%   cpulse          vector of onset-times (in seconds) of occurring heart
 %                   beats
 %
 % EXAMPLE

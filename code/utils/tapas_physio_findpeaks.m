@@ -13,7 +13,7 @@ function [pks,locs] = tapas_physio_findpeaks(X,varargin)
 %   'threshold'     local elevation compared to neighbours
 %   'nPeaks'
 %   'sorstr'        'ascend' or 'descend'; default: no sorting, order of
-%                   occurence
+%                   occurrence
 %   
 % OUT
 %   pks     height of local peaks (maxima)

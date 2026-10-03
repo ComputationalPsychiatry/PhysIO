@@ -159,7 +159,7 @@ end
 if isempty(log_files.relative_start_acquisition)
     if hasJsonFile
         % in BIDS, start of the phys logging is stated relative to the first volume scan start.
-        % PhysIO defines the scan acquisiton relative to the phys log start
+        % PhysIO defines the scan acquisition relative to the phys log start
         tRelStartScan = -val.StartTime;
     else
         verbose = tapas_physio_log(...
@@ -381,7 +381,7 @@ end
 if isempty(log_files.relative_start_acquisition)
     if hasJsonFile
         % in BIDS, start of the phys logging is stated relative to the first volume scan start.
-        % PhysIO defines the scan acquisiton relative to the phys log start
+        % PhysIO defines the scan acquisition relative to the phys log start
         tRelStartScan = -val.StartTime;
     else
         verbose = tapas_physio_log(...

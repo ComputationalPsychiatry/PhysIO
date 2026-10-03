@@ -60,13 +60,13 @@ function [data_table, log_parts] = tapas_physio_siemens_line2table(lineData, car
 % 4. Remove all infoRegions can be interleaved with trace data, e.g.,
 %    cushionGain for RESP trace)
 % 5. Remove all trigger markers (5000, 6000), but remmember position
-% 6. Sort remaining trace into coresponding channels (number of channels is
+% 6. Sort remaining trace into corresponding channels (number of channels is
 % logfile-version dependent)
 % 7. Re-insert trigger markers as extra column
 
 
 
-%% 1. Header goes from start of line to first occurence of 5002
+%% 1. Header goes from start of line to first occurrence of 5002
 [iStartHeader, iEndHeader, logHeader] = regexp(lineData, '^(.*?) (?=\<5002\>)', 'start', 'end', 'tokens' );
 logHeader = logHeader{1}{1};
 lineData(iStartHeader:iEndHeader) = []; % remove header, but keep 5002 for next step
@@ -127,7 +127,7 @@ iDataStream = 1:numel(data{1});
 iDataStream(iTriggerMarker) = [];
 
 
-%% 6. Sort remaining trace into coresponding channels (number of channels is
+%% 6. Sort remaining trace into corresponding channels (number of channels is
 % logfile-version dependent)
 nSamples = numel(data_stream);
 switch upper(cardiacModality) % ecg has two channels, resp and puls only one

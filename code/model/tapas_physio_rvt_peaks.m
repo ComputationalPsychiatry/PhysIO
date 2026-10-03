@@ -47,7 +47,7 @@ function [rvt, timeRpulseMax, timeRpulseMin, verbose] = ...
 % COPYING or <http://www.gnu.org/licenses/>.
 
 
-% compute breathing "pulses" (occurence times "rpulse" of max inhalation
+% compute breathing "pulses" (occurrence times "rpulse" of max inhalation
 % times)
 pulse_detect_options = [];
 pulse_detect_options.min = .1;

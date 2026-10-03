@@ -20,7 +20,7 @@ end % function
 function test_pca_more_voxels_than_volumes(testCase)
 % Compare the outputs of tapas_physio_pca(X,'svd') and
 % tapas_physio_pca(X,'stats-pca') and check is they are close enough
-% numericaly, within a certain tolerence.
+% numericaly, within a certain tolerance.
 
 % Reset the Random Number Generator
 rng('default')
@@ -51,7 +51,7 @@ function test_pca_more_volumes_than_voxels(testCase)
 
 % Compare the outputs of tapas_physio_pca(X,'svd') and
 % tapas_physio_pca(X,'stats-pca') and check is they are close enough
-% numericaly, within a certain tolerence.
+% numericaly, within a certain tolerance.
 
 % Reset the Random Number Generator
 rng('default')

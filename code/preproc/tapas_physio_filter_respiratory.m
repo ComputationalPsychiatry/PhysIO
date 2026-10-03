@@ -152,7 +152,7 @@ end
 
 %%
 
-% save relevant variavles for retrospective plotting
+% save relevant variables for retrospective plotting
 verbose.review.resp_filter.rpulset = rpulset;
 verbose.review.resp_filter.rsampint = rsampint;
 verbose.review.resp_filter.m = m;

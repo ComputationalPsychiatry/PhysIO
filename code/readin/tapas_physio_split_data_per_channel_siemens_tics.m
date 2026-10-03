@@ -134,15 +134,15 @@ for iChannel = 1:nChannels
     %% interpolate to same time grid (tics) for channel combination  already...
     
     % first, remove duplicates in tics time axis by averaging
-    % their corresponding values, keep only one occurence
+    % their corresponding values, keep only one occurrence
     
     % detects bins with more than one entry, index of first
-    % occurence is returned
+    % occurrence is returned
     idxDuplicateTics = find(hist(cTicsChannel,unique(cTicsChannel))>1);
     
     idxDuplicatesAll = [];
     for idx = idxDuplicateTics
-        % detect all occurences that match first labeled as
+        % detect all occurrences that match first labeled as
         % duplicate
         idxDuplicates = reshape(find(cTicsChannel==cTicsChannel(idx)), 1, []);
         cChannel(idxDuplicates(1)) = mean(cChannel(idxDuplicateTics));
