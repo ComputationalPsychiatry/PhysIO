@@ -130,7 +130,7 @@ stem(t(trigger_pos), max_value * ones(1,n_trigger));
 % find segments
 % compute the number of samples between each trigger (pos-1)
 diff_trigger_pos = diff(trigger_pos);
-% find the positons where a change is happening
+% find the positions where a change is happening
 diff_diff_trigger_pos = find(diff(diff_trigger_pos));
 % add first and last event
 start_segment = [1; diff_diff_trigger_pos(2:2:end)+1];

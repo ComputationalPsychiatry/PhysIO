@@ -77,7 +77,7 @@ for n = 1:10
         % 1/   \3/
         %   [1]: start (i.e. value == [3])
         %   [2]: max (i.e. peak)
-        %   [3]: min (i.e. trough)
+        %   [3]: min (i.e. trough) % codespell:ignore trough
         %   [4]: end (i.e. value == [2])
         % See also Fig. 2 in Harrison et al., bioRxiv, 2020
         
