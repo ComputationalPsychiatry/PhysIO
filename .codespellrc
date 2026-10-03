@@ -1,6 +1,31 @@
 [codespell]
 # Ref: https://github.com/codespell-project/codespell#using-a-config-file
-skip = .git,.gitignore,.gitattributes,*.pdf,.codespellrc
+# docs/documentation.html is generated/compiled from the project Wiki
+# (see its own commit history) and is not hand-edited, so typos there
+# should be fixed upstream in the Wiki instead.
+skip = .git,.git-meta,.gitignore,.gitattributes,*.pdf,.codespellrc,*/documentation.html
 check-hidden = true
-# ignore-regex = 
-# ignore-words-list =
+ignore-words-list =
+  # cardiac pulse channel/file-extension abbreviation used throughout
+  # vendor log-file readers (e.g. Siemens .puls files, PULS column name)
+  puls,
+  # name of the code/readin/ module (format-specific log-file readers)
+  readin,
+  # abbreviated variable name for "onsets" used throughout the sync/readin code
+  ons,
+  # MATLAB variable name convention: hAx = axis handle
+  hax,
+  # MRI acronym: Echo Time
+  te,
+  # MATLAB built-in command (lists workspace variables)
+  whos,
+  # MATLAB built-in function (assignin('caller', ...))
+  assignin,
+  # institution acronym in Contributor-License-Agreement.md affiliation table
+  anc,
+  # journal abbreviation "Magn Reson Med" (Magnetic Resonance in Medicine)
+  reson,
+  # journal abbreviation "Hum. Brain Mapp." (Human Brain Mapping)
+  mapp,
+  # proper noun: PhLeM Toolbox (T. Verstynen), credited in file header
+  phlem
