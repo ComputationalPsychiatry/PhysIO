@@ -430,8 +430,12 @@ t = -tRelStartScan + ((0:(nSamples-1))*dt)';
 %% Recompute acq_codes as for Siemens (volume on/volume off)
 if hasTriggerColumn
     trigger_trace = double(C{idxCol(3)}); % trigger has 1, rest is 0;
-    [acq_codes, verbose] = tapas_physio_create_acq_codes_from_trigger_trace(t, trigger_trace, verbose, ...
-            1, 'rising', 'auto_matched');
+    if any(diff(trigger_trace) ~= 0)
+        [acq_codes, verbose] = tapas_physio_create_acq_codes_from_trigger_trace(t, trigger_trace, verbose, ...
+                1, 'rising', 'auto_matched');
+    else
+        acq_codes = [];
+    end
 else
     acq_codes = [];
 end
@@ -451,6 +455,14 @@ if all(ismember(unique(c), [1 0]))
     cpulse = t(c==1);
 else
     cpulse = [];
+end
+
+% PhysIO BIDS derivatives can preserve detected peaks in a separate column.
+if hasJsonFile
+    idxPulse = find(strcmpi(val.Columns, 'cardiac_pulse'), 1);
+    if ~isempty(idxPulse)
+        cpulse = t(double(C{idxPulse}) ~= 0);
+    end
 end
 
 %% delete temporary unzipped file
