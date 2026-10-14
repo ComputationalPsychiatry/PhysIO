@@ -21,6 +21,8 @@ function [verbose, ons_secs, sqpar] = tapas_physio_plot_bids(filename, sqpar, ve
 %   .raw        identical copy of the read-in data for the raw-data overlay
 %   .fr         same as .r; no respiratory filtering is performed
 %   sqpar       scan parameters with defaults filled in
+%               Recorded event counts are available as
+%               numel(ons_secs.svolpulse) and numel(ons_secs.cpulse).
 %
 % EXAMPLE
 %   [verbose, ons_secs] = tapas_physio_plot_bids('sub-01_physio.json');
@@ -95,6 +97,12 @@ if sqpar.Ndummies < 0 || fix(sqpar.Ndummies) ~= sqpar.Ndummies || ...
     verbose = tapas_physio_log(...
         'Dummy scans exceed available events.', verbose, 2);
 end
+% Report recorded events before plotting; volume markers do not necessarily
+% establish the number of acquired volumes if triggers are missing.
+verbose = tapas_physio_log(sprintf(...
+    'BIDS recording: %d samples, %d volume events, %d cardiac pulse events', ...
+    numel(ons_secs.t), numel(ons_secs.svolpulse), numel(ons_secs.cpulse)), ...
+    verbose, 0);
 ons_secs.fr = ons_secs.r;
 ons_secs.t_start = ons_secs.t(1);
 ons_secs.raw = ons_secs;
