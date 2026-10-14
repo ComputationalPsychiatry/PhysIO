@@ -70,7 +70,7 @@ Minor Release Notes (v8.2.0)
 
 ### Added
 - Interface `tapas_physio_test` to TAPAS-generic `tapas_test` function
-- Added suport for logfile version 3 of Siemens physio recordings 
+- Added support for logfile version 3 of Siemens physio recordings 
     - multi ECG/Resp channels and interleaved status messages
     - new integration test for Siemens VB Logversion 3
 - Added support for ADInstruments/LabChart Txt-export format (see 
@@ -90,7 +90,7 @@ Minor Release Notes (v8.1.0)
 
 ### Added
 - Compatibility of whole code base with Matlab compiler in order to run `spm_make_standalone`
-    - provides oppurtunity to run SPM Batch Editor GUI version of PhysIO without Matlab license requirement 
+    - provides opportunity to run SPM Batch Editor GUI version of PhysIO without Matlab license requirement 
     - compiled version readily available within [Neurodesk](https://neurodesk.github.io/tutorials/functional_imaging/physio/) 
 - BIDS Read-in for separate cardiac/respiratory trace files (e.g., due to different sampling frequencies)
     - see GitHub Issue #164 and pull request #167 by @alexsayal
@@ -442,7 +442,7 @@ Minor Release Notes (r666, v4.1.0)
 - Cleaner Batch Interface with grouped sub-menus (cfg_choice)
 - new model: 'none' to just read out physiological raw data and preprocess,
   without noise modelling 
-- Philips: Scan-timing via gradient log now automatized (gradient_log_auto)
+- Philips: Scan-timing via gradient log now automated (gradient_log_auto)
 - Siemens: Tics-Logfile read-in (proprietary, needs Siemens-agreement)
 - All peak detections (cardiac/respiratory) now via auto_matched algorithm
 - Adapt plots/saving for Matlab R2014b

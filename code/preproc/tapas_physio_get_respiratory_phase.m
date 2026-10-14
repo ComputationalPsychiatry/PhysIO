@@ -23,7 +23,7 @@ function [rphase, pulset, rsampint, rout, resp_max, cumsumh, sumh, h, ...
 % Glover et al, 2000, MRM, (44) 162-167: 
 % 1) Find the max and min amplitudes from belt response
 % 2) Normalise the respiratory amplitude
-% 3) Calculate the histogram from the number of occurences of specific respiratory
+% 3) Calculate the histogram from the number of occurrences of specific respiratory
 %    amplitudes in bins 1:100.
 % 4) Calculate the running integral of the histogram for the bin
 %    corresponding to each respiratory amplitude

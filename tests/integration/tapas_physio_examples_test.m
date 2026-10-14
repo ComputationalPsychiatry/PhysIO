@@ -462,7 +462,7 @@ end
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Auxiliary Functions for automation and code re-use
+%% Auxiliary Functions for automation and code reuse
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function run_example_and_compare_reference(testCase, dirExample, doUseSpm, ...
@@ -644,7 +644,7 @@ if doTestOnsSecsRaw
         'IgnoringFields', [ignoredFieldsOnsSecs {'spulse_per_vol', 'fr'}] ...
         ), 'Comparing all numeric subfields of ons_secs.raw to check read-in and basic filtering of phys recordings');
 
-    % test filtered respiratory trace separetely, because of values close
+    % test filtered respiratory trace separately, because of values close
     % to zero in trace (relative errors can be huge even if 1e-6)
     % if isempty, set arbitrary tolerance
     absTolFr = absTol*max(abs(expPhysio.ons_secs.raw.fr));

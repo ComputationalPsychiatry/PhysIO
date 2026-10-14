@@ -52,7 +52,7 @@ else
     c = [];
 end
 
-%% resample data, if differen sampling frequencies given
+%% resample data, if different sampling frequencies given
 dt = log_files.sampling_interval;
 
 hasDifferentSamplingRates = numel(dt) > 1;

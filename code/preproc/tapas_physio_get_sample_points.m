@@ -13,7 +13,7 @@ function sample_points = tapas_physio_get_sample_points(ons_secs, sqpar, slicenu
 %
 % OUTPUT:
 %   sample_points   - absolute time (in seconds) where the specified slice was
-%                     aquired for every volume
+%                     acquired for every volume
 
 % Author: Lars Kasper
 %

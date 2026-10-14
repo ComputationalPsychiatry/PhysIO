@@ -22,7 +22,7 @@ function [] = tapas_physio_write2bids(ons_secs, write_bids, log_files)
 %                                   pulse detection)
 %     write_bids.bids_dir:     where the file should be written to
 % OUT: 
-%       tsv.gz file             zipped tab-separated value text file, colums
+%       tsv.gz file             zipped tab-separated value text file, columns
 %                               with cardiac, respiratory, [scan trigger], 
 %                               [cardiac pulse trigger]
 %       json file with meta data

@@ -292,7 +292,7 @@ end % nROIs
 
 
 %% Summary plot noise roise location
-% Overlay intial and final noise ROI (code from spm_orthviews:add_c_image)
+% Overlay initial and final noise ROI (code from spm_orthviews:add_c_image)
 % (before/after reslice, threshold and erosion)
 if verbose.level >= 2
     spm_check_registration( roi_files{:} );

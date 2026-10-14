@@ -100,7 +100,7 @@ switch lower(log_files.vendor)
             tapas_physio_read_physlogfiles_siemens_hcp(log_files, cardiac_modality, verbose);
 end
 
-% since resampling might have occured during read-in, dt is recalculated
+% since resampling might have occurred during read-in, dt is recalculated
 dt = t(2) - t(1);
 
 % Do not prepend for Siemens Tics, since can be as long as a day

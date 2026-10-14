@@ -67,7 +67,7 @@ if model.movement.include
         repmat({'Movement'}, 1, model.movement.order), ...
         ];
     
-    % Unkown number of outliers, but they are all that's left
+    % Unknown number of outliers, but they are all that's left
     if ~strcmpi(model.movement.censoring_method, 'none')
         n_remaining = n_total - numel(column_names);
         column_names = [column_names, ...

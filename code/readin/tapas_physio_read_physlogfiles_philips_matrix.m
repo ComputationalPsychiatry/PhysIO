@@ -61,7 +61,7 @@ switch versionLogfile
 end
 
 
-%% Read decimal value colums
+%% Read decimal value columns
 if exist('textread')
     [z{1:nColumns}]   = textread(fileNamePhyslog, parseString,'commentstyle', 'shell');
 else

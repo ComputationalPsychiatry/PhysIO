@@ -391,7 +391,7 @@ else
     preproc.cardiac.posthoc_cpulse_select.file = '';
     
     % Suspicious positions of missing or too many cardiac pulses are
-    % pre-selected by detecting outliers in histogram of
+    % preselected by detecting outliers in histogram of
     % heart-beat-2-beat-intervals
     preproc.cardiac.posthoc_cpulse_select.percentile = 80; % percentile of beat-2-beat interval histogram that constitutes the "average heart beat duration" in the session
     preproc.cardiac.posthoc_cpulse_select.upper_thresh = 60; % minimum exceedance (in %) from average heartbeat duration to be classified as missing heartbeat
@@ -749,7 +749,7 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Write to BIDS module
-% Writes cardidac and respiratory data to BIDS format with acompanying
+% Writes cardidac and respiratory data to BIDS format with accompanying
 % .json file
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

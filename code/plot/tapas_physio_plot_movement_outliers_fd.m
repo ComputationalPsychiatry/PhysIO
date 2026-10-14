@@ -19,7 +19,7 @@ function  fh = tapas_physio_plot_movement_outliers_fd(rp, quality_measures, ...
 %                         default: from tapas_physio_new()
 %   verbose             - for saving figure handlles
 %                         default: []
-%   TR or t               - repetion time (in seconds) for fMRI volumes
+%   TR or t               - repetition time (in seconds) for fMRI volumes
 %                           or correct time vector (nScans,1)
 %                         default: [] (plotted in multiples of volume)
 %

@@ -83,7 +83,7 @@ if isVerbose
     [verbose] = tapas_physio_plot_get_cardiac_phase(scannert,cardiac_phase, pulset, ...
     svolpulse, verbose)
 
-    % save relevent stuctures
+    % save relevant structures
     verbose.review.get_cardiac.scannert = scannert;
     verbose.review.get_cardiac.cardiac_phase = cardiac_phase;
     verbose.review.get_cardiac.pulset = pulset;

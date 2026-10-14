@@ -41,7 +41,7 @@ if hasCardiacFile
         % up, so look at binary, powers of 2
         acq_codes = num2str(dec2bin(acq_codes));
         
-        % add 4 letter 1st acq code to make access operations posssible
+        % add 4 letter 1st acq code to make access operations possible
         acq_codes = char('0000', acq_codes);
         acq_codes(1,:) = [];
         iSampleECGTrigger = [];
@@ -102,7 +102,7 @@ if hasRespirationFile
         acq_codes = num2str(dec2bin(acq_codes));
         
        
-        % add 4 letter 1st acq code to make access operations posssible
+        % add 4 letter 1st acq code to make access operations possible
         acq_codes = char('0000', acq_codes);
         acq_codes(1,:) = [];
         iSampleRespTrigger = [];

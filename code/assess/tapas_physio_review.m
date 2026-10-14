@@ -5,7 +5,7 @@ function verbose = tapas_physio_review(physio, newVerboseLevel)
 %   verbose = tapas_physio_review(physio, newVerboseLevel)
 %
 % NOTE: Change physio.verbose.level before running this function to get
-%       additonal output plots not seen during executing of the main-function
+%       additional output plots not seen during executing of the main-function
 %
 % NOTE1: Change the following flags prior to running this function in order
 % to control the output figure behavior.
@@ -157,7 +157,7 @@ if verbose.level >= 3
             review.iter_temp.meanLag2, verbose);
     end 
 
-% thrid figure
+% third figure
     if isfield(review, 'temp_cyc')
         [verbose] = tapas_physio_plot_templates_of_cycle_time(review.temp_cyc.tTemplate, ...
             review.temp_cyc.template, review.temp_cyc.pulseTemplate, ... 

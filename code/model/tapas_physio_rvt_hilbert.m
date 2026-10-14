@@ -77,7 +77,7 @@ for n = 1:10
         % 1/   \3/
         %   [1]: start (i.e. value == [3])
         %   [2]: max (i.e. peak)
-        %   [3]: min (i.e. trough)
+        %   [3]: min (i.e. trough) % codespell:ignore trough
         %   [4]: end (i.e. value == [2])
         % See also Fig. 2 in Harrison et al., bioRxiv, 2020
         
@@ -119,7 +119,7 @@ d = designfilt( ...
     'HalfPowerFrequency', 0.2, 'SampleRate', f_sample);
 
 % Respiratory volume is amplitude envelope
-% Note factor of two is for compatability with the common definition of RV
+% Note factor of two is for compatibility with the common definition of RV
 % as the difference between max and min inhalation (i.e. twice the amplitude)
 fr_rv = 2.0 * filtfilt(d, padarray(fr_mag, n_pad, 'symmetric'));
 fr_rv = fr_rv(n_pad+1:end-n_pad);

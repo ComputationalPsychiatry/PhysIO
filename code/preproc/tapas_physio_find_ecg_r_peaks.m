@@ -6,7 +6,7 @@ function [events, ECG_min, kRpeak] = tapas_physio_find_ecg_r_peaks(t,y, ECG_min,
 %       inp_events)
 % 
 % Given a timing vector and the corresponding ECG-timecourse, the user
-% chooses a specific R-peak patttern with the mouse, which is then re-found
+% chooses a specific R-peak pattern with the mouse, which is then re-found
 % in the time series to detect all R-peaks
 %
 % INPUT

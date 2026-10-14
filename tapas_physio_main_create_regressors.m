@@ -184,7 +184,7 @@ if ~hasPhaseLogfile
 
 
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-            %% 3. Extract and preprocess physiological data, crop to scan aquisition
+            %% 3. Extract and preprocess physiological data, crop to scan acquisition
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             
             if hasCardiacData

@@ -52,7 +52,7 @@ if doNormalize
     
 end
 
-% since resampling might have occured during read-in, dt is recalculated
+% since resampling might have occurred during read-in, dt is recalculated
 ons_secs.dt = ons_secs.t(2) - ons_secs.t(1);
 
 

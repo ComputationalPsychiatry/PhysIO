@@ -149,7 +149,7 @@ if hasRealignmentParameters
         case 'fd' % framewise displacement
             iOutlierArray = find(quality_measures.FD > ...
                 movement.censoring_threshold);
-        case 'maxval'   % tresholds for max abrupt translation/rotation,
+        case 'maxval'   % thresholds for max abrupt translation/rotation,
                         % even per axis
             switch numel(movement.censoring_threshold)
                 case {1,2}
