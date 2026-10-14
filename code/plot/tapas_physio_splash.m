@@ -29,11 +29,11 @@ if nargin < 1
     verbose.level = 0;
 end
 
-linkFAQ = 'https://gitlab.ethz.ch/physio/physio-doc/-/wikis/FAQ#3-how-do-i-cite-physio';
+linkFAQ = 'https://github.com/ComputationalPsychiatry/PhysIO/wiki/FAQ#3-how-do-i-cite-physio';
 linkPaperPhysIO = 'https://doi.org/10.1016/j.jneumeth.2016.10.019';
 linkPaperTAPAS = 'https://doi.org/10.3389/fpsyt.2021.680811';
 linkPaperHilbertRVT = 'https://doi.org/10.1016/j.neuroimage.2021.117787';
-linkGithubTAPASPhysIO = 'https://github.com/translationalneuromodeling/tapas/tree/master/PhysIO';
+linkGithubTAPASPhysIO = 'https://github.com/ComputationalPsychiatry/PhysIO';
 
 
 disp('  _____  _               _____ ____    _______          _ _')
