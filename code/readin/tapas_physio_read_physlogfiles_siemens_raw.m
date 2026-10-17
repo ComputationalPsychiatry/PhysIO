@@ -13,7 +13,7 @@ function [lineData, logFooter, linesFooter] = tapas_physio_read_physlogfiles_sie
 % OUT
 %   lineData        all recording amplitude samples are saved in first line
 %                   of file
-%   logFooter       struct() of read-out meta information from log file, i.e. 
+%   logFooter       struct() of read-out meta information from log file, i.e.
 %                   LogStart/StopTimeSeconds
 %                   ScanStart/StopTimeSeconds
 %                   => uses MDH time stamp in log file to sync to DICOMs
@@ -54,7 +54,7 @@ lineData = C{1}{1};
 
 % Get time stamps from footer:
 
-% MPCU  = Computer who controls the physiological logging in real-time => physio logging happens here  
+% MPCU  = Computer who controls the physiological logging in real-time => physio logging happens here
 % MDH   = Computer who is the host (Measurement Data Header); console => DICOM time stamp here
 logFooter.StartTimeSecondsScannerClock =   str2num(char(regexprep(linesFooter(~cellfun(@isempty,strfind(linesFooter,...
     'LogStartMDHTime'))),'\D',''))) / 1000;
@@ -74,16 +74,16 @@ logFooter.StopTimeSecondsRecordingClock = str2num(char(regexprep(linesFooter(~ce
 % reading Siemens physiological logfile data, e.g., Chris Rorden's PART
 % (https://github.com/neurolabusc/Part#usage),
 % with a detailed explanation on the DICOM timestamp in AcquisitionTime
-% found here (https://github.com/nipy/heudiconv/issues/450#issuecomment-645003447) 
-% 
+% found here (https://github.com/nipy/heudiconv/issues/450#issuecomment-645003447)
+%
 % MPCU is the clock of the computer that controls the physiological
 % recording (same as MARS?), but does not know about the scan volume and DICOM timing
 
 switch upper(referenceClockString)
     case 'MDH'
-logFooter.StartTimeSeconds = logFooter.StartTimeSecondsScannerClock;
-logFooter.StopTimeSeconds = logFooter.StopTimeSecondsScannerClock;
+        logFooter.StartTimeSeconds = logFooter.StartTimeSecondsScannerClock;
+        logFooter.StopTimeSeconds = logFooter.StopTimeSecondsScannerClock;
     case 'MPCU'
-logFooter.StartTimeSeconds = logFooter.StartTimeSecondsRecordingClock;
-logFooter.StopTimeSeconds = logFooter.StopTimeSecondsRecordingClock;
+        logFooter.StartTimeSeconds = logFooter.StartTimeSecondsRecordingClock;
+        logFooter.StopTimeSeconds = logFooter.StopTimeSecondsRecordingClock;
 end
