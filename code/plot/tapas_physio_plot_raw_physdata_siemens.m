@@ -34,50 +34,81 @@ if nargin >=2
 end
 
 fh = tapas_physio_get_default_fig_params();
-set(gcf, 'Name', stringTitle);
+set(fh, 'Name', stringTitle);
 
-stringLegend = {'raw channel data', 'physio trigger on', 'physio trigger off', ...
-    'assumed last sample of last scan volume'};
+stringLegend = {'physio trigger on', 'physio trigger off', ...
+    'assumed last sample of last scan volume', 'mean of channels'};
 
+%% Plot each channel as subplot
 nChannels = size(recordingChannels, 2);
+layout = tiledlayout(fh, nChannels+1, 1, ...
+    'TileSpacing', 'tight', 'Padding', 'compact');
+if nargin >= 3
+    % Reserve a footer outside the axes so timing stays visible during zoom.
+    layout.OuterPosition = [0 0.10 1 0.90];
+end
+hs = gobjects(nChannels+1, 1);
 for iChannel = 1:nChannels
-    hs(iChannel) = subplot(nChannels+1, 1, iChannel);
-    plot(t, recordingChannels(:,iChannel));
-    title(sprintf('channel %d', iChannel));
+    hs(iChannel) = nexttile(layout);
+    channelData = recordingChannels(:,iChannel);
+    channelOffset = 0;
+    % Show small variations around large baselines without long tick labels.
+    if abs(channelData(1)) > 100*max(1, max(channelData)-min(channelData))
+        channelOffset = channelData(1);
+    end
+    plot(hs(iChannel), t, channelData-channelOffset);
+    if channelOffset ~= 0
+        hs(iChannel).YAxis.Exponent = 0;
+        text(hs(iChannel), 0.99, 0.95, ...
+            sprintf('offset: %+.0f', channelOffset), ...
+            'Units', 'normalized', 'HorizontalAlignment', 'right', ...
+            'VerticalAlignment', 'top', 'FontSize', 8, ...
+            'BackgroundColor', 'white', 'Margin', 1);
+    end
+    ylabel(hs(iChannel), sprintf('channel %d', iChannel));
+    hs(iChannel).XTickLabel = [];
 end
 
-hs(nChannels+1) = subplot(nChannels+1, 1, nChannels+1);
-stem(cpulse_on, ampl*ones(size(cpulse_on)), 'g'); hold all;
-stem(cpulse_off, ampl*ones(size(cpulse_off)), 'r');
-stem(t(stopSample), ampl , 'm');
-plot(t, meanChannel);
+%% Plot mean of all channels plus trigger stems in lowest subplot
+hs(nChannels+1) = nexttile(layout);
+axMean = hs(nChannels+1);
+stem(axMean, cpulse_on, ampl*ones(size(cpulse_on)), 'g');
+hold(axMean, 'on');
+stem(axMean, cpulse_off, ampl*ones(size(cpulse_off)), 'r');
+stem(axMean, t(stopSample), ampl , 'm');
+plot(axMean, t, meanChannel);
 
-title('mean of channels');
+ylabel(axMean, 'mean');
 
 if ~isempty(recording_on)
-    stem(recording_on, ampl*ones(size(recording_on)), 'k');
+    stem(axMean, recording_on, ampl*ones(size(recording_on)), 'k');
     stringLegend{end+1} = 'physio recording on';
 end
 
 if ~isempty(recording_off)
-    stem(recording_off, ampl*ones(size(recording_off)), 'k');
+    stem(axMean, recording_off, ampl*ones(size(recording_off)), 'k');
     stringLegend{end+1} = 'physio recording off';
 end
 
-linkaxes(hs, 'x')
-legend(stringLegend);
-tapas_physio_suptitle(stringTitle);
-xlabel('t (seconds)');
+linkaxes(hs, 'x');
+set(hs, 'FontSize', 11);
+ytickformat(hs, '%.2f');
+lg = legend(axMean, stringLegend, 'FontSize', 8, 'NumColumns', 2);
+lg.Layout.Tile = 'north';
+title(layout, stringTitle);
+xlabel(axMean, 't (seconds)');
 
 % Add text with physio logfile timing info
 if nargin >=3
-    textString{1} = sprintf('StartTime (MDH/Scanner clock): %f s', logFooter.StartTimeSecondsScannerClock);
-    textString{2} = sprintf('StopTime (MDH/Scanner clock): %f s (delta: %f s)', ...
+    textString{1} = sprintf('MDH/Scanner clock: start %.3f s | stop %.3f s | duration %.3f s', ...
+        logFooter.StartTimeSecondsScannerClock, ...
         logFooter.StopTimeSecondsScannerClock, ...
         logFooter.StopTimeSecondsScannerClock - logFooter.StartTimeSecondsScannerClock);
-    textString{3} = sprintf('StartTime (MPCU/Physio Monitoring Unit clock): %f s', logFooter.StartTimeSecondsRecordingClock);
-    textString{4} = sprintf('StopTime (MPCU/Physio Monitoring Unit clock): %f s (delta: %f s)', ...
+    textString{2} = sprintf('MPCU/Physio Monitoring Unit clock: start %.3f s | stop %.3f s | duration %.3f s', ...
+        logFooter.StartTimeSecondsRecordingClock, ...
         logFooter.StopTimeSecondsRecordingClock, ...
         logFooter.StopTimeSecondsRecordingClock - logFooter.StartTimeSecondsRecordingClock);
-    text(0,0, textString);
+    annotation(fh, 'textbox', [0.02 0.005 0.96 0.085], ...
+        'String', textString, 'FontSize', 8, 'Interpreter', 'none', ...
+        'EdgeColor', 'none', 'VerticalAlignment', 'middle');
 end
