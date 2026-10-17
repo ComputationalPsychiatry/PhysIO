@@ -1,5 +1,6 @@
 function tapas_physio_suptitle(titleString)
-% if Biodemo toolbox not installed, use simple title instead of suptitle
+% if sgtitle not found (older Matlab versions) try suptitle (Biodemo toolbox)
+% fallback: simple title
 %
 %   tapas_physio_suptitle(titleString)
 %
@@ -24,7 +25,9 @@ function tapas_physio_suptitle(titleString)
 % version 3 or, at your option, any later version). For further details,
 % see the file COPYING or <http://www.gnu.org/licenses/>.
  
-if exist('suptitle', 'file')
+if exist('sgtitle', 'file')
+    sgtitle(titleString);
+elseif exist('suptitle', 'file')
     suptitle(titleString);
 else
     title(titleString);
