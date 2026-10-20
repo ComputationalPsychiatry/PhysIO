@@ -20,7 +20,7 @@ function [c, r, t, cpulse, verbose] = ...
 %       .level              debugging plots are created if level >=3
 %       .fig_handles        appended by handle to output figure
 %
-%       varargin            propertyName/value pairs, as folloes
+%       varargin            propertyName/value pairs, as follows
 %           'ecgChannel'    'v1', 'v2', 'mean' (default)
 %                           determines which ECG channel to use as
 %                           output cardiac curve
