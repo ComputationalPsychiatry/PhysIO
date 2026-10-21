@@ -43,9 +43,11 @@ stringLegend = {'physio trigger on', 'physio trigger off', ...
 nChannels = size(recordingChannels, 2);
 layout = tiledlayout(fh, nChannels+1, 1, ...
     'TileSpacing', 'tight', 'Padding', 'compact');
+% Reserve a shared left margin for the fixed-position channel labels.
+layout.OuterPosition = [0.06 0 0.94 1];
 if nargin >= 3
     % Reserve a footer outside the axes so timing stays visible during zoom.
-    layout.OuterPosition = [0 0.10 1 0.90];
+    layout.OuterPosition = [0.06 0.10 0.94 0.90];
 end
 hs = gobjects(nChannels+1, 1);
 for iChannel = 1:nChannels
@@ -57,14 +59,12 @@ for iChannel = 1:nChannels
         channelOffset = channelData(1);
     end
     plot(hs(iChannel), t, channelData-channelOffset);
-    if channelOffset ~= 0
-        hs(iChannel).YAxis.Exponent = 0;
-        text(hs(iChannel), 0.99, 0.95, ...
-            sprintf('offset: %+.0f', channelOffset), ...
-            'Units', 'normalized', 'HorizontalAlignment', 'right', ...
-            'VerticalAlignment', 'top', 'FontSize', 8, ...
-            'BackgroundColor', 'white', 'Margin', 1);
-    end
+    hs(iChannel).YAxis.Exponent = 0;
+    text(hs(iChannel), 0.99, 0.95, ...
+        sprintf('offset: %+.12g', channelOffset), ...
+        'Units', 'normalized', 'HorizontalAlignment', 'right', ...
+        'VerticalAlignment', 'top', 'FontSize', 8, ...
+        'BackgroundColor', 'white', 'Margin', 1);
     ylabel(hs(iChannel), sprintf('channel %d', iChannel));
     hs(iChannel).XTickLabel = [];
 end
@@ -72,27 +72,48 @@ end
 %% Plot mean of all channels plus trigger stems in lowest subplot
 hs(nChannels+1) = nexttile(layout);
 axMean = hs(nChannels+1);
-stem(axMean, cpulse_on, ampl*ones(size(cpulse_on)), 'g');
+% Remove the baseline for display only; keep event stems on the trace scale.
+meanOffset = meanChannel(1);
+meanDisplay = meanChannel-meanOffset;
+stemBase = min(meanDisplay);
+stemHeight = max(meanDisplay) + 0.05*max(1, max(meanDisplay)-stemBase);
+stem(axMean, cpulse_on, stemHeight*ones(size(cpulse_on)), 'g', ...
+    'BaseValue', stemBase);
 hold(axMean, 'on');
-stem(axMean, cpulse_off, ampl*ones(size(cpulse_off)), 'r');
-stem(axMean, t(stopSample), ampl , 'm');
-plot(axMean, t, meanChannel);
+stem(axMean, cpulse_off, stemHeight*ones(size(cpulse_off)), 'r', ...
+    'BaseValue', stemBase);
+stem(axMean, t(stopSample), stemHeight, 'm', 'BaseValue', stemBase);
+plot(axMean, t, meanDisplay);
+axMean.YAxis.Exponent = 0;
+text(axMean, 0.99, 0.95, sprintf('offset: %+.12g', meanOffset), ...
+    'Units', 'normalized', 'HorizontalAlignment', 'right', ...
+    'VerticalAlignment', 'top', 'FontSize', 8, ...
+    'BackgroundColor', 'white', 'Margin', 1);
 
 ylabel(axMean, 'mean');
 
 if ~isempty(recording_on)
-    stem(axMean, recording_on, ampl*ones(size(recording_on)), 'k');
+    stem(axMean, recording_on, stemHeight*ones(size(recording_on)), 'k', ...
+        'BaseValue', stemBase);
     stringLegend{end+1} = 'physio recording on';
 end
 
 if ~isempty(recording_off)
-    stem(axMean, recording_off, ampl*ones(size(recording_off)), 'k');
+    stem(axMean, recording_off, stemHeight*ones(size(recording_off)), 'k', ...
+        'BaseValue', stemBase);
     stringLegend{end+1} = 'physio recording off';
 end
 
 linkaxes(hs, 'x');
 set(hs, 'FontSize', 11);
-ytickformat(hs, '%.2f');
+% Equal-width tick fields and fixed label positions keep all panels aligned.
+ytickformat(hs, '%8.2f');
+for iAxis = 1:numel(hs)
+    hs(iAxis).YLabel.FontName = 'Helvetica';
+    hs(iAxis).YLabel.FontSize = 10;
+    hs(iAxis).YLabel.Units = 'normalized';
+    hs(iAxis).YLabel.Position = [-0.10 0.5 0];
+end
 lg = legend(axMean, stringLegend, 'FontSize', 8, 'NumColumns', 2);
 lg.Layout.Tile = 'north';
 title(layout, stringTitle);
@@ -100,14 +121,16 @@ xlabel(axMean, 't (seconds)');
 
 % Add text with physio logfile timing info
 if nargin >=3
-    textString{1} = sprintf('MDH/Scanner clock: start %.3f s | stop %.3f s | duration %.3f s', ...
-        logFooter.StartTimeSecondsScannerClock, ...
-        logFooter.StopTimeSecondsScannerClock, ...
-        logFooter.StopTimeSecondsScannerClock - logFooter.StartTimeSecondsScannerClock);
-    textString{2} = sprintf('MPCU/Physio Monitoring Unit clock: start %.3f s | stop %.3f s | duration %.3f s', ...
-        logFooter.StartTimeSecondsRecordingClock, ...
-        logFooter.StopTimeSecondsRecordingClock, ...
-        logFooter.StopTimeSecondsRecordingClock - logFooter.StartTimeSecondsRecordingClock);
+    formatTime = @(value) sprintf('%s (%.3f s)', ...
+        char(duration(0, 0, value, 'Format', 'hh:mm:ss')), value);
+    textString{1} = sprintf('MDH/Scanner clock: start %s | stop %s | duration %s', ...
+        formatTime(logFooter.StartTimeSecondsScannerClock), ...
+        formatTime(logFooter.StopTimeSecondsScannerClock), ...
+        formatTime(logFooter.StopTimeSecondsScannerClock - logFooter.StartTimeSecondsScannerClock));
+    textString{2} = sprintf('MPCU/Physio Monitoring Unit clock: start %s | stop %s | duration %s', ...
+        formatTime(logFooter.StartTimeSecondsRecordingClock), ...
+        formatTime(logFooter.StopTimeSecondsRecordingClock), ...
+        formatTime(logFooter.StopTimeSecondsRecordingClock - logFooter.StartTimeSecondsRecordingClock));
     annotation(fh, 'textbox', [0.02 0.005 0.96 0.085], ...
         'String', textString, 'FontSize', 8, 'Interpreter', 'none', ...
         'EdgeColor', 'none', 'VerticalAlignment', 'middle');
