@@ -20,7 +20,7 @@ function [c, r, t, cpulse, verbose] = ...
 %       .level              debugging plots are created if level >=3
 %       .fig_handles        appended by handle to output figure
 %
-%       varargin            propertyName/value pairs, as folloes
+%       varargin            propertyName/value pairs, as follows
 %           'ecgChannel'    'v1', 'v2', 'mean' (default)
 %                           determines which ECG channel to use as
 %                           output cardiac curve
@@ -207,8 +207,11 @@ if hasCardiacData
         relative_start_acquisition, endCropSeconds);
 
     if DEBUG
+        [~,~,ext] = fileparts(log_files.cardiac);
+        stringModality = upper(ext(2:end));
         verbose.fig_handles(end+1) = ...
-            tapas_physio_plot_raw_physdata_siemens(dataCardiac);
+            tapas_physio_plot_raw_physdata_siemens(dataCardiac, ...
+            stringModality, logFooter);
     end
 
 
@@ -277,8 +280,11 @@ if hasRespData
         dt_r, relative_start_acquisition, endCropSeconds);
 
     if DEBUG
+        [~,~,ext] = fileparts(log_files.respiration);
+        stringModality = upper(ext(2:end));
         verbose.fig_handles(end+1) = ...
-            tapas_physio_plot_raw_physdata_siemens(dataResp);
+            tapas_physio_plot_raw_physdata_siemens(dataResp, ...
+            stringModality, logFooter);
     end
 
 

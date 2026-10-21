@@ -62,9 +62,9 @@ if isVerbose
     
     hp(1) = plot(tCardiac(2:end), dt, 'Color', [0 0.5 0]);
     xlabel('t (seconds)');
-    ylabel('lag between heartbeats (seconds)');
-    title('Temporal lag between heartbeats');
-    legend('Temporal lag between subsequent heartbeats');
+    ylabel('IBI (seconds)');
+    title('Inter-beat interval (IBI)');
+    legend('Inter-beat interval (IBI)');
     
 else
     fh = [];
@@ -85,7 +85,7 @@ if ~isempty(percentile) && ~isempty(deviationPercentUp) && ~isempty(deviationPer
         hold all;
         hp(2) = plot( [tCardiac(2); tCardiac(end)], [upperThresh,upperThresh], 'g--', 'LineWidth',2);
         hp(3) = plot( [tCardiac(2); tCardiac(end)], [lowerThresh,lowerThresh], 'b--', 'LineWidth',2);
-        legend(hp, 'Temporal lag between subsequent heartbeats', 'Upper threshold for selecting outliers', ...
+        legend(hp, 'Inter-beat interval (IBI)', 'Upper threshold for selecting outliers', ...
             'Lower threshold for selecting outliers');
     end
     
