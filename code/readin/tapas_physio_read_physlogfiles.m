@@ -20,7 +20,8 @@ function [ons_secs, verbose] = tapas_physio_read_physlogfiles(log_files, cardiac
 %                           files
 %       .log_respiration    contains breathing belt amplitude time course
 %                           for Philips: same as .log_cardiac
-%   cardiac_modality    'ECG' for ECG, 'OXY'/'PPU' for pulse oximetry, default: 'ECG'
+%   cardiac_modality    'ECG' for ECG, 'OXY'/'PPU'/'PULS' for pulse oximetry
+%                       default: 'ECG'; specify explicitly for your recording
 %   sqpar                   sequence parameters (TR, nScans etc.)
 %                           only needed for time adjustments of logfile
 %                           relative to duration of a selected run

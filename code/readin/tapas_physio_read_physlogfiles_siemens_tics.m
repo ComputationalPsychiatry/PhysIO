@@ -23,8 +23,7 @@ function [c, r, t, cpulse, acq_codes, verbose] = tapas_physio_read_physlogfiles_
 %                           default: 2.5 ms (1/400 Hz)
 %       cardiac_modality    'ECG' or 'PULS'/'PPU'/'OXY' to determine
 %                           which channel data to be returned
-%                           if not given, will be read out from file name
-%                           suffix
+%                           must match the cardiac file's PULS/ECG suffix
 %       verbose
 %       .level              debugging plots are created if level >=3
 %       .fig_handles        appended by handle to output figure
@@ -67,6 +66,9 @@ function [c, r, t, cpulse, acq_codes, verbose] = tapas_physio_read_physlogfiles_
 
 %% read out values
 DEBUG = verbose.level >= 3;
+
+verbose = tapas_physio_check_siemens_cardiac_modality(log_files.cardiac, ...
+    cardiac_modality, verbose);
 
 % channel selection different in ECG data, multiple lines for multiple
 % channel, labeled in log file

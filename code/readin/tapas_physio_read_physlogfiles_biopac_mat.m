@@ -22,7 +22,7 @@ function [c, r, t, cpulse, acq_codes] = tapas_physio_read_physlogfiles_biopac_ma
 %                       'ecg2_filtered'     filteered 2nd ECG channel
 %                                           (sometimes less gradient artifacts)
 %                       'ecg1_raw'          raw 1st ECG channel
-%                       'OXY'/'PPU'         pulse plethysmographic unit
+%                       'OXY'/'PPU'/'PULS'  pulse plethysmographic unit
 %                                           (PPU) signal
 %       verbose
 %       .level              debugging plots are created if level >=3
@@ -116,6 +116,9 @@ labelsCardiacArray = ...
     {'C0 - Comb Band Stop Filter', 'C1 - Filter', 'ECG100C', 'ECG100C', ...
     'PPG100C'};
 
+if any(strcmpi(cardiac_modality, {'PULS', 'OXY'}))
+    cardiac_modality = 'PPU';
+end
 iChosenModality =  tapas_physio_find_string(cardiacModalityArray, ...
     lower(cardiac_modality));
 

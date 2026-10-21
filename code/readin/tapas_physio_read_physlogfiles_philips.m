@@ -160,7 +160,7 @@ if hasCardiac
                 labelColCardiac = 'v1';
             case { 'ecg2', 'ecg2_filtered', 'v2'}
                 labelColCardiac = 'v2';
-            case {'oxy','oxyge', 'ppu'}                
+            case {'oxy','oxyge', 'ppu', 'puls'}
                 labelColCardiac = 'ppu';
         end
         
