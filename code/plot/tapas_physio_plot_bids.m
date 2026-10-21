@@ -98,7 +98,7 @@ if sqpar.Ndummies < 0 || fix(sqpar.Ndummies) ~= sqpar.Ndummies || ...
         'Dummy scans exceed available events.', verbose, 2);
 end
 % infer TR from svolpulse times, if possible
-if numel(ons_secs.svolpulse) > 0 
+if numel(ons_secs.svolpulse) > 0
     sqpar.TR = mean(diff(ons_secs.svolpulse));
 else
     sqpar.TR = NaN;

@@ -5,7 +5,7 @@ function fh = tapas_physio_plot_raw_physdata_siemens(dataPhysio, stringModality,
 %
 % IN
 %   dataPhysio      output struct from tapas_physio_siemens_table2cardiac
-%   stringModality  for title display e.g., log file extension(ECG/PULS/RESP), 
+%   stringModality  for title display e.g., log file extension(ECG/PULS/RESP),
 %   logFooter       for timing display of MDH/MPCU time
 % OUT
 %
