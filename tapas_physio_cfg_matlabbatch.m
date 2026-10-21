@@ -543,8 +543,11 @@ scan_timing.help = {'Parameters for sequence timing & synchronization, i.e.'
 modality        = cfg_menu;
 modality.tag    = 'modality';
 modality.name   = 'modality';
-modality.help   = {'Shall ECG or PPU data be read from logfiles?'};
-modality.labels = {'ECG', 'OXY/PPU', 'ECG_WiFi', 'PPU_WiFi'};
+modality.help   = {'Select the recorded cardiac signal.'
+    'For Siemens .puls or *_PULS.log files, select OXY/PPU/PULS; for ECG files, select ECG.'
+    'The default for a new SPM batch is ECG. Specify the modality explicitly to match your recording.'
+    'WiFi options apply to Philips wireless recordings and affect the inferred sampling interval.'};
+modality.labels = {'ECG', 'PULS/OXY/PPU', 'ECG_WiFi', 'PPU_WiFi'};
 modality.values = {'ECG', 'PPU', 'ECG_WiFi', 'PPU_WiFi'};
 modality.val    = {'ECG'};
 

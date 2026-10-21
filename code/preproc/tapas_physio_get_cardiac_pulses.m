@@ -37,7 +37,7 @@ function [cpulse, verbose] = tapas_physio_get_cardiac_pulses(t, c, ...
 %                   or pulse oximetry time series
 %   cardiac_modality    'ECG', 'ECG_WiFi' electrocardiogram (with/without
 %                   wireless transmisssion for Philips data)
-%                       'OXY'/'PPU' pulse oximetry unit
+%                       'OXY'/'PPU'/'PULS' pulse oximetry unit
 %
 %   verbose         Substructure of Physio, holding verbose.level and
 %                   verbose.fig_handles with plotted figure handles

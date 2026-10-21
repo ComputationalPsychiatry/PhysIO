@@ -138,7 +138,7 @@ switch upper(cardiacModality) % ecg has two channels, resp and puls only one
             case 3
                 nChannels = 4;
         end
-    case 'PPU'
+    case {'PPU', 'PULS', 'OXY', 'PMU'}
         nChannels = 1;
     case 'RESP'
         switch logVersion

@@ -14,8 +14,7 @@ function [c, r, t, cpulse, verbose] = ...
 %                           for GE: RespData...
 %       cardiac_modality    'ECG' or 'PULS'/'PPU'/'OXY' to determine
 %                           which channel data to be returned
-%                           if not given, will be read out from file name
-%                           suffix
+%                           must match the cardiac file's .ecg/.puls suffix
 %       verbose
 %       .level              debugging plots are created if level >=3
 %       .fig_handles        appended by handle to output figure
@@ -62,11 +61,14 @@ if nargin < 3
 end
 DEBUG = verbose.level >=2;
 
+verbose = tapas_physio_check_siemens_cardiac_modality(log_files.cardiac, ...
+    cardiac_modality, verbose);
+
 % process optional input parameters and overwrite defaults
 defaults.sqpar = [];
 defaults.endCropSeconds     = 1;
 % used channel depends on cardiac modality
-switch cardiac_modality
+switch upper(cardiac_modality)
     case 'ECG'
         defaults.ecgChannel = 'mean'; %'mean'; 'v1'; 'v2'; 'v3'; 'v4'
     otherwise

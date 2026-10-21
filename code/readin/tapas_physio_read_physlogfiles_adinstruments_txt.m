@@ -89,7 +89,7 @@ end
 switch lower(cardiac_modality)
     case {'ecg_raw', 'ecg1_raw', 'v1raw'}
         labelColCardiac = 'UNKNOWN'; %TODO: find out!
-    case {'oxy','oxyge', 'ppu'}
+    case {'oxy','oxyge', 'ppu', 'puls'}
         labelColCardiac = 'Pulse';
 end
 

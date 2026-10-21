@@ -303,7 +303,8 @@ else
     preproc.cardiac = [];
     
     % Measurement modality of input cardiac signal
-    % 'ECG','ECG_raw', or 'OXY'/'PPU' (for pulse oximetry), 'OXY_OLD', [deprecated]
+    % 'ECG','ECG_raw', or 'OXY'/'PPU'/'PULS' (pulse oximetry),
+    % 'OXY_OLD' [deprecated]. Default: 'ecg_wifi' (Philips wireless ECG).
     preproc.cardiac.modality = 'ecg_wifi';
     
     % Filter properties for bandpass-filtering of cardiac signal before peak
