@@ -41,7 +41,7 @@ if isVerbose
         end
         plot(t, c, 'Color', [1 0.8, 0.8], 'LineWidth', 1) ; hold on;
         stem(cpulse, c(timeCpulse), 'r', 'LineWidth', 1);
-        title('Temporal lag between subsequent heartbeats (seconds)');
+        title('Inter-beat interval (IBI)');
     end
 else 
     ah = [];
@@ -78,6 +78,8 @@ if hasRespData
         subplot(2,1,2);
         bar(bins, r_hist, 1);
         title('Histogram of breathing belt amplitudes');
+        xlabel('Breathing amplitude');
+        ylabel('Count');
     end
 else
     r_hist = [];
