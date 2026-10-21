@@ -61,17 +61,43 @@ end
 % ERROR reformats long messages and may insert line breaks inside quoted
 % paths. FPRINTF preserves the commands exactly as generated.
 fprintf(2, '\n%s\n', instructions);
-error('tapas:physio:MultipleInstallations', ...
-    'Multiple PhysIO installations are active. See recovery commands above.');
+% Supply verbose explicitly: the logger's default calls tapas_physio_new,
+% which checks duplicate installations again and would recurse here.
+verbose = struct('level', 0, 'process_log', {{instructions}});
+tapas_physio_log( ...
+    'Multiple PhysIO installations are active. See recovery commands above.', ...
+    verbose, 2);
 
 
 function pathCanonical = get_canonical_path(pathInput)
 % Resolve relative components and filesystem links where possible.
-try
-    pathFile = java.io.File(pathInput);
-    pathCanonical = char(pathFile.getCanonicalPath());
-catch
-    pathCanonical = char(pathInput);
+pathCanonical = char(pathInput);
+if exist('resolveFilePath', 'builtin') || exist('resolveFilePath', 'file')
+    pathResolved = resolveFilePath(pathCanonical, 'EntryType', 'folder', ...
+        'ResolveSymbolicLinks', true);
+    if ~ismissing(pathResolved)
+        pathCanonical = char(pathResolved);
+        return;
+    end
+end
+
+% Older releases can canonicalize with Java, but -nojvm sessions cannot.
+% Avoid even attempting Java construction without a JVM: repeated caught
+% JavaNotFound errors can break subsequent path updates in R2026b.
+if usejava('jvm')
+    try
+        pathFile = java.io.File(pathCanonical);
+        pathCanonical = char(pathFile.getCanonicalPath());
+        return;
+    catch
+        % Fall back to MATLAB's absolute folder name below.
+    end
+end
+% FILEATTRIB returns an absolute name for an existing folder, including an
+% empty one; unlike the resolvers above, it does not guarantee link resolution.
+[success, attributes] = fileattrib(pathCanonical);
+if success && isscalar(attributes) && attributes.directory
+    pathCanonical = attributes.Name;
 end
 
 
