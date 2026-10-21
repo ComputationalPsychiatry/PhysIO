@@ -15,6 +15,8 @@ verifyEqual(testCase, pathActual, {get_canonical_path(pathRoot)});
 
 
 function test_duplicate_installations_report_recovery_commands(testCase)
+% The logger saves its error report in the current folder.
+testCase.applyFixture(matlab.unittest.fixtures.WorkingFolderFixture);
 pathRoot1 = tempname;
 pathRoot2 = [tempname, '''s copy'];
 mkdir(pathRoot1);
@@ -27,7 +29,12 @@ pathRoot1 = get_canonical_path(pathRoot1);
 pathRoot2 = get_canonical_path(pathRoot2);
 
 verifyEqual(testCase, exception.identifier, ...
-    'tapas:physio:MultipleInstallations');
+    'tapas:physio');
+reportFiles = dir('tapas_physio_error_process_log_*.mat');
+verifyNumElements(testCase, reportFiles, 1);
+report = load(reportFiles(1).name, 'verbose');
+verifySubstring(testCase, report.verbose.process_log{1}, ...
+    'Choose one installation to keep.');
 verifySubstring(testCase, commandWindowOutput, ['1. ', pathRoot1]);
 verifySubstring(testCase, commandWindowOutput, ['2. ', pathRoot2]);
 verifySubstring(testCase, commandWindowOutput, sprintf( ...
@@ -48,8 +55,9 @@ error('Expected tapas_physio_check_duplicate_paths to throw an error.');
 
 
 function pathCanonical = get_canonical_path(pathInput)
-pathFile = java.io.File(pathInput);
-pathCanonical = char(pathFile.getCanonicalPath());
+[success, attributes] = fileattrib(pathInput);
+assert(success);
+pathCanonical = attributes.Name;
 
 
 function remove_test_folders(varargin)
